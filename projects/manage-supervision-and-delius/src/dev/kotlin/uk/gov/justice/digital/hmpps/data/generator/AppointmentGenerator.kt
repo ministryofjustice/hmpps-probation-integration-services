@@ -89,83 +89,74 @@ object AppointmentGenerator {
         NON_SELECTABLE_OUTCOME
     )
 
-    val PERSON_APPOINTMENT by lazy {
-        generateAppointment(
-            PersonGenerator.OVERVIEW,
-            ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
-            ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
-            USER.staff?.id!!
-        )
+    fun getPersonAppointment() = generateAppointment(
+        PersonGenerator.OVERVIEW,
+        ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
+        ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
+        USER.staff?.id!!
+    )
+
+    fun getLateNightAppointment() = generateAppointment(
+        PersonGenerator.OVERVIEW,
+        ZonedDateTime.of(2024, 11, 27, 23, 0, 0, 0, EuropeLondon),
+        ZonedDateTime.of(2024, 11, 27, 23, 30, 0, 0, EuropeLondon),
+        USER.staff?.id!!
+    )
+
+    fun getSmsAppointment() = SentenceAppointment(
+        person = PersonGenerator.SMS_PERSON,
+        type = APPOINTMENT_TYPES[0],
+        date = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
+        endTime = ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
+        externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002",
+        description = "Description",
+        softDeleted = false,
+        notes = "Notes",
+        sensitive = false,
+        staffId = DEFAULT_STAFF.id,
+        teamId = DEFAULT_TEAM.id,
+    )
+
+    fun getNonSelectableOverdueAppointment() = SentenceAppointment(
+        person = PersonGenerator.SMS_PERSON,
+        type = NON_SELECTABLE_APPOINTMENT_TYPE,
+        date = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon),
+        endTime = ZonedDateTime.of(2022, 11, 27, 8, 0, 0, 0, EuropeLondon),
+        externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000099",
+        description = "Non-selectable overdue test appointment",
+        softDeleted = false,
+        notes = "Notes",
+        sensitive = false,
+        staffId = ENFORCEMENT_STAFF.id,
+        teamId = DEFAULT_TEAM.id,
+        probationAreaId = DEFAULT_PROVIDER.id,
+        eventId = null
+    ).apply {
+        createdByUserId = USER.id
+        lastUpdatedUserId = USER.id
     }
 
-    val LATE_NIGHT_APPOINTMENT by lazy {
-        generateAppointment(
-            PersonGenerator.OVERVIEW,
-            ZonedDateTime.of(2024, 11, 27, 23, 0, 0, 0, EuropeLondon),
-            ZonedDateTime.of(2024, 11, 27, 23, 30, 0, 0, EuropeLondon),
-            USER.staff?.id!!
-        )
+    fun getNonSelectableUserDiaryAppointment() = SentenceAppointment(
+        person = PersonGenerator.ENFORCEMENT_PERSON,
+        type = NON_SELECTABLE_APPOINTMENT_TYPE,
+        date = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
+        startTime = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon),
+        endTime = ZonedDateTime.of(2022, 12, 1, 10, 0, 0, 0, EuropeLondon),
+        externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000098",
+        description = "Non-selectable diary test appointment",
+        softDeleted = false,
+        notes = "Notes",
+        sensitive = false,
+        staffId = DEFAULT_STAFF.id,
+        teamId = DEFAULT_TEAM.id,
+        probationAreaId = DEFAULT_PROVIDER.id,
+        eventId = null
+    ).apply {
+        createdByUserId = USER.id
+        lastUpdatedUserId = USER.id
     }
-
-    val SMS_APPOINTMENT by lazy {
-        SentenceAppointment(
-            person = PersonGenerator.SMS_PERSON,
-            type = APPOINTMENT_TYPES[0],
-            date = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
-            startTime = ZonedDateTime.of(2024, 11, 27, 9, 0, 0, 0, EuropeLondon),
-            endTime = ZonedDateTime.of(2024, 11, 27, 10, 0, 0, 0, EuropeLondon),
-            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002",
-            description = "Description",
-            softDeleted = false,
-            notes = "Notes",
-            sensitive = false,
-            staffId = DEFAULT_STAFF.id,
-            teamId = DEFAULT_TEAM.id,
-        )
-    }
-
-    val NON_SELECTABLE_OVERDUE_APPOINTMENT by lazy {
-        SentenceAppointment(
-            person = PersonGenerator.SMS_PERSON,
-            type = NON_SELECTABLE_APPOINTMENT_TYPE,
-            date = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon).toLocalDate(),
-            startTime = ZonedDateTime.of(2022, 11, 27, 7, 0, 0, 0, EuropeLondon),
-            endTime = ZonedDateTime.of(2022, 11, 27, 8, 0, 0, 0, EuropeLondon),
-            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000099",
-            description = "Non-selectable overdue test appointment",
-            softDeleted = false,
-            notes = "Notes",
-            sensitive = false,
-            staffId = ENFORCEMENT_STAFF.id,
-            teamId = DEFAULT_TEAM.id,
-            probationAreaId = DEFAULT_PROVIDER.id,
-            eventId = null
-        ).apply {
-            createdByUserId = USER.id
-            lastUpdatedUserId = USER.id
-        }
-    }
-
-    val NON_SELECTABLE_USER_DIARY_APPOINTMENT =
-        SentenceAppointment(
-            person = PersonGenerator.ENFORCEMENT_PERSON,
-            type = NON_SELECTABLE_APPOINTMENT_TYPE,
-            date = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon).toLocalDate(),
-            startTime = ZonedDateTime.of(2022, 12, 1, 9, 0, 0, 0, EuropeLondon),
-            endTime = ZonedDateTime.of(2022, 12, 1, 10, 0, 0, 0, EuropeLondon),
-            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000098",
-            description = "Non-selectable diary test appointment",
-            softDeleted = false,
-            notes = "Notes",
-            sensitive = false,
-            staffId = DEFAULT_STAFF.id,
-            teamId = DEFAULT_TEAM.id,
-            probationAreaId = DEFAULT_PROVIDER.id,
-            eventId = null
-        ).apply {
-            createdByUserId = USER.id
-            lastUpdatedUserId = USER.id
-        }
 
     fun generateAppointment(
         person: Person,

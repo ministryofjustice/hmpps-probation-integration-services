@@ -42,7 +42,7 @@ class SentenceService(
         return SentenceOverview(
             personSummary = person.toSummary(),
             activeEvents.map { it.toSentenceSummary() },
-            sentence = activeEvents.firstOrNull {
+            sentence = activeEvents.sortedByDescending { it.eventNumber }.firstOrNull {
                 when (eventNumber) {
                     null -> true
                     else -> eventNumber == it.eventNumber

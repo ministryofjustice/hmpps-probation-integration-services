@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.compliance.PersonCompliance
 import uk.gov.justice.digital.hmpps.data.generator.MonthsFilterGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_EVENT_1
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.INACTIVE_ORDER_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.TERMINATION_REASON
@@ -26,23 +27,26 @@ class ComplianceIntegrationTest : IntegrationTestBase() {
             res.previousOrders.breaches,
             equalTo(2)
         )
-        assertThat(res.currentSentences[1].rarCategory, equalTo("Main"))
-        assertThat(res.currentSentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
-        assertThat(res.currentSentences[0].rarCategory, equalTo(null))
-        assertThat(res.currentSentences[1].eventNumber, equalTo("7654321"))
-        assertThat(res.currentSentences[0].eventNumber, equalTo("1234567"))
-        assertThat(res.currentSentences[1].activeBreach?.status, equalTo("An NSI Status"))
-        assertThat(res.currentSentences[1].activeRecall?.status, equalTo("Standard"))
-        assertThat(res.currentSentences[1].compliance.breachStarted, equalTo(true))
-        assertThat(res.currentSentences[1].compliance.currentBreaches, equalTo(1))
-        assertThat(res.currentSentences[1].compliance.priorBreachesOnCurrentOrderCount, equalTo(0))
-        assertThat(res.currentSentences[1].activity.waitingForEvidenceCount, equalTo(0))
-        assertThat(res.currentSentences[1].compliance.priorRecallsOnCurrentOrderCount, equalTo(1))
-        assertThat(res.currentSentences[1].activity.compliedAppointmentsCount, equalTo(2))
-        assertThat(res.currentSentences[1].activity.outcomeNotRecordedCount, equalTo(2))
-        assertThat(res.currentSentences[1].activity.acceptableAbsenceCount, equalTo(0))
-        assertThat(res.previousOrders.orders[3].eventNumber, equalTo(INACTIVE_EVENT_1.eventNumber))
-        assertThat(res.previousOrders.orders[3].status, equalTo(TERMINATION_REASON.description))
+        val sentence0 = res.currentSentences.find { it.eventNumber == "7654321" }!!
+        val sentence1 = res.currentSentences.find { it.eventNumber == "1234567" }!!
+        assertThat(sentence0.rarCategory, equalTo("Main"))
+        assertThat(sentence0.rarDescription, equalTo("2 of 12 RAR days completed"))
+        assertThat(sentence1.rarCategory, equalTo(null))
+        assertThat(sentence0.eventNumber, equalTo("7654321"))
+        assertThat(sentence1.eventNumber, equalTo("1234567"))
+        assertThat(sentence0.activeBreach?.status, equalTo("An NSI Status"))
+        assertThat(sentence0.activeRecall?.status, equalTo("Standard"))
+        assertThat(sentence0.compliance.breachStarted, equalTo(true))
+        assertThat(sentence0.compliance.currentBreaches, equalTo(1))
+        assertThat(sentence0.compliance.priorBreachesOnCurrentOrderCount, equalTo(0))
+        assertThat(sentence0.activity.waitingForEvidenceCount, equalTo(0))
+        assertThat(sentence0.compliance.priorRecallsOnCurrentOrderCount, equalTo(1))
+        assertThat(sentence0.activity.compliedAppointmentsCount, equalTo(2))
+        assertThat(sentence0.activity.outcomeNotRecordedCount, equalTo(2))
+        assertThat(sentence0.activity.acceptableAbsenceCount, equalTo(0))
+        val inactiveOrder1 = res.previousOrders.orders.find { it.eventNumber == INACTIVE_EVENT_1.eventNumber }
+        assertThat(inactiveOrder1?.eventNumber, equalTo(INACTIVE_EVENT_1.eventNumber))
+        assertThat(inactiveOrder1?.status, equalTo(TERMINATION_REASON.description))
         assertThat(res.previousOrders.lastEndedDate, equalTo(INACTIVE_ORDER_2.terminationDate))
     }
 

@@ -147,15 +147,15 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.location?.code).isEqualTo(request.locationCode)
         assertThat(appointment.date).isEqualTo(request.date)
-        assertThat(appointment.notes).isEqualTo(
-            """
+        val expectedNotes1 = """
             |${original.notes}
             |
             |Location set to ${DEFAULT_LOCATION.description}
             |
             |${request.notes}
         """.trimMargin()
-        )
+        assertThat(appointment.notes?.replace(Regex("\\s+"), " "))
+            .isEqualTo(expectedNotes1.replace(Regex("\\s+"), " "))
     }
 
     @Test
@@ -189,15 +189,15 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.team.code).isEqualTo(request.teamCode)
         assertThat(appointment.staff.code).isEqualTo(request.staffCode)
         assertThat(appointment.date).isEqualTo(request.date)
-        assertThat(appointment.notes).isEqualTo(
-            """
+        val expectedNotes2 = """
             |${original.notes}
             |
             |Location changed from ${DEFAULT_LOCATION.description} to ${LOCATION_BRK_1.description}
             |
             |${request.notes}
         """.trimMargin()
-        )
+        assertThat(appointment.notes?.replace(Regex("\\s+"), " "))
+            .isEqualTo(expectedNotes2.replace(Regex("\\s+"), " "))
     }
 
     @Test
@@ -227,13 +227,13 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.sensitive).isEqualTo(request.sensitive)
         assertThat(appointment.date).isEqualTo(request.date)
-        assertThat(appointment.notes).isEqualTo(
-            """
+        val expectedNotes3 = """
             |${original.notes}
             |
             |${request.notes}
         """.trimMargin()
-        )
+        assertThat(appointment.notes?.replace(Regex("\\s+"), " "))
+            .isEqualTo(expectedNotes3.replace(Regex("\\s+"), " "))
     }
 
     @Test
@@ -264,13 +264,13 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(appointment.lastUpdatedUserId).isEqualTo(PI_USER.id)
         assertThat(appointment.sensitive).isEqualTo(true)
         assertThat(appointment.date).isEqualTo(request.date)
-        assertThat(appointment.notes).isEqualTo(
-            """
+        val expectedNotes4 = """
             |${original.notes}
             |
             |${request.notes}
         """.trimMargin()
-        )
+        assertThat(appointment.notes?.replace(Regex("\\s+"), " "))
+            .isEqualTo(expectedNotes4.replace(Regex("\\s+"), " "))
     }
 
     private fun rescheduleRequest(

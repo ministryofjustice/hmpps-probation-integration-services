@@ -40,8 +40,8 @@ class ProbationHistoryIntegrationTest : IntegrationTestBase() {
         val expected = History(
             PersonGenerator.OVERVIEW.toSummary(),
             listOf(
-                SentenceSummary("1234567", "Pre-Sentence"),
-                SentenceSummary("7654321", "Default Sentence Type")
+                SentenceSummary("7654321", "Default Sentence Type"),
+                SentenceSummary("1234567", "Pre-Sentence")
             ),
             ProbationHistory(4, LocalDate.now().minusDays(7), 2, 2)
         )

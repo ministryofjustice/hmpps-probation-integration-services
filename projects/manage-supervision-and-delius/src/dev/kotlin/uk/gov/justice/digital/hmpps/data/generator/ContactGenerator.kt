@@ -142,12 +142,10 @@ object ContactGenerator {
         locationRequired = "N"
     )
 
-    val RQMNT_CONTACT_TYPE by lazy {
-        generateContactTypeRequirementType(
-            RQMNT_LEVEL_CT.id,
-            PersonGenerator.REQUIREMENT.mainCategory!!.id
-        )
-    }
+    fun getRQMNTContactType() = generateContactTypeRequirementType(
+        RQMNT_LEVEL_CT.id,
+        PersonGenerator.REQUIREMENT.mainCategory!!.id
+    )
 
     val E_SUPERVISION_TYPE = generateContactType("ESPCHI", true, "E Supervision", locationRequired = "N")
 
@@ -164,7 +162,7 @@ object ContactGenerator {
     val POSSIBLE_OUTCOME_4 =
         generateContactTypeOutcome(APPT_CT_1.id, ACCEPTABLE_ABSENCE.id, APPT_CT_1, ACCEPTABLE_ABSENCE)
 
-    val PREVIOUS_APPT_CONTACT_ABSENT by lazy {
+    val PREVIOUS_APPT_CONTACT_ABSENT =
         generateContact(
             OVERVIEW,
             APPT_CT_1,
@@ -182,25 +180,22 @@ object ContactGenerator {
                 was on holiday
             """.trimIndent()
         )
-    }
 
-    val PREVIOUS_APPT_CONTACT by lazy {
+    val PREVIOUS_APPT_CONTACT =
         generateContact(
             OVERVIEW,
             APPT_CT_1,
             ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusHours(1), EuropeLondon)
         )
-    }
 
-    val FIRST_NON_APPT_CONTACT by lazy {
+    val FIRST_NON_APPT_CONTACT =
         generateContact(
             OVERVIEW,
             OTHER_CT,
             ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(1), EuropeLondon),
         )
-    }
 
-    val NON_APPT_CONTACT_WITH_RAR_REQ by lazy {
+    val NON_APPT_CONTACT_WITH_RAR_REQ =
         Contact(
             id = IdGenerator.getAndIncrement(),
             person = OVERVIEW,
@@ -223,17 +218,15 @@ object ContactGenerator {
             ),
             notes = "Notes",
         )
-    }
 
-    val FIRST_APPT_CONTACT by lazy {
+    val FIRST_APPT_CONTACT =
         generateContact(
             OVERVIEW,
             APPT_CT_2,
             ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(2), EuropeLondon),
         )
-    }
 
-    val NEXT_APPT_CONTACT by lazy {
+    val NEXT_APPT_CONTACT =
         generateContact(
             OVERVIEW,
             APPT_CT_3,
@@ -241,32 +234,35 @@ object ContactGenerator {
             description = "next appointment",
             licenceCondition = LicenceConditionGenerator.LC_WITH_NOTES
         )
-    }
 
-    val PREVIOUS_COMMUNICATION_CONTACT by lazy {
+    val PREVIOUS_COMMUNICATION_CONTACT =
         generateContact(
             OVERVIEW,
             OTHER_CT,
             ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(10), EuropeLondon),
         )
-    }
 
-    val APPT_CONTACT_WITH_ALERT = UpdateContactOutcomeGenerator.CONTACT_10
+    val APPT_CONTACT_WITH_ALERT = generateContact(
+        OVERVIEW,
+        APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(12), EuropeLondon),
+        outcome = ACCEPTABLE_ABSENCE,
+        alert = true
+    )
 
     val E_SUPERVISION_ID: UUID = UUID.randomUUID()
 
-    val E_SUPERVISION_CONTACT by lazy {
+    val E_SUPERVISION_CONTACT =
         generateContact(
             E_SUP_PERSON,
             E_SUPERVISION_TYPE,
             ZonedDateTime.now(),
             externalReference = Contact.E_SUPERVISION_PREFIXES.first() + E_SUPERVISION_ID
         )
-    }
 
     val COMMUNICATION_CATEGORY = generateContactCategory(OTHER_CT, COMMUNICATION_CATEGORY_RD)
 
-    val ENFORCEMENT_CONTACT_1 by lazy {
+    val ENFORCEMENT_CONTACT_1 =
         generateContact(
             PersonGenerator.ENFORCEMENT_PERSON,
             APPT_CT_1,
@@ -274,9 +270,8 @@ object ContactGenerator {
             complied = false,
             outcome = FAILED_TO_COMPLY
         )
-    }
 
-    val ENFORCEMENT_CONTACT_2 by lazy {
+    val ENFORCEMENT_CONTACT_2 =
         generateContact(
             PersonGenerator.ENFORCEMENT_PERSON,
             APPT_CT_1,
@@ -284,9 +279,8 @@ object ContactGenerator {
             complied = false,
             outcome = FAILED_TO_COMPLY
         )
-    }
 
-    val ENFORCEMENT_CONTACT_3 by lazy {
+    val ENFORCEMENT_CONTACT_3 =
         generateContact(
             PersonGenerator.ENFORCEMENT_PERSON,
             APPT_CT_1,
@@ -294,72 +288,63 @@ object ContactGenerator {
             complied = false,
             outcome = FAILED_TO_COMPLY
         )
-    }
 
     val WARNING_LETTER_ENFORCEMENT_ACTION =
         generateEnforcementAction("EA02", "First Warning Letter Sent", BREACH_CONTACT_TYPE)
 
-    val ENFORCEMENT by lazy {
+    val ENFORCEMENT =
         generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
-    }
 
-    val DUE_SOON_ENFORCEMENT by lazy {
+    val DUE_SOON_ENFORCEMENT =
         generateEnforcement(
             ENFORCEMENT_CONTACT_2,
             ZonedDateTime.now(EuropeLondon).plusDays(1)
         )
-    }
 
-    val OVERDUE_ENFORCEMENT by lazy {
+    val OVERDUE_ENFORCEMENT =
         generateEnforcement(
             ENFORCEMENT_CONTACT_3,
             ZonedDateTime.now(EuropeLondon).minusDays(1)
         )
-    }
 
-    val ENFORCEMENT_APPOINTMENT_CONTACT by lazy {
+    val ENFORCEMENT_APPOINTMENT_CONTACT =
         generateContact(
             PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON,
             APPT_CT_1,
             ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
             event = PersonGenerator.ENFORCEMENT_APPOINTMENT_EVENT
         )
-    }
 
-    val ENFORCEMENT_APPOINTMENT_ENFORCEMENT by lazy {
+    val ENFORCEMENT_APPOINTMENT_ENFORCEMENT =
         generateEnforcement(
             ENFORCEMENT_APPOINTMENT_CONTACT,
             ZonedDateTime.now(EuropeLondon).plusDays(14)
         )
-    }
 
-    val INITIAL_CONTACT by lazy {
+    val INITIAL_CONTACT =
         generateContact(
             PersonGenerator.LINKED_CONTACT_PERSON,
             APPT_CT_1,
             ZonedDateTime.now(EuropeLondon).minusDays(14),
         )
-    }
 
-    val LINKED_CONTACT_1 by lazy {
+    val LINKED_CONTACT_1 =
         generateContact(
             PersonGenerator.LINKED_CONTACT_PERSON,
             APPT_CT_1,
             ZonedDateTime.now(EuropeLondon).minusDays(3),
             linkedContactId = INITIAL_CONTACT.id
         )
-    }
 
-    val LINKED_CONTACT_2 by lazy {
+    val LINKED_CONTACT_2 =
         generateContact(
             PersonGenerator.LINKED_CONTACT_PERSON,
             APPT_CT_2,
             ZonedDateTime.now(EuropeLondon).minusDays(8),
             linkedContactId = INITIAL_CONTACT.id
         )
-    }
 
-    val CONTACT_DOCUMENT_1 by lazy {
+    val CONTACT_DOCUMENT_1 =
         generateContactDocument(
             OVERVIEW.id,
             "B001",
@@ -370,9 +355,8 @@ object ContactGenerator {
             sensitive = true,
             workInProgress = true
         )
-    }
 
-    val CONTACT_DOCUMENT_2 by lazy {
+    val CONTACT_DOCUMENT_2 =
         generateContactDocument(
             OVERVIEW.id,
             "B002",
@@ -381,9 +365,8 @@ object ContactGenerator {
             primaryKeyId = NEXT_APPT_CONTACT.id,
             contact = NEXT_APPT_CONTACT
         )
-    }
 
-    val CONTACT_DOCUMENT_3 by lazy {
+    val CONTACT_DOCUMENT_3 =
         generateContactDocument(
             OVERVIEW.id,
             "C001",
@@ -394,9 +377,8 @@ object ContactGenerator {
             sensitive = true,
             workInProgress = true
         )
-    }
 
-    val UPDATABLE_CONTACT by lazy {
+    val UPDATABLE_CONTACT =
         generateContact(
             person = PersonGenerator.UPDATE_PERSON,
             contactType = ContactGenerator.EMAIL_POP_CT,
@@ -406,10 +388,9 @@ object ContactGenerator {
             team = DEFAULT_TEAM,
             event = PersonGenerator.UPDATE_CONTACT_EVENT
         )
-    }
 
     // Uses APPT_CT_1 (code "C089") which is NOT in CreateContact.Type — invalid for update
-    val NON_UPDATABLE_CONTACT by lazy {
+    val NON_UPDATABLE_CONTACT =
         generateContact(
             person = PersonGenerator.UPDATE_PERSON,
             contactType = ContactGenerator.APPT_CT_1,
@@ -418,7 +399,6 @@ object ContactGenerator {
             team = DEFAULT_TEAM,
             event = PersonGenerator.UPDATE_CONTACT_EVENT
         )
-    }
 
     fun generateContactDocument(
         personId: Long,

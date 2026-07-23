@@ -206,6 +206,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             ContactGenerator.POSSIBLE_OUTCOME_4,
             ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
             ContactGenerator.PREVIOUS_COMMUNICATION_CONTACT,
+            ContactGenerator.APPT_CONTACT_WITH_ALERT,
             PersonGenerator.ENFORCEMENT_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD,
@@ -296,7 +297,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             CustodyGenerator.RELEASE_1,
             CustodyGenerator.RELEASE_2,
             CustodyGenerator.RELEASE_3,
-            ContactGenerator.RQMNT_CONTACT_TYPE,
+            ContactGenerator.getRQMNTContactType(),
         )
         // Save the old contact then backdate its created_datetime via JDBC to bypass @CreatedDate auditing
         save(NonComplianceGenerator.OLD_UNACCEPTABLE_ABSENCE_CONTACT)
@@ -505,11 +506,11 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(LimitedAccessGenerator.BOTH_EXCLUSION)
         save(LimitedAccessGenerator.BOTH_RESTRICTION)
 
-        save(AppointmentGenerator.PERSON_APPOINTMENT)
-        save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
-        save(AppointmentGenerator.SMS_APPOINTMENT)
-        save(AppointmentGenerator.NON_SELECTABLE_OVERDUE_APPOINTMENT)
-        save(AppointmentGenerator.NON_SELECTABLE_USER_DIARY_APPOINTMENT)
+        save(AppointmentGenerator.getPersonAppointment())
+        save(AppointmentGenerator.getLateNightAppointment())
+        save(AppointmentGenerator.getSmsAppointment())
+        save(AppointmentGenerator.getNonSelectableOverdueAppointment())
+        save(AppointmentGenerator.getNonSelectableUserDiaryAppointment())
         saveAll(
             PersonGenerator.RESCHEDULED_PERSON_1,
             PersonGenerator.RESCHEDULED_PERSON_2,

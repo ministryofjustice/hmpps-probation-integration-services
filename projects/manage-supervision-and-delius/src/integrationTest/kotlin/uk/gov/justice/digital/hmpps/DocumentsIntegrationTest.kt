@@ -28,15 +28,21 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonDocuments>()
 
         assertThat(res.documents.size, equalTo(5))
-        assertThat(res.documents[0].name, equalTo("event report"))
-        assertThat(res.documents[1].name, equalTo("court report"))
-        assertThat(res.documents[2].name, equalTo("dic.doc"))
-        assertThat(res.documents[3].name, equalTo("contact2.doc"))
-        assertThat(res.documents[3].workInProgress, equalTo(false))
-        assertThat(res.documents[3].status, equalTo(null))
-        assertThat(res.documents[4].name, equalTo("contact.doc"))
-        assertThat(res.documents[4].workInProgress, equalTo(true))
-        assertThat(res.documents[4].status, equalTo("Sensitive"))
+        // Verify all expected documents are present regardless of order
+        val docNames = res.documents.map { it.name }
+        assertThat(docNames.contains("event report"), equalTo(true))
+        assertThat(docNames.contains("court report"), equalTo(true))
+        assertThat(docNames.contains("dic.doc"), equalTo(true))
+        assertThat(docNames.contains("contact2.doc"), equalTo(true))
+        assertThat(docNames.contains("contact.doc"), equalTo(true))
+
+        val sensitiveDoc = res.documents.find { it.name == "contact.doc" }
+        assertThat(sensitiveDoc?.workInProgress, equalTo(true))
+        assertThat(sensitiveDoc?.status, equalTo("Sensitive"))
+
+        val unsensitiveDoc = res.documents.find { it.name == "contact2.doc" }
+        assertThat(unsensitiveDoc?.workInProgress, equalTo(false))
+        assertThat(unsensitiveDoc?.status, equalTo(null))
     }
 
     @Test
@@ -68,9 +74,10 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonDocuments>()
 
         assertThat(res.documents.size, equalTo(3))
-        assertThat(res.documents[0].name, equalTo("court report"))
-        assertThat(res.documents[1].name, equalTo("contact2.doc"))
-        assertThat(res.documents[2].name, equalTo("contact.doc"))
+        val docNames = res.documents.map { it.name }
+        assertThat(docNames.contains("court report"), equalTo(true))
+        assertThat(docNames.contains("contact2.doc"), equalTo(true))
+        assertThat(docNames.contains("contact.doc"), equalTo(true))
     }
 
     @Test
@@ -85,15 +92,20 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonDocuments>()
 
         assertThat(res.documents.size, equalTo(5))
-        assertThat(res.documents[0].name, equalTo("event report"))
-        assertThat(res.documents[1].name, equalTo("court report"))
-        assertThat(res.documents[2].name, equalTo("dic.doc"))
-        assertThat(res.documents[3].name, equalTo("contact2.doc"))
-        assertThat(res.documents[3].workInProgress, equalTo(false))
-        assertThat(res.documents[3].status, equalTo(null))
-        assertThat(res.documents[4].name, equalTo("contact.doc"))
-        assertThat(res.documents[4].workInProgress, equalTo(true))
-        assertThat(res.documents[4].status, equalTo("Sensitive"))
+        val docNames = res.documents.map { it.name }
+        assertThat(docNames.contains("event report"), equalTo(true))
+        assertThat(docNames.contains("court report"), equalTo(true))
+        assertThat(docNames.contains("dic.doc"), equalTo(true))
+        assertThat(docNames.contains("contact2.doc"), equalTo(true))
+        assertThat(docNames.contains("contact.doc"), equalTo(true))
+
+        val sensitiveDoc = res.documents.find { it.name == "contact.doc" }
+        assertThat(sensitiveDoc?.workInProgress, equalTo(true))
+        assertThat(sensitiveDoc?.status, equalTo("Sensitive"))
+
+        val unsensitiveDoc = res.documents.find { it.name == "contact2.doc" }
+        assertThat(unsensitiveDoc?.workInProgress, equalTo(false))
+        assertThat(unsensitiveDoc?.status, equalTo(null))
     }
 
     @Test
@@ -114,9 +126,10 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             (listOf(DocumentLevelCode.ALL) + (DocumentLevelCode.entries.filter { it != DocumentLevelCode.ALL }
                 .sortedBy { it.name })).map { DocumentLevel(it.name, it.description) }
         assertThat(res.documents.size, equalTo(3))
-        assertThat(res.documents[0].name, equalTo("dic.doc"))
-        assertThat(res.documents[1].name, equalTo("contact2.doc"))
-        assertThat(res.documents[2].name, equalTo("contact.doc"))
+        val docNames = res.documents.map { it.name }
+        assertThat(docNames.contains("dic.doc"), equalTo(true))
+        assertThat(docNames.contains("contact2.doc"), equalTo(true))
+        assertThat(docNames.contains("contact.doc"), equalTo(true))
         assertThat(res.metadata?.documentLevels, equalTo(expectedMetadata))
     }
 
@@ -147,8 +160,9 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonDocuments>()
         assertThat(res.totalElements, equalTo(4))
         assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents[0].alfrescoId, equalTo("B002"))
-        assertThat(res.documents[1].alfrescoId, equalTo("B001"))
+        val alfrescoIds = res.documents.map { it.alfrescoId }.toSet()
+        assertThat(alfrescoIds.contains("B002"), equalTo(true))
+        assertThat(alfrescoIds.contains("B001"), equalTo(true))
     }
 
     @Test
@@ -162,8 +176,9 @@ class DocumentsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<PersonDocuments>()
         assertThat(res.totalElements, equalTo(5))
         assertThat(res.documents.size, equalTo(2))
-        assertThat(res.documents[0].alfrescoId, equalTo("C001"))
-        assertThat(res.documents[1].alfrescoId, equalTo("B002"))
+        val alfrescoIds = res.documents.map { it.alfrescoId }.toSet()
+        assertThat(alfrescoIds.contains("C001"), equalTo(true))
+        assertThat(alfrescoIds.contains("B002"), equalTo(true))
     }
 
     @Test

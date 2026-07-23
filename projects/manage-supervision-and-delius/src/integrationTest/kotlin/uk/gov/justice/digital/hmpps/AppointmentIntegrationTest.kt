@@ -69,11 +69,6 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
             emptyList(),
             listOf(
                 MinimalSentence(
-                    EVENT_2.id,
-                    EVENT_2.eventNumber,
-                    MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE)
-                ),
-                MinimalSentence(
                     id = EVENT_1.id,
                     eventNumber = EVENT_1.eventNumber,
                     order = MinimalOrder(
@@ -116,6 +111,11 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
                         MinimalRequirement(REQUIREMENT_UNPAID_WORK.id, "W", "Unpaid Work - Intensive", true),
                         MinimalRequirement(REQUIREMENT.id, "F", "2 of 12 RAR days completed", true),
                     )
+                ),
+                MinimalSentence(
+                    EVENT_2.id,
+                    EVENT_2.eventNumber,
+                    MinimalOrder("Pre-Sentence", SentenceType.PRE_SENTENCE)
                 )
             )
         )
@@ -123,7 +123,12 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<ContactTypeAssociation>()
 
-        assertEquals(expected, response)
+        assertEquals(expected.personSummary, response.personSummary)
+        assertEquals(code, response.contactTypeCode)
+        assertEquals(expected.associatedWithPerson, response.associatedWithPerson)
+        assertEquals(expected.personNsis, response.personNsis)
+        org.assertj.core.api.Assertions.assertThat(response.sentences)
+            .containsExactlyInAnyOrderElementsOf(expected.sentences)
     }
 
     @Test

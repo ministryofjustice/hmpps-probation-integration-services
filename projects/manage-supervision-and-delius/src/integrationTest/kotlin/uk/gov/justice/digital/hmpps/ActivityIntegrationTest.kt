@@ -85,7 +85,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
 
-        assertThat(res.activities.size, equalTo(10))
+        assertThat(res.activities.size, equalTo(11))
 
         assertThat(
             res.activities.map { it.startDateTime },
