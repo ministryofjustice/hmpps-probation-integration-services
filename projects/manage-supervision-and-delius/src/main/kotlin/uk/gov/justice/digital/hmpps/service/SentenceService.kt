@@ -281,8 +281,11 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
             )
         }.filter { it.note != "null" && it.note.isNotEmpty() }
             .let { notes ->
-                val notesWithHeader = notes.filter { it.createdBy != null }.map { it.note }.toSet()
-                notes.filter { it.createdBy != null || it.note !in notesWithHeader }
+                notes.groupBy { it.note.trimEnd() }
+                    .flatMap { (_, group) ->
+                        val withHeader = group.filter { it.createdBy != null }
+                        if (withHeader.isNotEmpty()) withHeader else group.take(1)
+                    }
                     .mapIndexed { idx, n -> n.copy(id = idx) }
             }
     } ?: listOf()
