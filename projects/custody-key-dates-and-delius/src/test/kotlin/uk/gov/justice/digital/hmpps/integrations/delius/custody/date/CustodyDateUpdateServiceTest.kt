@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.Mock
@@ -536,6 +537,68 @@ internal class CustodyDateUpdateServiceTest {
                 assertThat(it["bookingId"], equalTo("1234567"))
                 assertThat(it["envelopeBookingId"], equalTo("999999"))
             }, any()
+        )
+    }
+
+    @Test
+    fun `SDS+ flag null defaults to regular SDS calculation for EM end date`() {
+        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+        listOf(
+            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
+            CustodyDateType.SENTENCE_EXPIRY_DATE,
+            CustodyDateType.SUSPENSION_DATE_IF_RESET,
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val disposal = generateDisposal(generateEvent())
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
+
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                conditionalReleaseDate = LocalDate.of(2024, 1, 1),
+                sentenceExpiryDate = LocalDate.of(2025, 1, 1)
+            )
+        )
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(custody.id)
+        )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenReturn(
+            OperativeSentenceEnvelope(
+                sentenceEnvelopeLengthInDays = 50L,
+                containsAnSDSPlusSentence = null,
+                bookingId = booking.id
+            )
+        )
+        whenever(disposalRepository.save(any<Disposal>())).thenReturn(disposal)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        assertNull(custody.disposal!!.sdsPlus)
+        verify(disposalRepository).save(
+            check<Disposal> {
+                assertNull(it.sdsPlus)
+            }
+        )
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                val emed = saved.single { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }
+                assertThat(emed.date, equalTo(LocalDate.of(2024, 12, 2)))
+            }
         )
     }
 }
