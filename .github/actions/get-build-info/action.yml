@@ -17,7 +17,7 @@ runs:
     - name: Get build info
       run: |
         echo '::group::Generate build info'
-        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:generateGitProperties"
+        ./gradlew "${PROJECT}:buildInfo" "${PROJECT}:gitInfo"
         echo '::endgroup::'
       shell: bash
       env:

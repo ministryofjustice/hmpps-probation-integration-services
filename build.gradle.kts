@@ -97,7 +97,9 @@ subprojects {
             destinationDir = layout.buildDirectory.dir("info")
             filename = "build-info.properties"
         }
-        withType<GenerateGitPropertiesTask> {
+        named<GenerateGitPropertiesTask>("generateGitProperties") { enabled = false }
+        register<GenerateGitPropertiesTask>("gitInfo") {
+            description = "Generate Git build info"
             gitProperties.gitPropertiesResourceDir = layout.buildDirectory.dir("info")
             gitProperties.gitPropertiesName = "git-info.properties"
             gitProperties.dotGitDirectory = rootDir.resolve(".git")
