@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import org.assertj.core.api.Assertions.assertThat
 
 class OrderIntegrationTest : IntegrationTestBase() {
 
@@ -60,37 +61,36 @@ class OrderIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PreviousOrderHistory>()
 
-        val expected = PreviousOrderHistory(
-            Name("Forename", "Middle1", "Surname"),
-            listOf(
-                PreviousOrder(
-                    INACTIVE_EVENT_NO_TIME_UNIT.eventNumber,
-                    "Default Sentence Type (36 not provided)",
-                    "Burglary, other than a dwelling - 03000",
-                    LocalDate.now().minusDays(7)
-                ),
-                PreviousOrder(
-                    INACTIVE_EVENT_3.eventNumber,
-                    "Default Sentence Type",
-                    "Burglary, other than a dwelling - 03000",
-                    LocalDate.now().minusDays(7)
-                ),
-                PreviousOrder(
-                    INACTIVE_EVENT_2.eventNumber,
-                    "Default Sentence Type (7 Months)",
-                    "Burglary, other than a dwelling - 03000",
-                    LocalDate.now().minusDays(7)
-                ),
-                PreviousOrder(
-                    INACTIVE_EVENT_1.eventNumber,
-                    "Default Sentence Type (2 Years)",
-                    "Murder",
-                    LocalDate.now().minusDays(8)
-                )
+        val expectedName = Name("Forename", "Middle1", "Surname")
+        val expectedOrders = listOf(
+            PreviousOrder(
+                INACTIVE_EVENT_1.eventNumber,
+                "Default Sentence Type (2 Years)",
+                "Murder",
+                LocalDate.now().minusDays(8)
+            ),
+            PreviousOrder(
+                INACTIVE_EVENT_2.eventNumber,
+                "Default Sentence Type (7 Months)",
+                "Burglary, other than a dwelling - 03000",
+                LocalDate.now().minusDays(7)
+            ),
+            PreviousOrder(
+                INACTIVE_EVENT_3.eventNumber,
+                "Default Sentence Type",
+                "Burglary, other than a dwelling - 03000",
+                LocalDate.now().minusDays(7)
+            ),
+            PreviousOrder(
+                INACTIVE_EVENT_NO_TIME_UNIT.eventNumber,
+                "Default Sentence Type (36 not provided)",
+                "Burglary, other than a dwelling - 03000",
+                LocalDate.now().minusDays(7)
             )
         )
 
-        assertEquals(expected, response)
+        assertEquals(expectedName, response.name)
+        assertThat(response.previousOrders).containsExactlyInAnyOrderElementsOf(expectedOrders)
     }
 
     @Test

@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.CreateAppointment
 import uk.gov.justice.digital.hmpps.api.model.appointment.User
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
-import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.PERSON_APPOINTMENT
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -367,7 +367,7 @@ class SentenceAppointmentServiceTest {
             )
         )
 
-        whenever(sentenceAppointmentRepository.findByExternalReference(appointment.urn)).thenReturn(PERSON_APPOINTMENT)
+        whenever(sentenceAppointmentRepository.findByExternalReference(appointment.urn)).thenReturn(AppointmentGenerator.getPersonAppointment())
 
         val exception = assertThrows<ConflictException> {
             service.createAppointment(PersonGenerator.PERSON_1.crn, appointment)

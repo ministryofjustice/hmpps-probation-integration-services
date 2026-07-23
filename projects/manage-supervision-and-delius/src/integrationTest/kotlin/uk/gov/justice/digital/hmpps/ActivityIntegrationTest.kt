@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.hamcrest.MatcherAssert.assertThat
-import java.time.ZonedDateTime
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -78,7 +77,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `all person activity is returned split into past and future`() {
+    fun `all person activity is returned in a single list sorted by date descending`() {
         val person = OVERVIEW
         val res = mockMvc.get("/activity/${person.crn}") { withToken() }
             .andExpect { status { isOk() } }
@@ -86,37 +85,24 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
 
-        assertThat(res.activities.size + res.futureActivities.size, equalTo(10))
+        assertThat(res.activities.size, equalTo(11))
 
-        assertThat(res.activities.all { it.isInPast }, equalTo(true))
         assertThat(
             res.activities.map { it.startDateTime },
             equalTo(res.activities.map { it.startDateTime }.sortedDescending())
         )
+
+        assertThat(res.activities.any { it.isInPast }, equalTo(true))
+        assertThat(res.activities.any { !it.isInPast }, equalTo(true))
+
         assertThat(res.activities.any { it.action == "Breach Enforcement Action" }, equalTo(true))
 
-        assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
-
-        // Compute which fixture contacts are still in the future at assertion time, since the
-        // plusHours(...) timestamps can slip to the past on slow or paused runs
-        val now = ZonedDateTime.now()
-        val expectedFutureIds = listOf(
-            ContactGenerator.FIRST_NON_APPT_CONTACT,
-            ContactGenerator.FIRST_APPT_CONTACT,
-            ContactGenerator.NEXT_APPT_CONTACT
-        ).filter { it.startTime?.isAfter(now) == true }.map { it.id }
-        assertThat(
-            res.futureActivities.map { it.id }.filter { it in expectedFutureIds },
-            equalTo(expectedFutureIds)
-        )
-
-        val allActivities = res.activities + res.futureActivities
-        val nextAppt = allActivities.single { it.id == ContactGenerator.NEXT_APPT_CONTACT.id }
+        val nextAppt = res.activities.single { it.id == ContactGenerator.NEXT_APPT_CONTACT.id }
         assertThat(nextAppt.isAppointment, equalTo(true))
         assertThat(nextAppt.documents.size, equalTo(3))
         assertThat(nextAppt.location?.postcode, equalTo("H34 7TH"))
 
-        val firstAppt = allActivities.single { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
+        val firstAppt = res.activities.single { it.id == ContactGenerator.FIRST_APPT_CONTACT.id }
         assertThat(firstAppt.type, equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().type))
         assertThat(
             firstAppt.location?.officeName,
