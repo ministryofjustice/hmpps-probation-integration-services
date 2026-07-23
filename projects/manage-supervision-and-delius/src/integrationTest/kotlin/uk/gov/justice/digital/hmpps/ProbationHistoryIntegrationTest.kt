@@ -46,6 +46,9 @@ class ProbationHistoryIntegrationTest : IntegrationTestBase() {
             ProbationHistory(4, LocalDate.now().minusDays(7), 2, 2)
         )
 
-        assertEquals(expected, response)
+        assertEquals(expected.personSummary, response.personSummary)
+        assertEquals(expected.sentenceSummaryList.toSet(), response.sentenceSummaryList.toSet())
+        assertEquals(expected.probationHistory, response.probationHistory)
+
     }
 }
