@@ -88,6 +88,8 @@ internal object TestData {
         officeLocation = officeLocation,
         type = type,
         outcome = outcome,
+        attended = outcome?.attended,
+        complied = outcome?.complied,
         externalReference = externalReference,
         notes = notes,
         sensitive = sensitive
