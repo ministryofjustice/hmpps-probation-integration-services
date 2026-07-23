@@ -17,9 +17,10 @@ class SingleAccommodationController(
     @GetMapping(value = ["/case-list/{username}"])
     fun getCaseList(
         @PathVariable username: String,
+        @RequestParam(required = false) teamCode: String?,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "50") size: Int,
-    ) = caseListService.getCaseList(username, PageRequest.of(page, size, Sort.by("crn")))
+    ) = caseListService.getCaseList(username, teamCode, PageRequest.of(page, size, Sort.by("crn")))
 
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
     @GetMapping(value = ["/case/{username}/{crn}"])
