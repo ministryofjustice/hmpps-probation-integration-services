@@ -293,7 +293,7 @@ class ContactLogService(
             contact.enforcementEntries.clear()
         }
 
-request.notes?.takeIf { it.isNotBlank() }?.let { contact.appendNotes(it) }
+        request.notes?.takeIf { it.isNotBlank() }?.let { contact.appendNotes(it) }
 
         if (request.alert && contact.alert != true) {
             createAlert(contact)
