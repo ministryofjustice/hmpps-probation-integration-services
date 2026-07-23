@@ -49,6 +49,5 @@ class ProbationHistoryIntegrationTest : IntegrationTestBase() {
         assertEquals(expected.personSummary, response.personSummary)
         assertEquals(expected.sentenceSummaryList.toSet(), response.sentenceSummaryList.toSet())
         assertEquals(expected.probationHistory, response.probationHistory)
-
     }
 }

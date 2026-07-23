@@ -62,7 +62,10 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
         )
         if (res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes != null) {
             assertThat(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!!.size >= 1, equalTo(true))
-            assertThat(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!![0].note?.contains("Made a mistake"), equalTo(true))
+            assertThat(
+                res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!![0].note?.contains("Made a mistake"),
+                equalTo(true)
+            )
             assertFalse(res.removedRiskFlags[0].removalHistory[0].riskRemovalNotes!![0].hasNoteBeenTruncated!!)
         }
     }

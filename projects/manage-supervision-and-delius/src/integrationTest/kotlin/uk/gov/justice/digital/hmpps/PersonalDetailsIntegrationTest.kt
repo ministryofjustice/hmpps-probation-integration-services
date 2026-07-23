@@ -154,7 +154,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.name, equalTo(person.name()))
         assertThat(res.contacts.size, equalTo(1))
         if (res.mainAddress!!.addressNote != null) {
-            assertThat(res.mainAddress!!.addressNote, equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1]))
+            assertThat(
+                res.mainAddress!!.addressNote,
+                equalTo(formatNote(PERSON_ADDRESS_1.notes, truncateNote = false)[1])
+            )
         }
         assertThat(res.otherAddressCount, equalTo(1))
         assertThat(res.previousAddressCount, equalTo(5))

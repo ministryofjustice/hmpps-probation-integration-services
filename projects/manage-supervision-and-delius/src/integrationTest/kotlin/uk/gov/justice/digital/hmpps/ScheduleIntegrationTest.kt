@@ -155,7 +155,10 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.appointment.description, equalTo("previous appointment"))
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
-        assertThat(res.appointment.appointmentNotes != null && res.appointment.appointmentNotes!!.isNotEmpty(), equalTo(true))
+        assertThat(
+            res.appointment.appointmentNotes != null && res.appointment.appointmentNotes!!.isNotEmpty(),
+            equalTo(true)
+        )
         assertThat(res.appointment.eventId, equalTo(PersonGenerator.EVENT_1.id))
         assertThat(res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
     }
@@ -173,7 +176,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.outcome, equalTo("Acceptable"))
         if (res.appointment.appointmentNote != null) {
             val containsExpected = (res.appointment.appointmentNote?.note?.contains("Licence Condition") == true) ||
-                                   (res.appointment.appointmentNote?.note?.contains("on holiday") == true)
+                (res.appointment.appointmentNote?.note?.contains("on holiday") == true)
             assertThat(containsExpected, equalTo(true))
         }
     }
