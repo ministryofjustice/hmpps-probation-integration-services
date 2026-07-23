@@ -5,6 +5,7 @@ database:
     tables:
       - contact
       - key_date
+      - disposal
 
   audit:
     username: CustodyKeyDatesAndDelius
