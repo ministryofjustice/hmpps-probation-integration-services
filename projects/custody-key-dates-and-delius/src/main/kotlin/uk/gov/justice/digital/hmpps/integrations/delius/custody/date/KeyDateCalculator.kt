@@ -18,7 +18,7 @@ class KeyDateCalculator {
         sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope
     ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
         val lengthInDays = envelope.sentenceEnvelopeLengthInDays
-        val deduction = if (envelope.containsAnSDSPlusSentence) {
+        val deduction = if (envelope.containsAnSDSPlusSentence == true) {
             ceil(lengthInDays / 3.0).toLong()
         } else {
             ceil((lengthInDays * 60.0) / 100.0).toLong()

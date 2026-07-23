@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -46,6 +47,19 @@ internal class KeyDateCalculatorTest {
             )
         )
         assertThat(result, equalTo(expected))
+    }
+
+    @Test
+    fun `em end date falls back to regular SDS calculation when sds plus flag is null`() {
+        val result = calculator.presumptiveElectronicMonitoringEndDate(
+            SentenceDetail(sentenceExpiryDate = LocalDate.of(2025, 1, 1)),
+            OperativeSentenceEnvelope(
+                bookingId = 1L,
+                containsAnSDSPlusSentence = null,
+                sentenceEnvelopeLengthInDays = 50L
+            )
+        )
+        assertThat(result, equalTo(LocalDate.of(2024, 12, 2)))
     }
 
     @ParameterizedTest
