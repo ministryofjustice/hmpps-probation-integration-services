@@ -89,6 +89,9 @@ object ContactGenerator {
 
     val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")
 
+    val SPARK_1 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK1", "Spark One")
+    val SPARK_2 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK2", "Spark Two")
+
     val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type", locationRequired = "B")
     val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)
 
@@ -224,7 +227,8 @@ object ContactGenerator {
         APPT_CT_3,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(3), EuropeLondon),
         description = "next appointment",
-        licenceCondition = LicenceConditionGenerator.LC_WITH_NOTES
+        licenceCondition = LicenceConditionGenerator.LC_WITH_NOTES,
+        sparks = mutableListOf(SPARK_1, SPARK_2)
     )
 
     val PREVIOUS_COMMUNICATION_CONTACT = generateContact(
@@ -424,6 +428,7 @@ object ContactGenerator {
         externalReference: String? = null,
         linkedContactId: Long? = null,
         createdDateTime: ZonedDateTime = ZonedDateTime.now().minusDays(1),
+        sparks: MutableList<ReferenceData> = mutableListOf(),
     ) = Contact(
         id = IdGenerator.getAndIncrement(),
         person = person,
@@ -450,6 +455,7 @@ object ContactGenerator {
         alert = alert,
         externalReference = externalReference,
         linkedContactId = linkedContactId,
+        sparks = sparks,
     )
 
     fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement()): ContactAlert =

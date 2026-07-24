@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
@@ -235,7 +236,8 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         nsiId = nsiId,
         esupervisionId = eSupervisionId(),
         externalReference = externalReference,
-        alert = alert
+        alert = alert,
+        sparks = sparks.sortedBy { it.code }.map { CodeAndDescription(it.code, it.description) }
     )
 }
 
