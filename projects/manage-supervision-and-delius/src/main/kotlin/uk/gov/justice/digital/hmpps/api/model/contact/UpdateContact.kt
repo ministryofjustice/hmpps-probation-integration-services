@@ -16,7 +16,7 @@ data class UpdateContactOutcome(
     val time: LocalTime,
     val outcomeCode: String?,
     val enforcementActionCode: String?,
-    val notes: String,
+    val notes: String? = null,
     val alert: Boolean,
     val sensitive: Boolean
 )
