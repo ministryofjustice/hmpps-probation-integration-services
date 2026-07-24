@@ -237,7 +237,7 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         esupervisionId = eSupervisionId(),
         externalReference = externalReference,
         alert = alert,
-        sparks = sparks.map { CodeAndDescription(it.code, it.description) }
+        sparks = sparks.sortedBy { it.code }.map { CodeAndDescription(it.code, it.description) }
     )
 }
 
