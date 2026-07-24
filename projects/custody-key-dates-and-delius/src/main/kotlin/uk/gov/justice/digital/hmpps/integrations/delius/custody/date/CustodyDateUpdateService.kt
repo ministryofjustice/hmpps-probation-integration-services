@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
@@ -31,7 +30,6 @@ class CustodyDateUpdateService(
     private val telemetryService: TelemetryService,
     private val crdsApiClient: CrdsApiClient,
     private val keyDateCalculator: KeyDateCalculator,
-    private val featureFlags: FeatureFlags,
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         try {
@@ -57,8 +55,7 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val sdsPlusEnabled = featureFlags.enabled("sds-plus-flag-enabled")
-        val sdsEligible = sdsPlusEnabled && custody.disposal?.isDeliusSdsCase() == true
+        val sdsEligible = custody.disposal?.isDeliusSdsCase() == true
         val envelope = if (sdsEligible) crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo) else null
         val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
         if (updated.isEmpty()) {

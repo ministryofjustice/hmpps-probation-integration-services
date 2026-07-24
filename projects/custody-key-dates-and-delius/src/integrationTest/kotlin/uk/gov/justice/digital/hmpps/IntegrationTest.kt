@@ -3,10 +3,12 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.*
+import org.mockito.kotlin.check
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,7 +17,6 @@ import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
@@ -42,16 +43,12 @@ internal class IntegrationTest @Autowired constructor(
 ) {
 
     @MockitoBean
-    lateinit var featureFlags: FeatureFlags
-
-    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     private val sedDate = "2025-09-10"
 
     @Test
     fun `Custody Key Dates updated as expected`() {
-        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(false)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
@@ -71,9 +68,6 @@ internal class IntegrationTest @Autowired constructor(
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
 
-        assertNull(custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code))
-        assertNull(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code))
-
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
             check {
@@ -91,7 +85,6 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Custody Key Dates updated from SENTENCE_CHANGED event`() {
-        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(false)
         val notification = Notification(
             message = MessageGenerator.SENTENCE_CHANGED,
             attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
@@ -152,8 +145,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertNull(emed)
-        assertNull(fthrd)
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -180,6 +173,8 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
+            EMED 11/08/2025
+            FTHRD 24/08/2025
                 """.trimIndent()
             )
         )
@@ -208,8 +203,7 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `EMED and FTHRD dates created and disposal updated when feature flag enabled`() {
-        whenever(featureFlags.enabled("sds-plus-flag-enabled")).thenReturn(true)
+    fun `EMED and FTHRD dates created and disposal updated for eligible SDS case`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
         channelManager.getChannel(queueName).publishAndWait(notification)
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
