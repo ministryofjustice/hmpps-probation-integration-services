@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model.activity
 
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
@@ -60,7 +61,8 @@ data class Activity(
     val nsiId: Long? = null,
     val esupervisionId: UUID? = null,
     val externalReference: String? = null,
-    val alert: Boolean? = null
+    val alert: Boolean? = null,
+    val sparks: List<CodeAndDescription>? = null,
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {

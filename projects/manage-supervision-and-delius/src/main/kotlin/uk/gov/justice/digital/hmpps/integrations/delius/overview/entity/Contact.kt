@@ -183,6 +183,14 @@ class Contact(
     val trustProviderTeamId: Long = 0,
 
     val partitionAreaId: Long = 0,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "contact_sparks",
+        joinColumns = [JoinColumn(name = "contact_id")],
+        inverseJoinColumns = [JoinColumn(name = "standard_reference_list_id")]
+    )
+    val sparks: MutableList<ReferenceData> = mutableListOf(),
 ) {
     val enforcement: Enforcement? get() = enforcementEntries.singleOrNull()
 
@@ -1196,3 +1204,4 @@ class EnforcementActionContactOutcomeId(
 
 interface EnforcementActionContactOutcomeRepository :
     JpaRepository<EnforcementActionContactOutcome, EnforcementActionContactOutcomeId>
+
