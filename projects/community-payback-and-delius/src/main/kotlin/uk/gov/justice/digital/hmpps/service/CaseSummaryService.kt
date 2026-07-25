@@ -2,13 +2,16 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.person.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.entity.person.getByCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.sentence.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.LinkedListRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.ZonedDateTime
 
 @Service
 class CaseSummaryService(
@@ -19,6 +22,7 @@ class CaseSummaryService(
     private val linkedListRepository: LinkedListRepository,
     private val userAccessService: UserAccessService,
     private val mainOffenceRepository: MainOffenceRepository,
+    private val personalCircumstanceRepository: PersonalCircumstanceRepository,
 ) {
     fun getSummaryForCase(crn: String, username: String?): UnpaidWorkDetails {
         val person = personRepository.getByCrn(crn)
@@ -98,4 +102,16 @@ class CaseSummaryService(
             exclusionMessage = "username not provided so cannot determine exclusion",
             restrictionMessage = "username not provided so cannot determine restriction",
         )
+
+    fun getPersonalCircumstances(crn: String): List<PersonalCircumstances> {
+        if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
+        val circumstances = personalCircumstanceRepository.findByPerson_CrnOrderByStartDate(crn)
+        return circumstances
+            .map {
+                PersonalCircumstances(
+                    type = CodeDescription(it.type.code, it.type.description),
+                    subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) }
+                )
+            }
+    }
 }

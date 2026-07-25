@@ -8,12 +8,12 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "2.4.0"
-    kotlin("plugin.noarg") version "2.4.0" apply false
-    kotlin("plugin.spring") version "2.4.0" apply false
+    kotlin("jvm") version "2.4.10"
+    kotlin("plugin.noarg") version "2.4.10" apply false
+    kotlin("plugin.spring") version "2.4.10" apply false
     id("org.springframework.boot") version "4.1.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.5.7" apply false
+    id("com.gorylenko.gradle-git-properties") version "4.0.1" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
@@ -91,14 +91,18 @@ subprojects {
             isReproducibleFileOrder = true
             archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
         }
+        // Generate build info into a different directory so that it isn't included in the final image - to improve caching and reproducibility
+        register<BuildInfo>("buildInfo") {
+            description = "Generate Spring build info"
+            destinationDir = layout.buildDirectory.dir("info")
+            filename = "build-info.properties"
+        }
         named<GenerateGitPropertiesTask>("generateGitProperties") { enabled = false }
         register<GenerateGitPropertiesTask>("gitInfo") {
-            gitProperties.gitPropertiesResourceDir = projectDir
+            description = "Generate Git build info"
+            gitProperties.gitPropertiesResourceDir = layout.buildDirectory.dir("info")
+            gitProperties.gitPropertiesName = "git-info.properties"
             gitProperties.dotGitDirectory = rootDir.resolve(".git")
-        }
-        register<BuildInfo>("buildInfo") {
-            destinationDir = projectDir
-            filename = "build-info.properties"
         }
     }
 

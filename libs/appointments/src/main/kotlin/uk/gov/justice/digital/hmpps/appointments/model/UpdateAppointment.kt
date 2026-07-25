@@ -10,6 +10,7 @@ class UpdateAppointment {
     data class Outcome(
         val outcomeCode: String?,
         val allowMissingOutcomeInThePast: Boolean = false,
+        val allowChanges: Boolean = false,
     ) {
         internal constructor(entity: AppointmentContact) : this(entity.outcome?.code)
     }
@@ -19,7 +20,8 @@ class UpdateAppointment {
         val startTime: LocalTime,
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
-        val allowDurationReduction: Boolean = false,
+        val allowDurationReductionWithOutcome: Boolean = false,
+        val allowRescheduleWithOutcome: Boolean = false,
     ) {
         val endsInFuture: Boolean =
             date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
@@ -52,7 +54,7 @@ class UpdateAppointment {
             this isDurationReductionOf Schedule(other)
 
         internal infix fun isAllowedDurationReductionOf(existing: AppointmentContact) =
-            allowDurationReduction && this isDurationReductionOf existing
+            allowDurationReductionWithOutcome && this isDurationReductionOf existing
     }
 
     data class Recreate(

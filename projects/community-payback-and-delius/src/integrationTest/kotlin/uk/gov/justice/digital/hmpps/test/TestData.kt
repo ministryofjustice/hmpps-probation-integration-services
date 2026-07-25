@@ -5,9 +5,11 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit.SECONDS
+import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 object TestData {
@@ -110,10 +112,12 @@ object TestData {
         LocalTime.of(LocalTime.now().plusHours(7).hour, 0),
         LocalTime.now().plusMinutes(1).truncatedTo(SECONDS)
     )
+    val updateDate: LocalDate = UPWGenerator.DISPOSAL_3.date
+        .with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY))
 
     fun updateAppointment(id: Long) = UpdateAppointmentRequest(
         version = UUID(1, 1),
-        date = LocalDate.now(),
+        date = updateDate,
         startTime = startTime,
         endTime = endTime,
         minutesCredited = 0L,

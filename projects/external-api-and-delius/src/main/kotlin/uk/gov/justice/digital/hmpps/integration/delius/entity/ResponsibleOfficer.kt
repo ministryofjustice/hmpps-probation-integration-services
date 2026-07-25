@@ -4,7 +4,11 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
 
 @Immutable
@@ -59,4 +63,15 @@ class PrisonManager(
 
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long> {
     fun findByPersonCrn(crn: String): ResponsibleOfficer?
+
+    @EntityGraph(attributePaths = ["person"])
+    @Query(
+        """
+        select ro from ResponsibleOfficer ro
+        join ro.communityManager cm
+        join cm.staff staff
+        where upper(trim(staff.code)) = upper(trim(:officerCode))
+        """
+    )
+    fun findAllByOfficerCode(officerCode: String, pageable: Pageable): Page<ResponsibleOfficer>
 }

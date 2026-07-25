@@ -13,12 +13,12 @@ import java.time.LocalDate
 class GetOverdueOutcomeTest : IntegrationTestBase() {
     @Test
     fun `can retrieve appointments with an overdue outcome`() {
-        val person = PersonGenerator.OVERVIEW
+        val person = PersonGenerator.SMS_PERSON
         val response = mockMvc.get("/appointment/${person.crn}/overdue-outcomes") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<OverdueOutcomeAppointments>()
 
-        assertThat(response.content).hasSize(2)
+        assertThat(response.content).hasSize(1)
         with(response.content.first()) {
             assertThat(type).isEqualTo(OverdueOutcome.Type("COAP", "Description for COAP"))
             assertThat(date).isEqualTo(LocalDate.of(2024, 11, 27))

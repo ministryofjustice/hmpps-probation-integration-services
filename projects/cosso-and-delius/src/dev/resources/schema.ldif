@@ -8,7 +8,7 @@ objectclass: top
 objectclass: inetOrgPerson
 cn: J0nSm17h
 sn: Smith
-givenname: John
+givenname: John Test
 mail: john.smith@moj.gov.uk
 telephoneNumber: 07247764536
 userHomeArea: N01
@@ -24,14 +24,14 @@ objectclass: top
 objectclass: inetOrgPerson
 cn: NoHomeArea
 sn: Smith
-givenname: John
+givenname: John Test
 
 dn: cn=JackHarry,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: inetOrgPerson
 cn: JackHarry
 sn: Harry
-givenname: Jack
+givenname: Jack Test
 mail: jack.harry@moj.gov.uk
 telephoneNumber: 07123456789
 userHomeArea: N01

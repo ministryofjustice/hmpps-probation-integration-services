@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.TestData.PROVIDER
@@ -94,26 +94,8 @@ class GetRegionWIthMembersIntegrationTest(
     }
 
     @Test
-    fun `office locations returned for pdu`() {
-        mockMvc.get("/regions/pdu/PDU1/office-locations") { withToken() }
-            .andExpect { status { isOk() } }
-            .andExpect {
-                content {
-                    json(
-                        """
-                {
-                  "code": "PDU1",
-                  "description": "Test PDU",
-                  "officeLocations": [
-                    {
-                      "code": "OFFICE1",
-                      "description": "Test Office Location"
-                    }
-                  ]
-                }
-            """.trimIndent()
-                    )
-                }
-            }
+    fun `office locations 404 for pdu not found`() {
+        mockMvc.get("/regions/pdu/notfound/office-locations") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }

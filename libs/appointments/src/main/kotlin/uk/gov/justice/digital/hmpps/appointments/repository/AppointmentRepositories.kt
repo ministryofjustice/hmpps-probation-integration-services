@@ -98,7 +98,7 @@ internal object AppointmentRepositories {
     }
 
     interface EnforcementRepository : JpaRepository<Enforcement, Long> {
-        fun existsByContactId(appointmentId: Long): Boolean
+        fun findByContactId(appointmentId: Long): Enforcement?
     }
 
     interface AlertRepository : JpaRepository<Alert, Long> {

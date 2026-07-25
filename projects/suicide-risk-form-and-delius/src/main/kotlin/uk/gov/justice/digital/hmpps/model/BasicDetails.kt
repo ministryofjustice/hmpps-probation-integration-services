@@ -16,6 +16,11 @@ data class Name(
     val surname: String
 )
 
+data class LdapName(
+    val forenames: String,
+    val surname: String
+)
+
 data class Address(
     val id: Long,
     val status: String?,

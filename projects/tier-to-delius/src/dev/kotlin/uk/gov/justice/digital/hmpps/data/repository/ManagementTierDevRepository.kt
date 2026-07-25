@@ -5,6 +5,5 @@ import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTie
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierId
 
 interface ManagementTierDevRepository : JpaRepository<ManagementTier, ManagementTierId> {
-    fun findByIdPersonId(personId: Long): ManagementTier
     fun findAllByIdPersonIdOrderByIdDateChanged(personId: Long): List<ManagementTier>
 }

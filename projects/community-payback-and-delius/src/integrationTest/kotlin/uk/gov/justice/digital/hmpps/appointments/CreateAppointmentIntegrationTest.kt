@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.appointments
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
@@ -18,10 +20,12 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.test.TestData
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class CreateAppointmentIntegrationTest @Autowired constructor(
@@ -29,6 +33,7 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactAlertRepository: ContactAlertRepository,
     private val eventRepository: EventRepository,
+    private val entityManager: EntityManager,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_3.code
@@ -148,13 +153,13 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
                 withToken()
                 json = CreateAppointmentsRequest(
                     listOf(
-                        TestData.createAppointment().copy(date = LocalDate.of(2026, 1, 1)) // Thursday
+                        TestData.createAppointmentWithOutcome().copy(date = LocalDate.of(2026, 1, 1)) // Thursday
                     )
                 )
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Project is not available on the following days: [THURSDAY]")
+                assertThat(it.message).isEqualTo("Project is not available on the following day: 2026-01-01 (THURSDAY). Available days: [MONDAY]")
             }
     }
 
@@ -170,6 +175,44 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).contains("Appointment cannot be scheduled after the project completion date")
+            }
+    }
+
+    @Test
+    fun `attempt to create appointment before sentence date`() {
+        val request = TestData.createAppointmentWithOutcome().copy(
+            date = UPWGenerator.DISPOSAL_3.date.minusDays(1)
+        )
+
+        mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Appointment date must be on or after sentence date")
+            }
+    }
+
+    @Test
+    fun `request-specific project must be available on appointment date`() {
+        val invalidDate = LocalDate.of(2026, 1, 4) // SUNDAY
+        mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        TestData.createAppointmentWithOutcome().copy(
+                            date = invalidDate,
+                            project = Code(UPWGenerator.UPW_PROJECT_2.code)
+                        )
+                    )
+                )
+            }
+            .andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Project is not available on the following day: 2026-01-04 (SUNDAY). Available days: [MONDAY]")
             }
     }
 
@@ -287,6 +330,9 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             .andExpect { content { jsonPath("size()") { value(1) } } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>()
 
+        entityManager.flush()
+        entityManager.clear()
+
         eventRepository.getByPersonAndEventNumber(PersonGenerator.DEFAULT_PERSON.id, UPWGenerator.EVENT_3.number).also {
             assertThat(it.ftcCount).isEqualTo(1)
         }
@@ -331,7 +377,7 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     fun `creating appointment with a null status code and hours all worked changes to 'HC'`() {
-        val request = TestData.createAppointment()
+        val request = TestData.createAppointmentWithOutcome()
         val created = mockMvc
             .post("/projects/$PROJECT/appointments") {
                 withToken()
@@ -415,12 +461,20 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     @Test
     fun `creating an appointment with a different project sets the project`() {
         val alternateProject = UPWGenerator.UPW_PROJECT_2
-        val request = TestData.createAppointment().copy(project = Code(alternateProject.code))
+        val availableDate = generateSequence(LocalDate.now().plusDays(1)) { it.plusDays(1) }
+            .first { it.dayOfWeek == DayOfWeek.MONDAY }
 
         val created = mockMvc
             .post("/projects/$PROJECT/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(listOf(request))
+                json = CreateAppointmentsRequest(
+                    listOf(
+                        TestData.createAppointment().copy(
+                            date = availableDate,
+                            project = Code(alternateProject.code)
+                        )
+                    )
+                )
             }
             .andExpect { status { isOk() } }
             .andExpect { content { jsonPath("size()") { value(1) } } }

@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/api/bookings/1200836"
+        "urlPath": "/prison-api/api/bookings/1200836"
       },
       "response": {
         "status": 200,
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/api/bookings/offenderNo/A0001DY"
+        "urlPath": "/prison-api/api/bookings/offenderNo/A0001DY"
       },
       "response": {
         "status": 200,

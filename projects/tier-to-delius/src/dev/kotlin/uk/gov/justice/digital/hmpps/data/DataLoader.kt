@@ -20,6 +20,8 @@ class DataLoader(
         save(TeamGenerator.DEFAULT)
         save(PersonGenerator.generate("A000001"))
         save(PersonGenerator.generate("A000002"))
+        save(PersonGenerator.generate("A000003"))
+        save(PersonGenerator.generate("A000004"))
         save(ReferenceDataSetGenerator.TIER)
         save(ReferenceDataSetGenerator.TIER_CHANGE_REASON)
         save(ReferenceDataGenerator.generate("UD0", ReferenceDataSetGenerator.TIER))

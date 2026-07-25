@@ -39,7 +39,7 @@ class Person(
     val manager: PersonManager,
 
     @OneToMany(mappedBy = "person")
-    @SQLRestriction("register_type_id in (select register_type_id from r_register_type where r_register_type.code in ('RLRH', 'RMRH', 'RHRH', 'RVHR'))")
+    @SQLRestriction("register_type_id in (select r_register_type.register_type_id from r_register_type where r_register_type.code in ('RLRH', 'RMRH', 'RHRH', 'RVHR'))")
     val roshRegistrations: List<Registration>,
 
     @Column(name = "noms_number", columnDefinition = "char(7)")
@@ -63,4 +63,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
     fun findByManagerTeamIdIn(teamIds: List<Long>, pageable: Pageable): Page<Person>
+
+    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
+    fun findByManagerStaff(staff: Staff, pageable: Pageable): Page<Person>
 }

@@ -120,7 +120,8 @@ internal object AppointmentEntities {
         @Column(name = "latest_enforcement_action_id")
         var enforcementActionId: Long? = null,
 
-        var enforcement: Boolean? = null,
+        @Column(name = "enforcement")
+        var enforcementFlag: Boolean? = null,
 
         @ManyToOne
         @JoinColumn(name = "linked_contact_id")
@@ -386,16 +387,16 @@ internal object AppointmentEntities {
         @Version
         val version: Long = 0,
 
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "contact_id")
         val contact: AppointmentContact,
 
         @ManyToOne
         @JoinColumn(name = "enforcement_action_id")
-        val action: EnforcementAction?,
+        var action: EnforcementAction?,
 
         @Column(name = "response_date")
-        val responseDate: ZonedDateTime?,
+        var responseDate: ZonedDateTime?,
 
         @Column(name = "action_taken_date")
         val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
@@ -405,7 +406,7 @@ internal object AppointmentEntities {
 
         @Column(columnDefinition = "number")
         @Convert(converter = NumericBooleanConverter::class)
-        val softDeleted: Boolean = false,
+        var softDeleted: Boolean = false,
 
         @Column(name = "partition_area_id")
         val partitionAreaId: Long = 0,

@@ -274,6 +274,13 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         and (
             a.date < current_date or (a.date = current_date and to_char(a.endTime, 'HH24:MI') < to_char(current_timestamp, 'HH24:MI'))
         )
+        and exists (
+            select 1
+            from ContactTypeOutcome cto
+            join cto.outcome cot
+            where cto.id.contactTypeId = a.type.id
+            and cot.selectable = true
+        )
     """
     )
     fun findOverdueOutcomes(crn: String): List<Appointment>

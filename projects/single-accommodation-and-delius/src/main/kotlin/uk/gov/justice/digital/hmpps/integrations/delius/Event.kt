@@ -116,10 +116,9 @@ interface KeyDateRepository : JpaRepository<KeyDate, Long> {
 
     @Query(
         """
-        select e.personId as personId, max(kd.date) as releaseDate from KeyDate kd
-        join kd.custody c
-        join c.disposal d
-        join d.event e
+        select e.personId as personId, max(kd.date) as releaseDate 
+        from Event e
+        join KeyDate kd on e.id = kd.custody.disposal.event.id
         where e.personId in :personIds
         and kd.type.code = 'EXP'
         group by e.personId

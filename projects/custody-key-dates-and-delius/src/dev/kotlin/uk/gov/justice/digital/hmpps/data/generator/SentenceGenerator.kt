@@ -25,8 +25,12 @@ object SentenceGenerator {
     fun generateDisposal(event: Event, type: DisposalType = DEFAULT_DISPOSAL_TYPE) =
         Disposal(IdGenerator.getAndIncrement(), event, type)
 
-    fun generateDisposalType(requiredInformation: String = "L1", pssRequirement: Boolean? = false) =
-        DisposalType(IdGenerator.getAndIncrement(), requiredInformation, pssRequirement)
+    fun generateDisposalType(
+        requiredInformation: String = "L1",
+        sentenceType: String? = "SC",
+        pssRequirement: Boolean? = false
+    ) =
+        DisposalType(IdGenerator.getAndIncrement(), sentenceType, requiredInformation, pssRequirement)
 
     fun generateCustodialSentence(
         custodyStatus: ReferenceData = ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,

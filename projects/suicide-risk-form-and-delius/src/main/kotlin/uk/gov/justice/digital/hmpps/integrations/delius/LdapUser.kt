@@ -31,4 +31,4 @@ class LdapUser(
     val userHomeArea: String?
 )
 
-fun LdapUser.name() = uk.gov.justice.digital.hmpps.model.Name(firstName, null, surname)
+fun LdapUser.name() = uk.gov.justice.digital.hmpps.model.LdapName(firstName, surname)

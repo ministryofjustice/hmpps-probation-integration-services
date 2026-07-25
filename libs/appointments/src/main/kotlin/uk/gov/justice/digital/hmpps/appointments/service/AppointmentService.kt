@@ -76,12 +76,12 @@ class AppointmentService internal constructor(
                     staff = staff[request.staffCode].orNotFoundBy("code", request.staffCode),
                     officeLocation = request.locationCode?.let { code -> locations[code].orNotFoundBy("code", code) },
                     type = type,
-                    enforcement = type.outcomeRequired == true,
+                    enforcementFlag = type.outcomeRequired == true,
                     notes = request.notes,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
                 ).applyOutcome(
-                    outcome = request.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+                    newOutcome = request.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
                     enforcementAction = enforcementAction,
                     enforcementReviewType = enforcementReviewType,
                 ).flagAs(
@@ -115,7 +115,7 @@ class AppointmentService internal constructor(
         val updates = UpdateBuilder<T>().also { it.init() }
         return requests
             .withExisting(updates.reference, updates.id)
-            .validateUpdates(updates)
+            .preValidation(updates)
             .applyUpdates(updates.amendDateTime) { amendDateTime(it) }
             .applyUpdates(updates.recreate) { recreate(it) }
             .applyUpdates(updates.reschedule) { reschedule(it) }
@@ -124,6 +124,7 @@ class AppointmentService internal constructor(
             .applyUpdates(updates.appendNotes) { appendNotes(it) }
             .applyUpdates(updates.flagAs) { flagAs(it) }
             .map { (_, contact) -> contact }
+            .postValidation()
             .onEach { it.audit(BusinessInteractionCode.UPDATE_CONTACT) }
             .map { Appointment(it) }
     }
@@ -143,8 +144,7 @@ class AppointmentService internal constructor(
         }
 
         id != null -> map { id.invoke(it) }.toSet().let { request ->
-            request
-                .chunked(500)
+            request.chunked(500)
                 .flatMap { chunk -> appointmentRepository.findByIdIn(chunk) }
                 .also { contacts ->
                     val missing = request - contacts.mapNotNull { it.id }.toSet()
@@ -156,7 +156,7 @@ class AppointmentService internal constructor(
         else -> requireNotNull(reference ?: id) { "Reference must be provided" }
     }
 
-    private fun <T> UpdatePipeline<T>.validateUpdates(updates: UpdateBuilder<T>) = onEach { (request, existing) ->
+    private fun <T> UpdatePipeline<T>.preValidation(updates: UpdateBuilder<T>) = onEach { (request, existing) ->
         val outcome = updates.applyOutcome?.invoke(Outcome(existing), request)
         updates.amendDateTime?.invoke(Schedule(existing), request)?.apply {
             require(endTime == null || startTime < endTime) {
@@ -164,6 +164,14 @@ class AppointmentService internal constructor(
             }
             require(endsInFuture || outcome?.outcomeCode != null || outcome?.allowMissingOutcomeInThePast == true || this isAllowedDurationReductionOf existing) {
                 "Outcome must be provided when amending an appointment in the past"
+            }
+        }
+    }
+
+    private fun List<AppointmentContact>.postValidation() = onEach { appointment ->
+        with(appointment) {
+            require(!Schedule(this).startsInFuture || outcome == null || (outcome?.attended == false && outcome?.complied == true)) {
+                "Only permissible absences can be recorded for a future attendance"
             }
         }
     }
@@ -179,7 +187,7 @@ class AppointmentService internal constructor(
     private fun AppointmentContact.amendDateTime(request: Schedule): AppointmentContact {
         if (request isSameDateAndTimeAs this) return this
 
-        require(outcome == null || request isAllowedDurationReductionOf this) {
+        require(outcome == null || request.allowRescheduleWithOutcome || request isAllowedDurationReductionOf this) {
             "Appointment with outcome cannot be rescheduled"
         }
 
@@ -288,7 +296,8 @@ class AppointmentService internal constructor(
         return map { (request, existing) ->
             val update = updates.getValue(request)
             request to existing.applyOutcome(
-                outcome = update.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+                newOutcome = update.outcomeCode?.let { code -> outcomes[code].orNotFoundBy("code", code) },
+                allowChanges = update.allowChanges,
                 enforcementAction = enforcementAction,
                 enforcementReviewType = enforcementReviewType,
             )
@@ -296,27 +305,24 @@ class AppointmentService internal constructor(
     }
 
     private fun AppointmentContact.applyOutcome(
-        outcome: AppointmentOutcome?,
+        newOutcome: AppointmentOutcome?,
+        allowChanges: Boolean = false,
         enforcementAction: EnforcementAction,
         enforcementReviewType: Type
     ) = apply {
-        if (this.outcome?.code == outcome?.code) return@apply
+        if (outcome?.code == newOutcome?.code) return@apply
 
-        require(this.outcome == null && outcome != null) {
+        require((this.outcome == null && newOutcome != null) || allowChanges) {
             "Outcome cannot be amended"
         }
 
-        require(!Schedule(this).startsInFuture || (outcome.attended == false && outcome.complied == true)) {
-            "Only permissible absences can be recorded for a future attendance"
-        }
-
-        this.outcome = outcome
-        attended = outcome.attended
-        complied = outcome.complied
-        if (outcome.complied == false && outcome.enforceable == true) {
+        outcome = newOutcome
+        attended = newOutcome?.attended
+        complied = newOutcome?.complied
+        if (outcome?.complied == false && outcome?.enforceable == true) {
             enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
         } else {
-            enforcement = null
+            enforcementService.removeEnforcementAction(this)
         }
     }
 

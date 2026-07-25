@@ -35,6 +35,7 @@ class UserDiaryIntegrationTest : IntegrationTestBase() {
 
         assertEquals(2, response.appointments.size)
         assertEquals(5, response.outcomes.size)
+        assertThat(response.outcomes.map { it.type }).doesNotContain(uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.NON_SELECTABLE_APPOINTMENT_TYPE.description)
     }
 
     @Test

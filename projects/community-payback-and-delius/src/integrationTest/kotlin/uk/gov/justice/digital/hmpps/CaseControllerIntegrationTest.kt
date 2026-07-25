@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,8 +11,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstancesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.model.PersonalCircumstances
 import uk.gov.justice.digital.hmpps.model.ScheduleResponse
 import uk.gov.justice.digital.hmpps.model.UnpaidWorkDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -20,8 +23,11 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @AutoConfigureMockMvc
 @SpringBootTest
 class CaseControllerIntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
 ) {
+    @Autowired
+    lateinit var entityManager: EntityManager
+
     @Test
     fun `returns schedule with requirement progress, allocations and appointments`() {
         val response = mockMvc
@@ -167,5 +173,37 @@ class CaseControllerIntegrationTest @Autowired constructor(
     fun `unknown crn throws 404 for registration endpoint`() {
         mockMvc.get("/case/X999999/registrations") { withToken() }
             .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `returns active personal circumstances sorted by start date`() {
+
+        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).hasSize(2)
+        assertThat(response[0].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE.code)
+        assertThat(response[0].subType?.code).isEqualTo(PersonalCircumstancesGenerator.SUBTYPE.code)
+        assertThat(response[1].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE2.code)
+        assertThat(response[1].subType).isNull()
+    }
+
+    @Test
+    fun `returns empty personal circumstances for known person with none`() {
+        val response = mockMvc.get("/case/${PersonGenerator.PERSON_2.crn}/personal-circumstances") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).isEmpty()
+    }
+
+    @Test
+    fun `returns 404 for unknown person personal circumstances`() {
+        mockMvc.get("/case/X999999/personal-circumstances") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).contains("Person with crn of X999999 not found")
+            }
     }
 }

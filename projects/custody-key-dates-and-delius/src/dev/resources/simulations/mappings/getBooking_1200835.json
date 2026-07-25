@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/api/bookings/1200835"
+    "urlPath": "/prison-api/api/bookings/1200835"
   },
   "response": {
     "status": 200,
