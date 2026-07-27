@@ -63,6 +63,7 @@ data class Activity(
     val externalReference: String? = null,
     val alert: Boolean? = null,
     val sparks: List<CodeAndDescription>? = null,
+    val editable: Boolean
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {

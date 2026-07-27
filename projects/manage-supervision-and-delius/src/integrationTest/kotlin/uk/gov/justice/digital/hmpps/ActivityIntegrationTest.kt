@@ -94,6 +94,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
             equalTo(res.activities.map { it.startDateTime }.sortedDescending())
         )
         assertThat(res.activities.any { it.action == "Breach Enforcement Action" }, equalTo(true))
+        assertThat(res.activities.first { it.isCommunication }.editable, equalTo(false))
 
         assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
 
