@@ -182,6 +182,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             PersonGenerator.INACTIVE_ORDER_3,
             PersonGenerator.INACTIVE_ORDER_4,
             ContactGenerator.COMMUNICATION_CATEGORY_RD,
+            ContactGenerator.SPARK_1,
+            ContactGenerator.SPARK_2,
             ContactGenerator.BREACH_CONTACT_TYPE,
             ContactGenerator.BREACH_ENFORCEMENT_ACTION,
             ContactGenerator.APPT_CT_1,

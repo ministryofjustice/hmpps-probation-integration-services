@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.activity.Component
 import uk.gov.justice.digital.hmpps.api.model.schedule.LinkedContact
@@ -126,6 +127,15 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
         assertThat(res.appointment.description, equalTo(expectedAppointment.description))
         assertThat(res.appointment.alert, equalTo(false))
+        assertThat(
+            res.appointment.sparks,
+            equalTo(
+                listOf(
+                    CodeAndDescription("SPARK1", "Spark One"),
+                    CodeAndDescription("SPARK2", "Spark Two")
+                )
+            )
+        )
         val lc = LicenceConditionGenerator.LC_WITH_NOTES
         assertThat(
             res.appointment.component,
@@ -163,6 +173,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.appointmentNotes, equalTo(expectedNotes))
         assertThat(res.appointment.eventId, equalTo(PersonGenerator.EVENT_1.id))
         assertThat(res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
+        assertThat(res.appointment.sparks, equalTo(emptyList()))
     }
 
     @Test
