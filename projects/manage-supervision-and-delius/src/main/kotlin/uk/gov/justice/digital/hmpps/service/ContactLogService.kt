@@ -312,11 +312,13 @@ class ContactLogService(
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         } else if (contactOutcome != null && contact.complied == false) {
             updateFtcCount(contact)
+            request.notes.let { contact.appendNotes(it) }
             null
-        } else null
+        } else {
+            request.notes.let { contact.appendNotes(it) }
+            null
+        }
         setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
-
-        request.notes.let { contact.appendNotes(it) }
     }
 
     @Transactional
