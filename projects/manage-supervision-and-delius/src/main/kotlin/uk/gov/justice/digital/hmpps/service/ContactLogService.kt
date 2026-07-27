@@ -293,9 +293,6 @@ class ContactLogService(
             contact.enforcementEntries.clear()
         }
 
-        request.notes.let { contact.appendNotes(it) }
-
-
         if (request.alert && contact.alert != true) {
             createAlert(contact)
         } else if (request.alert == false && contact.alert == true) {
@@ -315,8 +312,12 @@ class ContactLogService(
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         } else if (contactOutcome != null && contact.complied == false) {
             updateFtcCount(contact)
+            request.notes.let { contact.appendNotes(it) }
             null
-        } else null
+        } else {
+            request.notes.let { contact.appendNotes(it) }
+            null
+        }
         setEnforcementFlag(contact, appliedAction ?: contact.latestEnforcementAction)
     }
 
