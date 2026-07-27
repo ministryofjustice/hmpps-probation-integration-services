@@ -167,7 +167,8 @@ fun Contact.toActivityOverview(): Activity {
         description = description,
         outcome = outcome?.description,
         deliusManaged = CreateAppointment.Type.entries.none { it.code == type.code } || requirement?.mainCategory?.code == "F",
-        esupervisionId = eSupervisionId()
+        esupervisionId = eSupervisionId(),
+        editable = type.editable ?: false
     )
 }
 
@@ -238,7 +239,7 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         externalReference = externalReference,
         alert = alert,
         sparks = sparks.sortedBy { it.code }.map { CodeAndDescription(it.code, it.description) },
-        editable = type.editable
+        editable = type.editable ?: false
     )
 }
 
