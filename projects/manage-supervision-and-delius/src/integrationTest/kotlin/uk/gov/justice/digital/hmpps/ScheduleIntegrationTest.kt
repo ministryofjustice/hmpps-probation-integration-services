@@ -136,6 +136,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
                 )
             )
         )
+        assertThat(res.appointment.editable, equalTo(true))
         val lc = LicenceConditionGenerator.LC_WITH_NOTES
         assertThat(
             res.appointment.component,
@@ -173,6 +174,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.appointmentNotes, equalTo(expectedNotes))
         assertThat(res.appointment.eventId, equalTo(PersonGenerator.EVENT_1.id))
         assertThat(res.appointment.eventNumber, equalTo(PersonGenerator.EVENT_1.eventNumber))
+        assertThat(res.appointment.editable, equalTo(true))
         assertThat(res.appointment.sparks, equalTo(emptyList()))
     }
 
