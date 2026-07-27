@@ -36,5 +36,17 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(LimitedAccessGenerator.RESTRICTED_USER)
         save(LimitedAccessGenerator.generateExclusion(LimitedAccessGenerator.EXCLUDED_CASE))
         save(LimitedAccessGenerator.generateRestriction(LimitedAccessGenerator.RESTRICTED_CASE))
+
+        save(CaseloadGenerator.CL_DEFAULT_1)
+        save(CaseloadGenerator.CL_DEFAULT_2)
+        save(CaseloadGenerator.CL_DEFAULT_3)
+        save(CaseloadGenerator.CL_DEFAULT_4)
+        save(CaseloadGenerator.CL_BOTH_DEFAULT_1)
+        save(CaseloadGenerator.CL_BOTH_DEFAULT_2)
+        save(CaseloadGenerator.CL_BOTH_DEFAULT_3)
+        save(CaseloadGenerator.CL_BOTH_DEFAULT_4)
+        save(CaseloadGenerator.CL_BOTH_DEFAULT_5)
+        save(CaseloadGenerator.CL_BOTH_OTHER_1)
+
     }
 }
