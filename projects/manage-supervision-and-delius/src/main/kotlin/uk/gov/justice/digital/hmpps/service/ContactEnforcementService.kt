@@ -61,9 +61,10 @@ class ContactEnforcementService(
         contactRepository.save(contact.apply {
             this.appendNotes(
                 """
-                            ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
-                            Enforcement Action: ${enforcementAction.description}
-                        """.trimIndent()
+                    ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(LocalDateTime.now())}
+                    Enforcement Action: ${enforcementAction.description}
+                    
+                """.trimIndent()
             )
         })
         contact.event?.run {
