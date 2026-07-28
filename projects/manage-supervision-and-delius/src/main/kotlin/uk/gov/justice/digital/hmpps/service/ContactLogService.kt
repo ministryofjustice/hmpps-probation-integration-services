@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -51,6 +52,7 @@ class ContactLogService(
     ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
+        private val log = logger()
     }
 
     @Transactional
@@ -76,6 +78,7 @@ class ContactLogService(
             val event = createContact.eventId?.let {
                 eventRepository.findByIdAndActiveIsTrue(it)
             }
+            log.info("createContact eventId: ${createContact.eventId}, resolved event: ${event?.id}")
             val requirement = createContact.requirementId?.let {
                 requirementRepository.getRequirement(it)
             }
@@ -117,6 +120,7 @@ class ContactLogService(
             )
 
             if (createContact.enforcementActionCode != null) {
+                log.info("savedContact.event: ${savedContact.event?.id}, savedContact.id: ${savedContact.id}")
                 val appliedAction = contactEnforcementService.updateEnforcementActionForContact(
                     savedContact,
                     createContact.enforcementActionCode
