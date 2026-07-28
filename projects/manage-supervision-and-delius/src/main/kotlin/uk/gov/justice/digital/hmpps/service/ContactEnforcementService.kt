@@ -70,8 +70,9 @@ class ContactEnforcementService(
         contact.event?.run {
             contactRepository.flush()
             ftcCount = contactRepository.countFailureToComply(this)
-            val ftcLimit = disposal?.type?.ftcLimit ?: return@run
-            val lastResetDate = listOfNotNull(breachEnd, disposal.date).maxOrNull()
+            val activeDisposal = disposal ?: return@run
+            val ftcLimit = activeDisposal.type.ftcLimit ?: return@run
+            val lastResetDate = listOfNotNull(breachEnd, activeDisposal.date).maxOrNull()
             if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
                     lastResetDate,

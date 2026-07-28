@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaffByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.team.getTeam
-import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -52,7 +51,6 @@ class ContactLogService(
     ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
-        private val log = logger()
     }
 
     @Transactional
@@ -362,8 +360,9 @@ class ContactLogService(
         }
         updateFtcCount(contact)
         contact.event?.run {
-            val ftcLimit = disposal?.type?.ftcLimit ?: return@run
-            val lastResetDate = listOfNotNull(breachEnd, disposal.date).maxOrNull()
+            val activeDisposal = disposal ?: return@run
+            val ftcLimit = activeDisposal.type.ftcLimit ?: return@run
+            val lastResetDate = listOfNotNull(breachEnd, activeDisposal.date).maxOrNull()
             if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
                     lastResetDate,
