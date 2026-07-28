@@ -549,4 +549,36 @@ object UpdateContactOutcomeGenerator {
         staff = STAFF,
         event = EVENT
     )
+
+    // --- Data for testing ARWS review creation via POST /contact/{id}/enforcement-actions ---
+    val EA_FTC_EVENT = PersonGenerator.generateEvent(
+        PERSON,
+        eventNumber = "3",
+        notes = "EA FTC limit event",
+        additionalOffences = emptyList(),
+    ).also { it.ftcCount = 1 }
+    val EA_FTC_DISPOSAL = PersonGenerator.generateDisposal(EA_FTC_EVENT, type = FTC_DISPOSAL_TYPE)
+
+    // A pre-existing non-compliant contact so countFailureToComply returns 1 before the test call
+    val EA_FTC_PRIOR_CONTACT = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(2), EuropeLondon),
+        complied = false,
+        team = TEAM,
+        staff = STAFF,
+        event = EA_FTC_EVENT,
+    )
+
+    // Contact with non-compliant outcome — used to test enforcement-actions endpoint triggers ARWS review
+    val CONTACT_EA_FTC = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(1), EuropeLondon),
+        complied = false,
+        team = TEAM,
+        staff = STAFF,
+        event = EA_FTC_EVENT,
+        outcome = OUTCOME
+    )
 }

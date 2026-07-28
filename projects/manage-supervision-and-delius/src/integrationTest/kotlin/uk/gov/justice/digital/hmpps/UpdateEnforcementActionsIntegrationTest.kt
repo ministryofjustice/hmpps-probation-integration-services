@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementActionForUpdate
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateEnforcementActions
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UpdateContactOutcomeGenerator
+import uk.gov.justice.digital.hmpps.service.ContactLogService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -170,5 +171,29 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
             enforcementsAfter?.get(0)?.action?.code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
         )
+    }
+
+    @Test
+    fun `enforcement review contact created when ftc count reaches limit via enforcement-actions endpoint`() {
+        val contactId = UpdateContactOutcomeGenerator.CONTACT_EA_FTC.id
+
+        mockMvc.post("/contact/$contactId/enforcement-actions") {
+            withToken()
+            json = UpdateEnforcementActions(
+                enforcementActions = listOf(
+                    EnforcementActionForUpdate(code = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val ftcAfter = transactionTemplate.execute {
+            entityManager.clear()
+            eventRepository.findById(UpdateContactOutcomeGenerator.EA_FTC_EVENT.id).get().ftcCount
+        }
+        assertThat(ftcAfter, equalTo(2L))
+
+        // ARWS review contact should be created as a linked contact
+        val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(contactId)
+        assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
     }
 }
