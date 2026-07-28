@@ -313,6 +313,7 @@ class ContactLogService(
 
         contactRepository.save(contact)
         val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
+            log.info("updateContactOutcome - contact.id: ${contact.id}, contact.event: ${contact.event?.id}")
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         } else if (contactOutcome != null && contact.complied == false) {
             updateFtcCount(contact)
