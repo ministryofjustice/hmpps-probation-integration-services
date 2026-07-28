@@ -78,7 +78,6 @@ class ContactLogService(
             val event = createContact.eventId?.let {
                 eventRepository.findByIdAndActiveIsTrue(it)
             }
-            log.info("createContact eventId: ${createContact.eventId}, resolved event: ${event?.id}")
             val requirement = createContact.requirementId?.let {
                 requirementRepository.getRequirement(it)
             }
@@ -120,7 +119,6 @@ class ContactLogService(
             )
 
             if (createContact.enforcementActionCode != null) {
-                log.info("savedContact.event: ${savedContact.event?.id}, savedContact.id: ${savedContact.id}")
                 val appliedAction = contactEnforcementService.updateEnforcementActionForContact(
                     savedContact,
                     createContact.enforcementActionCode
@@ -313,7 +311,6 @@ class ContactLogService(
 
         contactRepository.save(contact)
         val appliedAction = if (contactOutcome != null && request.enforcementActionCode != null) {
-            log.info("updateContactOutcome - contact.id: ${contact.id}, contact.event: ${contact.event?.id}")
             contactEnforcementService.updateEnforcementActionForContact(contact, request.enforcementActionCode)
         } else if (contactOutcome != null && contact.complied == false) {
             updateFtcCount(contact)
@@ -362,6 +359,36 @@ class ContactLogService(
         } else {
             existingEnforcement.action = enforcementAction
             existingEnforcement.responseDate = responseDate
+        }
+        updateFtcCount(contact)
+        contact.event?.run {
+            val ftcLimit = disposal?.type?.ftcLimit ?: return@run
+            val lastResetDate = listOfNotNull(breachEnd, disposal.date).maxOrNull()
+            if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
+                    id,
+                    lastResetDate,
+                    REVIEW_ENFORCEMENT_STATUS
+                )
+            ) {
+                val reviewType = contactTypeRepository.getContactType(REVIEW_ENFORCEMENT_STATUS)
+                contactRepository.save(
+                    Contact(
+                        linkedContactId = contact.id,
+                        type = reviewType,
+                        date = LocalDate.now(),
+                        startTime = ZonedDateTime.now(EuropeLondon),
+                        person = contact.person,
+                        event = this,
+                        staff = contact.staff,
+                        team = contact.team,
+                        provider = contact.team?.provider,
+                        notes = null,
+                        requirement = contact.requirement,
+                        licenceCondition = contact.licenceCondition,
+                        nsiId = contact.nsiId,
+                    )
+                )
+            }
         }
     }
 

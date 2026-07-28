@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
-import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.service.ContactLogService.Companion.REVIEW_ENFORCEMENT_STATUS
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -20,11 +19,6 @@ class ContactEnforcementService(
     private val enforcementRepository: EnforcementRepository,
     private val enforcementActionsRepository: EnforcementActionsRepository,
 ) {
-    companion object {
-        val log = logger()
-    }
-
-
     fun updateEnforcementActionForContact(contact: Contact, enforcementActionCode: String): EnforcementAction {
         val contactOutcome = contact.outcome.orNotFoundBy("contactId", contact.id)
         val enforcementAction = requireNotNull(
@@ -76,11 +70,9 @@ class ContactEnforcementService(
         contact.event?.run {
             contactRepository.flush()
             ftcCount = contactRepository.countFailureToComply(this)
-            log.info("crn: ${contact.person.crn} ftcCount: $ftcCount")
             val ftcLimit = disposal?.type?.ftcLimit ?: return@run
-            log.info("crn: ${contact.person.crn} ftcLimit: $ftcLimit")
             val lastResetDate = listOfNotNull(breachEnd, disposal.date).maxOrNull()
-if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
+            if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
                     id,
                     lastResetDate,
                     REVIEW_ENFORCEMENT_STATUS
