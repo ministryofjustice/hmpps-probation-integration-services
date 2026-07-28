@@ -188,7 +188,7 @@ class Contact(
     @JoinTable(
         name = "contact_sparks",
         joinColumns = [JoinColumn(name = "contact_id")],
-        inverseJoinColumns = [JoinColumn(name = "standard_reference_list_id")]
+        inverseJoinColumns = [JoinColumn(name = "sparks_id")]
     )
     val sparks: MutableList<ReferenceData> = mutableListOf(),
 ) {

@@ -393,6 +393,10 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             UpdateContactOutcomeGenerator.COMPLIANT_CONTACT_TYPE_OUTCOME,
             UpdateContactOutcomeGenerator.CONTACT_15,
             UpdateContactOutcomeGenerator.CONTACT_16,
+            UpdateContactOutcomeGenerator.EA_FTC_EVENT,
+            UpdateContactOutcomeGenerator.EA_FTC_DISPOSAL,
+            UpdateContactOutcomeGenerator.EA_FTC_PRIOR_CONTACT,
+            UpdateContactOutcomeGenerator.CONTACT_EA_FTC,
         )
 
         saveAll(

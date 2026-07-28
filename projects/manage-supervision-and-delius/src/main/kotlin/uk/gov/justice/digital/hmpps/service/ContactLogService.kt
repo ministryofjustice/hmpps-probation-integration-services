@@ -358,6 +358,37 @@ class ContactLogService(
             existingEnforcement.action = enforcementAction
             existingEnforcement.responseDate = responseDate
         }
+        updateFtcCount(contact)
+        contact.event?.run {
+            val activeDisposal = disposal ?: return@run
+            val ftcLimit = activeDisposal.type.ftcLimit ?: return@run
+            val lastResetDate = listOfNotNull(breachEnd, activeDisposal.date).maxOrNull()
+            if (ftcCount >= ftcLimit && !contactRepository.enforcementReviewExists(
+                    id,
+                    lastResetDate,
+                    REVIEW_ENFORCEMENT_STATUS
+                )
+            ) {
+                val reviewType = contactTypeRepository.getContactType(REVIEW_ENFORCEMENT_STATUS)
+                contactRepository.save(
+                    Contact(
+                        linkedContactId = contact.id,
+                        type = reviewType,
+                        date = LocalDate.now(),
+                        startTime = ZonedDateTime.now(EuropeLondon),
+                        person = contact.person,
+                        event = this,
+                        staff = contact.staff,
+                        team = contact.team,
+                        provider = contact.team?.provider,
+                        notes = null,
+                        requirement = contact.requirement,
+                        licenceCondition = contact.licenceCondition,
+                        nsiId = contact.nsiId,
+                    )
+                )
+            }
+        }
     }
 
     private fun updateFtcCount(contact: Contact) {
