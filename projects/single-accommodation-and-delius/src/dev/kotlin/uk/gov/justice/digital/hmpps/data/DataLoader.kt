@@ -47,6 +47,5 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(CaseloadGenerator.CL_BOTH_DEFAULT_4)
         save(CaseloadGenerator.CL_BOTH_DEFAULT_5)
         save(CaseloadGenerator.CL_BOTH_OTHER_1)
-
     }
 }
