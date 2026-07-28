@@ -254,9 +254,10 @@ class ContactLogService(
     ) {
         if (contact.type.contactOutcomeFlag == true && contact.outcome == null) {
             contact.enforcementFlag = true
-        }
-        if (appliedAction != null && appliedAction.outstandingContactAction == true) {
+        } else if (appliedAction != null && appliedAction.outstandingContactAction == true) {
             contact.enforcementFlag = true
+        } else {
+            contact.enforcementFlag = null
         }
     }
 
