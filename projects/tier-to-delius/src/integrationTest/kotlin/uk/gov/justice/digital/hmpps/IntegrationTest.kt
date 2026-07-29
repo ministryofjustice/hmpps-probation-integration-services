@@ -11,11 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierDevRepository
-import uk.gov.justice.digital.hmpps.data.repository.PersonWithV3TierDevRepository
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3TierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.NotificationExtensions.withCrn
@@ -31,7 +31,7 @@ internal class IntegrationTest @Autowired constructor(
     private val managementTierDevRepository: ManagementTierDevRepository,
     private val contactRepository: ContactRepository,
     private val wireMockServer: WireMockServer,
-    private val personWithV3TierDevRepository: PersonWithV3TierDevRepository,
+    private val personWithV3TierRepository: PersonWithV3TierRepository,
     @MockitoBean private val featureFlags: FeatureFlags,
     @MockitoBean private val telemetryService: TelemetryService,
 ) {
@@ -100,6 +100,25 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(updated.contacts().size, equalTo(2))
     }
 
+    @Test
+    fun `v3 tier unchanged triggers no update to person record`() {
+        givenFeatureFlags(phase1Enabled = true, phase2Enabled = false)
+        val initial = publishUpdate("A000005")
+        verify(telemetryService).trackEvent(
+            eq("TierV3UpdateSuccess"),
+            argThat { this["crn"] == "A000005" && this["calculationId"] == UPDATED_CALCULATION_ID },
+            any()
+        )
+
+        val updated = publishUpdateWithNoChange("A000005")
+        assertThat(updated.v3Tier(), equalTo(initial.v3Tier()))
+        verify(telemetryService).trackEvent(
+            eq("UnchangedV3TierIgnored"),
+            argThat { this["crn"] == "A000005" && this["calculationId"] == NO_CHANGE_CALCULATION_ID },
+            any()
+        )
+    }
+
     private fun publishInitial(crn: String): Person {
         channelManager.getChannel(queueName)
             .publishAndWait(prepEvent("tier-calculation", wireMockServer.port()).withCrn(crn))
@@ -122,11 +141,21 @@ internal class IntegrationTest @Autowired constructor(
         return personRepository.findByCrnAndSoftDeletedIsFalse(crn)!!
     }
 
+    private fun publishUpdateWithNoChange(crn: String): Person {
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepEvent("tier-update-no-change", wireMockServer.port()).withCrn(crn))
+        return personRepository.findByCrnAndSoftDeletedIsFalse(crn)!!
+    }
+
     private fun Person.contacts() = contactRepository.findAll().filter { it.person.id == id }
     private fun Person.managementTiers() = managementTierDevRepository.findAllByIdPersonIdOrderByIdDateChanged(id)
 
     private fun Person.v3Tier(): String? =
-        personWithV3TierDevRepository.findByCrn(crn)?.v3TierId?.let { referenceDataRepository.findByIdOrNull(it) }?.code
+        personWithV3TierRepository.findByCrnAndSoftDeletedFalse(crn)?.v3TierId?.let {
+            referenceDataRepository.findByIdOrNull(
+                it
+            )
+        }?.code
 
     private fun Person.currentTier(): String? = currentTier?.let { referenceDataRepository.findByIdOrNull(it) }?.code
 
@@ -140,5 +169,6 @@ internal class IntegrationTest @Autowired constructor(
     private companion object {
         const val INITIAL_CALCULATION_ID = "123e4567-e89b-12d3-a456-426614174000"
         const val UPDATED_CALCULATION_ID = "123e4567-e89b-12d3-a456-426614174001"
+        const val NO_CHANGE_CALCULATION_ID = "123e4567-e89b-12d3-a456-426614174002"
     }
 }
