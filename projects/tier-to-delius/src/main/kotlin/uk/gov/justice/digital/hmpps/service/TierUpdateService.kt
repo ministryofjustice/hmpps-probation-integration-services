@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTie
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3TierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -38,6 +39,7 @@ class TierUpdateService(
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val optimisationTables: OptimisationTables,
+    private val personWithV3TierRepository: PersonWithV3TierRepository,
 ) {
     fun updateTier(crn: String, tierCalculation: TierCalculationV2) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
@@ -71,9 +73,11 @@ class TierUpdateService(
     }
 
     fun updateV3TierColumn(crn: String, tierCalculation: TierCalculationV3) {
-        if (!personRepository.existsByCrnAndSoftDeletedIsFalse(crn)) throw IgnorableMessageException("PersonNotFound")
+        val person = personWithV3TierRepository.findByCrnAndSoftDeletedFalse(crn).orIgnore { "PersonNotFound" }
         val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
-        personRepository.updateV3TierColumn(crn, tier.id)
+        if (person.v3TierId == tier.id) throw IgnorableMessageException("UnchangedV3TierIgnored")
+        person.v3TierId = tier.id
+        personWithV3TierRepository.save(person)
     }
 
     private fun createTier(
