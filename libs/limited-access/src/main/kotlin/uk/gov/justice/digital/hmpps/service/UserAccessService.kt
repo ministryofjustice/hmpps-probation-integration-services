@@ -12,6 +12,7 @@ class UserAccessService(private val uar: UserAccessRepository) {
         userAccessFor(username, listOf(crn)).access.first { it.crn == crn }
 
     fun userAccessFor(username: String, crns: List<String>): UserAccess {
+        if (crns.isEmpty()) return UserAccess(emptyList())
         val user = uar.findByUsername(username)
 
         val limitations: List<PersonAccess> =
