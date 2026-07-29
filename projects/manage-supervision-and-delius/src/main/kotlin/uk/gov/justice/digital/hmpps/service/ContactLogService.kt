@@ -386,6 +386,7 @@ class ContactLogService(
                         requirement = contact.requirement,
                         licenceCondition = contact.licenceCondition,
                         nsiId = contact.nsiId,
+                        enforcementFlag = true,
                     )
                 )
             }

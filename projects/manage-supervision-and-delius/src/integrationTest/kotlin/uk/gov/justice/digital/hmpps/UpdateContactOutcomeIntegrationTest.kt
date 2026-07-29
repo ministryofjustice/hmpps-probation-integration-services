@@ -304,6 +304,8 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             contactRepository.findByLinkedContactIdOrderByDateDesc(UpdateContactOutcomeGenerator.CONTACT_7.id)
         assertThat(linkedContacts.size, equalTo(2))
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
+        val arwsContact = linkedContacts.first { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }
+        assertThat(arwsContact.enforcementFlag, equalTo(true))
     }
 
     @Test

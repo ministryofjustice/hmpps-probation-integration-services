@@ -234,5 +234,7 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         // ARWS review contact should be created as a linked contact
         val linkedContacts = contactRepository.findByLinkedContactIdOrderByDateDesc(contactId)
         assertThat(linkedContacts.any { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }, equalTo(true))
+        val arwsContact = linkedContacts.first { it.type.code == ContactLogService.REVIEW_ENFORCEMENT_STATUS }
+        assertThat(arwsContact.enforcementFlag, equalTo(true))
     }
 }
