@@ -45,7 +45,7 @@ internal class EnforcementService(
                 this.action = action
                 this.responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             } ?: Enforcement(
-                contact = this,
+                contactId = checkNotNull(id) { "No appointment ID for enforcement" },
                 action = action,
                 responseDate = action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
             ))

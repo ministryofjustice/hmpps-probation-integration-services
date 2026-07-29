@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.entity.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.data.entity.EnforcementRepository
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_3
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
@@ -33,6 +34,7 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactAlertRepository: ContactAlertRepository,
     private val eventRepository: EventRepository,
+    private val enforcementRepository: EnforcementRepository,
     private val entityManager: EntityManager,
 ) {
     companion object {
@@ -283,6 +285,37 @@ class CreateAppointmentIntegrationTest @Autowired constructor(
             assertThat(it.contact.outcome?.code).isEqualTo(ReferenceDataGenerator.ATTENDED_COMPLIED_CONTACT_OUTCOME.code)
             assertThat(it.contact.attended).isTrue
             assertThat(it.contact.complied).isTrue
+        }
+    }
+
+    @Test
+    fun `create an appointment in the past with a non-compliant outcome`() {
+        val request = TestData.createAppointmentWithOutcome().copy(
+            date = LocalDate.now().minusDays(1),
+            outcome = Code(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME.code),
+            minutesCredited = 0L
+        )
+
+        val created = mockMvc
+            .post("/projects/$PROJECT/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andExpect { content { jsonPath("size()") { value(1) } } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        assertThat(created.reference).isEqualTo(request.reference)
+
+        val contactId = unpaidWorkAppointmentRepository.findById(created.id).get().let {
+            assertThat(it.outcomeId).isEqualTo(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME.id)
+            assertThat(it.contact.outcome?.code).isEqualTo(ReferenceDataGenerator.FAILED_TO_ATTEND_CONTACT_OUTCOME.code)
+            assertThat(it.contact.attended).isFalse
+            assertThat(it.contact.complied).isFalse
+            it.contact.id
+        }
+        enforcementRepository.findAll().single { it.contact.id == contactId }.also {
+            assertThat(it.action.code).isEqualTo(ReferenceDataGenerator.ROM_ENFORCEMENT_ACTION.code)
         }
     }
 
