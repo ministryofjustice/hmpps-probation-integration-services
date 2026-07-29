@@ -85,12 +85,12 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.3")
-            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.1.0")
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.1.0")
+            library("aws-s3", "io.awspring.cloud:spring-cloud-aws-starter-s3:4.0.2")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.2")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.0.2")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.2")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.0.2")
             library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.49.3")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:4.1.0")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:4.1.0")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:4.1.0")
             library("aws-sts", "software.amazon.awssdk:sts:2.49.3")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.9")
             library("azure-identity", "com.azure:azure-identity:1.18.4")
