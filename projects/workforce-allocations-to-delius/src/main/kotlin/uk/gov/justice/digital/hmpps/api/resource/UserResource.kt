@@ -33,9 +33,13 @@ class UserResource(
     )
     @RequestMapping("/users/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
     fun limitedAccessCheck(
-        @Size(min = 0, max = 500, message = "Please provide between 0 and 500 crns") @RequestBody crns: List<String>,
+        @Size(min = 0, max = 500, message = "Please provide between 0 and 500 crns")
+        @RequestBody(required = false) crns: List<String>? = null,
         @RequestParam(required = false) username: String?
-    ) = username?.let { userAccessService.userAccessFor(it, crns) } ?: userAccessService.checkLimitedAccessFor(crns)
+    ) = (crns ?: emptyList()).let { crnList ->
+        username?.let { userAccessService.userAccessFor(it, crnList) }
+            ?: userAccessService.checkLimitedAccessFor(crnList)
+    }
 
     @GetMapping("/users")
     @Operation(summary = "Returns all users with the Delius `MAABT001` role")
