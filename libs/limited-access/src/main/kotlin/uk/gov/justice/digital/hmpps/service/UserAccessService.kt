@@ -15,14 +15,17 @@ class UserAccessService(private val uar: UserAccessRepository) {
         if (crns.isEmpty()) return UserAccess(emptyList())
         val user = uar.findByUsername(username)
 
-        val limitations: List<PersonAccess> =
-            user?.let { uar.getAccessFor(it.username, crns) } ?: uar.checkLimitedAccessFor(crns)
+        val limitations: List<PersonAccess> = crns.chunked(BATCH_SIZE).flatMap { batch ->
+            user?.let { uar.getAccessFor(it.username, batch) } ?: uar.checkLimitedAccessFor(batch)
+        }
         return UserAccess(crns.map { limitations.groupBy { it.crn }[it].combined(it) })
     }
 
     fun checkLimitedAccessFor(crns: List<String>): UserAccess {
         if (crns.isEmpty()) return UserAccess(emptyList())
-        val limitations: Map<String, List<PersonAccess>> = uar.checkLimitedAccessFor(crns).groupBy { it.crn }
+        val limitations: Map<String, List<PersonAccess>> = crns.chunked(BATCH_SIZE)
+            .flatMap { batch -> uar.checkLimitedAccessFor(batch) }
+            .groupBy { it.crn }
         return UserAccess(crns.map { limitations[it].combined(it) })
     }
 
@@ -63,6 +66,10 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 firstOrNull { it.restricted }?.restrictionMessage
             )
         }
+    }
+
+    companion object {
+        private const val BATCH_SIZE = 500
     }
 }
 
