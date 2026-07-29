@@ -490,6 +490,7 @@ class AppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
         whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
+        whenever(appointmentRepository.save(any<AppointmentContact>())).thenAnswer { it.arguments[0] }
         mockEnforcementReferenceData()
 
         appointmentService.update(existing) {
@@ -513,6 +514,7 @@ class AppointmentServiceTest {
         whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
             .thenReturn(listOf(existing))
         whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
+        whenever(appointmentRepository.save(any<AppointmentContact>())).thenAnswer { it.arguments[0] }
         mockEnforcementReferenceData()
 
         appointmentService.update(existing) {
@@ -559,6 +561,7 @@ class AppointmentServiceTest {
             .thenReturn(listOf(existing))
         whenever(outcomeRepository.findAllByCodeIn(setOf(FTC_OUTCOME.code))).thenReturn(listOf(FTC_OUTCOME))
         mockEnforcementReferenceData()
+        whenever(appointmentRepository.save(any<AppointmentContact>())).thenAnswer { it.arguments[0] }
 
         assertThatThrownBy {
             appointmentService.update(existing) {

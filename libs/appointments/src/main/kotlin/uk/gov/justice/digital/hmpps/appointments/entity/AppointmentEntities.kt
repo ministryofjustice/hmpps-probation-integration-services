@@ -387,9 +387,8 @@ internal object AppointmentEntities {
         @Version
         val version: Long = 0,
 
-        @OneToOne
-        @JoinColumn(name = "contact_id")
-        val contact: AppointmentContact,
+        @Column(name = "contact_id")
+        val contactId: Long,
 
         @ManyToOne
         @JoinColumn(name = "enforcement_action_id")

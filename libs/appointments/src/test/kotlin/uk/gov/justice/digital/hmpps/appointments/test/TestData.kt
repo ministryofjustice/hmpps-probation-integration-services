@@ -113,7 +113,7 @@ internal object TestData {
 
     fun enforcement(contact: AppointmentContact, action: EnforcementAction = ACTION) = Enforcement(
         id = id(),
-        contact = contact,
+        contactId = contact.id!!,
         action = action,
         responseDate = ZonedDateTime.now().plusDays(7),
     )
