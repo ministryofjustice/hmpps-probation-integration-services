@@ -20,6 +20,7 @@ class UserAccessService(private val uar: UserAccessRepository) {
     }
 
     fun checkLimitedAccessFor(crns: List<String>): UserAccess {
+        if (crns.isEmpty()) return UserAccess(emptyList())
         val limitations: Map<String, List<PersonAccess>> = uar.checkLimitedAccessFor(crns).groupBy { it.crn }
         return UserAccess(crns.map { limitations[it].combined(it) })
     }
