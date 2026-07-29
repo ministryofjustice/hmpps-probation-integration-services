@@ -2,11 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.generateContactTypeOutcome
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementAction
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.EnforcementActionContactOutcomeId
+import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.User
@@ -122,6 +118,23 @@ object UpdateContactOutcomeGenerator {
     val ENFORCEMENT_ACTION_2_OUTCOME_TYPE = EnforcementActionContactOutcome(
         EnforcementActionContactOutcomeId(
             enforcementActionId = ENFORCEMENT_ACTION_2.id,
+            contactOutcomeTypeId = OUTCOME.id
+        )
+    )
+
+    val ENFORCEMENT_ACTION_OUTSTANDING = EnforcementAction(
+        id = IdGenerator.getAndIncrement(),
+        code = "UCOENFY",
+        description = "UCO Outstanding Enforcement Action",
+        responseByPeriod = 2,
+        outstandingContactAction = true,
+        selectable = true,
+        contactType = CONTACT_TYPE,
+    )
+
+    val ENFORCEMENT_ACTION_OUTSTANDING_OUTCOME_TYPE = EnforcementActionContactOutcome(
+        EnforcementActionContactOutcomeId(
+            enforcementActionId = ENFORCEMENT_ACTION_OUTSTANDING.id,
             contactOutcomeTypeId = OUTCOME.id
         )
     )
@@ -486,6 +499,17 @@ object UpdateContactOutcomeGenerator {
         PERSON,
         CONTACT_TYPE,
         ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(15), EuropeLondon),
+        team = TEAM,
+        staff = STAFF,
+        event = EVENT,
+        outcome = OUTCOME
+    )
+
+    // Contact without existing enforcement - used to verify POST sets enforcementFlag=true for an outstanding action
+    val CONTACT_17 = ContactGenerator.generateContact(
+        PERSON,
+        CONTACT_TYPE,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).plusHours(19), EuropeLondon),
         team = TEAM,
         staff = STAFF,
         event = EVENT,

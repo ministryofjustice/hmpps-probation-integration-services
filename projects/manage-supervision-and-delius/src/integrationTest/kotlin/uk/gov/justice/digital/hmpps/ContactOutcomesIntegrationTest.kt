@@ -63,7 +63,7 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
         val nonCompliantOutcome = response.outcomes.first { it.code == UpdateContactOutcomeGenerator.OUTCOME.code }
         assertThat(nonCompliantOutcome.code, equalTo(UpdateContactOutcomeGenerator.OUTCOME.code))
         assertThat(nonCompliantOutcome.description, equalTo(UpdateContactOutcomeGenerator.OUTCOME.description))
-        assertThat(nonCompliantOutcome.enforcementActions, hasSize(3))
+        assertThat(nonCompliantOutcome.enforcementActions, hasSize(4))
         assertThat(
             nonCompliantOutcome.enforcementActions[0].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code)
@@ -86,10 +86,14 @@ class ContactOutcomesIntegrationTest : IntegrationTestBase() {
         )
         assertThat(
             nonCompliantOutcome.enforcementActions[2].code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_OUTSTANDING.code)
+        )
+        assertThat(
+            nonCompliantOutcome.enforcementActions[3].code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.code)
         )
         assertThat(
-            nonCompliantOutcome.enforcementActions[2].defaultResponsePeriodDays,
+            nonCompliantOutcome.enforcementActions[3].defaultResponsePeriodDays,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_NULL_RESPONSE.responseByPeriod)
         )
 
