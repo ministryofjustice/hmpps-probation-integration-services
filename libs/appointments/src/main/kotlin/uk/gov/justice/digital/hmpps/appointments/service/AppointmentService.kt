@@ -320,7 +320,11 @@ class AppointmentService internal constructor(
         attended = newOutcome?.attended
         complied = newOutcome?.complied
         if (outcome?.complied == false && outcome?.enforceable == true) {
-            enforcementService.applyEnforcementAction(this, enforcementAction, enforcementReviewType)
+            enforcementService.applyEnforcementAction(
+                appointment = appointmentRepository.save(this), // to get an ID we can attach to the enforcement record
+                action = enforcementAction,
+                reviewType = enforcementReviewType
+            )
         } else {
             enforcementService.removeEnforcementAction(this)
         }

@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPathPattern": "/hmpps-tier/v3/crn/A00000[1-4]/tier/123e4567-e89b-12d3-a456-426614174000"
+        "urlPathPattern": "/hmpps-tier/v3/crn/A00000[0-9]/tier/123e4567-e89b-12d3-a456-426614174000"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "urlPathPattern": "/hmpps-tier/v3/crn/A00000[1-4]/tier/123e4567-e89b-12d3-a456-426614174001"
+        "urlPathPattern": "/hmpps-tier/v3/crn/A00000[0-9]/tier/123e4567-e89b-12d3-a456-426614174001"
       },
       "response": {
         "headers": {
@@ -24,6 +24,19 @@
         },
         "status": 200,
         "bodyFileName": "get-tier-calculation-update-v3.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/hmpps-tier/v3/crn/A00000[0-9]/tier/123e4567-e89b-12d3-a456-426614174002"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-tier-calculation-no-change-v3.json"
       }
     },
     {

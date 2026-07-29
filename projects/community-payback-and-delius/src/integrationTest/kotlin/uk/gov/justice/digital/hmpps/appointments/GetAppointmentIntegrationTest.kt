@@ -189,6 +189,18 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `appointments are sorted by surname then forename by default`() {
+        val response = mockMvc
+            .get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&crn=${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(response.content).hasSize(10)
+        assertThat(response.content.map { it.case.name })
+            .isSortedAccordingTo(compareBy<PersonName> { it.surname }.thenBy { it.forename })
+    }
+
+    @Test
     fun `can retrieve appointments without outcome code`() {
         mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=NO_OUTCOME") { withToken() }
             .andExpect {

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 
 @Entity
 @Table(name = "offender")
@@ -18,4 +19,8 @@ class PersonWithV3Tier(
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
+
+    @Column(updatable = false, columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
 )

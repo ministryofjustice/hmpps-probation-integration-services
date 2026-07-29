@@ -98,7 +98,7 @@ class EnforcementServiceTest {
         enforcementService.applyEnforcementAction(appointment, ACTION, TestData.REVIEW_TYPE)
 
         verify(enforcementRepository).save(check {
-            assertThat(it.contact).isEqualTo(appointment)
+            assertThat(it.contactId).isEqualTo(appointment.id)
             assertThat(it.action).isEqualTo(ACTION)
         })
         assertThat(appointment.enforcementFlag).isTrue

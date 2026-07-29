@@ -11,7 +11,7 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     fun getV2Tier(tierScore: String) = getByCodeAndSetName("U${tierScore}", "TIER")
     fun getV3Tier(tierScore: String, provisional: Boolean) = when (tierScore) {
         "MISSING" -> "M"
-        "NOT_SUPERVISED" -> "SPNA"
+        "NOT_SUPERVISED" -> "NS"
         else -> "SP${tierScore}${if (provisional) "I" else ""}"
     }.let { getByCodeAndSetName(it, "TIER") }
 }

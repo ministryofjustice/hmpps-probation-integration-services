@@ -105,7 +105,7 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         assertThat(enforcementCountAfter, equalTo(1))
         assertThat(enforcement?.action?.code, equalTo(secondActionCode))
         assertThat(linkedContactCountAfter, equalTo(linkedContactCountBefore + 2))
-        assertThat(updatedContact.enforcementFlag, equalTo(true))
+        assertThat(updatedContact.enforcementFlag, equalTo(null))
         assertThat(updatedContact.latestEnforcementAction?.code, equalTo(secondActionCode))
         assertThat(
             updatedContact.notes ?: "",
@@ -114,6 +114,45 @@ class UpdateEnforcementActionsIntegrationTest : IntegrationTestBase() {
         assertThat(
             updatedContact.notes ?: "",
             containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.description}")
+        )
+    }
+
+    @Test
+    fun `valid enforcement actions sets enforcement flag true when final enf action is outstanding Y`() {
+        val contactId = UpdateContactOutcomeGenerator.CONTACT_17.id
+        val firstActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.code
+        val secondActionCode = UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_OUTSTANDING.code
+        val expectedContactTypeCode = UpdateContactOutcomeGenerator.CONTACT_TYPE.code
+
+        val linkedContactCountBefore = contactRepository.findByLinkedContactIdOrderByDateDesc(contactId)
+            .count { it.type.code == expectedContactTypeCode }
+
+        mockMvc.post("/contact/$contactId/enforcement-actions") {
+            withToken()
+            json = UpdateEnforcementActions(
+                enforcementActions = listOf(
+                    EnforcementActionForUpdate(code = firstActionCode),
+                    EnforcementActionForUpdate(code = secondActionCode)
+                )
+            )
+        }.andExpect { status { isOk() } }
+
+        val updatedContact = contactRepository.findById(contactId).get()
+        val enforcement = enforcementRepository.findAll().find { it.contact.id == contactId }
+        val linkedContactCountAfter = contactRepository.findByLinkedContactIdOrderByDateDesc(contactId)
+            .count { it.type.code == expectedContactTypeCode }
+
+        assertThat(enforcement?.action?.code, equalTo(secondActionCode))
+        assertThat(linkedContactCountAfter, equalTo(linkedContactCountBefore + 2))
+        assertThat(updatedContact.enforcementFlag, equalTo(true))
+        assertThat(updatedContact.latestEnforcementAction?.code, equalTo(secondActionCode))
+        assertThat(
+            updatedContact.notes ?: "",
+            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION.description}")
+        )
+        assertThat(
+            updatedContact.notes ?: "",
+            containsString("Enforcement Action: ${UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_OUTSTANDING.description}")
         )
     }
 
