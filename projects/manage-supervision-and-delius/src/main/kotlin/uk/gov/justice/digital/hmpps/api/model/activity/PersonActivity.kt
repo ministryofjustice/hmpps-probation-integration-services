@@ -7,10 +7,8 @@ import java.time.LocalDate
 
 data class PersonActivity(
     val personSummary: PersonSummary,
-    @Schema(description = "Past contacts, in descending date order (most recent first)")
-    val activities: List<Activity>,
-    @Schema(description = "Future contacts, in ascending date order (earliest first)")
-    val futureActivities: List<Activity> = emptyList()
+    @Schema(description = "All contacts (past and future), in descending date order (most recent first)")
+    val activities: List<Activity>
 )
 
 data class PersonActivitySearchResponse(
