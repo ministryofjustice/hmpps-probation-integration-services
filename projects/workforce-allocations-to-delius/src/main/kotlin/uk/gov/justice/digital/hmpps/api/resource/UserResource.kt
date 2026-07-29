@@ -5,12 +5,14 @@ import jakarta.validation.constraints.Size
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.service.StaffService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 import uk.gov.justice.digital.hmpps.service.UserService
 
+@Validated
 @RestController
 class UserResource(
     private val userAccessService: UserAccessService,
