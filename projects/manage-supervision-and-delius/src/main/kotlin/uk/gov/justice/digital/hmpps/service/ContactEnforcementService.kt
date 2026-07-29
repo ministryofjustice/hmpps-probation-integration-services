@@ -95,6 +95,7 @@ class ContactEnforcementService(
                         requirement = contact.requirement,
                         licenceCondition = contact.licenceCondition,
                         nsiId = contact.nsiId,
+                        enforcementFlag = true,
                     )
                 )
             }
