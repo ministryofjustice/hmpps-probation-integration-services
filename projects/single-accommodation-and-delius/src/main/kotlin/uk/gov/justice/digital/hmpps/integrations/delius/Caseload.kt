@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 @Immutable
@@ -41,5 +42,9 @@ class Caseload(
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
     @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user", "person.roshRegistrations.type"])
+    @Query(
+        "select c from Caseload c where c.staff.id = :staffId and c.team.id in :teamIds",
+        countQuery = "select count(distinct c.id) from Caseload c where c.staff.id = :staffId and c.team.id in :teamIds"
+    )
     fun findByStaffIdAndTeamIdIn(staffId: Long, teamIds: List<Long>, pageable: Pageable): Page<Caseload>
 }
