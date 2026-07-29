@@ -52,7 +52,7 @@ internal class ReferenceDataRepositoryTest {
         @JvmStatic
         fun v3mappings() = listOf(
             Arguments.of("MISSING", false, "M"),
-            Arguments.of("NOT_SUPERVISED", false, "SPNA"),
+            Arguments.of("NOT_SUPERVISED", false, "NS"),
             Arguments.of("B", true, "SPBI"),
             Arguments.of("B", false, "SPB"),
         )
