@@ -41,10 +41,17 @@ class Caseload(
 )
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
-    @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user", "person.roshRegistrations.type"])
+    @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user"])
     @Query(
-        "select c from Caseload c where c.staff.id = :staffId and c.team.id in :teamIds",
-        countQuery = "select count(distinct c.id) from Caseload c where c.staff.id = :staffId and c.team.id in :teamIds"
+        "select c from Caseload c where c.staff.id = :staffId and c.team.code = :teamCode",
+        countQuery = "select count(distinct c.id) from Caseload c where c.staff.id = :staffId and c.team.code = :teamCode"
     )
-    fun findByStaffIdAndTeamIdIn(staffId: Long, teamIds: List<Long>, pageable: Pageable): Page<Caseload>
+    fun findByStaffIdAndTeamCodeIn(staffId: Long, teamCode: String?, pageable: Pageable): Page<Caseload>
+
+    @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user"])
+    @Query(
+        "select c from Caseload c where c.staff.id = :staffId",
+        countQuery = "select count(distinct c.id) from Caseload c where c.staff.id = :staffId"
+    )
+    fun findByStaffIdIn(staffId: Long, pageable: Pageable): Page<Caseload>
 }
