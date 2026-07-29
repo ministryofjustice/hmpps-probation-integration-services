@@ -40,6 +40,6 @@ class Caseload(
 )
 
 interface CaseloadRepository : JpaRepository<Caseload, Long> {
-    @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user"])
+    @EntityGraph(attributePaths = ["person.gender", "person.manager.team", "person.manager.staff.user", "person.roshRegistrations.type"])
     fun findByStaffIdAndTeamIdIn(staffId: Long, teamIds: List<Long>, pageable: Pageable): Page<Caseload>
 }

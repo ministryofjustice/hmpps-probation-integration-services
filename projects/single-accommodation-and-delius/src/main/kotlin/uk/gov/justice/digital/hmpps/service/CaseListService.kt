@@ -21,11 +21,9 @@ class CaseListService(
 ) {
     fun getCaseList(username: String, teamCode: String?, pageable: PageRequest): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username).orNotFoundBy("username", username)
-        val teamIds = if (teamCode != null) {
-            staff.teams.filter { it.code == teamCode }.map { it.id }
-        } else {
-            staff.teams.map { it.id }
-        }
+        val teamIds = teamCode?.trim()?.takeIf { it.isNotEmpty() }?.let { code ->
+            staff.teams.filter { it.code.equals(code, ignoreCase = true) }.map { it.id }
+        } ?: staff.teams.map { it.id }
         val caseloadPage = if (teamIds.isNotEmpty())
             caseloadRepository.findByStaffIdAndTeamIdIn(staff.id, teamIds, pageable)
         else Page.empty(pageable)
