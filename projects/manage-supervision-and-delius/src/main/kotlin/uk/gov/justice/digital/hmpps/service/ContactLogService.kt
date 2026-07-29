@@ -326,7 +326,6 @@ class ContactLogService(
     fun updateEnforcementContactOutcome(contactId: Long, request: UpdateEnforcementActions) {
         val contact = contactRepository.getContact(contactId)
         require(contact.outcome?.outcomeCompliantAcceptable == false) { "Contact requires outcome to be non compliant" }
-        contact.enforcementFlag = true
         val outcomeId = contact.outcome!!.id
         val validActions = enforcementActionsRepository.findByContactOutcomeIdAndCodeIn(
             outcomeId,
@@ -345,6 +344,7 @@ class ContactLogService(
         }
         val enforcementAction = validActions.single { it.code == request.enforcementActions.last().code }
         contact.latestEnforcementAction = enforcementAction
+        setEnforcementFlag(contact, enforcementAction)
         val responseDate =
             enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
         val existingEnforcement = contact.enforcement
