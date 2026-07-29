@@ -257,7 +257,7 @@ class ContactLogService(
         } else if (appliedAction != null && appliedAction.outstandingContactAction == true) {
             contact.enforcementFlag = true
         } else {
-            contact.enforcementFlag = false
+            contact.enforcementFlag = null
         }
     }
 
