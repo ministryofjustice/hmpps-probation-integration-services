@@ -102,6 +102,18 @@ class UserIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `limited access check with empty crn list returns 200`() {
+        val result = mockMvc.post("/users/limited-access") {
+            withToken()
+            json = emptyList<String>()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAccess>()
+
+        assertThat(result.access, equalTo(emptyList()))
+    }
+
+    @Test
     fun `limited access controls do not prevent legitimate access`() {
         val result =
             mockMvc.post("/users/limited-access?username=${LimitedAccessGenerator.RESTRICTION.user.username}") {

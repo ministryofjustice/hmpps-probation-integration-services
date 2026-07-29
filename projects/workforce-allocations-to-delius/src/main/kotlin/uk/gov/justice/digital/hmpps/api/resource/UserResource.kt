@@ -33,7 +33,7 @@ class UserResource(
     )
     @RequestMapping("/users/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
     fun limitedAccessCheck(
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
+        @Size(min = 0, max = 500, message = "Please provide between 0 and 500 crns") @RequestBody crns: List<String>,
         @RequestParam(required = false) username: String?
     ) = username?.let { userAccessService.userAccessFor(it, crns) } ?: userAccessService.checkLimitedAccessFor(crns)
 
