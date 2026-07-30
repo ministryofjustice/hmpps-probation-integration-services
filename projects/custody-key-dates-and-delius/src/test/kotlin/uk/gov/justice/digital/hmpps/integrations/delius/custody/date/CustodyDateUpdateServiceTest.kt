@@ -11,6 +11,9 @@ import org.mockito.ArgumentMatchers.anyList
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -534,5 +537,59 @@ internal class CustodyDateUpdateServiceTest {
                 assertThat(emed.date, equalTo(LocalDate.of(2024, 12, 2)))
             }
         )
+    }
+
+    @Test
+    fun `SDS+ dates and flag are not set when CRDS API returns 404`() {
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val disposal = generateDisposal(generateEvent())
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
+        listOf(
+            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
+            CustodyDateType.SENTENCE_EXPIRY_DATE,
+            CustodyDateType.SUSPENSION_DATE_IF_RESET,
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                conditionalReleaseDate = LocalDate.of(2024, 1, 1),
+                sentenceExpiryDate = LocalDate.of(2025, 1, 1)
+            )
+        )
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(custody.id)
+        )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenThrow(
+            RestClientResponseException(
+                "Not Found",
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                HttpHeaders.EMPTY,
+                null,
+                null
+            )
+        )
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        assertNull(custody.disposal!!.sdsPlus)
+        verify(disposalRepository, never()).save(any<Disposal>())
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(saved.any { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }, equalTo(false))
+                assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
+            })
     }
 }
