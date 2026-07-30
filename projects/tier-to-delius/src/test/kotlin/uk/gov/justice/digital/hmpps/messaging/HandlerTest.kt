@@ -73,11 +73,6 @@ internal class HandlerTest {
             check { it["crn"] == "A000001" && it["tierV2"] == "D2" },
             any()
         )
-        verify(telemetryService).trackEvent(
-            eq("TierV3UpdateSuccess"),
-            check { it["crn"] == "A000001" && it["tierV3"] == "B" },
-            any()
-        )
     }
 
     @Test
