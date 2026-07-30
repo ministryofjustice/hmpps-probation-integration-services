@@ -572,7 +572,14 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenThrow(
-            RestClientResponseException("Not Found", HttpStatus.NOT_FOUND.value(), "Not Found", HttpHeaders.EMPTY, null, null)
+            RestClientResponseException(
+                "Not Found",
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                HttpHeaders.EMPTY,
+                null,
+                null
+            )
         )
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
