@@ -584,6 +584,7 @@ internal class CustodyDateUpdateServiceTest {
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
+        assertNull(custody.disposal!!.sdsPlus)
         verify(disposalRepository, never()).save(any<Disposal>())
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
