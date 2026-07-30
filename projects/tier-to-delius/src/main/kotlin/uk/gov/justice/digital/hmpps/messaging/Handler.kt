@@ -44,7 +44,6 @@ class Handler(
             if (featureFlags.enabled("tier-v3-delius-phase-1")) {
                 // Phase 1 - update the offender.v3_tier_id column
                 tierUpdateService.updateV3TierColumn(notification.crn, tier3)
-                telemetryService.trackEvent("TierV3UpdateSuccess", notification.telemetry + tier3.telemetry)
             }
             if (featureFlags.enabled("tier-v3-delius-phase-2")) {
                 // Phase 2 - populate the offender.current_tier column and create the management_tier history record

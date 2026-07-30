@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV2
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV3
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
@@ -40,6 +41,7 @@ class TierUpdateService(
     private val contactTypeRepository: ContactTypeRepository,
     private val optimisationTables: OptimisationTables,
     private val personWithV3TierRepository: PersonWithV3TierRepository,
+    private val telemetryService: TelemetryService,
 ) {
     fun updateTier(crn: String, tierCalculation: TierCalculationV2) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
@@ -75,9 +77,19 @@ class TierUpdateService(
     fun updateV3TierColumn(crn: String, tierCalculation: TierCalculationV3) {
         val person = personWithV3TierRepository.findByCrnAndSoftDeletedFalse(crn).orIgnore { "PersonNotFound" }
         val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
-        if (person.v3TierId == tier.id) throw IgnorableMessageException("UnchangedV3TierIgnored")
-        person.v3TierId = tier.id
-        personWithV3TierRepository.save(person)
+        val telemetry = mapOf(
+            "crn" to person.crn,
+            "tierV3" to tierCalculation.tierScore,
+            "calculationId" to tierCalculation.calculationId,
+            "provisional" to tierCalculation.provisional.toString(),
+        )
+        if (person.v3TierId == tier.id) {
+            telemetryService.trackEvent("UnchangedV3TierIgnored", telemetry)
+        } else {
+            person.v3TierId = tier.id
+            personWithV3TierRepository.save(person)
+            telemetryService.trackEvent("TierV3UpdateSuccess", telemetry)
+        }
     }
 
     private fun createTier(

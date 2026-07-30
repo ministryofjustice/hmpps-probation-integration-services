@@ -144,6 +144,11 @@ internal class IntegrationTest @Autowired constructor(
     private fun publishUpdateWithNoChange(crn: String): Person {
         channelManager.getChannel(queueName)
             .publishAndWait(prepEvent("tier-update-no-change", wireMockServer.port()).withCrn(crn))
+        verify(telemetryService).trackEvent(
+            eq("UnchangedTierIgnored"),
+            argThat { this["crn"] == crn && this["calculationId"] == NO_CHANGE_CALCULATION_ID },
+            any()
+        )
         return personRepository.findByCrnAndSoftDeletedIsFalse(crn)!!
     }
 

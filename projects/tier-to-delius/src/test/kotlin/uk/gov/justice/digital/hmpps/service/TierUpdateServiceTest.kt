@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV2
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV3
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.time.ZonedDateTime.now
 
@@ -63,6 +64,9 @@ internal class TierUpdateServiceTest {
 
     @Mock
     lateinit var optimisationTables: OptimisationTables
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @InjectMocks
     lateinit var tierUpdateService: TierUpdateService
@@ -260,5 +264,45 @@ internal class TierUpdateServiceTest {
         verify(personWithV3TierRepository).save(check {
             assertThat(it.v3TierId, equalTo(updatedTierScore.id))
         })
+        verify(telemetryService).trackEvent(
+            eq("TierV3UpdateSuccess"),
+            check {
+                assertThat(it["crn"], equalTo(person.crn))
+                assertThat(it["tierV3"], equalTo("B"))
+                assertThat(it["calculationId"], equalTo("someCalculationId"))
+                assertThat(it["provisional"], equalTo("true"))
+            },
+            any()
+        )
+    }
+
+    @Test
+    fun `should report unchanged v3 tier and continue`() {
+        val existingTier = ReferenceDataGenerator.generate("SPB", TIER)
+        whenever(referenceDataRepository.getV3Tier("B", false)).thenReturn(existingTier)
+        whenever(personWithV3TierRepository.findByCrnAndSoftDeletedFalse(person.crn))
+            .thenReturn(PersonWithV3Tier(id(), person.crn, existingTier.id))
+
+        tierUpdateService.updateV3TierColumn(
+            person.crn,
+            TierCalculationV3(
+                tierScore = "B",
+                provisional = false,
+                calculationId = "someCalculationId",
+                calculationDate = now()
+            )
+        )
+
+        verify(personWithV3TierRepository, never()).save(any())
+        verify(telemetryService).trackEvent(
+            eq("UnchangedV3TierIgnored"),
+            check {
+                assertThat(it["crn"], equalTo(person.crn))
+                assertThat(it["tierV3"], equalTo("B"))
+                assertThat(it["calculationId"], equalTo("someCalculationId"))
+                assertThat(it["provisional"], equalTo("false"))
+            },
+            any()
+        )
     }
 }
