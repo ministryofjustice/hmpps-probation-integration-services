@@ -56,7 +56,13 @@ class CustodyDateUpdateService(
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val sdsEligible = custody.disposal?.isDeliusSdsCase() == true
-        val envelope = if (sdsEligible) crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo) else null
+        val envelope = if (sdsEligible) {
+            try {
+                crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
+            } catch (e: RestClientResponseException) {
+                if (e.statusCode == HttpStatus.NOT_FOUND) null else throw e
+            }
+        } else null
         val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
