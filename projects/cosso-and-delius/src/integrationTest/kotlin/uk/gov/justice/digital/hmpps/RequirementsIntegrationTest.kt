@@ -26,7 +26,12 @@ class RequirementsIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<RequirementsResponse>()
         assertThat(response.requirements.size).isEqualTo(3)
         assertThat(response.breachReasons.size).isEqualTo(1)
-        assertThat(response.requirements.get(0).type?.code).isEqualTo("Probation")
+        assertThat(response.requirements.get(0).mainCategory).isEqualTo("Probation")
+        assertThat(response.requirements.get(0).subCategory).isEqualTo("Probation2")
+        assertThat(response.requirements.get(0).length).isEqualTo(2)
+        assertThat(response.requirements.get(0).lengthUnit).isEqualTo("Months")
+        assertThat(response.requirements.get(0).secondaryLength).isEqualTo(1)
+        assertThat(response.requirements.get(0).secondaryLengthUnit).isEqualTo("Days")
         assertThat(response.breachReasons.get(0).code).isEqualTo("Absent")
         assertThat(response.breachReasons.get(0).description).isEqualTo("Unauthorised absence")
     }

@@ -26,13 +26,13 @@ class RequirementsService(
             requirements = requirements.map {
                 CossoRequirement(
                     id = it.id,
-                    type = it.requirementType?.let { type -> CodeAndDescription(type.code, type.description) },
-                    subType = it.requirementSubType?.let { subType ->
-                        CodeAndDescription(
-                            subType.code,
-                            subType.description
-                        )
-                    },
+                    startDate = it.startDate,
+                    mainCategory = it.requirementType?.description,
+                    length = it.length,
+                    lengthUnit = it.requirementType?.units?.description,
+                    subCategory = it.requirementSubType?.description,
+                    secondaryLength = it.length2,
+                    secondaryLengthUnit = it.requirementType?.length2Units?.description
                 )
             },
             breachReasons = breachReasons.map { CodeAndDescription(it.code, it.description) }
