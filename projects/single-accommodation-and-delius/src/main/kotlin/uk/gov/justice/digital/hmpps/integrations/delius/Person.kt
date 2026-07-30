@@ -4,8 +4,6 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -60,10 +58,4 @@ class Person(
 interface PersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
     fun findByCrn(crn: String): Person?
-
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
-    fun findByManagerTeamIdIn(teamIds: List<Long>, pageable: Pageable): Page<Person>
-
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
-    fun findByManagerStaff(staff: Staff, pageable: Pageable): Page<Person>
 }
