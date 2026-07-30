@@ -6,7 +6,10 @@ import org.springframework.data.web.PagedModel.PageMetadata
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.*
+import uk.gov.justice.digital.hmpps.integrations.delius.KeyDateRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.StaffRepository
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
 
@@ -15,18 +18,19 @@ import java.time.LocalDate
 class CaseListService(
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
-    private val caseloadRepository: CaseloadRepository,
     private val keyDateRepository: KeyDateRepository,
     private val userAccessService: UserAccessService,
 ) {
     fun getCaseList(username: String, teamCode: String?, pageable: PageRequest): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username).orNotFoundBy("username", username)
-        val caseloadPage = when {
-            teamCode != null -> caseloadRepository.findByStaffIdAndTeamCodeIn(staff.id, teamCode, pageable)
-            else -> caseloadRepository.findByStaffIdIn(staff.id, pageable)
+
+        val caseloadPage = when (teamCode) {
+            null -> personRepository.findByCaseloadStaffId(staff.id, pageable)
+            in staff.teams.map { it.code } -> personRepository.findByCaseloadTeamCode(teamCode, pageable)
+            else -> Page.empty(pageable)
         }
 
-        val cases = caseloadPage.content.map { it.person }
+        val cases = caseloadPage.content
         val personIds = cases.map { it.id }
         val crns = cases.map { it.crn }
 
