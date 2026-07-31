@@ -20,6 +20,8 @@ class Contact(
     val id: Long,
     @Column(name = "offender_id")
     val personId: Long,
+    @Column(name = "event_id")
+    val eventId: Long?,
     @Column(name = "contact_date")
     val date: LocalDate,
     @Column(name = "contact_start_time")

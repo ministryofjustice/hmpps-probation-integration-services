@@ -190,6 +190,30 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                             },
                             {
                               "date": "2020-01-01",
+                              "startTime": "15:00:00",
+                              "endTime": "15:30:00",
+                              "type": "Office Appointment",
+                              "typeCode": "COF",
+                              "practitioner": {
+                                "name": {
+                                  "forename": "Test",
+                                  "surname": "Staff"
+                                }
+                              },
+                              "location": {
+                                "houseNumber": "123",
+                                "buildingName": "Building name",
+                                "street": "High Street",
+                                "town": "Test Town",
+                                "district": "Test District",
+                                "county": "Test County",
+                                "postcode": "TE1 1ST"
+                              },
+                              "nationalStandards": false,
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
+                            },
+                            {
+                              "date": "2020-01-01",
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
                               "type": "Office Appointment",
@@ -268,7 +292,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                           "page": {
                             "size": 10,
                             "number": 0,
-                            "totalElements": 3,
+                            "totalElements": 4,
                             "totalPages": 1
                           }
                         }
