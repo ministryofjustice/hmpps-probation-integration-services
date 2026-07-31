@@ -20,7 +20,8 @@ data class CreateAppointmentRequest(
     val team: RequestCode,
     val notes: String?,
     val sensitive: Boolean,
-    val type: Type = Type.PROGRAMME_ATTENDANCE
+    val type: Type = Type.PROGRAMME_ATTENDANCE,
+    val description: String? = null
 ) {
     init {
         require(listOfNotNull(licenceConditionId, requirementId).size == 1) {

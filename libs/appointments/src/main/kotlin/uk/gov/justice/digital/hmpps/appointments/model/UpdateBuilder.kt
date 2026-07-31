@@ -12,6 +12,7 @@ class UpdateBuilder<T> {
     var reassign: UpdateProvider<T, Assignee>? = null
     var applyOutcome: UpdateProvider<T, Outcome>? = null
     var appendNotes: UpdateProvider<T, String?>? = null
+    var updateDescription: UpdateProvider<T, String?>? = null
     var flagAs: UpdateProvider<T, Flags>? = null
 }
 

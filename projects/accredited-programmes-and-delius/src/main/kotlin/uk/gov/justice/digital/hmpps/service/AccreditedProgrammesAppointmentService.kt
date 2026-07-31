@@ -76,6 +76,7 @@ class AccreditedProgrammesAppointmentService(
                     teamCode = request.team.code,
                     notes = request.notes,
                     sensitive = request.sensitive,
+                    description = request.description,
                     allowConflicts = true,
                     allowMissingOutcomeInThePast = true,
                 )
@@ -113,6 +114,7 @@ class AccreditedProgrammesAppointmentService(
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }
             applyOutcome = { Outcome(it.outcome?.code, allowMissingOutcomeInThePast = true) }
             appendNotes = { it.notes }
+            updateDescription = { it.description }
             flagAs = { copy(sensitive = it.sensitive) }
         }.onEach { telemetryService.trackEvent("AppointmentUpdated", it.telemetry()) }
     }

@@ -78,6 +78,7 @@ class AppointmentService internal constructor(
                     type = type,
                     enforcementFlag = type.outcomeRequired == true,
                     notes = request.notes,
+                    description = request.description,
                 ).checkForSchedulingConflicts(
                     allowConflicts = request.allowConflicts
                 ).applyOutcome(
@@ -122,6 +123,7 @@ class AppointmentService internal constructor(
             .applyUpdates(updates.reassign) { reassign(it) }
             .applyUpdates(updates.applyOutcome) { applyOutcome(it) }
             .applyUpdates(updates.appendNotes) { appendNotes(it) }
+            .applyUpdates(updates.updateDescription) { updateDescription(it) }
             .applyUpdates(updates.flagAs) { flagAs(it) }
             .map { (_, contact) -> contact }
             .postValidation()
@@ -350,6 +352,14 @@ class AppointmentService internal constructor(
         return map { (request, existing) ->
             request to existing.apply {
                 notes = listOfNotNull(notes, notes.applyUpdates(request)).joinToString("\n\n")
+            }
+        }
+    }
+
+    private fun <T> UpdatePipeline<T>.updateDescription(applyUpdates: UpdateProvider<T, String?>): UpdatePipeline<T> {
+        return map { (request, existing) ->
+            request to existing.apply {
+                description = description.applyUpdates(request)
             }
         }
     }

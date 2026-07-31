@@ -379,6 +379,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             team = RequestCode("TEAM01"),
             notes = "Some notes about the appointment",
             sensitive = true,
+            description = "Description",
         )
         val requests = (List(3) { request } + List(3) {
             request.copy(
@@ -403,6 +404,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             assertThat(team.code).isEqualTo("TEAM01")
             assertThat(staff.code).isEqualTo("STAFF01")
             assertThat(requirement?.id).isEqualTo(REQUIREMENTS[2].id)
+            assertThat(description).isEqualTo("Description")
         }
     }
 
@@ -503,7 +505,8 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                         location = RequestCode("OFFICE1"),
                         team = RequestCode("TEAM01"),
                         staff = RequestCode("STAFF01"),
-                        notes = "Some appended notes"
+                        notes = "Some appended notes",
+                        description = "Updated Description"
                     )
                 )
             )
@@ -522,6 +525,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             assertThat(outcome?.code).isEqualTo("AA")
             assertThat(date).isEqualTo(LocalDate.now().plusDays(1))
             assertThat(sensitive).isTrue
+            assertThat(description).isEqualTo("Updated Description")
         }
     }
 
@@ -548,7 +552,8 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                             location = RequestCode("OFFICE1"),
                             team = RequestCode("TEAM01"),
                             staff = RequestCode("STAFF01"),
-                            notes = "Some appended notes"
+                            notes = "Some appended notes",
+                            description = "Description"
                         )
                     )
                 )

@@ -21,6 +21,7 @@ data class Appointment(
     val notes: String? = null,
     val sensitive: Boolean? = false,
     val exportToVisor: Boolean? = false,
+    val description: String? = null,
 ) {
     internal constructor(entity: AppointmentEntities.AppointmentContact) : this(
         id = entity.id!!,
@@ -47,5 +48,6 @@ data class Appointment(
         notes = entity.notes,
         sensitive = entity.sensitive,
         exportToVisor = entity.visorContact,
+        description = entity.description,
     )
 }

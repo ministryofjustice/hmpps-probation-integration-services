@@ -17,5 +17,6 @@ data class UpdateAppointmentRequest(
     val staff: RequestCode,
     val team: RequestCode,
     val notes: String?,
-    val sensitive: Boolean
+    val sensitive: Boolean,
+    val description: String?
 )
