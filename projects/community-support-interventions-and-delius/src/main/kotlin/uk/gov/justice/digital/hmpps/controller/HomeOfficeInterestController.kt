@@ -12,6 +12,7 @@ class HomeOfficeInterestController(
 ) {
     @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_SUPPORT_INTERVENTIONS__CASE_DETAIL')")
     @GetMapping(value = ["/case/{crn}/home-office-interest"])
-    fun getHomeOfficeInterest(crn: String
+    fun getHomeOfficeInterest(
+        crn: String
     ): HomeOfficeInterest = registrationService.getHomeOfficeInterest(crn)
 }
