@@ -61,14 +61,15 @@ internal class ActivityServiceTest {
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.activities, equalTo(
-            listOf(
-                ContactGenerator.NEXT_APPT_CONTACT,
-                ContactGenerator.FIRST_APPT_CONTACT,
-                ContactGenerator.FIRST_NON_APPT_CONTACT,
-                ContactGenerator.PREVIOUS_APPT_CONTACT,
-                ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT
-            ).map { it.toActivity() }
-        ))
+        assertThat(
+            res.activities, equalTo(
+                listOf(
+                    ContactGenerator.NEXT_APPT_CONTACT,
+                    ContactGenerator.FIRST_APPT_CONTACT,
+                    ContactGenerator.FIRST_NON_APPT_CONTACT,
+                    ContactGenerator.PREVIOUS_APPT_CONTACT,
+                    ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT
+                ).map { it.toActivity() }
+            ))
     }
 }
