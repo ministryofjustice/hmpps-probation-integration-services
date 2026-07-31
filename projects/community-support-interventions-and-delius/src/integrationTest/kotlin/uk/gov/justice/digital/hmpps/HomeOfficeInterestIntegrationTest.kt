@@ -38,9 +38,22 @@ internal class HomeOfficeInterestIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `get home office interest returns exists false when no registration`() {
+    fun `get home office interest returns 404 when no person found`() {
         mockMvc.get("/case/Z999999/home-office-interest") { withToken() }
             .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `get home office interest returns exists false when no registration`() {
+        val crn = PersonGenerator.PERSON2.crn
+        mockMvc.get("/case/$crn/home-office-interest") { withToken() }
+            .andExpect { status { isOk() } }
+            .andExpectJson(
+                HomeOfficeInterest(
+                    exists = false,
+                    notes = null
+                )
+            )
     }
 
     @Test

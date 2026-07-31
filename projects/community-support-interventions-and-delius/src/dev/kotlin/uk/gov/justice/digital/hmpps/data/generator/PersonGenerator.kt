@@ -23,4 +23,23 @@ object PersonGenerator {
         genderIdentity = null,
         genderIdentityDescription = null,
     )
+    val PERSON2 = Person(
+        id = IdGenerator.getAndIncrement(),
+        crn = "X123457",
+        pnc = null,
+        noms = null,
+        forename = "John",
+        secondName = "Bob",
+        surname = "Smith",
+        preferredName = null,
+        dateOfBirth = LocalDate.of(1980, 1, 1),
+        dateOfDeath = null,
+        telephoneNumber = null,
+        mobileNumber = null,
+        emailAddress = null,
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        sexualOrientation = null,
+        genderIdentity = null,
+        genderIdentityDescription = null,
+    )
 }

@@ -15,6 +15,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun setupData() {
         save(ReferenceDataGenerator.GENDER_MALE)
         save(PersonGenerator.PERSON1)
+        save(PersonGenerator.PERSON2)
         save(RegistrationGenerator.HOIE_TYPE)
         save(RegistrationGenerator.HOME_OFFICE_INTEREST)
     }
