@@ -50,8 +50,10 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
     @EntityGraph(attributePaths = ["type"])
     fun findByPersonId(personId: Long): List<Registration>
 
-    @Query(""" select r from Registration r
-        where r.personId = :personId and r.type.code = 'HOIE' order by r.id desc""")
+    @Query(
+        """ select r from Registration r
+        where r.personId = :personId and r.type.code = 'HOIE' order by r.id desc"""
+    )
     fun findHomeOfficeInterestByPersonId(personId: Long, pageable: Pageable): List<Registration>
 }
 
