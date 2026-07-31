@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest @Autowired constructor(
+internal class HomeOfficeInterestIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
 

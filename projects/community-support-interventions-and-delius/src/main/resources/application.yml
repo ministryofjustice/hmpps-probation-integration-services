@@ -17,11 +17,11 @@ spring:
   threads.virtual.enabled: true
 
 oauth2.roles:
-  - EXAMPLE
+  - PROBATION_API__COMMUNITY_SUPPORT_INTERVENTIONS__CASE_DETAIL
 
 springdoc.default-produces-media-type: application/json
 
-delius.db.username: CommunitySupportInterventionsAndDelius # Should match value in [deploy/database/access.yml].
+delius.db.username: CommunitySupportInterventionsAndDelius
 
 management:
   endpoints.web:
