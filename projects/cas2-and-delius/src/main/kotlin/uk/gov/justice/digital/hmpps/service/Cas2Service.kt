@@ -28,13 +28,13 @@ class Cas2Service(
             date = details.eventDetails.submittedAt,
             notes = "Details of the application can be found here: ${details.eventDetails.applicationUrl}",
             urn = "urn:hmpps:cas2:application-submitted:${details.eventDetails.applicationId}",
-            description = "CAS2 Referral Submitted: ${details.eventDetails.applicationOriginDescription()}"
+            description = "CAS2 Referral Submitted: ${details.eventDetails.cohort.longDisplayName}"
         )
         if (success) telemetryService.trackEvent(
             "ApplicationSubmitted",
             event.telemetryProperties + mapOf(
                 "applicationId" to details.eventDetails.applicationId,
-                "applicationOrigin" to details.eventDetails.applicationOriginDescription()
+                "cohort" to details.eventDetails.cohort.longDisplayName
             ),
         )
     }
@@ -47,7 +47,7 @@ class Cas2Service(
             crn = event.crn,
             type = ContactType.REFERRAL_UPDATED,
             date = details.eventDetails.updatedAt,
-            description = "CAS2 ${details.eventDetails.applicationOriginDescription()}".trim() + " Referral Updated - ${details.eventDetails.newStatus.label}",
+            description = "CAS2 ${details.eventDetails.cohort.longDisplayName}".trim() + " Referral Updated - ${details.eventDetails.newStatus.label}",
             notes = """
                 |Application status was updated to: ${details.eventDetails.newStatus.label}
                 |
@@ -60,7 +60,7 @@ class Cas2Service(
         if (success) telemetryService.trackEvent(
             "ApplicationStatusUpdated", event.telemetryProperties + mapOf(
                 "applicationId" to details.eventDetails.applicationId,
-                "applicationOrigin" to details.eventDetails.applicationOriginDescription(),
+                "cohort" to details.eventDetails.cohort.longDisplayName,
                 "status" to details.eventDetails.newStatus.name
             )
         )
