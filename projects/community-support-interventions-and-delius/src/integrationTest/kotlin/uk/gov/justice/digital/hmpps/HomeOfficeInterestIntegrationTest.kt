@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.controller.model.HomeOfficeInterest
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -20,10 +18,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 internal class HomeOfficeInterestIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
-
-    @MockitoBean
-    lateinit var telemetryService: TelemetryService
-
     @Test
     fun `get home office interest returns registration details`() {
         val crn = PersonGenerator.PERSON1.crn

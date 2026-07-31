@@ -41,7 +41,7 @@ class Registration(
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     @Query(
         """ select r from Registration r
-        where r.personId = :personId and r.type.code = 'HOIE' order by r.id desc"""
+        where r.personId = :personId and r.type.code = 'HOIE'"""
     )
     fun findHomeOfficeInterestByPersonId(personId: Long): Registration?
 }
