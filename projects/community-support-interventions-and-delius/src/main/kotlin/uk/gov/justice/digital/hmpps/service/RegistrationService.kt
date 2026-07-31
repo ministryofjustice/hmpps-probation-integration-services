@@ -14,7 +14,7 @@ class RegistrationService(
 ) {
 
     fun getHomeOfficeInterest(crn: String): HomeOfficeInterest {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("Person", crn)
+        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
         val registration = registrationRepository.getHomeOfficeInterestByPersonId(person.id)
         return HomeOfficeInterest(
             exists = registration != null,
