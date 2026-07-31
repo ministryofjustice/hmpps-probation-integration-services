@@ -29,6 +29,10 @@ class Registration(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
+    @Column(columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val deregistered: Boolean = false,
+
     @Id
     @Column(name = "registration_id")
     val id: Long

@@ -14,6 +14,7 @@ object RegistrationGenerator {
         notes = "Some notes about Home Office Interest",
         type = HOIE_TYPE,
         softDeleted = false,
+        deregistered = false,
         id = IdGenerator.getAndIncrement()
     )
 }
