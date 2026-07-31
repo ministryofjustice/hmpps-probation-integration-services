@@ -11,7 +11,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
+        left join Event e on e.id = c.eventId
         where c.personId = :personId
+          and (c.eventId is null or e.activeFlag = true)
           and c.type.attendance = true
           and (trunc(c.date, day) > trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') >= to_char(local_time, 'HH24:MI'))
@@ -34,7 +36,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
+        left join Event e on e.id = c.eventId
         where c.personId = :personId
+          and (c.eventId is null or e.activeFlag = true)
           and c.type.attendance = true
           and (trunc(c.date, day) < trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') < to_char(local_time, 'HH24:MI'))

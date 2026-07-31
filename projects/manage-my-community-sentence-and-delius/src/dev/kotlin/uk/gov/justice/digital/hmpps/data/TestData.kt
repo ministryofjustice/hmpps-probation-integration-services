@@ -192,6 +192,12 @@ object TestData {
             number = "1",
             personId = PersonData.DEFAULT.id,
         )
+        val INACTIVE_EVENT = Event(
+            id = id(),
+            number = "2",
+            personId = PersonData.DEFAULT.id,
+            activeFlag = false,
+        )
         val DISPOSAL = Disposal(
             id = id(),
             event = EVENT,
@@ -348,6 +354,7 @@ object TestData {
         ) = Contact(
             id = id(),
             personId = PersonData.DEFAULT.id,
+            eventId = SentenceData.EVENT.id,
             date = date,
             startTime = startTime,
             endTime = endTime,
@@ -390,6 +397,18 @@ object TestData {
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
             attended = false, complied = false,
         )
+        val FUTURE_INACTIVE_EVENT = generate(
+            LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            eventId = SentenceData.INACTIVE_EVENT.id,
+        )
+        val PAST_INACTIVE_EVENT = generate(
+            LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
+            eventId = SentenceData.INACTIVE_EVENT.id,
+        )
+        val PAST_NO_EVENT = generate(
+            LocalDate.of(2020, 1, 1), LocalTime.of(15, 0), LocalTime.of(15, 30),
+            eventId = null,
+        )
 
         fun generate(
             date: LocalDate,
@@ -397,6 +416,7 @@ object TestData {
             endTime: LocalTime,
             type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
             location: OfficeLocation? = TeamData.OFFICE,
+            eventId: Long? = SentenceData.EVENT.id,
             attended: Boolean? = null,
             complied: Boolean? = null,
             outcome: ContactOutcome? = null,
@@ -404,6 +424,7 @@ object TestData {
         ) = Contact(
             id = id(),
             personId = PersonData.DEFAULT.id,
+            eventId = eventId,
             date = date,
             startTime = startTime,
             endTime = endTime,
