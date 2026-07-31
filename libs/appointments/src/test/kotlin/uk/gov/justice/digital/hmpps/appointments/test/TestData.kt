@@ -75,7 +75,8 @@ internal object TestData {
         event: Event? = null,
         externalReference: String? = "REF01",
         notes: String? = null,
-        sensitive: Boolean? = false
+        sensitive: Boolean? = false,
+        description: String? = null
     ) = AppointmentContact(
         id = id(),
         personId = personId,
@@ -92,7 +93,8 @@ internal object TestData {
         complied = outcome?.complied,
         externalReference = externalReference,
         notes = notes,
-        sensitive = sensitive
+        sensitive = sensitive,
+        description = description
     )
 
     fun event(

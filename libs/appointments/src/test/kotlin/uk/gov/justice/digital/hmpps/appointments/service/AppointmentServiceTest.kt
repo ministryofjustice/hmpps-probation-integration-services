@@ -661,6 +661,36 @@ class AppointmentServiceTest {
     }
 
     @Test
+    fun `update appointment sets description`() {
+        val existing = TestData.appointment()
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            updateDescription = { "New description" }
+        }
+
+        assertThat(existing.description).isEqualTo("New description")
+    }
+
+    @Test
+    fun `update appointment clears description when set to null`() {
+        val existing = TestData.appointment(description = "Existing description")
+
+        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
+            .thenReturn(listOf(existing))
+
+        appointmentService.update(existing) {
+            reference = { existing.externalReference }
+            updateDescription = { null }
+        }
+
+        assertThat(existing.description).isNull()
+    }
+
+    @Test
     fun `update appointment flag as sensitive`() {
         val existing = TestData.appointment(sensitive = false)
 
