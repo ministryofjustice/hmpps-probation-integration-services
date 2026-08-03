@@ -56,5 +56,4 @@ class ContactDetailsController(
     @Operation(summary = "Gets the count of unreviewed check-in alerts for a user")
     fun getAlerts(@PathVariable username: String) =
         contactDetailsService.getAlertCount(username)
-
 }

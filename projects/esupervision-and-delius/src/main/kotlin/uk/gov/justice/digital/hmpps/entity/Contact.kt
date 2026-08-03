@@ -180,7 +180,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
-    @Query("""
+
+    @Query(
+        """
         select count(c) from Contact c
         join PersonManager pm on pm.person.id = c.person.id
         join pm.staff s
@@ -191,6 +193,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and su.username = :username
         and pm.active = true
         and pm.softDeleted = false
-    """)
+    """
+    )
     fun countUnreviewedByUsername(username: String, typeCode: String = ContactType.E_SUPERVISION_CHECK_IN): Long
 }

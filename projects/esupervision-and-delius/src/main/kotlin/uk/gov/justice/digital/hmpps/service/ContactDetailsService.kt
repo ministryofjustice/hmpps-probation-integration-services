@@ -110,4 +110,4 @@ class ContactDetailsService(
         val count = contactRepository.countUnreviewedByUsername(username)
         return AlertCount(count)
     }
-  }
+}
