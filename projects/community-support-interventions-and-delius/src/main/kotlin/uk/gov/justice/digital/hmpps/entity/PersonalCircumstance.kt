@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "personal_circumstance")
-@SQLRestriction("soft_deleted = 0 and (endDate is null or endDate > current_date)")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
