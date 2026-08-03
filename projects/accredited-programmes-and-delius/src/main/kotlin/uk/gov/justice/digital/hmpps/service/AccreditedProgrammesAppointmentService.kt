@@ -108,11 +108,18 @@ class AccreditedProgrammesAppointmentService(
                     it.startTime,
                     it.endTime,
                     allowConflicts = true,
-                    allowDurationReductionWithOutcome = true
+                    allowDurationReductionWithOutcome = true,
+                    allowRescheduleWithOutcome = it.within24Hrs() // Rescheduling is allowed up to 24 hours after attendance
                 )
             }
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }
-            applyOutcome = { Outcome(it.outcome?.code, allowMissingOutcomeInThePast = true) }
+            applyOutcome = {
+                Outcome(
+                    it.outcome?.code,
+                    allowMissingOutcomeInThePast = true,
+                    allowChanges = it.within24Hrs() // Outcome changes are allowed up to 24 hours after attendance
+                )
+            }
             appendNotes = { it.notes }
             updateDescription = { it.description }
             flagAs = { copy(sensitive = it.sensitive) }

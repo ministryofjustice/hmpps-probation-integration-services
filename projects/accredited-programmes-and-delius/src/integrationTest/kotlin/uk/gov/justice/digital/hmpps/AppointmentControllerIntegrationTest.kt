@@ -530,6 +530,126 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can reschedule an appointment with an outcome within 24 hours of the end time`() {
+        val existing = TestData.RESCHEDULABLE_APPOINTMENT
+        val updatedStart = existing.startTime!!.plusMinutes(15)
+        val updatedEnd = existing.endTime!!.plusMinutes(15)
+
+        mockMvc.put("/appointments") {
+            withToken()
+            json = UpdateAppointmentsRequest(
+                listOf(
+                    UpdateAppointmentRequest(
+                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
+                        date = updatedStart.toLocalDate(),
+                        startTime = updatedStart.toLocalTime(),
+                        endTime = updatedEnd.toLocalTime(),
+                        sensitive = false,
+                        outcome = RequestCode("ATTC"),
+                        location = RequestCode("OFFICE1"),
+                        team = RequestCode("TEAM01"),
+                        staff = RequestCode("STAFF01"),
+                        notes = null,
+                        description = null,
+                    )
+                )
+            )
+        }.andExpect { status { isNoContent() } }
+
+        val appointment = contactRepository.findByExternalReference(existing.externalReference!!)!!
+        assertThat(appointment.startTime).isEqualTo(updatedStart)
+        assertThat(appointment.endTime).isEqualTo(updatedEnd)
+        assertThat(appointment.outcome?.code).isEqualTo("ATTC")
+    }
+
+    @Test
+    fun `cannot reschedule an appointment with an outcome more than 24 hours after the end time`() {
+        val existing = TestData.NON_RESCHEDULABLE_APPOINTMENT
+
+        mockMvc.put("/appointments") {
+            withToken()
+            json = UpdateAppointmentsRequest(
+                listOf(
+                    UpdateAppointmentRequest(
+                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
+                        date = existing.date,
+                        startTime = existing.startTime!!.plusMinutes(15).toLocalTime(),
+                        endTime = existing.endTime!!.plusMinutes(15).toLocalTime(),
+                        sensitive = false,
+                        outcome = RequestCode("ATTC"),
+                        location = RequestCode("OFFICE1"),
+                        team = RequestCode("TEAM01"),
+                        staff = RequestCode("STAFF01"),
+                        notes = null,
+                        description = null,
+                    )
+                )
+            )
+        }.andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Appointment with outcome cannot be rescheduled")
+            }
+    }
+
+    @Test
+    fun `can change an outcome within 24 hours of the appointment end time`() {
+        val existing = TestData.OUTCOME_CHANGEABLE_APPOINTMENT
+
+        mockMvc.put("/appointments") {
+            withToken()
+            json = UpdateAppointmentsRequest(
+                listOf(
+                    UpdateAppointmentRequest(
+                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
+                        date = existing.date,
+                        startTime = existing.startTime!!.toLocalTime(),
+                        endTime = existing.endTime!!.toLocalTime(),
+                        sensitive = false,
+                        outcome = RequestCode("AA"),
+                        location = RequestCode("OFFICE1"),
+                        team = RequestCode("TEAM01"),
+                        staff = RequestCode("STAFF01"),
+                        notes = null,
+                        description = null,
+                    )
+                )
+            )
+        }.andExpect { status { isNoContent() } }
+
+        val appointment = contactRepository.findByExternalReference(existing.externalReference!!)!!
+        assertThat(appointment.outcome?.code).isEqualTo("AA")
+    }
+
+    @Test
+    fun `cannot change an outcome more than 24 hours after the appointment end time`() {
+        val existing = TestData.OUTCOME_LOCKED_APPOINTMENT
+
+        mockMvc.put("/appointments") {
+            withToken()
+            json = UpdateAppointmentsRequest(
+                listOf(
+                    UpdateAppointmentRequest(
+                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
+                        date = existing.date,
+                        startTime = existing.startTime!!.toLocalTime(),
+                        endTime = existing.endTime!!.toLocalTime(),
+                        sensitive = false,
+                        outcome = RequestCode("AA"),
+                        location = RequestCode("OFFICE1"),
+                        team = RequestCode("TEAM01"),
+                        staff = RequestCode("STAFF01"),
+                        notes = null,
+                        description = null,
+                    )
+                )
+            )
+        }.andExpect { status { isBadRequest() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Outcome cannot be amended")
+            }
+    }
+
+    @Test
     fun `logging a non-complied outcome increments failure to comply count`() {
         val (existing1, appointmentReference1) = givenExistingContact(date = LocalDate.now().minusDays(1))
         val (existing2, appointmentReference2) = givenExistingContact(date = LocalDate.now().minusDays(2))
