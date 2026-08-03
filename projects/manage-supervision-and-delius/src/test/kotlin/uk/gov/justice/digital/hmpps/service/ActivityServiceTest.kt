@@ -46,35 +46,30 @@ internal class ActivityServiceTest {
     }
 
     @Test
-    fun `calls get person activity function splitting past and future contacts`() {
+    fun `calls get person activity function returns past and future activities in a single list sorted in date descending order`() {
         val crn = "X000005"
-        val pastContacts = listOf(
+        val contacts = listOf(
             ContactGenerator.PREVIOUS_APPT_CONTACT,
-            ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT
-        )
-        val futureContacts = listOf(
+            ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
             ContactGenerator.NEXT_APPT_CONTACT,
             ContactGenerator.FIRST_APPT_CONTACT,
             ContactGenerator.FIRST_NON_APPT_CONTACT
         )
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(contactRepository.findByPersonId(any())).thenReturn(futureContacts + pastContacts)
+        whenever(contactRepository.findByPersonId(any())).thenReturn(contacts)
         val res = service.getPersonActivity(crn)
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
-        assertThat(res.activities, equalTo(pastContacts.map { it.toActivity() }))
-        assertThat(res.activities.all { it.isInPast }, equalTo(true))
         assertThat(
-            res.futureActivities.map { it.id },
-            equalTo(
+            res.activities, equalTo(
                 listOf(
-                    ContactGenerator.FIRST_NON_APPT_CONTACT.id,
-                    ContactGenerator.FIRST_APPT_CONTACT.id,
-                    ContactGenerator.NEXT_APPT_CONTACT.id
-                )
-            )
-        )
-        assertThat(res.futureActivities.none { it.isInPast }, equalTo(true))
+                    ContactGenerator.NEXT_APPT_CONTACT,
+                    ContactGenerator.FIRST_APPT_CONTACT,
+                    ContactGenerator.FIRST_NON_APPT_CONTACT,
+                    ContactGenerator.PREVIOUS_APPT_CONTACT,
+                    ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT
+                ).map { it.toActivity() }
+            ))
     }
 }
