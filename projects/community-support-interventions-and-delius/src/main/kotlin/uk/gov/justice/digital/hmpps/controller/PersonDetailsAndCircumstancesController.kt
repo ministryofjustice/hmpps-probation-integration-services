@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.PersonalDetailsService
 
 @RestController
-class PersonDetailsAndCircumstancesController (
+class PersonDetailsAndCircumstancesController(
     val personalDetailsService: PersonalDetailsService
-){
+) {
     @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_SUPPORT_INTERVENTIONS__CASE_DETAIL')")
     @GetMapping(value = ["/case/{crn}"])
     fun getCase(@PathVariable crn: String) = personalDetailsService.getPersonDetails(crn)
-
 }

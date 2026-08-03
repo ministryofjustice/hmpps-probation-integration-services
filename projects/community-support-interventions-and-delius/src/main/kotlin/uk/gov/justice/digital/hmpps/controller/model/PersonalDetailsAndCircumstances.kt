@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.controller.model
 
 import java.time.ZonedDateTime
 
-data class PersonalDetailsAndCircumstances (
+data class PersonalDetailsAndCircumstances(
     val preferredLanguage: CodeAndDescription?,
     val personalCircumstances: List<PersonCircumstance>?,
     val disabilities: List<Disability>?,
@@ -24,7 +24,7 @@ data class PersonCircumstance(
     val updatedAt: ZonedDateTime
 )
 
-data class CodeAndDescription (
+data class CodeAndDescription(
     val code: String,
     val description: String,
 )

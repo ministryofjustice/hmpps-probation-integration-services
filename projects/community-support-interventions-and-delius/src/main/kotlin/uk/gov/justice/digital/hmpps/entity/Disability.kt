@@ -32,7 +32,7 @@ class Disability(
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "disability_type_id")
-    val type:ReferenceData,
+    val type: ReferenceData,
 
     @Column(name = "last_updated_datetime")
     val lastUpdated: ZonedDateTime,
