@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data
 
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.contact
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.withOutcome
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.Dataset
@@ -21,6 +22,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.offence.OffenceEntity
 import uk.gov.justice.digital.hmpps.entity.staff.*
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 object TestData {
@@ -177,7 +179,7 @@ object TestData {
     )
     val TERMINATION_REQUIREMENT_MANAGERS = TERMINATION_REQUIREMENTS.map { RequirementManager(id(), it, STAFF, TEAM) }
     val TERMINATION_CONTACT = TERMINATION_REQUIREMENTS[2]
-        .contact(COMPONENT_TERMINATED_CONTACT_TYPE, LocalDate.of(2030, 1, 1), STAFF, TEAM, PROVIDER)
+        .contact(COMPONENT_TERMINATED_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.of(2030, 1, 1))
 
     val REQUIREMENT_TRANSFER =
         RequirementTransferGenerator.generate(TERMINATION_REQUIREMENTS[3], PENDING_STATUS, TEAM, STAFF)
@@ -201,12 +203,24 @@ object TestData {
     val THREE_WAY_MEETING_TYPE = ContactType(id(), ContactType.THREE_WAY_MEETING, "3-way meeting", false)
 
     val APPOINTMENTS = REQUIREMENTS.mapIndexed { idx, r ->
-        r.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
+        r.contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.of(2030, 1, 1 + idx))
     } + LICENCE_CONDITIONS.mapIndexed { idx, lc ->
-        lc.contact(APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 1 + idx), STAFF, TEAM, PROVIDER)
+        lc.contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.of(2030, 1, 1 + idx))
     }
+    val RESCHEDULABLE_APPOINTMENT = REQUIREMENTS[0]
+        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now(), LocalTime.now().minusHours(2))
+        .withOutcome()
+    val NON_RESCHEDULABLE_APPOINTMENT = REQUIREMENTS[1]
+        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now().minusDays(2))
+        .withOutcome()
+    val OUTCOME_CHANGEABLE_APPOINTMENT = LICENCE_CONDITIONS[0]
+        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now(), LocalTime.now().minusHours(2))
+        .withOutcome()
+    val OUTCOME_LOCKED_APPOINTMENT = LICENCE_CONDITIONS[1]
+        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now().minusDays(2))
+        .withOutcome()
     val LEGACY_APPOINTMENT =
-        REQUIREMENTS[0].contact(IAPS_APPOINTMENT_CONTACT_TYPE, LocalDate.of(2030, 1, 3), STAFF, TEAM, PROVIDER)
+        REQUIREMENTS[0].contact(IAPS_APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.of(2030, 1, 3))
 
     val DOMAIN_EVENT_DATASET = Dataset(id(), "DOMAIN EVENT TYPE")
     val DOMAIN_EVENT_TYPES = listOf(

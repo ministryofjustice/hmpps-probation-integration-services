@@ -50,10 +50,10 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         val futureAppointment = contactRepository.save(
             TestData.TERMINATION_REQUIREMENTS[0].contact(
                 TestData.APPOINTMENT_CONTACT_TYPE,
-                terminationDate.toLocalDate().plusDays(7),
                 TestData.STAFF,
                 TestData.TEAM,
-                TestData.PROVIDER
+                TestData.PROVIDER,
+                terminationDate.toLocalDate().plusDays(7)
             )
         )
 
@@ -108,10 +108,10 @@ class ComponentTerminationIntegrationTest @Autowired constructor(
         val futureAppointment = contactRepository.save(
             TestData.TERMINATION_LICENCE_CONDITION.contact(
                 TestData.APPOINTMENT_CONTACT_TYPE,
-                terminationDate.toLocalDate().plusDays(7),
                 TestData.STAFF,
                 TestData.TEAM,
-                TestData.PROVIDER
+                TestData.PROVIDER,
+                terminationDate.toLocalDate().plusDays(7)
             )
         )
 

@@ -23,9 +23,10 @@ class UpdateAppointment {
         val allowDurationReductionWithOutcome: Boolean = false,
         val allowRescheduleWithOutcome: Boolean = false,
     ) {
-        val endsInFuture: Boolean =
-            date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
-        val startsInFuture: Boolean = date.atTime(startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
+        val startDateTime: ZonedDateTime = date.atTime(startTime).atZone(EuropeLondon)
+        val endDateTime: ZonedDateTime = date.atTime(endTime ?: startTime).atZone(EuropeLondon)
+        val endsInFuture: Boolean = endDateTime > ZonedDateTime.now(EuropeLondon)
+        val startsInFuture: Boolean = startDateTime > ZonedDateTime.now(EuropeLondon)
 
         internal constructor(entity: AppointmentContact) : this(
             date = entity.date,

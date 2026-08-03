@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.TestData.ATTENDED_COMPLIED
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
@@ -10,6 +12,7 @@ import uk.gov.justice.digital.hmpps.entity.staff.Provider
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -40,19 +43,20 @@ object ContactGenerator {
 
     fun Requirement.contact(
         type: ContactType,
-        date: LocalDate,
         staff: Staff,
         team: Team,
         provider: Provider,
-        startTime: ZonedDateTime? = null,
-        endTime: ZonedDateTime? = null,
+        date: LocalDate,
+        startTime: LocalTime? = LocalTime.now(),
+        endTime: LocalTime? = startTime?.plusHours(1),
     ) = Contact(
         id = 0,
         person = disposal.event.person.toCrn(),
+        event = disposal.event,
         requirement = this,
         date = date,
-        startTime = startTime,
-        endTime = endTime,
+        startTime = startTime?.let { date.atTime(it).atZone(EuropeLondon) },
+        endTime = endTime?.let { date.atTime(it).atZone(EuropeLondon) },
         type = type,
         staff = staff,
         team = team,
@@ -62,21 +66,28 @@ object ContactGenerator {
         sensitive = false,
     )
 
+    fun Contact.withOutcome() = apply {
+        outcome = ATTENDED_COMPLIED
+        attended = true
+        complied = true
+    }
+
     fun LicenceCondition.contact(
         type: ContactType,
-        date: LocalDate,
         staff: Staff,
         team: Team,
         provider: Provider,
-        startTime: ZonedDateTime? = null,
-        endTime: ZonedDateTime? = null,
+        date: LocalDate,
+        startTime: LocalTime? = LocalTime.now(),
+        endTime: LocalTime? = startTime?.plusHours(1),
     ) = Contact(
         id = 0,
         person = disposal.event.person.toCrn(),
+        event = disposal.event,
         licenceCondition = this,
         date = date,
-        startTime = startTime,
-        endTime = endTime,
+        startTime = startTime?.let { date.atTime(it).atZone(EuropeLondon) },
+        endTime = endTime?.let { date.atTime(it).atZone(EuropeLondon) },
         type = type,
         staff = staff,
         team = team,
