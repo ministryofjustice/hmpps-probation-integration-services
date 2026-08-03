@@ -130,6 +130,9 @@ internal object AppointmentEntities {
         @Lob
         var notes: String? = null,
 
+        @Column
+        var description: String? = null,
+
         // Flags
         @Convert(converter = YesNoConverter::class)
         @Column(name = "alert_active")

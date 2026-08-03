@@ -22,6 +22,7 @@ data class CreateAppointment(
     val exportToVisor: Boolean? = false,
     val allowConflicts: Boolean = false,
     val allowMissingOutcomeInThePast: Boolean = false,
+    val description: String? = null,
 ) {
     init {
         require(endTime == null || startTime < endTime) {
