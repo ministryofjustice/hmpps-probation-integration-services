@@ -78,7 +78,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `all person activity is returned split in date descending order`() {
+    fun `all person activity is returned sorted in date descending order`() {
         val person = OVERVIEW
         val res = mockMvc.get("/activity/${person.crn}") { withToken() }
             .andExpect { status { isOk() } }
