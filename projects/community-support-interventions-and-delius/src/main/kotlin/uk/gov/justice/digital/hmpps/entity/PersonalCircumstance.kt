@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "personal_circumstance")
-@SQLRestriction("soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0 and (endDate is null or endDate > current_date)")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
@@ -73,19 +73,10 @@ interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Lon
         left join fetch pc.subType sub
         left join fetch pc.type type
         where pc.personId = :personId
-        and (pc.endDate is null or pc.endDate > current_date )
     """
     )
     fun findCurrentCircumstances(personId: Long): List<PersonalCircumstance>
 
-    @Query(
-        """
-        select pc from PersonalCircumstance pc 
-        where pc.personId = :personId
-        order by pc.startDate desc, pc.endDate desc
-    """
-    )
-    fun findAllCircumstances(personId: Long): List<PersonalCircumstance>
 }
 
 @Immutable

@@ -49,7 +49,7 @@ class Nsi(
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    var active: Boolean = true,
+    val active: Boolean = true,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
