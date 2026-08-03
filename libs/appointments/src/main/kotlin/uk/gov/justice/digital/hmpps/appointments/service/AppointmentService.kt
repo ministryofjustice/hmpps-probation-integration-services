@@ -164,7 +164,7 @@ class AppointmentService internal constructor(
             require(endTime == null || startTime < endTime) {
                 "Start time must be before end time"
             }
-            require(endsInFuture || outcome?.outcomeCode != null || outcome?.allowMissingOutcomeInThePast == true || this isAllowedDurationReductionOf existing) {
+            require(endsInFuture || outcome?.outcomeCode != null || outcome?.allowMissingOutcomeInThePast == true) {
                 "Outcome must be provided when amending an appointment in the past"
             }
         }
@@ -189,7 +189,7 @@ class AppointmentService internal constructor(
     private fun AppointmentContact.amendDateTime(request: Schedule): AppointmentContact {
         if (request isSameDateAndTimeAs this) return this
 
-        require(outcome == null || request.allowRescheduleWithOutcome || request isAllowedDurationReductionOf this) {
+        require(outcome == null || request.allowRescheduleWithOutcome) {
             "Appointment with outcome cannot be rescheduled"
         }
 

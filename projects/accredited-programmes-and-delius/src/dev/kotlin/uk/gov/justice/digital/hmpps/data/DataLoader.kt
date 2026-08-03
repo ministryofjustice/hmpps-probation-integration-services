@@ -111,8 +111,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.LEGACY_APPOINTMENT)
         saveAll(TestData.APPOINTMENTS)
         save(TestData.RESCHEDULABLE_APPOINTMENT)
-        save(TestData.NON_RESCHEDULABLE_APPOINTMENT)
         save(TestData.OUTCOME_CHANGEABLE_APPOINTMENT)
-        save(TestData.OUTCOME_LOCKED_APPOINTMENT)
     }
 }
