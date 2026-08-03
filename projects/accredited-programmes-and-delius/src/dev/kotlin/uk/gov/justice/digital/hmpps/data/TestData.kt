@@ -210,14 +210,8 @@ object TestData {
     val RESCHEDULABLE_APPOINTMENT = REQUIREMENTS[0]
         .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now(), LocalTime.now().minusHours(2))
         .withOutcome()
-    val NON_RESCHEDULABLE_APPOINTMENT = REQUIREMENTS[1]
-        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now().minusDays(2))
-        .withOutcome()
     val OUTCOME_CHANGEABLE_APPOINTMENT = LICENCE_CONDITIONS[0]
         .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now(), LocalTime.now().minusHours(2))
-        .withOutcome()
-    val OUTCOME_LOCKED_APPOINTMENT = LICENCE_CONDITIONS[1]
-        .contact(APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.now().minusDays(2))
         .withOutcome()
     val LEGACY_APPOINTMENT =
         REQUIREMENTS[0].contact(IAPS_APPOINTMENT_CONTACT_TYPE, STAFF, TEAM, PROVIDER, LocalDate.of(2030, 1, 3))

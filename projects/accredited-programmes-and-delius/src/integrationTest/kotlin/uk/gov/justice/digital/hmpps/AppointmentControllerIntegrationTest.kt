@@ -188,28 +188,10 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create an appointment - contact outcome not found`() {
-        val appointmentReference = UUID.randomUUID()
         mockMvc
             .post("/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(
-                    listOf(
-                        CreateAppointmentRequest(
-                            appointmentReference,
-                            REQUIREMENTS[2].id,
-                            null,
-                            LocalDate.now().minusDays(7),
-                            LocalTime.now(),
-                            LocalTime.now().plusMinutes(30),
-                            RequestCode("UNKNOWN"),
-                            RequestCode("OFFICE1"),
-                            RequestCode("STAFF01"),
-                            RequestCode("TEAM01"),
-                            "Some notes about the appointment",
-                            true,
-                        )
-                    )
-                )
+                json = createAppointment().copy(outcome = RequestCode("UNKNOWN")).asList()
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
@@ -219,28 +201,10 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create an appointment - location not found`() {
-        val appointmentReference = UUID.randomUUID()
         mockMvc
             .post("/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(
-                    listOf(
-                        CreateAppointmentRequest(
-                            appointmentReference,
-                            REQUIREMENTS[2].id,
-                            null,
-                            LocalDate.now().minusDays(7),
-                            LocalTime.now(),
-                            LocalTime.now().plusMinutes(30),
-                            RequestCode("ATTC"),
-                            RequestCode("OFFICE99"),
-                            RequestCode("STAFF01"),
-                            RequestCode("TEAM01"),
-                            "Some notes about the appointment",
-                            true,
-                        )
-                    )
-                )
+                json = createAppointment().copy(location = RequestCode("OFFICE99")).asList()
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
@@ -250,29 +214,10 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create an appointment - staff not found`() {
-        val appointmentReference = UUID.randomUUID()
         mockMvc
             .post("/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(
-                    listOf(
-                        CreateAppointmentRequest(
-                            reference = appointmentReference,
-                            requirementId = REQUIREMENTS[2].id,
-                            licenceConditionId = null,
-                            date = LocalDate.now().minusDays(7),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
-                            outcome = RequestCode("ATTC"),
-                            location = RequestCode("OFFICE1"),
-                            staff = RequestCode("STAFF99"),
-                            team = RequestCode("TEAM01"),
-                            notes = "Some notes about the appointment",
-                            sensitive = true,
-                        )
-                    )
-
-                )
+                json = createAppointment().copy(staff = RequestCode("STAFF99")).asList()
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
@@ -282,28 +227,10 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create an appointment - team not found`() {
-        val appointmentReference = UUID.randomUUID()
         mockMvc
             .post("/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(
-                    listOf(
-                        CreateAppointmentRequest(
-                            reference = appointmentReference,
-                            requirementId = REQUIREMENTS[2].id,
-                            licenceConditionId = null,
-                            date = LocalDate.now().minusDays(7),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
-                            outcome = RequestCode("ATTC"),
-                            location = RequestCode("OFFICE1"),
-                            staff = RequestCode("STAFF01"),
-                            team = RequestCode("TEAM99"),
-                            notes = "Some notes about the appointment",
-                            sensitive = true,
-                        )
-                    )
-                )
+                json = createAppointment().copy(team = RequestCode("TEAM99")).asList()
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
@@ -313,22 +240,7 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can not create appointment without one of requirement or licence condition id`() {
-        assertThatThrownBy {
-            CreateAppointmentRequest(
-                reference = UUID.randomUUID(),
-                requirementId = null,
-                licenceConditionId = null,
-                date = LocalDate.now().minusDays(7),
-                startTime = LocalTime.now(),
-                endTime = LocalTime.now().plusMinutes(30),
-                outcome = RequestCode("ATTC"),
-                location = RequestCode("OFFICE1"),
-                staff = RequestCode("STAFF01"),
-                team = RequestCode("TEAM01"),
-                notes = "Some notes about the appointment",
-                sensitive = true,
-            )
-        }
+        assertThatThrownBy { createAppointment().copy(requirementId = null) }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Either licence condition or requirement id must be specified.")
     }
@@ -338,25 +250,10 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         mockMvc
             .post("/appointments") {
                 withToken()
-                json = CreateAppointmentsRequest(
-                    listOf(
-                        CreateAppointmentRequest(
-                            reference = UUID.randomUUID(),
-                            requirementId = null,
-                            licenceConditionId = INVALID_LICENCE_CONDITION.id,
-                            date = LocalDate.now().minusDays(7),
-                            startTime = LocalTime.now(),
-                            endTime = LocalTime.now().plusMinutes(30),
-                            outcome = RequestCode("ATTC"),
-                            location = RequestCode("OFFICE1"),
-                            staff = RequestCode("STAFF99"),
-                            team = RequestCode("TEAM01"),
-                            notes = "Some notes about the appointment",
-                            sensitive = true,
-                        )
-                    )
-
-                )
+                json = createAppointment().copy(
+                    requirementId = null,
+                    licenceConditionId = INVALID_LICENCE_CONDITION.id,
+                ).asList()
             }
             .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
@@ -366,23 +263,8 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create appointments`() {
-        val request = CreateAppointmentRequest(
-            reference = UUID.randomUUID(),
-            requirementId = REQUIREMENTS[2].id,
-            licenceConditionId = null,
-            date = LocalDate.now().minusDays(7),
-            startTime = LocalTime.now(),
-            endTime = LocalTime.now().plusMinutes(30),
-            outcome = RequestCode("ATTC"),
-            location = RequestCode("OFFICE1"),
-            staff = RequestCode("STAFF01"),
-            team = RequestCode("TEAM01"),
-            notes = "Some notes about the appointment",
-            sensitive = true,
-            description = "Description",
-        )
-        val requests = (List(3) { request } + List(3) {
-            request.copy(
+        val requests = (List(3) { createAppointment() } + List(3) {
+            createAppointment().copy(
                 requirementId = null,
                 licenceConditionId = LICENCE_CONDITIONS[1].id
             )
@@ -411,32 +293,17 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     @ParameterizedTest
     @EnumSource(CreateAppointmentRequest.Type::class)
     fun `can create an appointment`(type: CreateAppointmentRequest.Type) {
-        val appointmentReference = UUID.randomUUID()
+        val request = createAppointment().copy(
+            notes = "Some notes about the appointment and type",
+            type = type,
+        )
         mockMvc.post("/appointments") {
             withToken()
-            json = CreateAppointmentsRequest(
-                listOf(
-                    CreateAppointmentRequest(
-                        appointmentReference,
-                        REQUIREMENTS[2].id,
-                        null,
-                        LocalDate.now().minusDays(7),
-                        LocalTime.now(),
-                        LocalTime.now().plusMinutes(30),
-                        RequestCode("ATTC"),
-                        RequestCode("OFFICE1"),
-                        RequestCode("STAFF01"),
-                        RequestCode("TEAM01"),
-                        "Some notes about the appointment and type",
-                        true,
-                        type = type
-                    )
-                )
-            )
+            json = request.asList()
         }.andExpect { status { isCreated() } }
 
         val appointment =
-            contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}$appointmentReference")
+            contactRepository.findByExternalReference("${Contact.REFERENCE_PREFIX}${request.reference}")
         assertThat(appointment).isNotNull
         with(appointment!!) {
             assertThat(date).isEqualTo(LocalDate.now().minusDays(7))
@@ -458,24 +325,14 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can create appointment in the past without an outcome`() {
-        val request = CreateAppointmentRequest(
-            reference = UUID.randomUUID(),
-            requirementId = REQUIREMENTS[2].id,
-            licenceConditionId = null,
+        val request = createAppointment().copy(
             date = LocalDate.now().minusDays(7),
-            startTime = LocalTime.now(),
-            endTime = LocalTime.now().plusMinutes(30),
-            outcome = null,
-            location = RequestCode("OFFICE1"),
-            staff = RequestCode("STAFF01"),
-            team = RequestCode("TEAM01"),
-            notes = "Some notes about the appointment",
-            sensitive = true,
+            outcome = null
         )
 
         mockMvc.post("/appointments") {
             withToken()
-            json = CreateAppointmentsRequest(listOf(request))
+            json = request.asList()
         }.andExpect { status { isCreated() } }
 
         val appointment =
@@ -489,27 +346,20 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can update an appointment`() {
-        val (existing, appointmentReference) = givenExistingContact()
+        val existing = givenExistingContact()
 
         mockMvc.put("/appointments") {
             withToken()
-            json = UpdateAppointmentsRequest(
-                listOf(
-                    UpdateAppointmentRequest(
-                        reference = appointmentReference,
-                        date = LocalDate.now().plusDays(1),
-                        startTime = LocalTime.now(),
-                        endTime = LocalTime.now().plusMinutes(30),
-                        sensitive = true,
-                        outcome = RequestCode("AA"),
-                        location = RequestCode("OFFICE1"),
-                        team = RequestCode("TEAM01"),
-                        staff = RequestCode("STAFF01"),
-                        notes = "Some appended notes",
-                        description = "Updated Description"
-                    )
-                )
-            )
+            json = existing.toUpdate().copy(
+                date = LocalDate.now().plusDays(1),
+                startTime = LocalTime.now(),
+                endTime = LocalTime.now().plusMinutes(30),
+                sensitive = true,
+                outcome = RequestCode("AA"),
+                location = RequestCode("OFFICE1"),
+                notes = "Some appended notes",
+                description = "Updated Description"
+            ).asList()
         }.andExpect { status { isNoContent() } }
 
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
@@ -530,30 +380,18 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `can reschedule an appointment with an outcome within 24 hours of the end time`() {
+    fun `can reschedule an appointment with an outcome`() {
         val existing = TestData.RESCHEDULABLE_APPOINTMENT
         val updatedStart = existing.startTime!!.plusMinutes(15)
         val updatedEnd = existing.endTime!!.plusMinutes(15)
 
         mockMvc.put("/appointments") {
             withToken()
-            json = UpdateAppointmentsRequest(
-                listOf(
-                    UpdateAppointmentRequest(
-                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
-                        date = updatedStart.toLocalDate(),
-                        startTime = updatedStart.toLocalTime(),
-                        endTime = updatedEnd.toLocalTime(),
-                        sensitive = false,
-                        outcome = RequestCode("ATTC"),
-                        location = RequestCode("OFFICE1"),
-                        team = RequestCode("TEAM01"),
-                        staff = RequestCode("STAFF01"),
-                        notes = null,
-                        description = null,
-                    )
-                )
-            )
+            json = existing.toUpdate().copy(
+                date = updatedStart.toLocalDate(),
+                startTime = updatedStart.toLocalTime(),
+                endTime = updatedEnd.toLocalTime(),
+            ).asList()
         }.andExpect { status { isNoContent() } }
 
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)!!
@@ -563,120 +401,39 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `cannot reschedule an appointment with an outcome more than 24 hours after the end time`() {
-        val existing = TestData.NON_RESCHEDULABLE_APPOINTMENT
-
-        mockMvc.put("/appointments") {
-            withToken()
-            json = UpdateAppointmentsRequest(
-                listOf(
-                    UpdateAppointmentRequest(
-                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
-                        date = existing.date,
-                        startTime = existing.startTime!!.plusMinutes(15).toLocalTime(),
-                        endTime = existing.endTime!!.plusMinutes(15).toLocalTime(),
-                        sensitive = false,
-                        outcome = RequestCode("ATTC"),
-                        location = RequestCode("OFFICE1"),
-                        team = RequestCode("TEAM01"),
-                        staff = RequestCode("STAFF01"),
-                        notes = null,
-                        description = null,
-                    )
-                )
-            )
-        }.andExpect { status { isBadRequest() } }
-            .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Appointment with outcome cannot be rescheduled")
-            }
-    }
-
-    @Test
-    fun `can change an outcome within 24 hours of the appointment end time`() {
+    fun `can change an existing outcome`() {
         val existing = TestData.OUTCOME_CHANGEABLE_APPOINTMENT
 
         mockMvc.put("/appointments") {
             withToken()
-            json = UpdateAppointmentsRequest(
-                listOf(
-                    UpdateAppointmentRequest(
-                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
-                        date = existing.date,
-                        startTime = existing.startTime!!.toLocalTime(),
-                        endTime = existing.endTime!!.toLocalTime(),
-                        sensitive = false,
-                        outcome = RequestCode("AA"),
-                        location = RequestCode("OFFICE1"),
-                        team = RequestCode("TEAM01"),
-                        staff = RequestCode("STAFF01"),
-                        notes = null,
-                        description = null,
-                    )
-                )
-            )
+            json = existing.toUpdate().copy(
+                outcome = RequestCode("FTC"),
+            ).asList()
         }.andExpect { status { isNoContent() } }
 
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)!!
-        assertThat(appointment.outcome?.code).isEqualTo("AA")
-    }
-
-    @Test
-    fun `cannot change an outcome more than 24 hours after the appointment end time`() {
-        val existing = TestData.OUTCOME_LOCKED_APPOINTMENT
-
-        mockMvc.put("/appointments") {
-            withToken()
-            json = UpdateAppointmentsRequest(
-                listOf(
-                    UpdateAppointmentRequest(
-                        reference = UUID.fromString(existing.externalReference!!.takeLast(36)),
-                        date = existing.date,
-                        startTime = existing.startTime!!.toLocalTime(),
-                        endTime = existing.endTime!!.toLocalTime(),
-                        sensitive = false,
-                        outcome = RequestCode("AA"),
-                        location = RequestCode("OFFICE1"),
-                        team = RequestCode("TEAM01"),
-                        staff = RequestCode("STAFF01"),
-                        notes = null,
-                        description = null,
-                    )
-                )
-            )
-        }.andExpect { status { isBadRequest() } }
-            .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Outcome cannot be amended")
-            }
+        assertThat(appointment.outcome?.code).isEqualTo("FTC")
+        assertThat(appointment.event?.ftcCount).isEqualTo(1)
+        assertThat(appointment.enforcement).isTrue
+        assertThat(enforcementRepository.findAll().filter { it.contact.id == appointment.id })
+            .singleElement().matches { it.action?.code == "ROM" }
     }
 
     @Test
     fun `logging a non-complied outcome increments failure to comply count`() {
-        val (existing1, appointmentReference1) = givenExistingContact(date = LocalDate.now().minusDays(1))
-        val (existing2, appointmentReference2) = givenExistingContact(date = LocalDate.now().minusDays(2))
+        val existing1 = givenExistingContact(date = LocalDate.now().minusDays(1))
+        val existing2 = givenExistingContact(date = LocalDate.now().minusDays(2))
 
-        listOf(
-            existing1 to appointmentReference1,
-            existing2 to appointmentReference2
-        ).forEach { (existing, reference) ->
+        listOf(existing1, existing2).forEach { existing ->
             mockMvc.put("/appointments") {
                 withToken()
-                json = UpdateAppointmentsRequest(
-                    listOf(
-                        UpdateAppointmentRequest(
-                            reference = reference,
-                            date = existing.date,
-                            startTime = existing.startTime!!.toLocalTime(),
-                            endTime = existing.endTime!!.toLocalTime(),
-                            sensitive = true,
-                            outcome = RequestCode("FTC"),
-                            location = RequestCode("OFFICE1"),
-                            team = RequestCode("TEAM01"),
-                            staff = RequestCode("STAFF01"),
-                            notes = "Some appended notes",
-                            description = "Description"
-                        )
-                    )
-                )
+                json = existing.toUpdate().copy(
+                    sensitive = true,
+                    outcome = RequestCode("FTC"),
+                    location = RequestCode("OFFICE1"),
+                    notes = "Some appended notes",
+                    description = "Description"
+                ).asList()
             }.andExpect { status { isNoContent() } }
         }
 
@@ -711,36 +468,69 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `can delete an appointment`() {
-        val (existing, appointmentReference) = givenExistingContact()
+        val existing = givenExistingContact()
 
         mockMvc.delete("/appointments") {
             withToken()
-            json = DeleteAppointmentsRequest(listOf(AppointmentReference(appointmentReference)))
+            json = DeleteAppointmentsRequest(listOf(AppointmentReference(existing.toUpdate().reference)))
         }.andExpect { status { isNoContent() } }
 
         val appointment = contactRepository.findByExternalReference(existing.externalReference!!)
         assertThat(appointment).isNull()
     }
 
-    private fun givenExistingContact(date: LocalDate = LocalDate.now().plusDays(7)): Pair<Contact, UUID> {
-        val existing = contactRepository.save(
-            Contact(
-                id = id(),
-                person = CA_PERSON.toCrn(),
-                event = CA_COMMUNITY_EVENT,
-                date = date,
-                startTime = ZonedDateTime.now().plusDays(7),
-                endTime = ZonedDateTime.now().plusDays(7).plusMinutes(30),
-                type = TestData.APPOINTMENT_CONTACT_TYPE,
-                staff = TestData.STAFF,
-                team = TestData.TEAM,
-                provider = TestData.PROVIDER,
-                notes = "Some notes",
-                externalReference = "${Contact.REFERENCE_PREFIX}${UUID.randomUUID()}",
-                sensitive = false,
-            )
+    private fun givenExistingContact(date: LocalDate = LocalDate.now().plusDays(7)) = contactRepository.save(
+        Contact(
+            id = id(),
+            person = CA_PERSON.toCrn(),
+            event = CA_COMMUNITY_EVENT,
+            date = date,
+            startTime = ZonedDateTime.now().plusDays(7),
+            endTime = ZonedDateTime.now().plusDays(7).plusMinutes(30),
+            type = TestData.APPOINTMENT_CONTACT_TYPE,
+            staff = TestData.STAFF,
+            team = TestData.TEAM,
+            provider = TestData.PROVIDER,
+            notes = "Some notes",
+            externalReference = "${Contact.REFERENCE_PREFIX}${UUID.randomUUID()}",
+            sensitive = false,
         )
-        val appointmentReference = UUID.fromString(existing.externalReference!!.takeLast(36))
-        return Pair(existing, appointmentReference)
+    )
+
+    fun createAppointment(): CreateAppointmentRequest {
+        val startTime = LocalTime.now()
+        return CreateAppointmentRequest(
+            reference = UUID.randomUUID(),
+            requirementId = REQUIREMENTS[2].id,
+            licenceConditionId = null,
+            date = LocalDate.now().minusDays(7),
+            startTime = startTime,
+            endTime = startTime.plusMinutes(30),
+            outcome = RequestCode("ATTC"),
+            location = RequestCode("OFFICE1"),
+            staff = RequestCode("STAFF01"),
+            team = RequestCode("TEAM01"),
+            notes = "Some notes about the appointment",
+            sensitive = true,
+            description = "Description",
+        )
     }
+
+    fun CreateAppointmentRequest.asList() = CreateAppointmentsRequest(listOf(this))
+
+    fun Contact.toUpdate() = UpdateAppointmentRequest(
+        reference = UUID.fromString(externalReference!!.takeLast(36)),
+        date = date,
+        startTime = startTime!!.toLocalTime(),
+        endTime = endTime!!.toLocalTime(),
+        sensitive = false,
+        outcome = outcome?.let { RequestCode(it.code) },
+        location = location?.let { RequestCode(it.code) },
+        team = RequestCode(team.code),
+        staff = RequestCode(staff.code),
+        notes = notes,
+        description = description,
+    )
+
+    fun UpdateAppointmentRequest.asList() = UpdateAppointmentsRequest(listOf(this))
 }
