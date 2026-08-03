@@ -3,10 +3,10 @@ package uk.gov.justice.digital.hmpps.controller.model
 import java.time.ZonedDateTime
 
 data class PersonalDetailsAndCircumstances(
-    val preferredLanguage: CodeAndDescription?,
-    val personalCircumstances: List<PersonCircumstance>?,
-    val disabilities: List<Disability>?,
-    val offenderPersonalityDisorder: OffenderPersonalityDisorder?
+    val preferredLanguage: CodeAndDescription? = null,
+    val personalCircumstances: List<PersonCircumstance>? = emptyList(),
+    val disabilities: List<Disability>? = emptyList(),
+    val offenderPersonalityDisorder: OffenderPersonalityDisorder? = null
 )
 
 data class OffenderPersonalityDisorder(

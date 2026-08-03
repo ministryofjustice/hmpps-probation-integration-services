@@ -12,7 +12,6 @@ import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.controller.model.CodeAndDescription
