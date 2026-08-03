@@ -17,6 +17,7 @@ import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -31,11 +32,13 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.Handler
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
+import uk.gov.justice.digital.hmpps.model.UpdateContactDetails
 import uk.gov.justice.digital.hmpps.service.CheckInService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
+import kotlin.text.get
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -461,6 +464,8 @@ internal class IntegrationTest @Autowired constructor(
                           ],
                           "practitioner": {
                             "code": "${ProviderGenerator.DEFAULT_STAFF.code}",
+                            "username": "john-smith",
+                            "unallocated": false,
                             "email": "john.smith@moj.gov.uk",
                             "name": {
                               "forename": "${ProviderGenerator.DEFAULT_STAFF.forename}",
@@ -674,5 +679,38 @@ internal class IntegrationTest @Autowired constructor(
                 "setupId" to "d9e1f2a3-b4c5-6789-0abc-def123456789",
             )
         )
+    }
+
+    @Test
+    fun `get alerts count for a user`() {
+        mockMvc.get("/user/${ProviderGenerator.DEFAULT_STAFF_USER.username}/alerts") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.count") { isNumber() }
+            }
+    }
+
+    @Test
+    fun `update contact details for a person`() {
+        mockMvc.put("/case/${PersonGenerator.DEFAULT_PERSON.crn}/contact-details") {
+            withToken()
+            json = UpdateContactDetails(mobileNumber = "07999999999", emailAddress = "new@example.com")
+        }.andExpect { status { isOk() } }
+
+        // Verify the update persisted
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.mobile") { value("07999999999") }
+                jsonPath("$.email") { value("new@example.com") }
+            }
+    }
+
+    @Test
+    fun `update contact details returns 404 for unknown crn`() {
+        mockMvc.put("/case/NOT_A_CRN/contact-details") {
+            withToken()
+            json = UpdateContactDetails(mobileNumber = "07999999999", emailAddress = "new@example.com")
+        }.andExpect { status { isNotFound() } }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.model.PersonalDetails
+import uk.gov.justice.digital.hmpps.model.UpdateContactDetails
 import uk.gov.justice.digital.hmpps.service.ContactDetailsService
 import uk.gov.justice.digital.hmpps.service.PersonalDetailsValidationService
 
@@ -41,4 +42,19 @@ class ContactDetailsController(
         @PathVariable crn: String,
         @RequestBody personalDetails: PersonalDetails
     ) = personalDetailsValidationService.validatePersonalDetails(personalDetails)
+
+    @PreAuthorize("hasRole('PROBATION_API__ESUPERVISION__CASE_DETAIL')")
+    @PutMapping(value = ["/case/{crn}/contact-details"])
+    @Operation(summary = "Updates contact details (mobile and email) for a person on probation")
+    fun updateContactDetails(
+        @PathVariable crn: String,
+        @RequestBody update: UpdateContactDetails
+    ) = contactDetailsService.updateContactDetails(crn, update)
+
+    @PreAuthorize("hasRole('PROBATION_API__ESUPERVISION__CASE_DETAIL')")
+    @GetMapping(value = ["/user/{username}/alerts"])
+    @Operation(summary = "Gets the count of unreviewed check-in alerts for a user")
+    fun getAlerts(@PathVariable username: String) =
+        contactDetailsService.getAlertCount(username)
+
 }

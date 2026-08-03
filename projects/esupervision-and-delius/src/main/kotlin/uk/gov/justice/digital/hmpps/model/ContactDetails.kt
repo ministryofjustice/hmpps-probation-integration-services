@@ -35,4 +35,15 @@ data class Practitioner(
     val probationDeliveryUnit: CodedDescription,
     val provider: CodedDescription,
     val email: String?,
+    val unallocated: Boolean,
+    val username: String?,
+)
+
+data class UpdateContactDetails(
+    val mobileNumber: String?,
+    val emailAddress: String?,
+)
+
+data class AlertCount(
+    val count: Long,
 )

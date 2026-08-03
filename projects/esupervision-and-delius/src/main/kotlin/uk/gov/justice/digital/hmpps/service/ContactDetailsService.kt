@@ -2,17 +2,21 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
+import kotlin.code
 
 @Service
 class ContactDetailsService(
     val comRepository: PersonManagerRepository,
     val registrationRepository: RegistrationRepository,
     val ldapTemplate: LdapTemplate,
+    val personRepository: PersonRepository,
+    val contactRepository: ContactRepository,
 ) {
     fun getContactDetailsForCrn(crn: String) =
         comRepository.findByPersonCrn(crn)?.let { com ->
@@ -75,7 +79,9 @@ class ContactDetailsService(
         localAdminUnit = team.ldu(),
         probationDeliveryUnit = team.pdu(),
         provider = with(provider) { CodedDescription(code, description) },
-        email = staff.user?.username?.let { getEmail(it) }
+        email = staff.user?.username?.let { getEmail(it) },
+        unallocated = staff.code.endsWith("U"),
+        username = staff.user?.username,
     )
 
     fun EventEntity.asEvent() = Event(
@@ -91,4 +97,17 @@ class ContactDetailsService(
 
     fun Team.ldu() = with(ldu) { CodedDescription(code, description) }
     fun Team.pdu() = with(ldu.pdu) { CodedDescription(code, description) }
-}
+
+    @Transactional
+    fun updateContactDetails(crn: String, update: UpdateContactDetails) {
+        val person = personRepository.getByCrn(crn)
+        person.mobile = update.mobileNumber
+        person.emailAddress = update.emailAddress
+        personRepository.save(person)
+    }
+
+    fun getAlertCount(username: String): AlertCount {
+        val count = contactRepository.countUnreviewedByUsername(username)
+        return AlertCount(count)
+    }
+  }

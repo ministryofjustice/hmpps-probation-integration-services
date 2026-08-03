@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
@@ -179,4 +180,17 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
+    @Query("""
+        select count(c) from Contact c
+        join PersonManager pm on pm.person.id = c.person.id
+        join pm.staff s
+        join StaffUser su on su.staff.id = s.id
+        where c.type.code = :typeCode
+        and c.outcome is null
+        and c.softDeleted = false
+        and su.username = :username
+        and pm.active = true
+        and pm.softDeleted = false
+    """)
+    fun countUnreviewedByUsername(username: String, typeCode: String = ContactType.E_SUPERVISION_CHECK_IN): Long
 }
