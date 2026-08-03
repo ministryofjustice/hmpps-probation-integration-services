@@ -33,7 +33,7 @@ data class PersonActivitySearchRequest(
     @Schema(
         description = "Whether to filter by sparks contacts in the search results. Defaults to false.",
         example = "true",
-    ) val filterBySparksContacts: Boolean = true,
+    ) val filterBySparksContacts: Boolean = false,
     @Schema(
         description = "Whether to filter supervisionPackages contacts in the search results. Defaults to false.",
         example = "false",
