@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.entity.DisabilityRepository
 import uk.gov.justice.digital.hmpps.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.entity.PersonCircumstanceRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.entity.getLatestOpdByCrn
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 
 @Service
@@ -20,7 +19,7 @@ class PersonalDetailsService(
         val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
         val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
         val disabilities = disabilityRepository.findByPersonId(person.id)
-        val opd = nsiRepository.getLatestOpdByCrn(crn)
+        val opd = nsiRepository.findOffenderPersonalityDisorderByCrn(crn)
         return PersonalDetailsAndCircumstances(
             preferredLanguage = person.language?.toCodeAndDescription(),
             personalCircumstances = personalCircumstances.map { it.toPersonCircumstance() },

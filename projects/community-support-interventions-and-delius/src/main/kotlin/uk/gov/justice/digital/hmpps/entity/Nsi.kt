@@ -12,7 +12,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.controller.model.CodeAndDescription
@@ -102,11 +101,8 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         join fetch nsi.type
         where nsi.person.crn = :crn
         and nsi.type.code = 'OPD1'
-        order by nsi.createdDatetime desc
     """
     )
-    fun findOffenderPersonalityDisorderByCrn(crn: String, page: PageRequest = PageRequest.of(0, 1)): List<Nsi>
+    fun findOffenderPersonalityDisorderByCrn(crn: String): Nsi?
 }
 
-fun NsiRepository.getLatestOpdByCrn(crn: String): Nsi? =
-    findOffenderPersonalityDisorderByCrn(crn).firstOrNull()
