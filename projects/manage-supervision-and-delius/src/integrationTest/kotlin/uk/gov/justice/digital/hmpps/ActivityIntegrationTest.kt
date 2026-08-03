@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath
+import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.hamcrest.MatcherAssert.assertThat
 import java.time.ZonedDateTime
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivity
+import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ContactSearchResponse
 import uk.gov.justice.digital.hmpps.client.ContactSearchResult
@@ -119,5 +122,41 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.activities.size, equalTo(1))
         assertThat(res.activities.first().esupervisionId, equalTo(E_SUPERVISION_ID))
+    }
+
+    @Test
+    fun `activity search forwards filter fields to probation search`() {
+        val person = OVERVIEW
+        val searchResponse = ContactSearchResponse(
+            page = 0, totalResults = 0, totalPages = 0, size = 10,
+            results = emptyList()
+        )
+        wireMockServer.stubFor(
+            WireMock.post(urlPathEqualTo("/probation-search/search/activity"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(searchResponse))
+                )
+        )
+
+        val searchRequest = PersonActivitySearchRequest(
+            keywords = "test",
+            filterBySparksContacts = true,
+            filterBySupervisionPackageContacts = true,
+        )
+
+        mockMvc.post("/activity/${person.crn}") {
+            withToken()
+            json = searchRequest
+        }.andExpect { status { isOk() } }
+
+        wireMockServer.verify(
+            postRequestedFor(urlPathEqualTo("/probation-search/search/activity"))
+                .withRequestBody(matchingJsonPath("$.filterBySparksContacts", WireMock.equalTo("true")))
+                .withRequestBody(matchingJsonPath("$.filterBySupervisionPackageContacts", WireMock.equalTo("true")))
+                .withRequestBody(matchingJsonPath("$.keywords", WireMock.equalTo("test")))
+        )
     }
 }
