@@ -76,7 +76,6 @@ interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Lon
     """
     )
     fun findCurrentCircumstances(personId: Long): List<PersonalCircumstance>
-
 }
 
 @Immutable
