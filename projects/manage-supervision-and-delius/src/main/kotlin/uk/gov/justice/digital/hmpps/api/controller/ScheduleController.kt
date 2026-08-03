@@ -15,7 +15,8 @@ import uk.gov.justice.digital.hmpps.service.ScheduleService
 class ScheduleController(private val scheduleService: ScheduleService) {
 
     @GetMapping("/upcoming")
-    @Operation(summary = "Gets upcoming schedule information’ ")
+    @Operation(summary = "Gets upcoming schedule information' ")
+    @PreAuthorize("hasAnyRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL','PROBATION_API__SENTENCE_PLAN__CASE_DETAIL')")
     fun getUpcomingSchedule(
         @PathVariable crn: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
