@@ -17,6 +17,7 @@ class Registration(
     @Column(name = "offender_id")
     val personId: Long,
 
+    @Lob
     @Column(name = "registration_notes")
     val notes: String? = null,
 
