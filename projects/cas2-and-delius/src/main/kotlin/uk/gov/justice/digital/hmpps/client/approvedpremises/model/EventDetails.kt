@@ -15,27 +15,19 @@ data class ApplicationSubmitted(
     val applicationId: String,
     val applicationUrl: String,
     val submittedAt: ZonedDateTime,
-    val applicationOrigin: String,
-) {
-    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
-}
+    val cohort: Cas2EventCohort,
+)
 
 data class ApplicationStatusUpdated(
     val applicationId: String,
     val applicationUrl: String,
     val newStatus: ApplicationStatus,
     val updatedAt: ZonedDateTime,
-    val applicationOrigin: String,
-) {
-    fun applicationOriginDescription(): String = ApplicationOrigin.from(applicationOrigin).description
-}
+    val cohort: Cas2EventCohort,
+)
 
-enum class ApplicationOrigin(val description: String) {
-    PrisonBail("Prison Bail"),
-    CourtBail("Court Bail"),
-    HomeDetentionCurfew("Home Detention Curfew");
+data class Cas2EventCohort(
+    val code: String,
+    val longDisplayName: String,
+)
 
-    companion object {
-        fun from(value: String) = entries.single { it.name.equals(value, ignoreCase = true) }
-    }
-}
