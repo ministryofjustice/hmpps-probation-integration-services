@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.time.LocalDate
 
 @Entity
@@ -93,6 +94,5 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
     fun existsByCrn(crn: String): Boolean
-    fun getByCrn(crn: String): Person = findByCrn(crn)
-        ?: throw ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Person not found")
+    fun getByCrn(crn: String): Person = findByCrn(crn).orNotFoundBy("crn", crn)
 }

@@ -685,7 +685,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/user/${ProviderGenerator.DEFAULT_STAFF_USER.username}/alerts") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.count") { isNumber() }
+                jsonPath("$.count") { value(1) }
             }
     }
 

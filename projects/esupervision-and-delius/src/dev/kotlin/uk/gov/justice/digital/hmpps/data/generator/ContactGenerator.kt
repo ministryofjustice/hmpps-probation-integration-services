@@ -43,6 +43,11 @@ object ContactGenerator {
         externalReference = Contact.externalReferencePrefix(SETUP_COMPLETED) + "c3d4e5f6-a7b8-9012-cdef-123456789012"
     )
 
+    val ALERT_CONTACT = generateContact(
+        alert = true,
+        description = "Alert contact for testing",
+    )
+
     fun generateContact(
         person: Person = PersonGenerator.DEFAULT_PERSON,
         event: EventEntity? = EventGenerator.EVENT_2,
@@ -57,6 +62,7 @@ object ContactGenerator {
         notes: String? = "Existing Notes",
         externalReference: String? = null,
         softDeleted: Boolean = false,
+        alert: Boolean? = false,
         id: Long = 0,
         isSensitive: Boolean = false,
     ) = Contact(
@@ -73,6 +79,7 @@ object ContactGenerator {
         notes = notes,
         externalReference = externalReference,
         softDeleted = softDeleted,
+        alert = alert,
         id = id,
         isSensitive = isSensitive
     )

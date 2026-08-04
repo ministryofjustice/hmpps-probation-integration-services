@@ -72,6 +72,10 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
+    @Column(name = "alert")
+    @Convert(converter = NumericBooleanConverter::class)
+    var alert: Boolean? = false,
+
     @Id
     @Column(name = "contact_id", updatable = false)
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
@@ -159,6 +163,23 @@ class ContactOutcome(
     }
 }
 
+@Immutable
+@Entity
+@Table(name = "contact_alert")
+class ContactAlert(
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_employee_id")
+    val staff: Staff,
+
+    @Id
+    @Column(name = "contact_alert_id")
+    val id: Long,
+)
+
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
     fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
@@ -180,20 +201,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
-
-    @Query(
-        """
-        select count(c) from Contact c
-        join PersonManager pm on pm.person.id = c.person.id
-        join pm.staff s
-        join StaffUser su on su.staff.id = s.id
-        where c.type.code = :typeCode
-        and c.outcome is null
+    @Query("""
+    select count(c) from ContactAlert ca
+    join ca.contact c
+    join PersonManager pm on pm.person.id = c.person.id
+        and pm.active = true and pm.softDeleted = false
+    where c.alert = true
         and c.softDeleted = false
-        and su.username = :username
-        and pm.active = true
-        and pm.softDeleted = false
-    """
-    )
-    fun countUnreviewedByUsername(username: String, typeCode: String = ContactType.E_SUPERVISION_CHECK_IN): Long
+        and c.person.softDeleted = false
+        and ca.staff.user.username = :username
+        and pm.staff.id = ca.staff.id
+    """)
+    fun countAlertsByUsername(username: String): Long
 }

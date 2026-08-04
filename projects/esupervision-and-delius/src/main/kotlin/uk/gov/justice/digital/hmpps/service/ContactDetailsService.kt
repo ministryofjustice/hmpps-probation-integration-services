@@ -105,7 +105,7 @@ class ContactDetailsService(
     }
 
     fun getAlertCount(username: String): AlertCount {
-        val count = contactRepository.countUnreviewedByUsername(username)
+        val count = contactRepository.countAlertsByUsername(username)
         return AlertCount(count)
     }
 }
