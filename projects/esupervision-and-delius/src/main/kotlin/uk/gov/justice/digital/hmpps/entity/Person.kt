@@ -93,7 +93,6 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
     fun existsByCrn(crn: String): Boolean
-    fun getByCrn(crn: String): Person = findByCrn(crn) ?: throw org.springframework.http.HttpStatus.NOT_FOUND.let {
-        ResponseStatusException(it, "Person not found")
-    }
+    fun getByCrn(crn: String): Person = findByCrn(crn)
+        ?: throw ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Person not found")
 }

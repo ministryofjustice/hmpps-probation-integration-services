@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
-import kotlin.code
 
 @Service
 class ContactDetailsService(
@@ -103,7 +102,6 @@ class ContactDetailsService(
         val person = personRepository.getByCrn(crn)
         person.mobile = update.mobileNumber
         person.emailAddress = update.emailAddress
-        personRepository.save(person)
     }
 
     fun getAlertCount(username: String): AlertCount {
