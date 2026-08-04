@@ -13,7 +13,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchRequest
@@ -165,7 +164,6 @@ internal class ActivityServiceTest {
 
         val captor = argumentCaptor<ActivitySearchRequest>()
         verify(probationSearchClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10))
-        verifyNoInteractions(probationSearchClient)
         val captured = captor.firstValue
 
         assertThat(captured.crn, equalTo(crn))
