@@ -9,8 +9,6 @@ import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchReque
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchResponse
 import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.client.ProbationSearchPreloadClient
-import uk.gov.justice.digital.hmpps.client.ProbationSearchSemanticClient
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
@@ -21,8 +19,6 @@ class ActivityService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
     private val probationSearchClient: ProbationSearchClient,
-    private val probationSearchSemanticClient: ProbationSearchSemanticClient,
-    private val probationSearchPreloadClient: ProbationSearchPreloadClient,
 ) {
 
     @Transactional
@@ -52,7 +48,7 @@ class ActivityService(
                     pageable.pageSize
                 )
 
-                "2" -> probationSearchSemanticClient.contactSearchViaSemanticSearch(
+                "2" -> probationSearchClient.contactSearchViaSemanticSearch(
                     probationSearchRequest,
                     pageable.pageNumber,
                     pageable.pageSize
@@ -99,6 +95,6 @@ class ActivityService(
         }.map { it.toActivity() }
     }
 
-    fun preloadForCrn(crn: String) = probationSearchPreloadClient.preload(crn)
+    fun preloadForCrn(crn: String) = probationSearchClient.preload(crn)
 }
 

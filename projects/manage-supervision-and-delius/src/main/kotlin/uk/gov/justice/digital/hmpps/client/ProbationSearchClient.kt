@@ -15,18 +15,14 @@ interface ProbationSearchClient {
         @RequestParam page: Int = 0,
         @RequestParam size: Int = 10
     ): ContactSearchResponse
-}
 
-interface ProbationSearchSemanticClient {
     @PostExchange(url = "/search/contacts")
     fun contactSearchViaSemanticSearch(
         @RequestBody body: ActivitySearchRequest,
         @RequestParam page: Int = 0,
         @RequestParam size: Int = 10
     ): ContactSearchResponse
-}
 
-interface ProbationSearchPreloadClient {
     @GetExchange(url = "/search/preload/{crn}")
     fun preload(@PathVariable("crn") crn: String): Any
 }

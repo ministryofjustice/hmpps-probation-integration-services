@@ -21,8 +21,6 @@ import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ContactSearchResponse
 import uk.gov.justice.digital.hmpps.client.ContactSearchResult
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
-import uk.gov.justice.digital.hmpps.client.ProbationSearchPreloadClient
-import uk.gov.justice.digital.hmpps.client.ProbationSearchSemanticClient
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
@@ -41,12 +39,6 @@ internal class ActivityServiceTest {
 
     @Mock
     lateinit var probationSearchClient: ProbationSearchClient
-
-    @Mock
-    lateinit var probationSearchSemanticClient: ProbationSearchSemanticClient
-
-    @Mock
-    lateinit var probationSearchPreloadClient: ProbationSearchPreloadClient
 
     @InjectMocks
     lateinit var service: ActivityService
@@ -158,7 +150,7 @@ internal class ActivityServiceTest {
         val contact = ContactGenerator.FIRST_APPT_CONTACT
 
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(probationSearchSemanticClient.contactSearchViaSemanticSearch(any(), eq(0), eq(10))).thenReturn(
+        whenever(probationSearchClient.contactSearchViaSemanticSearch(any(), eq(0), eq(10))).thenReturn(
             ContactSearchResponse(
                 size = 10,
                 page = 0,
@@ -172,7 +164,7 @@ internal class ActivityServiceTest {
         val res = service.activitySearch(crn, "2", searchRequest, pageable)
 
         val captor = argumentCaptor<ActivitySearchRequest>()
-        verify(probationSearchSemanticClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10))
+        verify(probationSearchClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10))
         verifyNoInteractions(probationSearchClient)
         val captured = captor.firstValue
 
@@ -209,11 +201,11 @@ internal class ActivityServiceTest {
     fun `preloadForCrn delegates to preload client`() {
         val crn = "X000005"
         val expectedResponse = mapOf("status" to "ok")
-        whenever(probationSearchPreloadClient.preload(crn)).thenReturn(expectedResponse)
+        whenever(probationSearchClient.preload(crn)).thenReturn(expectedResponse)
 
         val result = service.preloadForCrn(crn)
 
-        verify(probationSearchPreloadClient).preload(crn)
+        verify(probationSearchClient).preload(crn)
         assertThat(result, equalTo(expectedResponse))
     }
 }
