@@ -36,8 +36,8 @@ data class PersonActivitySearchRequest(
     ) val filterBySparksContacts: Boolean = false,
     @Schema(
         description = "Whether to filter supervisionPackages contacts in the search results. Defaults to false.",
-        example = "false",
-    ) val filterBySupervisionPackageContacts: Boolean = true,
+        example = "true",
+    ) val filterBySupervisionPackageContacts: Boolean = false,
     val filters: List<String> = emptyList(),
     val typeCodes: List<String> = emptyList()
 )
