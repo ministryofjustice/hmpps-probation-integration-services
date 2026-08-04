@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +10,8 @@ import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchReque
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchResponse
 import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchPreloadClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchSemanticClient
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.getSummary
@@ -18,12 +21,15 @@ import java.time.LocalDate
 class ActivityService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val probationSearchClient: ProbationSearchClient
+    private val probationSearchClient: ProbationSearchClient,
+    private val probationSearchSemanticClient: ProbationSearchSemanticClient,
+    private val probationSearchPreloadClient: ProbationSearchPreloadClient,
 ) {
 
     @Transactional
     fun activitySearch(
         crn: String,
+        version: String,
         searchRequest: PersonActivitySearchRequest,
         pageable: Pageable
     ): PersonActivitySearchResponse {
@@ -40,7 +46,11 @@ class ActivityService(
             typeCodes = searchRequest.typeCodes
         )
         val response =
-            probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+            when (version) {
+                "1" -> probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+                "2" -> probationSearchSemanticClient.contactSearchViaSemanticSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
         val ids = response.results.map { it.id }
 
         val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
@@ -79,5 +89,7 @@ class ActivityService(
             )
         }.map { it.toActivity() }
     }
+
+    fun preloadForCrn(crn: String) = probationSearchPreloadClient.preload(crn)
 }
 

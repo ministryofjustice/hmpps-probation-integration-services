@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.client
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.PostExchange
 import java.time.LocalDate
 
@@ -13,6 +14,20 @@ interface ProbationSearchClient {
         @RequestParam page: Int = 0,
         @RequestParam size: Int = 10
     ): ContactSearchResponse
+}
+
+interface ProbationSearchSemanticClient {
+    @PostExchange(url = "/search/contacts")
+    fun contactSearchViaSemanticSearch(
+        @RequestBody body: ActivitySearchRequest,
+        @RequestParam page: Int = 0,
+        @RequestParam size: Int = 10
+    ): ContactSearchResponse
+}
+
+interface ProbationSearchPreloadClient {
+    @GetExchange(url = "/search/preload/{crn}")
+    fun preload(@org.springframework.web.bind.annotation.PathVariable crn: String): Any
 }
 
 data class ActivitySearchRequest(

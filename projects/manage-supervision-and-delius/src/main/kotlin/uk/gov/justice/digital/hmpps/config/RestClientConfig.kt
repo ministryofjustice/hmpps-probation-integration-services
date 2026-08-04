@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
 import uk.gov.justice.digital.hmpps.client.BankHolidayClient
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchPreloadClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchSemanticClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.createClient
 import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadClient
 
@@ -13,6 +15,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.alfresco.AlfrescoUploadC
 class RestClientConfig(private val oauth2Client: RestClient, private val restClientBuilder: RestClient.Builder) {
     @Bean
     fun probationSearchClient(@Value("\${integrations.probation-search.url}") apiBaseUrl: String): ProbationSearchClient =
+        createClient(oauth2Client.mutate().baseUrl(apiBaseUrl).build())
+
+    @Bean
+    fun probationSearchSemanticClient(@Value("\${integrations.probation-search.url}") apiBaseUrl: String): ProbationSearchSemanticClient =
+        createClient(oauth2Client.mutate().baseUrl(apiBaseUrl).build())
+
+    @Bean
+    fun probationSearchPreloadClient(@Value("\${integrations.probation-search.url}") apiBaseUrl: String): ProbationSearchPreloadClient =
         createClient(oauth2Client.mutate().baseUrl(apiBaseUrl).build())
 
     @Bean
