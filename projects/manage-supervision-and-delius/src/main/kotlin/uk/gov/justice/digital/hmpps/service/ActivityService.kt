@@ -47,8 +47,18 @@ class ActivityService(
         )
         val response =
             when (version) {
-                "1" -> probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
-                "2" -> probationSearchSemanticClient.contactSearchViaSemanticSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+                "1" -> probationSearchClient.contactSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
+                "2" -> probationSearchSemanticClient.contactSearchViaSemanticSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
                 else -> throw IllegalArgumentException("Unsupported version: $version")
             }
         val ids = response.results.map { it.id }
