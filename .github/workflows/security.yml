@@ -9,7 +9,7 @@ jobs:
   get-projects:
     permissions:
       contents: read
-    uses: ./.github/workflows/get-projects.yml
+    uses: ministryofjustice/hmpps-probation-integration-services/.github/workflows/get-projects.yml@main
     with:
       projects: All
 
@@ -37,7 +37,8 @@ jobs:
             --severity-threshold=high \
             --json-file-output=snyk-results.json \
             --sarif-file-output=snyk-results.sarif \
-            "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest"
+            --policy-path=.snyk \
+            "ghcr.io/ministryofjustice/hmpps-probation-integration-services/$PROJECT:latest"
         env:
           PROJECT: ${{ matrix.project }}
           CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
