@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.client
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
@@ -27,7 +28,7 @@ interface ProbationSearchSemanticClient {
 
 interface ProbationSearchPreloadClient {
     @GetExchange(url = "/search/preload/{crn}")
-    fun preload(@org.springframework.web.bind.annotation.PathVariable crn: String): Any
+    fun preload(@PathVariable("crn") crn: String): Any
 }
 
 data class ActivitySearchRequest(

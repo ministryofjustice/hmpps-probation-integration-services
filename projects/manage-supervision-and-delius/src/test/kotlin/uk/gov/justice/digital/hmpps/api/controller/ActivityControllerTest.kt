@@ -8,10 +8,15 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivity
+import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchRequest
+import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchResponse
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.service.ActivityService
 import uk.gov.justice.digital.hmpps.service.toActivity
@@ -53,5 +58,51 @@ internal class ActivityControllerTest {
         whenever(activityService.getPersonActivity(crn)).thenReturn(expectedResponse)
         val res = controller.getPersonActivity(crn)
         assertThat(res, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `activitySearch calls service with version 1`() {
+        val crn = "X000005"
+        val searchRequest = PersonActivitySearchRequest(keywords = "test")
+        val expectedResponse = PersonActivitySearchResponse(
+            size = 10, page = 0, totalResults = 0, totalPages = 0,
+            personSummary = personSummary, activities = emptyList()
+        )
+        whenever(activityService.activitySearch(eq(crn), eq("1"), eq(searchRequest), eq(PageRequest.of(0, 10))))
+            .thenReturn(expectedResponse)
+
+        val res = controller.activitySearch(crn, searchRequest, 0, 10)
+
+        assertThat(res, equalTo(expectedResponse))
+        verify(activityService).activitySearch(crn, "1", searchRequest, PageRequest.of(0, 10))
+    }
+
+    @Test
+    fun `activitySearchV2 calls service with version 2`() {
+        val crn = "X000005"
+        val searchRequest = PersonActivitySearchRequest(keywords = "test")
+        val expectedResponse = PersonActivitySearchResponse(
+            size = 10, page = 0, totalResults = 0, totalPages = 0,
+            personSummary = personSummary, activities = emptyList()
+        )
+        whenever(activityService.activitySearch(eq(crn), eq("2"), eq(searchRequest), eq(PageRequest.of(0, 10))))
+            .thenReturn(expectedResponse)
+
+        val res = controller.activitySearchV2(crn, searchRequest, 0, 10)
+
+        assertThat(res, equalTo(expectedResponse))
+        verify(activityService).activitySearch(crn, "2", searchRequest, PageRequest.of(0, 10))
+    }
+
+    @Test
+    fun `preloadForCrn calls service`() {
+        val crn = "X000005"
+        val expectedResponse = mapOf("status" to "ok")
+        whenever(activityService.preloadForCrn(crn)).thenReturn(expectedResponse)
+
+        val res = controller.preloadForCrn(crn)
+
+        assertThat(res, equalTo(expectedResponse))
+        verify(activityService).preloadForCrn(crn)
     }
 }

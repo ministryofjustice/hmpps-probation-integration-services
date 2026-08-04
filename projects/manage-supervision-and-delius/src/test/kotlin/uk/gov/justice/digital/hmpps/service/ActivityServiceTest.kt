@@ -8,10 +8,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivitySearchRequest
@@ -137,5 +139,81 @@ internal class ActivityServiceTest {
         assertThat(res.totalResults, equalTo(1L))
         assertThat(res.activities.size, equalTo(1))
         assertThat(res.activities[0], equalTo(contact.toActivity()))
+    }
+
+    @Test
+    fun `activitySearch v2 calls semantic search client`() {
+        val crn = "X000005"
+        val searchRequest = PersonActivitySearchRequest(
+            keywords = "test semantic",
+            dateFrom = LocalDate.of(2024, 1, 1),
+            dateTo = LocalDate.of(2024, 6, 30),
+            includeSystemGenerated = false,
+            filterBySparksContacts = true,
+            filterBySupervisionPackageContacts = true,
+            filters = listOf("COMPLIED"),
+            typeCodes = listOf("APAT")
+        )
+        val pageable = PageRequest.of(0, 10)
+        val contact = ContactGenerator.FIRST_APPT_CONTACT
+
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+        whenever(probationSearchSemanticClient.contactSearchViaSemanticSearch(any(), eq(0), eq(10))).thenReturn(
+            ContactSearchResponse(
+                size = 10,
+                page = 0,
+                totalResults = 1,
+                totalPages = 1,
+                results = listOf(ContactSearchResult(crn = crn, id = contact.id))
+            )
+        )
+        whenever(contactRepository.findByPersonIdAndIdIn(any(), any())).thenReturn(listOf(contact))
+
+        val res = service.activitySearch(crn, "2", searchRequest, pageable)
+
+        val captor = argumentCaptor<ActivitySearchRequest>()
+        verify(probationSearchSemanticClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10))
+        verifyNoInteractions(probationSearchClient)
+        val captured = captor.firstValue
+
+        assertThat(captured.crn, equalTo(crn))
+        assertThat(captured.keywords, equalTo("test semantic"))
+        assertThat(captured.dateFrom, equalTo(LocalDate.of(2024, 1, 1)))
+        assertThat(captured.dateTo, equalTo(LocalDate.of(2024, 6, 30)))
+        assertThat(captured.includeSystemGenerated, equalTo(false))
+        assertThat(captured.filterBySparksContacts, equalTo(true))
+        assertThat(captured.filterBySupervisionPackageContacts, equalTo(true))
+        assertThat(captured.filters, equalTo(listOf("COMPLIED")))
+        assertThat(captured.typeCodes, equalTo(listOf("APAT")))
+
+        assertThat(res.totalResults, equalTo(1L))
+        assertThat(res.activities.size, equalTo(1))
+        assertThat(res.activities[0], equalTo(contact.toActivity()))
+    }
+
+    @Test
+    fun `activitySearch throws exception for unsupported version`() {
+        val crn = "X000005"
+        val searchRequest = PersonActivitySearchRequest(keywords = "test")
+        val pageable = PageRequest.of(0, 10)
+
+        whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
+
+        val exception = assertThrows<IllegalArgumentException> {
+            service.activitySearch(crn, "3", searchRequest, pageable)
+        }
+        assertThat(exception.message, equalTo("Unsupported version: 3"))
+    }
+
+    @Test
+    fun `preloadForCrn delegates to preload client`() {
+        val crn = "X000005"
+        val expectedResponse = mapOf("status" to "ok")
+        whenever(probationSearchPreloadClient.preload(crn)).thenReturn(expectedResponse)
+
+        val result = service.preloadForCrn(crn)
+
+        verify(probationSearchPreloadClient).preload(crn)
+        assertThat(result, equalTo(expectedResponse))
     }
 }
