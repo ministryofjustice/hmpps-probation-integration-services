@@ -19,6 +19,8 @@ import uk.gov.justice.digital.hmpps.client.ActivitySearchRequest
 import uk.gov.justice.digital.hmpps.client.ContactSearchResponse
 import uk.gov.justice.digital.hmpps.client.ContactSearchResult
 import uk.gov.justice.digital.hmpps.client.ProbationSearchClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchPreloadClient
+import uk.gov.justice.digital.hmpps.client.ProbationSearchSemanticClient
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PERSONAL_DETAILS
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactRepository
@@ -37,6 +39,12 @@ internal class ActivityServiceTest {
 
     @Mock
     lateinit var probationSearchClient: ProbationSearchClient
+
+    @Mock
+    lateinit var probationSearchSemanticClient: ProbationSearchSemanticClient
+
+    @Mock
+    lateinit var probationSearchPreloadClient: ProbationSearchPreloadClient
 
     @InjectMocks
     lateinit var service: ActivityService
@@ -110,7 +118,7 @@ internal class ActivityServiceTest {
         )
         whenever(contactRepository.findByPersonIdAndIdIn(any(), any())).thenReturn(listOf(contact))
 
-        val res = service.activitySearch(crn, searchRequest, pageable)
+        val res = service.activitySearch(crn, "1", searchRequest, pageable)
 
         val captor = argumentCaptor<ActivitySearchRequest>()
         verify(probationSearchClient).contactSearch(captor.capture(), eq(0), eq(10))
