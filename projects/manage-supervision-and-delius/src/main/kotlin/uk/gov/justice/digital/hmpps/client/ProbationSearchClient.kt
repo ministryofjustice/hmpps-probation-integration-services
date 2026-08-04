@@ -23,6 +23,8 @@ data class ActivitySearchRequest(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val dateTo: LocalDate? = null,
     val includeSystemGenerated: Boolean = true,
+    val filterBySparksContacts: Boolean = false,
+    val filterBySupervisionPackageContacts: Boolean = false,
     val filters: List<String> = emptyList(),
     val typeCodes: List<String> = emptyList()
 )

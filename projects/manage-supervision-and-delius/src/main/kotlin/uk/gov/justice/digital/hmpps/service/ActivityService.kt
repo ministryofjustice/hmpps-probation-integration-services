@@ -34,6 +34,8 @@ class ActivityService(
             dateFrom = searchRequest.dateFrom,
             dateTo = searchRequest.dateTo,
             includeSystemGenerated = searchRequest.includeSystemGenerated,
+            filterBySparksContacts = searchRequest.filterBySparksContacts,
+            filterBySupervisionPackageContacts = searchRequest.filterBySupervisionPackageContacts,
             filters = searchRequest.filters,
             typeCodes = searchRequest.typeCodes
         )
