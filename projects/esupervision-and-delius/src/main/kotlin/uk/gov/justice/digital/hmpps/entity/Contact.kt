@@ -201,7 +201,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
-    @Query("""
+
+    @Query(
+        """
     select count(c) from ContactAlert ca
     join ca.contact c
     join PersonManager pm on pm.person.id = c.person.id
@@ -211,6 +213,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and c.person.softDeleted = false
         and ca.staff.user.username = :username
         and pm.staff.id = ca.staff.id
-    """)
+    """
+    )
     fun countAlertsByUsername(username: String): Long
 }
