@@ -32,28 +32,49 @@ data class HealthDetails(
                     oasysHealthDetails.limitedAccessOffender,
                     lastUpdatedDate,
                     Health(
-                        stringToBoolean(generalHealth),
-                        generalHeathSpecify,
-                        elecMonSpecify,
-                        stringToBoolean(elecMonElectricity),
-                        stringToBoolean(elecMon),
-                        generalHeathSpecify,
-                        HealthDetail.from(healthCommunity, healthEM, healthProgramme),
-                        HealthDetail.from(drugsCommunity, drugsEM, drugsProgramme),
-                        HealthDetail.from(lifestyleCommunity, lifestyleEM, lifestyleProgramme),
-                        HealthDetail.from(religiousCommunity, religiousEM, religiousProgramme),
-                        HealthDetail.from(transportCommunity, transportEM, transportProgramme),
-                        HealthDetail.from(employmentCommunity, employmentEM, employmentProgramme),
-                        HealthDetail.from(educationCommunity, educationEM, educationProgramme),
-                        HealthDetail.from(childCareCommunity, childCareEM, childCareProgramme),
-                        HealthDetail.from(disabilityCommunity, disabilityEM, disabilityProgramme),
-                        HealthDetail.from(psychiatricCommunity, psychiatricEM, psychiatricCommunity),
-                        HealthDetail.from(motivationCommunity, motivationEM, motivationProgramme),
-                        HealthDetail.from(learningCommunity, learningEM, learningProgramme),
-                        HealthDetail.from(literacyCommunity, literacyEM, literacyProgramme),
-                        HealthDetail.from(communicationCommunity, communicationEM, communicationProgramme),
-                        HealthDetail.from(interpreterCommunity, interpreterEM, interpreterProgramme),
-                        HealthDetail.from(alcoholCommunity, alcoholEM, alcoholProgramme)
+                        generalHealth = stringToBoolean(generalHealth),
+                        generalHealthSpecify = generalHeathSpecify,
+                        healthConditions,
+                        electronicMonitoringSpecify = elecMonSpecify,
+                        electronicMonitoringElectricity = stringToBoolean(elecMonElectricity),
+                        electronicMonitoring = stringToBoolean(elecMon),
+                        generalHeathSpecify = generalHeathSpecify,
+                        healthIssues = HealthDetail.from(healthCommunity, healthEM, healthProgramme),
+                        drugsMisuse = HealthDetail.from(drugsCommunity, drugsEM, drugsProgramme),
+                        chaoticLifestyle = HealthDetail.from(lifestyleCommunity, lifestyleEM, lifestyleProgramme),
+                        religiousOrCulturalRequirements = HealthDetail.from(
+                            religiousCommunity,
+                            religiousEM,
+                            religiousProgramme
+                        ),
+                        transportDifficulties = HealthDetail.from(transportCommunity, transportEM, transportProgramme),
+                        employmentCommitments = HealthDetail.from(
+                            employmentCommunity,
+                            employmentEM,
+                            employmentProgramme
+                        ),
+                        educationCommitments = HealthDetail.from(educationCommunity, educationEM, educationProgramme),
+                        childCareAndCarers = HealthDetail.from(childCareCommunity, childCareEM, childCareProgramme),
+                        disability = HealthDetail.from(disabilityCommunity, disabilityEM, disabilityProgramme),
+                        psychiatricPsychologicalRequirements = HealthDetail.from(
+                            psychiatricCommunity,
+                            psychiatricEM,
+                            psychiatricCommunity
+                        ),
+                        levelOfMotivation = HealthDetail.from(motivationCommunity, motivationEM, motivationProgramme),
+                        learningDifficulties = HealthDetail.from(learningCommunity, learningEM, learningProgramme),
+                        literacyProblems = HealthDetail.from(literacyCommunity, literacyEM, literacyProgramme),
+                        poorCommunicationSkills = HealthDetail.from(
+                            communicationCommunity,
+                            communicationEM,
+                            communicationProgramme
+                        ),
+                        needForInterpreter = HealthDetail.from(
+                            interpreterCommunity,
+                            interpreterEM,
+                            interpreterProgramme
+                        ),
+                        alcoholMisuse = HealthDetail.from(alcoholCommunity, alcoholEM, alcoholProgramme)
                     )
                 )
             }
@@ -64,6 +85,7 @@ data class HealthDetails(
 data class Health(
     val generalHealth: Boolean? = null,
     val generalHealthSpecify: String? = null,
+    val healthConditions: String? = null,
     val electronicMonitoringSpecify: String? = null,
     val electronicMonitoringElectricity: Boolean? = null,
     val electronicMonitoring: Boolean? = null,
