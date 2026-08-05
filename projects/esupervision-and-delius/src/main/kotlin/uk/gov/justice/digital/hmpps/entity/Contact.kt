@@ -72,7 +72,7 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    @Column(name = "alert")
+    @Column(name = "alert_active")
     @Convert(converter = NumericBooleanConverter::class)
     var alert: Boolean? = false,
 
