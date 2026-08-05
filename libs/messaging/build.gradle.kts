@@ -6,7 +6,13 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    api(libs.bundles.aws.messaging)
+    api(platform(libs.aws))
+    api("io.awspring.cloud:spring-cloud-aws-autoconfigure")
+    api("io.awspring.cloud:spring-cloud-aws-starter-sns")
+    api("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+    api("io.awspring.cloud:spring-cloud-aws-starter")
+    api("software.amazon.awssdk:aws-query-protocol")
+    api("software.amazon.awssdk:sts")
     api(libs.asyncapi)
 
     testImplementation(project(":libs:dev-tools"))

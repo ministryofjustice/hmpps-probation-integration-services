@@ -17,7 +17,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("tools.jackson.dataformat:jackson-dataformat-csv")
-    implementation(libs.aws.s3)
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-s3")
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
