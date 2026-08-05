@@ -91,6 +91,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         PersonGenerator.OGRS4_TEST_OGRS4_VALUES.withEvent()
         PersonGenerator.CONCERN_FLAGS.withEvent()
         PersonGenerator.SAME_DAY_DIFFERENT_TIMES.withEvent()
+        PersonGenerator.NULL_RISK_TO_VALUES.withEvent()
+        PersonGenerator.ONE_MEDIUM_RISK_TO_VALUE.withEvent()
     }
 
     private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {

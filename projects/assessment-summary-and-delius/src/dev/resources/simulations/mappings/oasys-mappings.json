@@ -205,7 +205,7 @@
           "Content-Type": "application/json"
         },
         "status": 200,
-        "bodyFileName": "A000016-no-risk-flags.json"
+        "bodyFileName": "A000016-very-high-risk-colour.json"
       }
     },
     {
@@ -245,6 +245,32 @@
         },
         "status": 200,
         "bodyFileName": "A000018-same-day-late.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000019/ALLOW/19/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000019-null-risk-to-values.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/A000020/ALLOW/20/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000020-one-medium-risk-to-value.json"
       }
     },
     {

@@ -1,8 +1,8 @@
 {
-  "probNumber": "A000016",
+  "probNumber": "A000020",
   "assessments": [
     {
-      "assessmentPk": 16,
+      "assessmentPk": 20,
       "assessmentType": "LAYER3",
       "dateCompleted": "2023-12-07T12:22:44",
       "assessorSignedDate": "2023-12-07T12:16:12",
@@ -19,24 +19,24 @@
       "latestPartCompSignedDate": null,
       "laterCompleteAssessmentExists": false,
       "latestCompleteDate": "2023-12-07T12:22:44",
-      "riskChildrenCommunity": null,
-      "currentControlBehaveTrust": null,
+      "riskChildrenCommunity": "Medium",
+      "riskChildrenCustody": null,
+      "riskKnownAdultCommunity": null,
+      "riskKnownAdultCustody": null,
+      "riskPrisonersCustody": null,
+      "riskPublicCommunity": null,
+      "riskPublicCustody": null,
+      "riskStaffCommunity": null,
+      "riskStaffCustody": null,
       "concernsCopingInCustody": null,
+      "currentControlBehaveTrust": null,
       "reviewNum": null,
       "concernsEscapeAbscond": null,
-      "initialSpDate": "12/02/2024",
+      "initialSpDate": null,
       "concernsVulnerability": null,
       "concernsRiskOfSelfHarm": null,
       "concernsRiskOfSuicide": null,
-      "reviewSpDate": "2024-08-12",
-      "riskPrisonersCustody": null,
-      "riskStaffCustody": null,
-      "riskStaffCommunity": null,
-      "riskKnownAdultCustody": null,
-      "riskKnownAdultCommunity": null,
-      "riskPublicCustody": null,
-      "riskPublicCommunity": null,
-      "riskChildrenCustody": null,
+      "reviewSpDate": null,
       "weightedScores": {
         "accommodationWeightedScore": 3,
         "eteWeightedScore": 3,
@@ -75,32 +75,7 @@
         "ogpRisk": null,
         "ovpRisk": null
       },
-      "basicSentencePlan": [
-        {
-          "bspAreaLinked": "ATTITUDES",
-          "bspAreaLinkedDesc": "Attitudes"
-        },
-        {
-          "bspAreaLinked": "RISK_MANAGEMENT",
-          "bspAreaLinkedDesc": "Risk Management"
-        },
-        {
-          "bspAreaLinked": "THINKING_AND_BEHAVIOUR",
-          "bspAreaLinkedDesc": "Thinking/Behaviour"
-        },
-        {
-          "bspAreaLinked": "EDUCATION_TRAINING_AND_EMPLOYABILITY",
-          "bspAreaLinkedDesc": "ETE"
-        },
-        {
-          "bspAreaLinked": "EDUCATION_TRAINING_AND_EMPLOYABILITY",
-          "bspAreaLinkedDesc": "ETE"
-        },
-        {
-          "bspAreaLinked": "ATTITUDES",
-          "bspAreaLinkedDesc": "Attitudes"
-        }
-      ],
+      "basicSentencePlan": [],
       "offences": [
         {
           "offenceCode": "804",
@@ -112,3 +87,4 @@
     }
   ]
 }
+
