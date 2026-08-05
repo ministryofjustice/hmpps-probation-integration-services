@@ -76,7 +76,31 @@ fun PniResult.asIntegrationModel(): IntegrationModel {
                 ScoredAnswer.Problem.of(it.temperControl),
                 ScoredAnswer.Problem.of(it.problemSolvingSkills),
                 ScoredAnswer.Problem.of(it.difficultiesCoping),
-            )
+            ),
+            staticAllReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.ogrs4gYr2,
+                ScoreLevel.of(it.newActuarialPredictors.ogrs4gBand)
+            ),
+            dynamicAllReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.ogp2Yr2,
+                ScoreLevel.of(it.newActuarialPredictors.ogp2Band)
+            ),
+            staticViolentReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.ogrs4vYr2,
+                ScoreLevel.of(it.newActuarialPredictors.ogrs4vBand)
+            ),
+            dynamicViolentReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.ovp2Yr2,
+                ScoreLevel.of(it.newActuarialPredictors.ovp2Band)
+            ),
+            staticSeriousViolentReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.snsvStaticYr2,
+                ScoreLevel.of(it.newActuarialPredictors.snsvStaticYr2Band)
+            ),
+            dynamicSeriousViolentReoffendingPredictor = Predictor.from(
+                it.newActuarialPredictors.snsvDynamicYr2,
+                ScoreLevel.of(it.newActuarialPredictors.snsvDynamicYr2Band)
+            ),
         )
     }
 

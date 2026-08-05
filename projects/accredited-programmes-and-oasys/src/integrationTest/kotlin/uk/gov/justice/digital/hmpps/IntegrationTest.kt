@@ -186,7 +186,13 @@ internal class IntegrationTest(
                         ScoredAnswer.Problem.SOME,
                         ScoredAnswer.Problem.SIGNIFICANT,
                         ScoredAnswer.Problem.SIGNIFICANT,
-                    )
+                    ),
+                    staticAllReoffendingPredictor = Predictor(35.98, ScoreLevel.LOW),
+                    dynamicAllReoffendingPredictor = null,
+                    staticViolentReoffendingPredictor = Predictor(32.29, ScoreLevel.MEDIUM),
+                    dynamicViolentReoffendingPredictor = null,
+                    staticSeriousViolentReoffendingPredictor = null,
+                    dynamicSeriousViolentReoffendingPredictor = Predictor(36.44, ScoreLevel.VERY_HIGH),
                 )
             )
         )
