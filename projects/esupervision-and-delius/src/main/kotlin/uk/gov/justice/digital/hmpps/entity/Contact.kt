@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
@@ -70,6 +71,10 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+
+    @Column(name = "alert_active")
+    @Convert(converter = NumericBooleanConverter::class)
+    var alert: Boolean? = false,
 
     @Id
     @Column(name = "contact_id", updatable = false)
@@ -158,6 +163,23 @@ class ContactOutcome(
     }
 }
 
+@Immutable
+@Entity
+@Table(name = "contact_alert")
+class ContactAlert(
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_employee_id")
+    val staff: Staff,
+
+    @Id
+    @Column(name = "contact_alert_id")
+    val id: Long,
+)
+
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
     fun getByCode(code: String) = findByCode(code).orNotFoundBy("code", code)
@@ -179,4 +201,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     fun findByExternalReferenceIn(externalReference: List<String>): Contact?
     fun getByExternalReferenceIn(externalReference: List<String>): Contact =
         findByExternalReferenceIn(externalReference).orNotFoundBy("externalReference", externalReference)
+
+    @Query(
+        """
+    select count(c) from ContactAlert ca
+    join ca.contact c
+    join PersonManager pm on pm.person.id = c.person.id
+    where c.alert = true
+        and ca.staff.user.username = :username
+        and pm.staff.id = ca.staff.id
+    """
+    )
+    fun countAlertsByUsername(username: String): Long
 }
