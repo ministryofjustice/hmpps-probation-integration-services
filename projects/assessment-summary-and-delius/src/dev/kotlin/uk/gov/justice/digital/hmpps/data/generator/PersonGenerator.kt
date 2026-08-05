@@ -22,6 +22,8 @@ object PersonGenerator {
     val HIGHEST_RISK_COLOUR = generate("A000016")
     val CONCERN_FLAGS = generate("A000017")
     val SAME_DAY_DIFFERENT_TIMES = generate("A000018")
+    val NULL_RISK_TO_VALUES = generate("A000019")
+    val ONE_MEDIUM_RISK_TO_VALUE = generate("A000020")
 
     fun generate(
         crn: String,

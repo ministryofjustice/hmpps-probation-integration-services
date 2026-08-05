@@ -53,7 +53,9 @@ class RiskService(
         summary: AssessmentSummary,
         addToTelemetry: (String, String) -> Unit
     ) {
-        val roshType = summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal } ?: return
+        val allRiskToValuesNull = summary.allRiskToValuesNull
+        val roshType = summary.riskFlags.mapNotNull(RiskOfSeriousHarmType::of).maxByOrNull { it.ordinal }
+            ?: if (allRiskToValuesNull) RiskOfSeriousHarmType.L else return
         val roshRegistrations = registrationRepository.findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
 
         val (matchingRegistrations, registrationsToRemove) = roshRegistrations.partition { it.type.code == roshType.code }
@@ -66,7 +68,8 @@ class RiskService(
         // If no matching RoSH registration of the correct type, create one
         if (matchingRegistrations.isEmpty()) {
             val type = registerTypeRepository.getByCode(roshType.code)
-            person.addRegistration(type, addToTelemetry = addToTelemetry)
+            val roshNote = NO_RISK_IDENTIFIED_NOTE.takeIf { allRiskToValuesNull }
+            person.addRegistration(type, riskNotes = roshNote, addToTelemetry = addToTelemetry)
         }
     }
 
@@ -272,3 +275,16 @@ class RiskService(
 
     fun Registration.notes(): String = reviewNotes(type, nextReviewDate)
 }
+
+// Added to a newly created LOW ROSH registration when every OASys risk-to register is null.
+private const val NO_RISK_IDENTIFIED_NOTE =
+    "An OASys assessment has been completed and no specific risks have been identified"
+
+private val AssessmentSummary.allRiskToValuesNull: Boolean
+    get() = listOf(
+        riskChildrenCommunity, riskChildrenCustody,
+        riskPublicCommunity, riskPublicCustody,
+        riskKnownAdultCommunity, riskKnownAdultCustody,
+        riskStaffCommunity, riskStaffCustody,
+        riskPrisonersCustody
+    ).all { it == null }
