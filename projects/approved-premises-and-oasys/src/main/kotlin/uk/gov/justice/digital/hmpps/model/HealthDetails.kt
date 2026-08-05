@@ -34,7 +34,7 @@ data class HealthDetails(
                     Health(
                         generalHealth = stringToBoolean(generalHealth),
                         generalHealthSpecify = generalHeathSpecify,
-                        healthConditions = healthConditions,
+                        healthConditions,
                         electronicMonitoringSpecify = elecMonSpecify,
                         electronicMonitoringElectricity = stringToBoolean(elecMonElectricity),
                         electronicMonitoring = stringToBoolean(elecMon),
