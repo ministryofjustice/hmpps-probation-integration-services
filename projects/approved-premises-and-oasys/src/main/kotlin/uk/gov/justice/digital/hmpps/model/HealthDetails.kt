@@ -33,8 +33,8 @@ data class HealthDetails(
                     lastUpdatedDate,
                     Health(
                         generalHealth = stringToBoolean(generalHealth),
-                        generalHealthSpecify =  generalHeathSpecify,
-                        healthConditions,
+                        generalHealthSpecify = generalHeathSpecify,
+                        healthConditions = healthConditions,
                         electronicMonitoringSpecify = elecMonSpecify,
                         electronicMonitoringElectricity = stringToBoolean(elecMonElectricity),
                         electronicMonitoring = stringToBoolean(elecMon),
@@ -42,18 +42,38 @@ data class HealthDetails(
                         healthIssues = HealthDetail.from(healthCommunity, healthEM, healthProgramme),
                         drugsMisuse = HealthDetail.from(drugsCommunity, drugsEM, drugsProgramme),
                         chaoticLifestyle = HealthDetail.from(lifestyleCommunity, lifestyleEM, lifestyleProgramme),
-                        religiousOrCulturalRequirements = HealthDetail.from(religiousCommunity, religiousEM, religiousProgramme),
+                        religiousOrCulturalRequirements = HealthDetail.from(
+                            religiousCommunity,
+                            religiousEM,
+                            religiousProgramme
+                        ),
                         transportDifficulties = HealthDetail.from(transportCommunity, transportEM, transportProgramme),
-                        employmentCommitments = HealthDetail.from(employmentCommunity, employmentEM, employmentProgramme),
+                        employmentCommitments = HealthDetail.from(
+                            employmentCommunity,
+                            employmentEM,
+                            employmentProgramme
+                        ),
                         educationCommitments = HealthDetail.from(educationCommunity, educationEM, educationProgramme),
                         childCareAndCarers = HealthDetail.from(childCareCommunity, childCareEM, childCareProgramme),
                         disability = HealthDetail.from(disabilityCommunity, disabilityEM, disabilityProgramme),
-                        psychiatricPsychologicalRequirements = HealthDetail.from(psychiatricCommunity, psychiatricEM, psychiatricCommunity),
+                        psychiatricPsychologicalRequirements = HealthDetail.from(
+                            psychiatricCommunity,
+                            psychiatricEM,
+                            psychiatricCommunity
+                        ),
                         levelOfMotivation = HealthDetail.from(motivationCommunity, motivationEM, motivationProgramme),
                         learningDifficulties = HealthDetail.from(learningCommunity, learningEM, learningProgramme),
                         literacyProblems = HealthDetail.from(literacyCommunity, literacyEM, literacyProgramme),
-                        poorCommunicationSkills = HealthDetail.from(communicationCommunity, communicationEM, communicationProgramme),
-                        needForInterpreter = HealthDetail.from(interpreterCommunity, interpreterEM, interpreterProgramme),
+                        poorCommunicationSkills = HealthDetail.from(
+                            communicationCommunity,
+                            communicationEM,
+                            communicationProgramme
+                        ),
+                        needForInterpreter = HealthDetail.from(
+                            interpreterCommunity,
+                            interpreterEM,
+                            interpreterProgramme
+                        ),
                         alcoholMisuse = HealthDetail.from(alcoholCommunity, alcoholEM, alcoholProgramme)
                     )
                 )
