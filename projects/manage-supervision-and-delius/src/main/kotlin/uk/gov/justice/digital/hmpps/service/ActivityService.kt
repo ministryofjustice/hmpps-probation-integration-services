@@ -18,12 +18,13 @@ import java.time.LocalDate
 class ActivityService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val probationSearchClient: ProbationSearchClient
+    private val probationSearchClient: ProbationSearchClient,
 ) {
 
     @Transactional
     fun activitySearch(
         crn: String,
+        version: String,
         searchRequest: PersonActivitySearchRequest,
         pageable: Pageable
     ): PersonActivitySearchResponse {
@@ -40,7 +41,21 @@ class ActivityService(
             typeCodes = searchRequest.typeCodes
         )
         val response =
-            probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+            when (version) {
+                "1" -> probationSearchClient.contactSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
+                "2" -> probationSearchClient.contactSearchViaSemanticSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
         val ids = response.results.map { it.id }
 
         val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
@@ -79,5 +94,7 @@ class ActivityService(
             )
         }.map { it.toActivity() }
     }
+
+    fun preloadForCrn(crn: String) = probationSearchClient.preload(crn)
 }
 
