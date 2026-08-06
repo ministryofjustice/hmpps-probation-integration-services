@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -42,6 +43,11 @@ internal class HandlerTest {
     lateinit var handler: Handler
 
     val message = prepEvent("tier-calculation")
+
+    @BeforeEach
+    fun beforeEach() {
+        whenever(featureFlags.enabled("tier-delius-active-cases-only")).thenReturn(true)
+    }
 
     @Test
     fun `should update v2 tier`() {
