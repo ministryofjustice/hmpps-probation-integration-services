@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.client.TierClient
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV2
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV3
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -26,11 +27,19 @@ class Handler(
     private val featureFlags: FeatureFlags,
     private val tierClient: TierClient,
     override val converter: NotificationConverter<HmppsDomainEvent>,
+    private val eventRepository: EventRepository
 ) : NotificationHandler<HmppsDomainEvent> {
     @Transactional
     @Publish(messages = [Message(name = "tiering/tier_calculation_complete")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
+        if (!eventRepository.existsByPersonCrn(notification.crn)) {
+            // Temporarily disable tier updates for inactive cases. Disabling tier updates avoids overloading the ETL
+            // process when lots of updates are made to inactive cases. For example, during data correction script runs.
+            // TODO remove this after NDelius/MIS deregistration scripts have completed.
+            telemetryService.trackEvent("NoActiveEvents", notification.telemetry)
+            return
+        }
         val (tier2, tier3) = try {
             Pair(
                 tierClient.tierV2(notification.crn, notification.calculationId),
