@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.contact.EnforcementContactResponse
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER_2
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -36,6 +37,16 @@ class EnforcementContactIntegrationTest : IntegrationTestBase() {
         assertThat(response.enforcementContacts[0].lastModifiedDate, notNullValue())
         assertThat(response.size, equalTo(10))
         assertThat(response.page, equalTo(0))
+    }
+
+    @Test
+    fun `NFA enforcement actions are excluded from results`() {
+        val response = mockMvc.get("/contact/${USER.username}/enforcements?months=0") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<EnforcementContactResponse>()
+
+        val nfaContactId = ContactGenerator.ENFORCEMENT_CONTACT_NFA.id
+        assertThat(response.enforcementContacts.none { it.id == nfaContactId }, equalTo(true))
     }
 
     @Test

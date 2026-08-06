@@ -21,6 +21,9 @@
         }
       ]
     },
-    "applicationOrigin": "prisonBail"
+    "cohort": {
+      "code": "PRISON_BAIL",
+      "longDisplayName": "Prison Bail"
+    }
   }
 }

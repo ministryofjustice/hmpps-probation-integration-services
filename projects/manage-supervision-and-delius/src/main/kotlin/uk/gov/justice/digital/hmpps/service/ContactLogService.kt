@@ -348,16 +348,19 @@ class ContactLogService(
         val responseDate =
             enforcementAction.responseByPeriod?.let { contact.startTime?.plusDays(it) }
         val existingEnforcement = contact.enforcement
+        val updatedDateTime = ZonedDateTime.now(EuropeLondon)
         if (existingEnforcement == null) {
             val enforcement = Enforcement(
                 contact = contact,
                 action = enforcementAction,
-                responseDate = responseDate
+                responseDate = responseDate,
+                lastUpdatedDatetime = updatedDateTime
             )
             enforcementRepository.save(enforcement)
         } else {
             existingEnforcement.action = enforcementAction
             existingEnforcement.responseDate = responseDate
+            existingEnforcement.lastUpdatedDatetime = updatedDateTime
         }
         updateFtcCount(contact)
         contact.event?.run {

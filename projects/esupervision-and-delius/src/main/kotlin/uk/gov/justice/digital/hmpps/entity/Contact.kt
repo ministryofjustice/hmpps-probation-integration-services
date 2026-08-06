@@ -207,10 +207,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     select count(c) from ContactAlert ca
     join ca.contact c
     join PersonManager pm on pm.person.id = c.person.id
-        and pm.active = true and pm.softDeleted = false
     where c.alert = true
-        and c.softDeleted = false
-        and c.person.softDeleted = false
         and ca.staff.user.username = :username
         and pm.staff.id = ca.staff.id
     """

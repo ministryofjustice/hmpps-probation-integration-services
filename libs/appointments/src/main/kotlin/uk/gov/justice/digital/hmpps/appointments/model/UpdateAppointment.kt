@@ -20,12 +20,12 @@ class UpdateAppointment {
         val startTime: LocalTime,
         val endTime: LocalTime?,
         val allowConflicts: Boolean = false,
-        val allowDurationReductionWithOutcome: Boolean = false,
         val allowRescheduleWithOutcome: Boolean = false,
     ) {
-        val endsInFuture: Boolean =
-            date.atTime(endTime ?: startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
-        val startsInFuture: Boolean = date.atTime(startTime).atZone(EuropeLondon) > ZonedDateTime.now(EuropeLondon)
+        val startDateTime: ZonedDateTime = date.atTime(startTime).atZone(EuropeLondon)
+        val endDateTime: ZonedDateTime = date.atTime(endTime ?: startTime).atZone(EuropeLondon)
+        val endsInFuture: Boolean = endDateTime > ZonedDateTime.now(EuropeLondon)
+        val startsInFuture: Boolean = startDateTime > ZonedDateTime.now(EuropeLondon)
 
         internal constructor(entity: AppointmentContact) : this(
             date = entity.date,
@@ -45,16 +45,6 @@ class UpdateAppointment {
 
         internal infix fun isSameDateAndTimeAs(other: AppointmentContact) =
             this isSameDateAndTimeAs Schedule(other)
-
-        internal infix fun isDurationReductionOf(other: Schedule) =
-            date == other.date && startTime == other.startTime &&
-                endTime != null && other.endTime != null && endTime < other.endTime
-
-        internal infix fun isDurationReductionOf(other: AppointmentContact) =
-            this isDurationReductionOf Schedule(other)
-
-        internal infix fun isAllowedDurationReductionOf(existing: AppointmentContact) =
-            allowDurationReductionWithOutcome && this isDurationReductionOf existing
     }
 
     data class Recreate(

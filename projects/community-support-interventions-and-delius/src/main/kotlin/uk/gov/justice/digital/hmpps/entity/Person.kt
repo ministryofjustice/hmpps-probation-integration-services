@@ -4,6 +4,8 @@ import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
@@ -19,6 +21,10 @@ class Person(
 
     @Column(columnDefinition = "char(7)")
     val crn: String,
+
+    @ManyToOne
+    @JoinColumn(name = "language_id")
+    val language: ReferenceData? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

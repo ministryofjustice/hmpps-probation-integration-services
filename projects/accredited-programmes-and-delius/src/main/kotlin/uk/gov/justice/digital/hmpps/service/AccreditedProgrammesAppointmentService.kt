@@ -104,15 +104,13 @@ class AccreditedProgrammesAppointmentService(
             reference = { "${Contact.REFERENCE_PREFIX}${it.reference}" }
             amendDateTime = {
                 Schedule(
-                    it.date,
-                    it.startTime,
-                    it.endTime,
+                    it.date, it.startTime, it.endTime,
                     allowConflicts = true,
-                    allowDurationReductionWithOutcome = true
+                    allowRescheduleWithOutcome = true
                 )
             }
             reassign = { Assignee(it.staff.code, it.team.code, it.location?.code) }
-            applyOutcome = { Outcome(it.outcome?.code, allowMissingOutcomeInThePast = true) }
+            applyOutcome = { Outcome(it.outcome?.code, allowMissingOutcomeInThePast = true, allowChanges = true) }
             appendNotes = { it.notes }
             updateDescription = { it.description }
             flagAs = { copy(sensitive = it.sensitive) }

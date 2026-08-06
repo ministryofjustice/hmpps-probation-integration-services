@@ -13,6 +13,9 @@
         "username": "test.user"
       }
     },
-    "applicationOrigin": "homeDetentionCurfew"
+    "cohort": {
+      "code": "HDC",
+      "longDisplayName": "Home Detention Curfew"
+    }
   }
 }

@@ -453,8 +453,8 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
 
     private fun recreateRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
-        startTime: LocalTime = LocalTime.now().plusHours(1),
-        endTime: LocalTime = LocalTime.now().plusHours(2),
+        startTime: LocalTime = LocalTime.of(9, 0),
+        endTime: LocalTime = LocalTime.of(10, 0),
         staffCode: String? = null,
         teamCode: String? = null,
         locationCode: String? = null,

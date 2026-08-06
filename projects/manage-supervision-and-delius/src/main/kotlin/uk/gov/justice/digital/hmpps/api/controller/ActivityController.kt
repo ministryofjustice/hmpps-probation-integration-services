@@ -17,9 +17,8 @@ class ActivityController(private val activityService: ActivityService) {
     @GetMapping
     @Operation(
         summary = "Gets all activity for a person",
-        description = """Returns all contacts split into two lists: past contacts in descending date order
-            (most recent first) under 'activities', and future contacts in ascending date order
-            (earliest first) under 'futureActivities'."""
+        description = """Returns all contacts in descending date order
+            (most recent first) under 'activities'."""
     )
     fun getPersonActivity(@PathVariable crn: String) = activityService.getPersonActivity(crn)
 
@@ -30,5 +29,20 @@ class ActivityController(private val activityService: ActivityService) {
         @RequestBody searchRequest: PersonActivitySearchRequest,
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "10") size: Int
-    ) = activityService.activitySearch(crn, searchRequest, PageRequest.of(page, size))
+    ) = activityService.activitySearch(crn, "1", searchRequest, PageRequest.of(page, size))
+
+    @PostMapping("/v2")
+    @Operation(summary = "Activity log search for a person (v2)")
+    fun activitySearchV2(
+        @PathVariable crn: String,
+        @RequestBody searchRequest: PersonActivitySearchRequest,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int
+    ) = activityService.activitySearch(crn, "2", searchRequest, PageRequest.of(page, size))
+
+    @GetMapping("/preload")
+    @Operation(summary = "Preload semantic search data for a person")
+    fun preloadForCrn(
+        @PathVariable crn: String
+    ) = activityService.preloadForCrn(crn)
 }

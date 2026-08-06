@@ -186,7 +186,13 @@ internal class IntegrationTest(
                         ScoredAnswer.Problem.SOME,
                         ScoredAnswer.Problem.SIGNIFICANT,
                         ScoredAnswer.Problem.SIGNIFICANT,
-                    )
+                    ),
+                    staticAllReoffendingPredictor = Predictor(35.98, ScoreLevel.LOW),
+                    dynamicAllReoffendingPredictor = null,
+                    staticViolentReoffendingPredictor = Predictor(32.29, ScoreLevel.MEDIUM),
+                    dynamicViolentReoffendingPredictor = null,
+                    staticSeriousViolentReoffendingPredictor = null,
+                    dynamicSeriousViolentReoffendingPredictor = Predictor(36.44, ScoreLevel.VERY_HIGH),
                 )
             )
         )
@@ -198,6 +204,57 @@ internal class IntegrationTest(
             withToken()
         }
             .andExpect { status { isOk() } }
+    }
+
+    @Test
+    fun `get pni without actuarial predictors`() {
+        val res = mockMvc.get("/assessments/pni/A8748PN?community=false") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PniResponse>()
+
+        assertThat(
+            res.assessment,
+            equalTo(
+                PniAssessment(
+                    id = 3875025120,
+                    ldc = Ldc.from(0, 2),
+                    ldcMessage = null,
+                    ogrs3Risk = ScoreLevel.LOW,
+                    ovpRisk = ScoreLevel.MEDIUM,
+                    osp = Osp(
+                        ScoreLevel.NOT_APPLICABLE,
+                        ScoreLevel.NOT_APPLICABLE,
+                    ),
+                    0.56,
+                    40,
+                    questions = Questions(
+                        YesNo.NO,
+                        YesNo.NO,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.MISSING,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.NONE,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.SOME,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                        ScoredAnswer.Problem.SIGNIFICANT,
+                    ),
+                    staticAllReoffendingPredictor = null,
+                    dynamicAllReoffendingPredictor = null,
+                    staticViolentReoffendingPredictor = null,
+                    dynamicViolentReoffendingPredictor = null,
+                    staticSeriousViolentReoffendingPredictor = null,
+                    dynamicSeriousViolentReoffendingPredictor = null,
+                )
+            )
+        )
     }
 
     @Test

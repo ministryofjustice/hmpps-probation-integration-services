@@ -33,7 +33,7 @@ class TierDetailsService(
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
         val registrationEntities = registrationRepository.findByPersonIdOrderByDateDesc(case.id)
-        val eventEntities = eventRepository.findByCrn(crn)
+        val eventEntities = eventRepository.findByPersonCrn(crn)
         val convictions = mapToConvictions(eventEntities)
         val ogrsScore = getRiskOgrs(case)
         val rsrScore = getStaticOrDynamicRsrScore(case)

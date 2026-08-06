@@ -891,28 +891,6 @@ class AppointmentServiceTest {
     }
 
     @Test
-    fun `amend appointment with outcome succeeds when reducing duration is allowed`() {
-        val date = LocalDate.now().minusDays(1)
-        val existing = TestData.appointment(
-            date = date,
-            startTime = date.atTime(9, 0).atZone(EuropeLondon),
-            endTime = date.atTime(14, 0).atZone(EuropeLondon),
-            outcome = OUTCOME
-        )
-        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
-            .thenReturn(listOf(existing))
-
-        appointmentService.update(existing) {
-            reference = { existing.externalReference }
-            amendDateTime = { copy(endTime = LocalTime.of(13, 0), allowDurationReductionWithOutcome = true) }
-        }
-
-        assertThat(existing.startTime.toLocalTime()).isEqualTo(LocalTime.of(9, 0))
-        assertThat(existing.endTime?.toLocalTime()).isEqualTo(LocalTime.of(13, 0))
-        assertThat(existing.outcome).isEqualTo(OUTCOME)
-    }
-
-    @Test
     fun `amend appointment date or time with outcome succeeds when rescheduling is allowed`() {
         val date = LocalDate.now().plusDays(1)
         val existing = TestData.appointment(
@@ -957,71 +935,6 @@ class AppointmentServiceTest {
         }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Only permissible absences can be recorded for a future attendance")
-    }
-
-    @Test
-    fun `amend past appointment succeeds when reducing duration is allowed`() {
-        val date = LocalDate.now().minusDays(1)
-        val existing = TestData.appointment(
-            date = date,
-            startTime = date.atTime(9, 0).atZone(EuropeLondon),
-            endTime = date.atTime(14, 0).atZone(EuropeLondon)
-        )
-        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
-            .thenReturn(listOf(existing))
-
-        appointmentService.update(existing) {
-            reference = { existing.externalReference }
-            amendDateTime = { copy(endTime = LocalTime.of(13, 0), allowDurationReductionWithOutcome = true) }
-        }
-
-        assertThat(existing.endTime?.toLocalTime()).isEqualTo(LocalTime.of(13, 0))
-        assertThat(existing.outcome).isEqualTo(null)
-    }
-
-    @Test
-    fun `attempt to extend appointment with outcome when reducing duration is allowed`() {
-        val date = LocalDate.now().plusDays(1)
-        val existing = TestData.appointment(
-            date = date,
-            startTime = date.atTime(9, 0).atZone(EuropeLondon),
-            endTime = date.atTime(14, 0).atZone(EuropeLondon),
-            outcome = OUTCOME
-        )
-
-        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
-            .thenReturn(listOf(existing))
-
-        assertThatThrownBy {
-            appointmentService.update(existing) {
-                reference = { existing.externalReference }
-                amendDateTime = { copy(endTime = LocalTime.of(15, 0), allowDurationReductionWithOutcome = true) }
-            }
-        }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Appointment with outcome cannot be rescheduled")
-    }
-
-    @Test
-    fun `attempt to extend past appointment when reducing duration is allowed`() {
-        val date = LocalDate.now().minusDays(1)
-        val existing = TestData.appointment(
-            date = date,
-            startTime = date.atTime(9, 0).atZone(EuropeLondon),
-            endTime = date.atTime(10, 0).atZone(EuropeLondon)
-        )
-
-        whenever(appointmentRepository.findByExternalReferenceIn(listOf(existing.externalReference!!)))
-            .thenReturn(listOf(existing))
-
-        assertThatThrownBy {
-            appointmentService.update(existing) {
-                reference = { existing.externalReference }
-                amendDateTime = { copy(endTime = LocalTime.of(11, 0), allowDurationReductionWithOutcome = true) }
-            }
-        }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Outcome must be provided when amending an appointment in the past")
     }
 
     @Test

@@ -97,6 +97,7 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `cannot reschedule if appointment would clash`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
+        val clashDate = LocalDate.now().plusDays(4)
         val appointment = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
@@ -107,14 +108,14 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         val clashing = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(4),
-                ZonedDateTime.now().plusDays(4).plusMinutes(60)
+                ZonedDateTime.of(clashDate, LocalTime.of(9, 0), ZonedDateTime.now().zone),
+                ZonedDateTime.of(clashDate, LocalTime.of(10, 0), ZonedDateTime.now().zone)
             )
         )
         val request = rescheduleRequest(
-            date = clashing.date,
-            startTime = ZonedDateTime.now().plusDays(4).toLocalTime(),
-            endTime = ZonedDateTime.now().plusDays(4).plusHours(1).toLocalTime(),
+            date = clashDate,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(10, 0),
         )
 
         mockMvc.put("/appointments/${appointment.id}/reschedule") {
@@ -275,8 +276,8 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
 
     private fun rescheduleRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
-        startTime: LocalTime = LocalTime.now().plusHours(1),
-        endTime: LocalTime = LocalTime.now().plusHours(2),
+        startTime: LocalTime = LocalTime.of(9, 0),
+        endTime: LocalTime = LocalTime.of(10, 0),
         staffCode: String? = null,
         teamCode: String? = null,
         locationCode: String? = null,

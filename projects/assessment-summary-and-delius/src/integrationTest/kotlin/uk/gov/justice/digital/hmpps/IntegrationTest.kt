@@ -51,7 +51,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.collections.firstOrNull
 
 @SpringBootTest
 @DirtiesContext
@@ -316,6 +315,44 @@ internal class IntegrationTest @Autowired constructor(
 
         val updatedPerson = personRepository.getByCrn(crn)
         assertThat(updatedPerson.highestRiskColour, equalTo("Red"))
+    }
+
+    @Test
+    fun `all null risk to registers creates a low ROSH registration`() {
+        val person = personRepository.getByCrn(PersonGenerator.NULL_RISK_TO_VALUES.crn)
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        assertThat(
+            registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code),
+            empty()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val roshRegistration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code)
+            .single()
+        assertThat(roshRegistration.type.code, equalTo(RiskOfSeriousHarmType.L.code))
+        assertThat(
+            roshRegistration.notes,
+            equalTo("An OASys assessment has been completed and no specific risks have been identified")
+        )
+        RiskType.entries.forEach { riskType ->
+            assertThat(registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code), empty())
+        }
+    }
+
+    @Test
+    fun `all null risk to registers except one medium creates a medium ROSH registration`() {
+        val person = personRepository.getByCrn(PersonGenerator.ONE_MEDIUM_RISK_TO_VALUE.crn)
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced").withCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val roshRegistration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code)
+            .single()
+        assertThat(roshRegistration.type.code, equalTo(RiskOfSeriousHarmType.M.code))
     }
 
     @Test

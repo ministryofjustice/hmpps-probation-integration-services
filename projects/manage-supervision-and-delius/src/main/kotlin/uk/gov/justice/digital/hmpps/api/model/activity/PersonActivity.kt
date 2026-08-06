@@ -7,10 +7,8 @@ import java.time.LocalDate
 
 data class PersonActivity(
     val personSummary: PersonSummary,
-    @Schema(description = "Past contacts, in descending date order (most recent first)")
-    val activities: List<Activity>,
-    @Schema(description = "Future contacts, in ascending date order (earliest first)")
-    val futureActivities: List<Activity> = emptyList()
+    @Schema(description = "All contacts (past and future), in descending date order (most recent first)")
+    val activities: List<Activity>
 )
 
 data class PersonActivitySearchResponse(
@@ -32,6 +30,14 @@ data class PersonActivitySearchRequest(
         description = "Whether to include system generated contacts in the search results. Defaults to true.",
         example = "false",
     ) val includeSystemGenerated: Boolean = true,
+    @Schema(
+        description = "Whether to filter by sparks contacts in the search results. Defaults to false.",
+        example = "true",
+    ) val filterBySparksContacts: Boolean = false,
+    @Schema(
+        description = "Whether to filter supervisionPackages contacts in the search results. Defaults to false.",
+        example = "true",
+    ) val filterBySupervisionPackageContacts: Boolean = false,
     val filters: List<String> = emptyList(),
     val typeCodes: List<String> = emptyList()
 )

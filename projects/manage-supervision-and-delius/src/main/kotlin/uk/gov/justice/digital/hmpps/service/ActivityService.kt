@@ -18,12 +18,13 @@ import java.time.LocalDate
 class ActivityService(
     private val personRepository: PersonRepository,
     private val contactRepository: ContactRepository,
-    private val probationSearchClient: ProbationSearchClient
+    private val probationSearchClient: ProbationSearchClient,
 ) {
 
     @Transactional
     fun activitySearch(
         crn: String,
+        version: String,
         searchRequest: PersonActivitySearchRequest,
         pageable: Pageable
     ): PersonActivitySearchResponse {
@@ -34,11 +35,27 @@ class ActivityService(
             dateFrom = searchRequest.dateFrom,
             dateTo = searchRequest.dateTo,
             includeSystemGenerated = searchRequest.includeSystemGenerated,
+            filterBySparksContacts = searchRequest.filterBySparksContacts,
+            filterBySupervisionPackageContacts = searchRequest.filterBySupervisionPackageContacts,
             filters = searchRequest.filters,
             typeCodes = searchRequest.typeCodes
         )
         val response =
-            probationSearchClient.contactSearch(probationSearchRequest, pageable.pageNumber, pageable.pageSize)
+            when (version) {
+                "1" -> probationSearchClient.contactSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
+                "2" -> probationSearchClient.contactSearchViaSemanticSearch(
+                    probationSearchRequest,
+                    pageable.pageNumber,
+                    pageable.pageSize
+                )
+
+                else -> throw IllegalArgumentException("Unsupported version: $version")
+            }
         val ids = response.results.map { it.id }
 
         val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
@@ -58,12 +75,11 @@ class ActivityService(
     fun getPersonActivity(crn: String): PersonActivity {
         val summary = personRepository.getSummary(crn)
         val contacts = contactRepository.findByPersonId(summary.id)
-        val (past, future) = contacts.map { it.toActivity() }.partition { it.isInPast }
+        val activities = contacts.map { it.toActivity() }.sortedByDescending { it.startDateTime }
 
         return PersonActivity(
             personSummary = summary.toPersonSummary(),
-            activities = past.sortedByDescending() { it.startDateTime },
-            futureActivities = future.sortedBy { it.startDateTime }
+            activities = activities
         )
     }
 
@@ -78,5 +94,7 @@ class ActivityService(
             )
         }.map { it.toActivity() }
     }
+
+    fun preloadForCrn(crn: String) = probationSearchClient.preload(crn)
 }
 
