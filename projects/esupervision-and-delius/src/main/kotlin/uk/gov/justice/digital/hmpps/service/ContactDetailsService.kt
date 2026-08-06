@@ -3,7 +3,10 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.UPDATE_OFFENDER
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
@@ -16,7 +19,8 @@ class ContactDetailsService(
     val ldapTemplate: LdapTemplate,
     val personRepository: PersonRepository,
     val contactRepository: ContactRepository,
-) {
+    auditedInteractionService: AuditedInteractionService,
+) : AuditableService(auditedInteractionService) {
     fun getContactDetailsForCrn(crn: String) =
         comRepository.findByPersonCrn(crn)?.let { com ->
             val email = com.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
@@ -98,10 +102,11 @@ class ContactDetailsService(
     fun Team.pdu() = with(ldu.pdu) { CodedDescription(code, description) }
 
     @Transactional
-    fun updateContactDetails(crn: String, update: UpdateContactDetails) {
+    fun updateContactDetails(crn: String, update: UpdateContactDetails) = audit(UPDATE_OFFENDER) { audit ->
         val person = personRepository.getByCrn(crn)
         person.mobile = update.mobileNumber
         person.emailAddress = update.emailAddress
+        audit["offenderId"] = person.id
     }
 
     fun getAlertCount(username: String): AlertCount {
