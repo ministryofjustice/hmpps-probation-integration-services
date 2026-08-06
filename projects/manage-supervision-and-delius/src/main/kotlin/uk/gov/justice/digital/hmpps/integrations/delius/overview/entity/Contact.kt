@@ -954,6 +954,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             where c.soft_deleted = 0
+            and (ea.code is null or ea.code != 'NFA')
             and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
@@ -966,7 +967,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join staff s on s.staff_id = c.staff_id
             join caseload cl on s.staff_id = cl.staff_employee_id and c.offender_id = cl.offender_id and (cl.role_code = 'OM')
             join enforcement enf on enf.contact_id = c.contact_id and enf.soft_deleted = 0
+            left join r_enforcement_action ea on ea.enforcement_action_id = enf.enforcement_action_id
             where c.soft_deleted = 0
+            and ea.code != 'NFA'
             and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
