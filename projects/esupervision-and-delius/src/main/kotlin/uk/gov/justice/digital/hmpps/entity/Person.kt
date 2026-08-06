@@ -4,17 +4,23 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Entity
 @SQLRestriction("soft_deleted = 0")
 @Table(name = "offender")
+@EntityListeners(AuditingEntityListener::class)
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -45,7 +51,27 @@ class Person(
     @Column(name = "soft_deleted", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
-)
+) {
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
+
+    @CreatedDate
+    @Column(name = "created_datetime", updatable = false)
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @CreatedBy
+    @Column(name = "created_by_user_id", updatable = false)
+    var createdByUserId: Long = 0
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long = 0
+}
 
 @Immutable
 @Entity
