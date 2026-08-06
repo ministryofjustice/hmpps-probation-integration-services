@@ -24,7 +24,7 @@ data class PniAssessment(
     val ldcData: LdcData,
     val ogpOvp: OgpOvpData,
     val rsrOspData: RsrOspData,
-    val newActuarialPredictors: NewActuarialPredictorsData
+    val newActuarialPredictors: NewActuarialPredictorsData?
 )
 
 data class LdcData(val ldc: Int?, val ldcSubTotal: Int?, val ldcMessage: String?)
