@@ -274,6 +274,9 @@ object ContactGenerator {
     val WARNING_LETTER_ENFORCEMENT_ACTION =
         generateEnforcementAction("EA02", "First Warning Letter Sent", BREACH_CONTACT_TYPE)
 
+    val NFA_ENFORCEMENT_ACTION =
+        generateEnforcementAction("NFA", "No Further Action", BREACH_CONTACT_TYPE)
+
     val ENFORCEMENT = generateEnforcement(ENFORCEMENT_CONTACT_1, ZonedDateTime.now(EuropeLondon).plusDays(7))
     val DUE_SOON_ENFORCEMENT = generateEnforcement(
         ENFORCEMENT_CONTACT_2,
@@ -282,6 +285,19 @@ object ContactGenerator {
     val OVERDUE_ENFORCEMENT = generateEnforcement(
         ENFORCEMENT_CONTACT_3,
         ZonedDateTime.now(EuropeLondon).minusDays(1)
+    )
+
+    val ENFORCEMENT_CONTACT_NFA = generateContact(
+        PersonGenerator.ENFORCEMENT_PERSON,
+        APPT_CT_1,
+        ZonedDateTime.of(LocalDateTime.now(EuropeLondon).minusDays(4), EuropeLondon),
+        complied = false,
+        outcome = FAILED_TO_COMPLY
+    )
+    val NFA_ENFORCEMENT = generateEnforcement(
+        ENFORCEMENT_CONTACT_NFA,
+        ZonedDateTime.now(EuropeLondon).plusDays(5),
+        action = NFA_ENFORCEMENT_ACTION
     )
     val ENFORCEMENT_APPOINTMENT_CONTACT = generateContact(
         PersonGenerator.ENFORCEMENT_APPOINTMENT_PERSON,
