@@ -23,7 +23,7 @@ interface ProbationSearchClient {
         @RequestParam size: Int = 10
     ): ContactSearchResponse
 
-    @GetExchange(url = "/search/preload/{crn}")
+    @GetExchange(url = "/search/contacts/preload/{crn}")
     fun preload(@PathVariable("crn") crn: String): Any
 }
 

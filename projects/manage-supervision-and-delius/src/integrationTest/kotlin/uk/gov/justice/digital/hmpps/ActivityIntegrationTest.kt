@@ -250,7 +250,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
     fun `preload endpoint calls probation search preload for crn`() {
         val person = OVERVIEW
         wireMockServer.stubFor(
-            WireMock.get(urlPathEqualTo("/probation-search/search/preload/${person.crn}"))
+            WireMock.get(urlPathEqualTo("/probation-search/search/contacts/preload/${person.crn}"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -264,7 +264,7 @@ class ActivityIntegrationTest : IntegrationTestBase() {
         }.andExpect { status { isOk() } }
 
         wireMockServer.verify(
-            getRequestedFor(urlPathEqualTo("/probation-search/search/preload/${person.crn}"))
+            getRequestedFor(urlPathEqualTo("/probation-search/search/contacts/preload/${person.crn}"))
         )
     }
 }
