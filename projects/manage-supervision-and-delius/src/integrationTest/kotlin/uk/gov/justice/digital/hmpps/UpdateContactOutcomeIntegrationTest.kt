@@ -374,6 +374,11 @@ class UpdateContactOutcomeIntegrationTest : IntegrationTestBase() {
             enforcementsAfter?.get(0)?.action?.code,
             equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
         )
+        val updated = contactRepository.findById(UpdateContactOutcomeGenerator.CONTACT_11.id).get()
+        assertThat(
+            updated.latestEnforcementAction?.code,
+            equalTo(UpdateContactOutcomeGenerator.ENFORCEMENT_ACTION_2.code)
+        )
         assertThat(enforcementsAfter?.get(0)?.lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
     }
 
