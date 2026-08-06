@@ -9,6 +9,7 @@ import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.client.TierClient
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV2
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculationV3
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -32,6 +33,9 @@ internal class HandlerTest {
     lateinit var featureFlags: FeatureFlags
 
     @Mock
+    lateinit var eventRepository: EventRepository
+
+    @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
     @InjectMocks
@@ -43,6 +47,7 @@ internal class HandlerTest {
     fun `should update v2 tier`() {
         givenFeatureFlags(phase1Enabled = false, phase2Enabled = false)
         val (tier2Calculation, tier3Calculation) = givenTierCalculations()
+        givenActiveEvents()
 
         // When the message is received
         handler.handle(message)
@@ -62,6 +67,7 @@ internal class HandlerTest {
     fun `should update v3 tier column and use v2 tier when phase 1 is enabled`() {
         givenFeatureFlags(phase1Enabled = true, phase2Enabled = false)
         val (tier2Calculation, tier3Calculation) = givenTierCalculations()
+        givenActiveEvents()
 
         handler.handle(message)
 
@@ -79,6 +85,7 @@ internal class HandlerTest {
     fun `should use v3 tier when phase 2 is enabled`() {
         givenFeatureFlags(phase1Enabled = false, phase2Enabled = true)
         val (tier2Calculation, tier3Calculation) = givenTierCalculations()
+        givenActiveEvents()
 
         handler.handle(message)
 
@@ -91,12 +98,23 @@ internal class HandlerTest {
     fun `should update v3 tier column and use v3 tier when both phases are enabled`() {
         givenFeatureFlags(phase1Enabled = true, phase2Enabled = true)
         val (tier2Calculation, tier3Calculation) = givenTierCalculations()
+        givenActiveEvents()
 
         handler.handle(message)
 
         verify(tierUpdateService).updateV3TierColumn("A000001", tier3Calculation)
         verify(tierUpdateService).updateTier("A000001", tier3Calculation)
         verify(tierUpdateService, never()).updateTier("A000001", tier2Calculation)
+    }
+
+    @Test
+    fun `no active events results in no update`() {
+        givenActiveEvents(false)
+
+        handler.handle(message)
+
+        verifyNoInteractions(tierUpdateService)
+        verify(telemetryService).trackEvent(eq("NoActiveEvents"), any(), any())
     }
 
     private fun givenFeatureFlags(phase1Enabled: Boolean, phase2Enabled: Boolean) {
@@ -110,5 +128,9 @@ internal class HandlerTest {
         whenever(tierClient.tierV2("A000001", "123e4567-e89b-12d3-a456-426614174000")).thenReturn(tier2Calculation)
         whenever(tierClient.tierV3("A000001", "123e4567-e89b-12d3-a456-426614174000")).thenReturn(tier3Calculation)
         return tier2Calculation to tier3Calculation
+    }
+
+    private fun givenActiveEvents(exist: Boolean = true) {
+        whenever(eventRepository.existsByPersonCrn("A000001")).thenReturn(exist)
     }
 }
