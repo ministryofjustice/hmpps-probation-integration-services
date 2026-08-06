@@ -954,7 +954,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join rqmnt r on r.rqmnt_id = c.rqmnt_id
             left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
             where c.soft_deleted = 0
-            and ea.code != 'NFA'
+            and (ea.code is null or ea.code != 'NFA')
             and (:cutoff IS NULL OR enf.last_updated_datetime >= :cutoff)
             and s.staff_id = :staffId
             and c.complied = 'N'
