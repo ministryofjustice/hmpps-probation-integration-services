@@ -431,7 +431,7 @@ private fun AppointmentEntity.toUserAppointment() = UserAppointment(
         EuropeLondon
     ) else null,
     location,
-    CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F",
+    CreateAppointment.Type.entries.none { it.code == typeCode } || rqmntMainCatCode == "F",
 )
 
 fun ProbationAreaUser.toProvider() = Provider(id.provider.code, id.provider.description)
@@ -448,6 +448,6 @@ private fun EnforcementAppointment.toEnforcementContactItem() = EnforcementConta
     appointmentOutcome = outcomeDescription,
     enforcementAction = enforcementActionDescription,
     evidenceDueDate = evidenceDueDate?.toLocalDate(),
-    deliusManaged = CreateAppointment.Type.entries.none { it.code == typeCode } || complied == 0 || rqmntMainCatCode == "F",
+    deliusManaged = CreateAppointment.Type.entries.none { it.code == typeCode } || rqmntMainCatCode == "F",
     lastModifiedDate = lastModifiedDate.atZone(EuropeLondon)
 )

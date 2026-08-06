@@ -525,7 +525,7 @@ internal class UserServiceTest {
     }
 
     @Test
-    fun `enforcement contact is delius managed when complied is zero`() {
+    fun `enforcement contact is not delius managed when complied is zero`() {
         val pageable = PageRequest.of(0, 10)
         val username = "user"
         stubUserAndEnforcementContacts(
@@ -548,7 +548,7 @@ internal class UserServiceTest {
 
         val response = service.getEnforcementContacts(username, pageable, filterDueDate = false, months = 0)
 
-        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(true))
+        assertThat(response.enforcementContacts.first().deliusManaged, equalTo(false))
     }
 
     @Test
