@@ -525,7 +525,7 @@ internal class UserServiceTest {
     }
 
     @Test
-    fun `enforcement contact is not delius managed when complied is zero`() {
+fun `enforcement contact is not delius managed when type is in create appointment list and requirement category is not F`() {
         val pageable = PageRequest.of(0, 10)
         val username = "user"
         stubUserAndEnforcementContacts(
