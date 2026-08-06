@@ -33,7 +33,7 @@ class Handler(
     @Publish(messages = [Message(name = "tiering/tier_calculation_complete")])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        if (!eventRepository.existsByPersonCrn(notification.crn)) {
+        if (featureFlags.enabled("tier-delius-active-cases-only") && !eventRepository.existsByPersonCrn(notification.crn)) {
             // Temporarily disable tier updates for inactive cases. Disabling tier updates avoids overloading the ETL
             // process when lots of updates are made to inactive cases. For example, during data correction script runs.
             // TODO remove this after NDelius/MIS deregistration scripts have completed.
