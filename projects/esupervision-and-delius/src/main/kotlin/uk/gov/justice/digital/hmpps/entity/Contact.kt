@@ -204,7 +204,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
-    select count(c) from ContactAlert ca
+    select count(distinct c) from ContactAlert ca
     join ca.contact c
     join c.person p
     join PersonManager pm on pm.person.id = p.id
@@ -212,7 +212,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     join StaffUser su on su.staff.id = s.id
     where c.alert = true
         and su.username = :username
-        and pm.staff.id = ca.staff.id
+        and pm.staff.id = s.id
     """
     )
     fun countAlertsByUsername(username: String): Long

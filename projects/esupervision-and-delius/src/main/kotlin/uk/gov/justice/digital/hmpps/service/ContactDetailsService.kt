@@ -13,14 +13,14 @@ import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
 
 @Service
-class ContactDetailsService (
+class ContactDetailsService(
     val comRepository: PersonManagerRepository,
     val registrationRepository: RegistrationRepository,
     val ldapTemplate: LdapTemplate,
     val personRepository: PersonRepository,
     val contactRepository: ContactRepository,
     auditedInteractionService: AuditedInteractionService,
-): AuditableService(auditedInteractionService) {
+) : AuditableService(auditedInteractionService) {
     fun getContactDetailsForCrn(crn: String) =
         comRepository.findByPersonCrn(crn)?.let { com ->
             val email = com.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
