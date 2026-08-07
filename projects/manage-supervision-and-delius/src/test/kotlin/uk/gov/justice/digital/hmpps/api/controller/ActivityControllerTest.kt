@@ -7,11 +7,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpServerErrorException
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.activity.PersonActivity
@@ -90,8 +94,24 @@ internal class ActivityControllerTest {
 
         val res = controller.activitySearchV2(crn, searchRequest, 0, 10)
 
-        assertThat(res, equalTo(expectedResponse))
+        assertThat(res.statusCode, equalTo(HttpStatus.OK))
+        assertThat(res.body, equalTo(expectedResponse))
         verify(activityService).activitySearch(crn, "2", searchRequest, PageRequest.of(0, 10))
+    }
+
+    @Test
+    fun `activitySearchV2 passes back 503`() {
+        val crn = "X000005"
+        val searchRequest = PersonActivitySearchRequest(keywords = "test")
+        val exception = mock<HttpServerErrorException.ServiceUnavailable>()
+        whenever(exception.message).thenReturn("test")
+        whenever(activityService.activitySearch(eq(crn), eq("2"), eq(searchRequest), eq(PageRequest.of(0, 10))))
+            .thenThrow(exception)
+
+        val res = controller.activitySearchV2(crn, searchRequest, 0, 10)
+
+        assertThat(res.statusCode, equalTo(HttpStatus.SERVICE_UNAVAILABLE))
+        assertThat(res.body, equalTo(ErrorResponse(503, "test")))
     }
 
     @Test
@@ -102,7 +122,20 @@ internal class ActivityControllerTest {
 
         val res = controller.preloadForCrn(crn)
 
-        assertThat(res, equalTo(expectedResponse))
+        assertThat(res.statusCode, equalTo(HttpStatus.OK))
         verify(activityService).preloadForCrn(crn)
+    }
+
+    @Test
+    fun `preloadForCrn passes back 503`() {
+        val crn = "X000005"
+        val exception = mock<HttpServerErrorException.ServiceUnavailable>()
+        whenever(exception.message).thenReturn("test")
+        whenever(activityService.preloadForCrn(crn)).thenThrow(exception)
+
+        val res = controller.preloadForCrn(crn)
+
+        assertThat(res.statusCode, equalTo(HttpStatus.SERVICE_UNAVAILABLE))
+        assertThat(res.body, equalTo(ErrorResponse(503, "test")))
     }
 }
