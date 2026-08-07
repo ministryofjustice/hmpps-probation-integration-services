@@ -208,7 +208,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     join ca.contact c
     join PersonManager pm on pm.person.id = c.person.id
     where c.alert = true
-        and ca.staff.user.username = :username
+        and upper(ca.staff.user.username) = upper(:username)
         and pm.staff.id = ca.staff.id
     """
     )
