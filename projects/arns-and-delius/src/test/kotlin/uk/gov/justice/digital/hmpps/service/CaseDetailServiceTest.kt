@@ -70,7 +70,6 @@ class CaseDetailServiceTest {
         )
     }
 
-
     @Test
     fun `throws not found when person does not exist`() {
         whenever(personRepository.findByCrn("Z123456")).thenReturn(null)
@@ -79,6 +78,5 @@ class CaseDetailServiceTest {
             caseDetailService.getCaseDetail("Z123456")
         }
     }
-
 }
 

@@ -11,7 +11,8 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailService
 @RequestMapping("/arns")
 @PreAuthorize("hasRole('PROBATION_API__ARNS__CASE_DETAIL')")
 class CaseController(
-    private val caseDetailService: CaseDetailService) {
+    private val caseDetailService: CaseDetailService
+) {
     @GetMapping("/{crn}")
     fun getCaseDetail(@PathVariable crn: String) = caseDetailService.getCaseDetail(crn)
 }
