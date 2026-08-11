@@ -18,6 +18,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         warningData()
         appointmentData()
         save(DocumentGenerator.DEFAULT_BREACH_NOTICE)
+        save(DocumentGenerator.EVENT_LEVEL_BREACH_NOTICE)
+        save(DocumentGenerator.UPW_BREACH_NOTICE)
         save(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
         save(DocumentGenerator.DELETED_BREACH_NOTICE)
         lao()
@@ -68,6 +70,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             EventGenerator.DEFAULT_DISPOSAL_TYPE,
             EventGenerator.DEFAULT_DISPOSAL,
             EventGenerator.UNSENTENCED_EVENT,
+            EventGenerator.NO_DOCUMENT_EVENT,
+            EventGenerator.DELETED_DOCUMENT_EVENT,
             EventGenerator.DEFAULT_RQMNT_CATEGORY,
             EventGenerator.UNPAID_RQMT_CATEGORY,
             EventGenerator.DS_REQUIREMENT_SUB_CATEGORY,
@@ -103,6 +107,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             AppointmentGenerator.APPOINTMENT_OUTCOME,
             *AppointmentGenerator.OTHER_APPOINTMENTS.toTypedArray(),
             *AppointmentGenerator.FUTURE_APPOINTMENTS.toTypedArray(),
+            AppointmentGenerator.DELETED_DOCUMENT_APPOINTMENT,
         )
     }
 
