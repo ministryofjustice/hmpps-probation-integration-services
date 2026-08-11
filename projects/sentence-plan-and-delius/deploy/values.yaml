@@ -18,7 +18,7 @@ generic-service:
     sentence-plan-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     sqs-hmpps-domain-events-secret:
-      MESSAGING_CONSUMER_QUEUE_NAME: sqs_queue_name
+      MESSAGING_CONSUMER_QUEUE: sqs_queue_name
 generic-prometheus-alerts:
   targetApplication: sentence-plan-and-delius
 

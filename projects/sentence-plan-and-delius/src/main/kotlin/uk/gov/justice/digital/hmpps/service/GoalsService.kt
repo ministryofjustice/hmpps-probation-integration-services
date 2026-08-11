@@ -29,7 +29,7 @@ class GoalsService(
 
         activeEvents.forEach { e ->
             e.spGoalsComplete = "Y"
-            e.spGoalsDate = LocalDate.now()
+            e.spGoalsDate = event.occurredAt.toLocalDate()
         }
         eventRepository.saveAll(activeEvents)
     }
