@@ -28,7 +28,6 @@ object DocumentGenerator {
     val EVENT_LEVEL_BREACH_NOTICE_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000006")
     val EVENT_LEVEL_BREACH_NOTICE = generateDocument(EVENT_LEVEL_BREACH_NOTICE_ID, DEFAULT_EVENT.id, "EVENT")
 
-
     fun generateDocument(
         breachNoticeUuid: UUID,
         primaryKeyId: Long,
