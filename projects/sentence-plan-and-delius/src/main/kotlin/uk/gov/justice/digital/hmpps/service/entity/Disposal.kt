@@ -36,6 +36,9 @@ class Disposal(
     @Column(name = "entered_notional_end_date")
     val enteredSentenceEndDate: LocalDate? = null,
 
+    @Column(name = "termination_date")
+    val terminationDate: LocalDate? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,

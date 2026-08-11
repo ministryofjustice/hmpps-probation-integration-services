@@ -16,6 +16,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("tools.jackson.module:jackson-module-kotlin")
+    implementation(project(":libs:messaging"))
     implementation(libs.springdoc)
 
     dev(project(":libs:dev-tools"))
