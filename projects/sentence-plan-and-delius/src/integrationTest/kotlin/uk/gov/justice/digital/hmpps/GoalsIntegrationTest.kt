@@ -26,7 +26,6 @@ import org.mockito.kotlin.argThat
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 
-
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class GoalsIntegrationTest @Autowired constructor(
@@ -95,7 +94,8 @@ internal class GoalsIntegrationTest @Autowired constructor(
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
             additionalInformation = mapOf("planUuid" to "some-uuid")
         )
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -116,7 +116,8 @@ internal class GoalsIntegrationTest @Autowired constructor(
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
             additionalInformation = mapOf("planUuid" to "some-uuid")
         )
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -126,5 +127,4 @@ internal class GoalsIntegrationTest @Autowired constructor(
             any()
         )
     }
-
 }
