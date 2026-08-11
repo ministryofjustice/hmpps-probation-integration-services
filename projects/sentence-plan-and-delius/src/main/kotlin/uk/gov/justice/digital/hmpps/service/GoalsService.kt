@@ -42,7 +42,10 @@ class GoalsService(
         if (activeEvents.isEmpty()) {
             telemetryService.trackEvent(
                 "GoalsAchievedRemovedNoActiveDisposal",
-                mapOf("crn" to crn, "message" to "[crn=$crn]. No active disposal identified when Goals achieved is removed.")
+                mapOf(
+                    "crn" to crn,
+                    "message" to "[crn=$crn]. No active disposal identified when Goals achieved is removed."
+                )
             )
             return
         }

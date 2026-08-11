@@ -41,7 +41,8 @@ internal class GoalsIntegrationTest @Autowired constructor(
             personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
             additionalInformation = mapOf("planUuid" to "some-uuid")
         )
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -67,7 +68,8 @@ internal class GoalsIntegrationTest @Autowired constructor(
             personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
             additionalInformation = mapOf("planUuid" to "some-uuid")
         )
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
