@@ -35,26 +35,27 @@ internal class GoalsIntegrationTest @Autowired constructor(
     @MockitoBean private val telemetryService: TelemetryService,
 ) {
 
-    @Test
-    fun `goals completed sets sp_goals_complete and sp_goals_date on active events`() {
-        val crn = PersonGenerator.DEFAULT.crn
-        val occurredAt = ZonedDateTime.parse("2026-01-02T03:04:05Z")
-        val message = HmppsDomainEvent(
-            eventType = "arns.sentence.plan.goals.completed",
-            version = 1,
-            occurredAt = occurredAt,
-            description = "No more open goals",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
-            additionalInformation = mapOf("planUuid" to "some-uuid")
-        )
-        val notification =
-            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        @Test
+        fun `goals completed sets sp_goals_complete and sp_goals_date on active events`() {
+            val crn = PersonGenerator.DEFAULT.crn
+            val occurredAt = ZonedDateTime.parse("2026-01-02T03:04:05Z")
+            val message = HmppsDomainEvent(
+                eventType = "arns.sentence.plan.goals.completed",
+                version = 1,
+                occurredAt = occurredAt,
+                description = "No more open goals",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
+                additionalInformation = mapOf("planUuid" to "some-uuid")
+            )
+            val notification =
+                Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+            channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val event = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
-        assertThat(event.spGoalsComplete).isEqualTo("Y")
-        assertThat(event.spGoalsDate).isEqualTo(occurredAt.toLocalDate())
+            val event = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
+            assertThat(event.spGoalsComplete).isEqualTo("Y")
+            assertThat(event.spGoalsDate).isEqualTo(occurredAt.toLocalDate())
+        }
 
         @Test
         fun `goals added clears sp_goals_complete and sp_goals_date on active events`() {
