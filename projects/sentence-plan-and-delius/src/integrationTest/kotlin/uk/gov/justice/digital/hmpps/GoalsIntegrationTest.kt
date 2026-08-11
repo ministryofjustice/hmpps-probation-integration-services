@@ -56,75 +56,75 @@ internal class GoalsIntegrationTest @Autowired constructor(
         assertThat(event.spGoalsComplete).isEqualTo("Y")
         assertThat(event.spGoalsDate).isEqualTo(occurredAt.toLocalDate())
 
-    @Test
-    fun `goals added clears sp_goals_complete and sp_goals_date on active events`() {
-        val crn = PersonGenerator.DEFAULT.crn
-        // First set the fields
-        val event = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
-        event.spGoalsComplete = "Y"
-        event.spGoalsDate = LocalDate.now()
-        eventRepository.save(event)
+        @Test
+        fun `goals added clears sp_goals_complete and sp_goals_date on active events`() {
+            val crn = PersonGenerator.DEFAULT.crn
+            // First set the fields
+            val event = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
+            event.spGoalsComplete = "Y"
+            event.spGoalsDate = LocalDate.now()
+            eventRepository.save(event)
 
-        val message = HmppsDomainEvent(
-            eventType = "arns.sentence.plan.goals.added",
-            version = 1,
-            occurredAt = ZonedDateTime.now(),
-            description = "There is an open goal",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
-            additionalInformation = mapOf("planUuid" to "some-uuid")
-        )
-        val notification =
-            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+            val message = HmppsDomainEvent(
+                eventType = "arns.sentence.plan.goals.added",
+                version = 1,
+                occurredAt = ZonedDateTime.now(),
+                description = "There is an open goal",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
+                additionalInformation = mapOf("planUuid" to "some-uuid")
+            )
+            val notification =
+                Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+            channelManager.getChannel(queueName).publishAndWait(notification)
 
-        val updated = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
-        assertThat(updated.spGoalsComplete).isNull()
-        assertThat(updated.spGoalsDate).isNull()
+            val updated = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
+            assertThat(updated.spGoalsComplete).isNull()
+            assertThat(updated.spGoalsDate).isNull()
+        }
+
+        @Test
+        fun `goals completed logs telemetry when no active disposals found`() {
+            val crn = PersonGenerator.NON_CUSTODIAL.crn  // or use a CRN with no active disposals
+            val message = HmppsDomainEvent(
+                eventType = "arns.sentence.plan.goals.completed",
+                version = 1,
+                occurredAt = ZonedDateTime.now(),
+                description = "No more open goals",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
+                additionalInformation = mapOf("planUuid" to "some-uuid")
+            )
+            val notification =
+                Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+
+            channelManager.getChannel(queueName).publishAndWait(notification)
+
+            verify(telemetryService).trackEvent(
+                eq("GoalsAchievedNoActiveDisposal"),
+                argThat<Map<String, String>> { this["crn"] == "UNKNOWN1" },
+                any()
+            )
+        }
+
+        @Test
+        fun `goals added logs telemetry when no active disposals found`() {
+            val message = HmppsDomainEvent(
+                eventType = "arns.sentence.plan.goals.added",
+                version = 1,
+                occurredAt = ZonedDateTime.now(),
+                description = "There is an open goal",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
+                additionalInformation = mapOf("planUuid" to "some-uuid")
+            )
+            val notification =
+                Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+
+            channelManager.getChannel(queueName).publishAndWait(notification)
+
+            verify(telemetryService).trackEvent(
+                eq("GoalsAchievedRemovedNoActiveDisposal"),
+                argThat<Map<String, String>> { this["crn"] == "UNKNOWN1" },
+                any()
+            )
+        }
     }
-
-    @Test
-    fun `goals completed logs telemetry when no active disposals found`() {
-        val crn = PersonGenerator.NON_CUSTODIAL.crn  // or use a CRN with no active disposals
-        val message = HmppsDomainEvent(
-            eventType = "arns.sentence.plan.goals.completed",
-            version = 1,
-            occurredAt = ZonedDateTime.now(),
-            description = "No more open goals",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
-            additionalInformation = mapOf("planUuid" to "some-uuid")
-        )
-        val notification =
-            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
-
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            eq("GoalsAchievedNoActiveDisposal"),
-            argThat<Map<String, String>> { this["crn"] == "UNKNOWN1" },
-            any()
-        )
-    }
-
-    @Test
-    fun `goals added logs telemetry when no active disposals found`() {
-        val message = HmppsDomainEvent(
-            eventType = "arns.sentence.plan.goals.added",
-            version = 1,
-            occurredAt = ZonedDateTime.now(),
-            description = "There is an open goal",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "UNKNOWN1"))),
-            additionalInformation = mapOf("planUuid" to "some-uuid")
-        )
-        val notification =
-            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
-
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            eq("GoalsAchievedRemovedNoActiveDisposal"),
-            argThat<Map<String, String>> { this["crn"] == "UNKNOWN1" },
-            any()
-        )
-    }
-}
