@@ -85,7 +85,7 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.3")
+            library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.4")
             library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.1.0")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.9")
             library("azure-identity", "com.azure:azure-identity:1.18.4")
@@ -101,8 +101,8 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.51.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.52.0")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
