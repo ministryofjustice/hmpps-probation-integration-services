@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.CommunityManager
@@ -75,12 +74,17 @@ fun CaseSummary.withDetail(
 ): CaseDetail {
     val regMap = registrations.groupBy { it.type.code == RegisterType.Code.MAPPA.value }
     val personalContacts = contacts.map {
-        val relationshipTypeCategory = it.relationshipTypeCategory.orNotFoundBy("Category", it.relationshipType)
         PersonalContact(
             relationship = it.relationship,
             relationshipType = RelationshipType(
-                it.relationshipType.code, it.relationshipType.description,
-                RelationshipTypeCategory(relationshipTypeCategory.code, relationshipTypeCategory.description)
+                code = it.relationshipType.code,
+                description = it.relationshipType.description,
+                category = it.relationshipTypeCategory?.let { cat ->
+                    RelationshipTypeCategory(
+                        cat.code,
+                        cat.description
+                    )
+                }
             ),
             name = Name(it.forename, it.surname, listOfNotNull(it.middleName)),
             mobileNumber = it.mobileNumber,
