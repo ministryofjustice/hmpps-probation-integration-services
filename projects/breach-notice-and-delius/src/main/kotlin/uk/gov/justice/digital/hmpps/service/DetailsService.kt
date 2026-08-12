@@ -16,6 +16,7 @@ class DetailsService(
     private val personRepository: PersonRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val documentRepository: DocumentRepository,
+    private val eventRepository: EventRepository,
     private val ldapTemplate: LdapTemplate,
 ) {
     fun basicDetails(crn: String, username: String): BasicDetails {
@@ -39,6 +40,14 @@ class DetailsService(
         documentRepository.findByExternalReference(Document.breachNoticeUrn(breachNoticeId))
             ?.let { DocumentCrn(it.person.crn) }
             ?: throw NotFoundException("BreachNotice", "id", breachNoticeId)
+
+    fun breachIdsForEvent(crn: String, eventNumber: String): BreachNoticeDocuments {
+        personRepository.getByCrn(crn)
+        val event = eventRepository.getByCrnAndNumber(crn, eventNumber)
+        val ids = documentRepository.findBreachNoticeUrnsByEventId(event.id)
+            .map { it.removePrefix(Document.BREACH_NOTICE_URN_PREFIX) }
+        return BreachNoticeDocuments(ids)
+    }
 }
 
 fun Person.name() = Name(firstName, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

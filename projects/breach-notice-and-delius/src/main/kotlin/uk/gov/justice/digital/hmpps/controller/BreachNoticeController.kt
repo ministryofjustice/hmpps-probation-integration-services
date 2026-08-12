@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.model.BasicDetails
+import uk.gov.justice.digital.hmpps.model.BreachNoticeDocuments
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.service.DetailsService
 import java.util.*
@@ -19,4 +20,11 @@ class BreachNoticeController(private val details: DetailsService) {
     @PreAuthorize("hasRole('PROBATION_API__BREACH_NOTICE__CASE_DETAIL')")
     @GetMapping(value = ["/case/{breachNoticeId}"])
     fun findCrnForBreachNotice(@PathVariable breachNoticeId: UUID): DocumentCrn = details.crnFor(breachNoticeId)
+
+    @PreAuthorize("hasRole('PROBATION_API__BREACH_NOTICE__CASE_DETAIL')")
+    @GetMapping(value = ["/breach-event-documents/{crn}/{eventNumber}"])
+    fun getBreachEventDocuments(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String
+    ): BreachNoticeDocuments = details.breachIdsForEvent(crn, eventNumber)
 }
