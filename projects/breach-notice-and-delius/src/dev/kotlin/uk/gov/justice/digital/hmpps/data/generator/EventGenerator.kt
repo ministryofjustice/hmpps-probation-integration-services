@@ -16,6 +16,7 @@ object EventGenerator {
     val UNSENTENCED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "2")
     val NO_DOCUMENT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "3")
     val DELETED_DOCUMENT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "4")
+    val TERMINATED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "5", active = false)
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
     val DS_REQUIREMENT_SUB_CATEGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)

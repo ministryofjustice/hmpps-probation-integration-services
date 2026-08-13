@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Immutable
 @Entity
 @Table(name = "event")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Event(
 
     @ManyToOne

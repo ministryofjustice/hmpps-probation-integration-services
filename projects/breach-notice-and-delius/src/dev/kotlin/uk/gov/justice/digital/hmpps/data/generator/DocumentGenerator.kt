@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.DELETED_
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.OTHER_APPOINTMENTS
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.PSS_APPOINTMENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_EVENT
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.TERMINATED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.UNSENTENCED_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.WarningGenerator.UPW_APPOINTMENT
 import uk.gov.justice.digital.hmpps.integrations.delius.Document
@@ -27,6 +28,10 @@ object DocumentGenerator {
 
     val EVENT_LEVEL_BREACH_NOTICE_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000006")
     val EVENT_LEVEL_BREACH_NOTICE = generateDocument(EVENT_LEVEL_BREACH_NOTICE_ID, DEFAULT_EVENT.id, "EVENT")
+
+    val TERMINATED_EVENT_BREACH_NOTICE_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000007")
+    val TERMINATED_EVENT_BREACH_NOTICE =
+        generateDocument(TERMINATED_EVENT_BREACH_NOTICE_ID, TERMINATED_EVENT.id, "EVENT")
 
     fun generateDocument(
         breachNoticeUuid: UUID,
