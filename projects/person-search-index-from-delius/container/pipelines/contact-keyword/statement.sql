@@ -38,14 +38,15 @@ from (with page as (select * from contact where :contact_id = 0
                      'typeShortDescription' value r_contact_type.short_description,
                      'outcomeCode' value r_contact_outcome_type.code,
                      'outcomeDescription' value r_contact_outcome_type.description,
-                     'sparks' value (select json_arrayagg(
-                                                    json_object('code' value srl.code_value,
-                                                                'description' value srl.code_description)
-                                                        returning clob)
-                                     from contact_sparks cs
-                                     join r_standard_reference_list srl
-                                     on cs.sparks_id = srl.standard_reference_list_id
-                                     where cs.contact_id = contact.contact_id) format json,
+                     'sparks' value ( select /*+ leading(contact_sparks) index(contact_sparks xpkcontact_sparks) */
+                                             json_arrayagg(
+                                                    json_object('code' value r_standard_reference_list.code_value,
+                                                                'description' value r_standard_reference_list.code_description)
+                                                    returning clob)
+                                        from contact_sparks
+                                        join r_standard_reference_list
+                                             on contact_sparks.sparks_id = r_standard_reference_list.standard_reference_list_id
+                                        where contact_sparks.contact_id = contact.contact_id ) format json,
                      'softDeleted' value contact.soft_deleted,
                      'rowVersion' value contact.row_version,
                      'supervisionPackage' value r_contact_type.supervision_package
