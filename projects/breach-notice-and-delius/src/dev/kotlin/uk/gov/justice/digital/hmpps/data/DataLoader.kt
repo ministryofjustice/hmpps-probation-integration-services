@@ -22,6 +22,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DocumentGenerator.UPW_BREACH_NOTICE)
         save(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
         save(DocumentGenerator.DELETED_BREACH_NOTICE)
+        save(DocumentGenerator.TERMINATED_EVENT_BREACH_NOTICE)
         lao()
         pssData()
     }
@@ -72,6 +73,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             EventGenerator.UNSENTENCED_EVENT,
             EventGenerator.NO_DOCUMENT_EVENT,
             EventGenerator.DELETED_DOCUMENT_EVENT,
+            EventGenerator.TERMINATED_EVENT,
             EventGenerator.DEFAULT_RQMNT_CATEGORY,
             EventGenerator.UNPAID_RQMT_CATEGORY,
             EventGenerator.DS_REQUIREMENT_SUB_CATEGORY,

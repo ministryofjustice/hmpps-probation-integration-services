@@ -43,8 +43,8 @@ class DetailsService(
 
     fun breachIdsForEvent(crn: String, eventNumber: String): BreachNoticeDocuments {
         personRepository.getByCrn(crn)
-        val event = eventRepository.getByCrnAndNumber(crn, eventNumber)
-        val ids = documentRepository.findBreachNoticeUrnsByEventId(event.id)
+        val eventId = eventRepository.getEventIdByCrnAndNumberIncludingInactive(crn, eventNumber)
+        val ids = documentRepository.findBreachNoticeUrnsByEventId(eventId)
             .map { it.removePrefix(Document.BREACH_NOTICE_URN_PREFIX) }
         return BreachNoticeDocuments(ids)
     }

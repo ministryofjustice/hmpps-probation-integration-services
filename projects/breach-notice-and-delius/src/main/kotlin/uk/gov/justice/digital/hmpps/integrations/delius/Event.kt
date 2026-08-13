@@ -5,6 +5,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
@@ -195,11 +196,24 @@ class PssRequirementSubCategory(
 ) : CodeAndDescription
 
 interface EventRepository : JpaRepository<Event, Long> {
-    fun findByPersonCrnAndNumber(crn: String, number: String): Event?
+    @Query(
+        """
+        select event.event_id
+        from event
+        join offender on offender.offender_id = event.offender_id
+        where offender.crn = :crn
+          and event.event_number = :number
+          and event.soft_deleted = 0
+          and offender.soft_deleted = 0
+        """,
+        nativeQuery = true
+    )
+    fun findEventIdByPersonCrnAndNumberIncludingInactive(crn: String, number: String): Long?
 }
 
-fun EventRepository.getByCrnAndNumber(crn: String, number: String): Event =
-    findByPersonCrnAndNumber(crn, number) ?: throw NotFoundException("Event", "event number", number)
+fun EventRepository.getEventIdByCrnAndNumberIncludingInactive(crn: String, number: String): Long =
+    findEventIdByPersonCrnAndNumberIncludingInactive(crn, number)
+        ?: throw NotFoundException("Event", "event number", number)
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByEventId(eventId: Long): Disposal?
