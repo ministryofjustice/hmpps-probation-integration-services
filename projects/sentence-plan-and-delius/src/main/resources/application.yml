@@ -44,6 +44,10 @@ dev:
   dataloader.enabled: true
   wiremock.enabled: true
 
+messaging:
+  consumer:
+    queue: sentence-plan-and-delius-queue
+
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
