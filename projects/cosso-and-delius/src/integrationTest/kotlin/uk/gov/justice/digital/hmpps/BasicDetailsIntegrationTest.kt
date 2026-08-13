@@ -8,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.model.PersonDetails
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -45,6 +48,21 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         val crn = "X123458"
         val username = "J0nSm17h"
         mockMvc.get("/basic-details/$crn") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `case endpoint returns crn for valid cosso id`() {
+        val response = mockMvc.get("/case/${DocumentGenerator.DEFAULT_DOCUMENT_UUID}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
+    }
+
+    @Test
+    fun `case endpoint returns not found for unknown cosso id`() {
+        mockMvc.get("/case/${UUID.randomUUID()}") { withToken() }
             .andExpect { status { isNotFound() } }
     }
 }
