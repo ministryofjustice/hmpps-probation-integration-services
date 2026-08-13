@@ -17,7 +17,7 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     sentence-plan-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
-    sqs-hmpps-domain-events-secret:
+    sentence-plan-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 generic-prometheus-alerts:
   targetApplication: sentence-plan-and-delius
