@@ -55,6 +55,4 @@ class PersonService(
 
     fun crnFor(cossoId: UUID): DocumentCrn =
         documentRepository.findByExternalReference(DocumentEntity.cossoBreachNoticeUrn(cossoId))
-            ?.let { DocumentCrn(it.person.crn) }
-            ?: throw NotFoundException("Cosso", "id", cossoId)
-}
+            ?.let { DocumentCrn(it.person.crn) }.orNotFoundBy("id", cossoId)}
