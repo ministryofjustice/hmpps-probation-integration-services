@@ -2,19 +2,24 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
 import uk.gov.justice.digital.hmpps.model.Address
+import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.PersonDetails
+import java.util.*
 
 @Service
 class PersonService(
     private val personRepository: PersonRepository,
     private val personAddressRepository: PersonAddressRepository,
+    private val documentRepository: DocumentRepository,
     private val ldapTemplate: LdapTemplate
 ) {
 
@@ -47,4 +52,8 @@ class PersonService(
             addresses = addresses
         )
     }
+
+    fun crnFor(cossoId: UUID): DocumentCrn =
+        documentRepository.findByExternalReference(DocumentEntity.cossoBreachNoticeUrn(cossoId))
+            ?.let { DocumentCrn(it.person.crn) }.orNotFoundBy("id", cossoId)
 }
