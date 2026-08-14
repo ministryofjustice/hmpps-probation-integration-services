@@ -195,16 +195,16 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `returns 404 when CRN is missing`() {
         mockMvc.get("/srf-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }.andExpect {
-                status { isNotFound() }
-                jsonPath("$.message") { value("Person with crn of UNKNOWN not found") }
-            }
+            status { isNotFound() }
+            jsonPath("$.message") { value("Person with crn of UNKNOWN not found") }
+        }
     }
 
     @Test
     fun `returns 404 when event is missing`() {
         mockMvc.get("/srf-event-documents/${DEFAULT_PERSON.crn}/99") { withToken() }.andExpect {
-                status { isNotFound() }
-                jsonPath("$.message") { value("Event with event number of 99 not found") }
-            }
+            status { isNotFound() }
+            jsonPath("$.message") { value("Event with event number of 99 not found") }
+        }
     }
 }
