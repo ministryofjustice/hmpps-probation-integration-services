@@ -4,13 +4,14 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.MISSING_COURT_
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.MISSING_MAIN_OFFENCE_EVENT
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object DocumentGenerator {
     val DEFAULT_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_MAIN_OFFENCE_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_COURT_APPEARANCE_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_DISPOSAL_DOCUMENT_UUID = UUID.randomUUID()
+    val TERMINATED_EVENT_DOCUMENT_UUID = UUID.randomUUID()
     val DEFAULT_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
@@ -68,6 +69,22 @@ object DocumentGenerator {
         softDeleted = false,
         alfrescoId = UUID.randomUUID().toString(),
         name = "Missing Disposal Document.docx",
+        status = "Y",
+        workInProgress = "N",
+        lastSaved = ZonedDateTime.now(),
+        createdDatetime = ZonedDateTime.now(),
+        lastUpdatedUserId = UserGenerator.DEFAULT_PROBATION_USER.id
+    )
+
+    val TERMINATED_EVENT_DOCUMENT = DocumentEntity(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.DEFAULT_PERSON,
+        primaryKeyId = EventGenerator.TERMINATED_EVENT.eventId,
+        tableName = "EVENT",
+        externalReference = DocumentEntity.cossoBreachNoticeUrn(TERMINATED_EVENT_DOCUMENT_UUID),
+        softDeleted = false,
+        alfrescoId = UUID.randomUUID().toString(),
+        name = "Terminated Event Document.docx",
         status = "Y",
         workInProgress = "N",
         lastSaved = ZonedDateTime.now(),

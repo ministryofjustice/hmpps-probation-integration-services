@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.document
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.NumericBooleanConverter
 
 @Immutable
 @Entity
@@ -10,7 +10,22 @@ class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val eve
 
 @Immutable
 @Entity
-class Event(@Id val eventId: Long, eventNumber: String?)
+@Table(name = "event")
+class Event(
+	@Id
+	@Column(name = "event_id")
+	val eventId: Long,
+	@Column(name = "offender_id")
+	val offenderId: Long,
+	@Column(name = "event_number")
+	val eventNumber: String,
+	@Column(name = "active_flag", columnDefinition = "number")
+	@Convert(converter = NumericBooleanConverter::class)
+	val activeFlag: Boolean = true,
+	@Column(name = "soft_deleted", columnDefinition = "number")
+	@Convert(converter = NumericBooleanConverter::class)
+	val softDeleted: Boolean = false,
+)
 
 @Immutable
 @Entity
