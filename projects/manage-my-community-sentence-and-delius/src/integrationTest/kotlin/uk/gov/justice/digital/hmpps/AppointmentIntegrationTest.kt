@@ -8,6 +8,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.data.TestData.PersonData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -300,6 +301,26 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                         JsonCompareMode.STRICT
                     )
                 }
+            }
+    }
+
+    @Test
+    fun `exclude unpaid work appointments by project code`() {
+        mockMvc
+            .get("/person/${PersonData.DEFAULT.crn}/future-appointments?excludeUnpaidWorkProjects=${TestData.UnpaidWorkData.UNPAID_WORK_PROJECT_1.code}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.content.length()") { value(2) }
+                jsonPath("$.page.totalElements") { value(2) }
+                jsonPath("$.content[*].unpaidWork") { doesNotExist() }
+            }
+        mockMvc
+            .get("/person/${PersonData.DEFAULT.crn}/past-appointments?excludeUnpaidWorkProjects=${TestData.UnpaidWorkData.UNPAID_WORK_PROJECT_1.code}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.content.length()") { value(3) }
+                jsonPath("$.page.totalElements") { value(3) }
+                jsonPath("$.content[*].unpaidWork") { doesNotExist() }
             }
     }
 
