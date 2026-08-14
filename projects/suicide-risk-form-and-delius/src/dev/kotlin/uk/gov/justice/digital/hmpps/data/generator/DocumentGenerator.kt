@@ -8,6 +8,34 @@ object DocumentGenerator {
     val SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001")
     val DEFAULT_SUICIDE_RISK_FORM = generateDocument(suicideRiskFormId = SUICIDE_RISK_FORM_ID)
 
+    val EVENT_CONTACT_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000005")
+    val EVENT_CONTACT_SUICIDE_RISK_FORM = generateDocument(
+        suicideRiskFormId = EVENT_CONTACT_SUICIDE_RISK_FORM_ID,
+        primaryKeyId = ContactGenerator.EVENT_CONTACT.id,
+        tableName = "CONTACT"
+    )
+
+    val EVENT_LEVEL_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000003")
+    val EVENT_LEVEL_SUICIDE_RISK_FORM = generateDocument(
+        suicideRiskFormId = EVENT_LEVEL_SUICIDE_RISK_FORM_ID,
+        primaryKeyId = EventGenerator.DEFAULT_EVENT.id,
+        tableName = "EVENT"
+    )
+
+    val NSI_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000006")
+    val NSI_SUICIDE_RISK_FORM = generateDocument(
+        suicideRiskFormId = NSI_SUICIDE_RISK_FORM_ID,
+        primaryKeyId = NsiGenerator.DEFAULT_NSI.nsiId,
+        tableName = "NSI"
+    )
+
+    val TERMINATED_EVENT_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000004")
+    val TERMINATED_EVENT_SUICIDE_RISK_FORM = generateDocument(
+        suicideRiskFormId = TERMINATED_EVENT_SUICIDE_RISK_FORM_ID,
+        primaryKeyId = EventGenerator.TERMINATED_EVENT.id,
+        tableName = "EVENT"
+    )
+
     val DELETED_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000002")
     val DELETED_SUICIDE_RISK_FORM =
         generateDocument(suicideRiskFormId = DELETED_SUICIDE_RISK_FORM_ID, primaryKeyId = 2L)

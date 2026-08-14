@@ -35,6 +35,13 @@ class SuicideRiskFormController(
         detailsService.crnFor(suicideRiskFormId)
 
     @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
+    @GetMapping(value = ["/srf-event-documents/{crn}/{eventNumber}"])
+    fun getSrfEventDocuments(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String,
+    ): SrfEventDocuments = documentService.srfIdsForEvent(crn, eventNumber)
+
+    @PreAuthorize("hasRole('PROBATION_API__SUICIDE_RISK_FORM__CASE_DETAIL')")
     @PostMapping(value = ["/treatment"])
     fun getContactDocuments(@RequestBody contactIds: List<Long>): ContactDocumentResponse =
         documentService.listDocumentsForContacts(contactIds)

@@ -13,6 +13,14 @@ object ContactGenerator {
         id = 2L
     )
 
+    val EVENT_CONTACT = generateContact(
+        person = PersonGenerator.DEFAULT_PERSON,
+        type = ReferenceDataGenerator.APPOINTMENT_CONTACT_TYPE,
+        dateTime = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+        eventId = EventGenerator.DEFAULT_EVENT.id,
+        id = 200L
+    )
+
     fun generateContact(
         person: Person,
         type: ContactType,
@@ -24,6 +32,7 @@ object ContactGenerator {
         description: String? = null,
         notes: String? = null,
         documentLinked: Boolean? = null,
+        eventId: Long? = null,
         softDeleted: Boolean = false,
     ) = Contact(
         id = id,
@@ -37,6 +46,7 @@ object ContactGenerator {
         description = description,
         notes = notes,
         documentLinked = documentLinked,
+        eventId = eventId,
         softDeleted = softDeleted
     )
 }
