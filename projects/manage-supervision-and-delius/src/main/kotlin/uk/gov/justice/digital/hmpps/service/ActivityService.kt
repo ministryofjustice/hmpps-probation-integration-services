@@ -59,7 +59,8 @@ class ActivityService(
         val ids = response.results.map { it.id }
 
         val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
-        val activities = ids.mapNotNull { contactId -> contactMap[contactId]?.toActivity() }.sortedByDescending { it.startDateTime }
+        val activities =
+            ids.mapNotNull { contactId -> contactMap[contactId]?.toActivity() }.sortedByDescending { it.startDateTime }
 
         return PersonActivitySearchResponse(
             size = response.size,
