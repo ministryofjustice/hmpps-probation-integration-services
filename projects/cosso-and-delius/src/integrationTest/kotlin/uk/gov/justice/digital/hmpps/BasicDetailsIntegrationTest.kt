@@ -88,11 +88,12 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `returns empty cosso id list when event has no cosso documents`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val response = mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.NO_DOCUMENT_EVENT.eventNumber}") {
-            withToken()
-        }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CossoEventDocuments>()
+        val response =
+            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.NO_DOCUMENT_EVENT.eventNumber}") {
+                withToken()
+            }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<CossoEventDocuments>()
 
         assertThat(response.cossoIdList).isEmpty()
     }
@@ -100,11 +101,12 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `returns cosso ids for terminated event`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val response = mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.TERMINATED_EVENT.eventNumber}") {
-            withToken()
-        }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CossoEventDocuments>()
+        val response =
+            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.TERMINATED_EVENT.eventNumber}") {
+                withToken()
+            }
+                .andExpect { status { is2xxSuccessful() } }
+                .andReturn().response.contentAsJson<CossoEventDocuments>()
 
         assertThat(response.cossoIdList)
             .containsExactly(DocumentGenerator.TERMINATED_EVENT_DOCUMENT_UUID.toString())

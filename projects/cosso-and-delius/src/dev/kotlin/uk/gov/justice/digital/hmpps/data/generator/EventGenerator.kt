@@ -9,5 +9,6 @@ object EventGenerator {
     val MISSING_COURT_APPEARANCE_EVENT = Event(IdGenerator.getAndIncrement(), PersonGenerator.DEFAULT_PERSON.id, "3")
     val MISSING_DISPOSAL_EVENT = Event(IdGenerator.getAndIncrement(), PersonGenerator.DEFAULT_PERSON.id, "4")
     val NO_DOCUMENT_EVENT = Event(IdGenerator.getAndIncrement(), PersonGenerator.DEFAULT_PERSON.id, "5")
-    val TERMINATED_EVENT = Event(IdGenerator.getAndIncrement(), PersonGenerator.DEFAULT_PERSON.id, "6", activeFlag = false)
+    val TERMINATED_EVENT =
+        Event(IdGenerator.getAndIncrement(), PersonGenerator.DEFAULT_PERSON.id, "6", activeFlag = false)
 }

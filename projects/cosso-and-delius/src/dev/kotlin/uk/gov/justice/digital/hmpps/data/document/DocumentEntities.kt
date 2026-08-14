@@ -12,19 +12,19 @@ class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val eve
 @Entity
 @Table(name = "event")
 class Event(
-	@Id
-	@Column(name = "event_id")
-	val eventId: Long,
-	@Column(name = "offender_id")
-	val offenderId: Long,
-	@Column(name = "event_number")
-	val eventNumber: String,
-	@Column(name = "active_flag", columnDefinition = "number")
-	@Convert(converter = NumericBooleanConverter::class)
-	val activeFlag: Boolean = true,
-	@Column(name = "soft_deleted", columnDefinition = "number")
-	@Convert(converter = NumericBooleanConverter::class)
-	val softDeleted: Boolean = false,
+    @Id
+    @Column(name = "event_id")
+    val eventId: Long,
+    @Column(name = "offender_id")
+    val offenderId: Long,
+    @Column(name = "event_number")
+    val eventNumber: String,
+    @Column(name = "active_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val activeFlag: Boolean = true,
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
