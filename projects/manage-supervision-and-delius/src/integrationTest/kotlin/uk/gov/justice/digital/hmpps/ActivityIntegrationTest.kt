@@ -58,10 +58,15 @@ class ActivityIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonActivity>()
 
+        assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.activities.size, equalTo(5))
         assertThat(
             res.activities.map { it.startDateTime },
             equalTo(res.activities.map { it.startDateTime }.sortedDescending())
+        )
+
+        wireMockServer.verify(
+            postRequestedFor(urlPathEqualTo("/probation-search/search/activity"))
         )
     }
 
