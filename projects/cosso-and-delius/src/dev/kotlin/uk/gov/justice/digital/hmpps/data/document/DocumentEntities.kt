@@ -7,6 +7,7 @@ import org.hibernate.annotations.Immutable
 @Immutable
 @Entity
 class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val eventId: Long)
+
 @Immutable
 @Entity
 class Custody(@Id val custodyId: Long, val eventId: Long, val disposalId: Long)
