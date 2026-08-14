@@ -13,13 +13,27 @@ class AppointmentService(
     private val contactRepository: ContactRepository,
     private val personRepository: PersonRepository,
 ) {
-    fun getFutureAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
-        val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findFutureAppointments(personId, pageable).map { it.toModel() })
-    }
+    fun getFutureAppointments(
+        crn: String,
+        excludeUnpaidWorkProjects: Set<String>,
+        pageable: Pageable,
+    ): PagedModel<Appointment> = PagedModel(
+        contactRepository.findFutureAppointments(
+            personRepository.getIdByCrn(crn),
+            excludeUnpaidWorkProjects,
+            pageable = pageable
+        ).map { it.toModel() }
+    )
 
-    fun getPastAppointments(crn: String, pageable: Pageable): PagedModel<Appointment> {
-        val personId = personRepository.getIdByCrn(crn)
-        return PagedModel(contactRepository.findPastAppointments(personId, pageable).map { it.toModel() })
-    }
+    fun getPastAppointments(
+        crn: String,
+        excludeUnpaidWorkProjects: Set<String>,
+        pageable: Pageable,
+    ): PagedModel<Appointment> = PagedModel(
+        contactRepository.findPastAppointments(
+            personRepository.getIdByCrn(crn),
+            excludeUnpaidWorkProjects,
+            pageable = pageable
+        ).map { it.toModel() }
+    )
 }

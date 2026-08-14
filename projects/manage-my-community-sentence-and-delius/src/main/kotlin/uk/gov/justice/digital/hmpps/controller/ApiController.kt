@@ -37,18 +37,20 @@ class ApiController(
     @GetMapping(value = ["/person/{crn}/future-appointments"])
     fun getFutureAppointments(
         @PathVariable crn: String,
+        @RequestParam(defaultValue = "") excludeUnpaidWorkProjects: Set<String> = emptySet(),
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
     ) = accessService.checkAccess(crn).let {
-        appointmentService.getFutureAppointments(crn, PageRequest.of(page, size))
+        appointmentService.getFutureAppointments(crn, excludeUnpaidWorkProjects, PageRequest.of(page, size))
     }
 
     @GetMapping(value = ["/person/{crn}/past-appointments"])
     fun getPastAppointments(
         @PathVariable crn: String,
+        @RequestParam(defaultValue = "") excludeUnpaidWorkProjects: Set<String> = emptySet(),
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
     ) = accessService.checkAccess(crn).let {
-        appointmentService.getPastAppointments(crn, PageRequest.of(page, size))
+        appointmentService.getPastAppointments(crn, excludeUnpaidWorkProjects, PageRequest.of(page, size))
     }
 }
