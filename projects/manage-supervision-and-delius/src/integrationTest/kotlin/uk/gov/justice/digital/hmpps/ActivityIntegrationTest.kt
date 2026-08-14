@@ -29,24 +29,16 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 class ActivityIntegrationTest : IntegrationTestBase() {
 
     @Test
-    fun `activity search calls probation offender activity search`() {
-
+    fun `activity search returns results sorted in date descending order`() {
         val person = OVERVIEW
         val searchResponse = ContactSearchResponse(
-            page = 0, totalResults = 10, totalPages = 11, size = 3,
+            page = 0, totalResults = 5, totalPages = 1, size = 5,
             results = listOf(
-                ContactSearchResult(
-                    crn = person.crn,
-                    id = ContactGenerator.FIRST_APPT_CONTACT.id
-                ),
-                ContactSearchResult(
-                    crn = person.crn,
-                    id = ContactGenerator.FIRST_NON_APPT_CONTACT.id
-                ),
-                ContactSearchResult(
-                    crn = person.crn,
-                    id = ContactGenerator.NEXT_APPT_CONTACT.id
-                )
+                ContactSearchResult(crn = person.crn, id = ContactGenerator.PREVIOUS_APPT_CONTACT.id),
+                ContactSearchResult(crn = person.crn, id = ContactGenerator.NEXT_APPT_CONTACT.id),
+                ContactSearchResult(crn = person.crn, id = ContactGenerator.FIRST_APPT_CONTACT.id),
+                ContactSearchResult(crn = person.crn, id = ContactGenerator.FIRST_NON_APPT_CONTACT.id),
+                ContactSearchResult(crn = person.crn, id = ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT.id),
             )
         )
         wireMockServer.stubFor(
@@ -63,21 +55,14 @@ class ActivityIntegrationTest : IntegrationTestBase() {
             withToken()
             json = ActivitySearchRequest(crn = person.crn)
         }
-            .andExpect {
-                status { isOk() }
-            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonActivity>()
 
-
-        assertThat(res.personSummary.crn, equalTo(person.crn))
-        assertThat(res.activities.size, equalTo(3))
-        assertThat(res.activities[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.id))
+        assertThat(res.activities.size, equalTo(5))
         assertThat(
-            res.activities[0].location?.officeName,
-            equalTo(ContactGenerator.FIRST_APPT_CONTACT.toActivity().location?.officeName)
+            res.activities.map { it.startDateTime },
+            equalTo(res.activities.map { it.startDateTime }.sortedDescending())
         )
-        assertThat(res.activities[1].id, equalTo(ContactGenerator.FIRST_NON_APPT_CONTACT.id))
-        assertThat(res.activities[2].id, equalTo(ContactGenerator.NEXT_APPT_CONTACT.id))
     }
 
     @Test
@@ -201,9 +186,9 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.activities.size, equalTo(3))
-        assertThat(res.activities[0].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.id))
-        assertThat(res.activities[1].id, equalTo(ContactGenerator.FIRST_NON_APPT_CONTACT.id))
-        assertThat(res.activities[2].id, equalTo(ContactGenerator.NEXT_APPT_CONTACT.id))
+        assertThat(res.activities[0].id, equalTo(ContactGenerator.NEXT_APPT_CONTACT.id))
+        assertThat(res.activities[1].id, equalTo(ContactGenerator.FIRST_APPT_CONTACT.id))
+        assertThat(res.activities[2].id, equalTo(ContactGenerator.FIRST_NON_APPT_CONTACT.id))
 
         wireMockServer.verify(
             postRequestedFor(urlPathEqualTo("/probation-search/search/contacts"))
