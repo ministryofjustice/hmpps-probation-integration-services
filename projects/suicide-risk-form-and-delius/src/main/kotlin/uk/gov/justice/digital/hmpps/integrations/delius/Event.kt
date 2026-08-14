@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
-@Table(name = "event")
 @SQLRestriction("soft_deleted = 0")
 class Event(
     @Id
