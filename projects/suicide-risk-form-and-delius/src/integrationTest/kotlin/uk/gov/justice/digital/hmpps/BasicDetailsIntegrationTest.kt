@@ -157,4 +157,54 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
         assertThat(response.crn).isEqualTo(DEFAULT_PERSON.crn)
     }
+
+    @Test
+    fun `returns srf document ids when passing valid crn + event number`() {
+        val person = DEFAULT_PERSON
+        val response =
+            mockMvc.get("/srf-event-documents/${person.crn}/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }.andReturn().response.contentAsJson<SrfEventDocuments>()
+
+        assertThat(response.srfIdList).containsExactlyInAnyOrder(
+            DocumentGenerator.EVENT_CONTACT_SUICIDE_RISK_FORM_ID.toString(),
+            DocumentGenerator.EVENT_LEVEL_SUICIDE_RISK_FORM_ID.toString(),
+            DocumentGenerator.NSI_SUICIDE_RISK_FORM_ID.toString(),
+        )
+    }
+
+    @Test
+    fun `returns empty list when event has no srf documents`() {
+        val person = DEFAULT_PERSON
+        val response =
+            mockMvc.get("/srf-event-documents/${person.crn}/${EventGenerator.NO_DOCUMENT_EVENT.number}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }.andReturn().response.contentAsJson<SrfEventDocuments>()
+
+        assertThat(response.srfIdList).isEmpty()
+    }
+
+    @Test
+    fun `returns srf ids for terminated event`() {
+        val person = DEFAULT_PERSON
+        val response =
+            mockMvc.get("/srf-event-documents/${person.crn}/${EventGenerator.TERMINATED_EVENT.number}") { withToken() }
+                .andExpect { status { is2xxSuccessful() } }.andReturn().response.contentAsJson<SrfEventDocuments>()
+
+        assertThat(response.srfIdList).containsExactly(DocumentGenerator.TERMINATED_EVENT_SUICIDE_RISK_FORM_ID.toString())
+    }
+
+    @Test
+    fun `returns 404 when CRN is missing`() {
+        mockMvc.get("/srf-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }.andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Person with crn of UNKNOWN not found") }
+            }
+    }
+
+    @Test
+    fun `returns 404 when event is missing`() {
+        mockMvc.get("/srf-event-documents/${DEFAULT_PERSON.crn}/99") { withToken() }.andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Event with event number of 99 not found") }
+            }
+    }
 }
