@@ -71,7 +71,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `returns cosso ids for event documents`() {
         val person = PersonGenerator.DEFAULT_PERSON
-        val response = mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.DEFAULT_EVENT.eventNumber}") {
+        val response = mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.DEFAULT_EVENT.number}") {
             withToken()
         }
             .andExpect { status { is2xxSuccessful() } }
@@ -89,7 +89,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     fun `returns empty cosso id list when event has no cosso documents`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val response =
-            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.NO_DOCUMENT_EVENT.eventNumber}") {
+            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.NO_DOCUMENT_EVENT.number}") {
                 withToken()
             }
                 .andExpect { status { is2xxSuccessful() } }
@@ -102,7 +102,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     fun `returns cosso ids for terminated event`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val response =
-            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.TERMINATED_EVENT.eventNumber}") {
+            mockMvc.get("/cosso-event-documents/${person.crn}/${EventGenerator.TERMINATED_EVENT.number}") {
                 withToken()
             }
                 .andExpect { status { is2xxSuccessful() } }
@@ -114,7 +114,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns 404 when CRN is not found`() {
-        mockMvc.get("/cosso-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.eventNumber}") {
+        mockMvc.get("/cosso-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.number}") {
             withToken()
         }
             .andExpect {

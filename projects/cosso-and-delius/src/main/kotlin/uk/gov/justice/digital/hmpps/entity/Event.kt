@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Entity
 @Table(name = "event")
 @SQLRestriction("soft_deleted = 0")
-class EventEntity(
+class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
@@ -30,10 +30,10 @@ class EventEntity(
     val softDeleted: Boolean,
 )
 
-interface EventRepository : JpaRepository<EventEntity, Long> {
-    fun findByPersonCrnAndNumber(crn: String, number: String): EventEntity?
+interface EventRepository : JpaRepository<Event, Long> {
+    fun findByPersonCrnAndNumber(crn: String, number: String): Event?
 }
 
-fun EventRepository.getByCrnAndNumber(crn: String, number: String): EventEntity =
+fun EventRepository.getByCrnAndNumber(crn: String, number: String): Event =
     findByPersonCrnAndNumber(crn, number) ?: throw NotFoundException("Event", "event number", number)
 
