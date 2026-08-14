@@ -120,7 +120,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `throws not found exception when offence not found`() {
         val uuid = DocumentGenerator.MISSING_MAIN_OFFENCE_DOCUMENT_UUID
-        val eventId = EventGenerator.MISSING_MAIN_OFFENCE_EVENT.eventId
+        val eventId = EventGenerator.MISSING_MAIN_OFFENCE_EVENT.id
         mockMvc.get("/offence-details/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
             .andExpect {
@@ -134,7 +134,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `throws not found exception court appearance not found`() {
         val uuid = DocumentGenerator.MISSING_COURT_APPEARANCE_DOCUMENT_UUID
-        val eventId = EventGenerator.MISSING_COURT_APPEARANCE_EVENT.eventId
+        val eventId = EventGenerator.MISSING_COURT_APPEARANCE_EVENT.id
         mockMvc.get("/offence-details/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
             .andExpect {
@@ -148,7 +148,7 @@ class OffenceDetailsIntegrationTest @Autowired constructor(
     @Test
     fun `throws not found exception when disposal not found`() {
         val uuid = DocumentGenerator.MISSING_DISPOSAL_DOCUMENT_UUID
-        val eventId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId
+        val eventId = EventGenerator.MISSING_DISPOSAL_EVENT.id
         mockMvc.get("/offence-details/${uuid}") { withToken() }
             .andExpect { status { isNotFound() } }
             .andExpect {

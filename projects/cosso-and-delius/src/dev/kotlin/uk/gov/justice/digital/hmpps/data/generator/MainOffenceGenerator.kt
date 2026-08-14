@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.entity.OffenceEntity
 object MainOffenceGenerator {
     val DEFAULT_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.DEFAULT_EVENT.eventId,
+        eventId = EventGenerator.DEFAULT_EVENT.id,
         person = PersonGenerator.DEFAULT_PERSON,
         offence = offenceEntity("Theft"),
         softDeleted = false
@@ -14,7 +14,7 @@ object MainOffenceGenerator {
 
     val MISSING_COURT_APPEARANCE_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.MISSING_COURT_APPEARANCE_EVENT.eventId,
+        eventId = EventGenerator.MISSING_COURT_APPEARANCE_EVENT.id,
         person = PersonGenerator.DEFAULT_PERSON,
         offence = offenceEntity("Theft"),
         softDeleted = false
@@ -22,7 +22,7 @@ object MainOffenceGenerator {
 
     val MISSING_DISPOSAL_MAIN_OFFENCE = MainOffence(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId,
+        eventId = EventGenerator.MISSING_DISPOSAL_EVENT.id,
         person = PersonGenerator.DEFAULT_PERSON,
         offence = offenceEntity("Theft"),
         softDeleted = false

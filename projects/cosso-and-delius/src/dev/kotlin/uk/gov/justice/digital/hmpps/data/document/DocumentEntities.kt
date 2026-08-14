@@ -10,10 +10,6 @@ class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val eve
 
 @Immutable
 @Entity
-class Event(@Id val eventId: Long, eventNumber: String?)
-
-@Immutable
-@Entity
 class Custody(@Id val custodyId: Long, val eventId: Long, val disposalId: Long)
 
 @Immutable

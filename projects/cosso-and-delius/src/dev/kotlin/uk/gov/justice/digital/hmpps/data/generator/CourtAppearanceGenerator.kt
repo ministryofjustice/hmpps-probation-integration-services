@@ -7,7 +7,7 @@ import java.time.LocalDate
 object CourtAppearanceGenerator {
     val DEFAULT_COURT_APPEARANCE = CourtAppearance(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.DEFAULT_EVENT.eventId,
+        eventId = EventGenerator.DEFAULT_EVENT.id,
         court = getCourt("Warwick Magistrates Court"),
         appearanceType = ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
         outcome = ReferenceDataGenerator.DEFAULT_OUTCOME,
@@ -17,7 +17,7 @@ object CourtAppearanceGenerator {
 
     val MISSING_DISPOSAL_COURT_APPEARANCE = CourtAppearance(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId,
+        eventId = EventGenerator.MISSING_DISPOSAL_EVENT.id,
         court = getCourt("Birmingham Magistrates Court"),
         appearanceType = ReferenceDataGenerator.SENTENCE_APPEARANCE_TYPE,
         outcome = ReferenceDataGenerator.DEFAULT_OUTCOME,

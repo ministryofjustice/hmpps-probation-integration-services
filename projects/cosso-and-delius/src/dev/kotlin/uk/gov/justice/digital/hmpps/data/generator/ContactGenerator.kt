@@ -24,7 +24,7 @@ object ContactGenerator {
 
     val DEFAULT_ENFORCEABLE_CONTACT = Contact(
         id = IdGenerator.getAndIncrement(),
-        eventId = EventGenerator.DEFAULT_EVENT.eventId,
+        eventId = EventGenerator.DEFAULT_EVENT.id,
         date = LocalDate.now(),
         startTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(10, 0), ZoneId.systemDefault()),
         softDeleted = false,

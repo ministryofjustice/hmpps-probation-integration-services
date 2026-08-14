@@ -8,7 +8,7 @@ object AdditionalOffenceGenerator {
     val DEFAULT_ADDITIONAL_OFFENCE = AdditionalOffence(
         id = IdGenerator.getAndIncrement(),
         offence = offenceEntity("Shoplifting"),
-        eventId = EventGenerator.DEFAULT_EVENT.eventId,
+        eventId = EventGenerator.DEFAULT_EVENT.id,
         offenceDate = LocalDate.now().minusDays(180),
         softDeleted = false
     )
