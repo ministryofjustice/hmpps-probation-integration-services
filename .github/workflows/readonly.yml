@@ -302,6 +302,7 @@ jobs:
           - topic-pi-manage-my-community-sentence
           - topic-hmpps-external-api-and-delius
           - topic-pi-esupervision
+          - topic-pi-probation-accounts
     steps:
       - name: Send message to Slack
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0

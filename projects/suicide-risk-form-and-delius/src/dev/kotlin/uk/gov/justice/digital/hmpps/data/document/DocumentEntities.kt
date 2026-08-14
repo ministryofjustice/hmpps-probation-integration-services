@@ -10,10 +10,6 @@ class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val eve
 
 @Immutable
 @Entity
-class Custody(@Id val custodyId: Long, val eventId: Long, val disposalId: Long)
-
-@Immutable
-@Entity
 class Assessment(@Id val assessmentId: Long, val referralId: Long?)
 
 @Immutable
@@ -22,7 +18,19 @@ class CaseAllocation(@Id val caseAllocationId: Long, val eventId: Long)
 
 @Immutable
 @Entity
+class CourtAppearance(@Id val courtAppearanceId: Long, val eventId: Long)
+
+@Immutable
+@Entity
 class CourtReport(@Id val courtReportId: Long, val courtAppearanceId: Long)
+
+@Immutable
+@Entity
+class Custody(@Id val custodyId: Long, val eventId: Long, val disposalId: Long)
+
+@Immutable
+@Entity
+class Disposal(@Id val disposalId: Long, val eventId: Long)
 
 @Immutable
 @Entity

@@ -55,6 +55,9 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     val documentLinked: Boolean?,
 
+    @Column(name = "event_id")
+    val eventId: Long? = null,
+
     @Column(nullable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,

@@ -11,13 +11,15 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
-import uk.gov.justice.digital.hmpps.entity.DocumentEntity
+import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.COSSO_BREACH_NOTICE_URN_PREFIX
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity.Companion.cossoBreachNoticeUrn
-import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.cossoBreachNoticeId
 import uk.gov.justice.digital.hmpps.messaging.username
+import uk.gov.justice.digital.hmpps.model.CossoEventDocuments
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 import java.util.*
@@ -26,10 +28,20 @@ import java.util.*
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val documentRepository: DocumentRepository,
+    private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val auditUserService: AuditUserService,
     private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
+    fun cossoIdsForEvent(crn: String, eventNumber: String): CossoEventDocuments {
+        personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
+        val event = eventRepository.getByCrnAndNumber(crn, eventNumber)
+        val ids = documentRepository.findCossoBreachNoticeUrnsByEventId(event.id)
+            .map { it.removePrefix(COSSO_BREACH_NOTICE_URN_PREFIX) }
+        return CossoEventDocuments(ids)
+    }
+
     @Transactional
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }

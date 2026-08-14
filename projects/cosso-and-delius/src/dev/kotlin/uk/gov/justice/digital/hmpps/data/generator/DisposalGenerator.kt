@@ -8,7 +8,7 @@ object DisposalGenerator {
     val DEFAULT_DISPOSAL = Disposal(
         id = IdGenerator.getAndIncrement(),
         disposalDate = LocalDate.now().minusDays(7),
-        eventId = EventGenerator.DEFAULT_EVENT.eventId,
+        eventId = EventGenerator.DEFAULT_EVENT.id,
         length = 1,
         length2 = 2,
         disposalType = DisposalType(

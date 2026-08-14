@@ -2,9 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DateTimeGenerator.zonedDateTime
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_EVENT
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DEFAULT_RQMNT
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.DELETED_DOCUMENT_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_EVENT
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.PSS_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PSS_PERSON
@@ -53,6 +52,14 @@ object AppointmentGenerator {
         APPOINTMENT_CONTACT_TYPE,
         zonedDateTime().plusDays(7),
         event = PSS_EVENT,
+        outcome = APPOINTMENT_OUTCOME
+    )
+
+    val DELETED_DOCUMENT_APPOINTMENT = generateAppointment(
+        DEFAULT_PERSON,
+        APPOINTMENT_CONTACT_TYPE,
+        zonedDateTime().minusDays(1),
+        DELETED_DOCUMENT_EVENT,
         outcome = APPOINTMENT_OUTCOME
     )
 

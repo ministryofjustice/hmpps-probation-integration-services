@@ -12,11 +12,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
         select c from Contact c
         left join Event e on e.id = c.eventId
+        left join c.unpaidWorkAppointment.project p
         where c.personId = :personId
           and (c.eventId is null or e.activeFlag = true)
           and c.type.attendance = true
           and (trunc(c.date, day) > trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') >= to_char(local_time, 'HH24:MI'))
+          and (:excludeUnpaidWorkProjectsCount = 0 or p is null or p.code not in :excludeUnpaidWorkProjects)
         order by c.date asc, c.startTime asc
         """
     )
@@ -31,17 +33,24 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             "unpaidWorkAppointment.project.placementAddress"
         ]
     )
-    fun findFutureAppointments(personId: Long, pageable: Pageable): Page<Contact>
+    fun findFutureAppointments(
+        personId: Long,
+        excludeUnpaidWorkProjects: Set<String>,
+        excludeUnpaidWorkProjectsCount: Int = excludeUnpaidWorkProjects.size,
+        pageable: Pageable,
+    ): Page<Contact>
 
     @Query(
         """
         select c from Contact c
         left join Event e on e.id = c.eventId
+        left join c.unpaidWorkAppointment.project p
         where c.personId = :personId
           and (c.eventId is null or e.activeFlag = true)
           and c.type.attendance = true
           and (trunc(c.date, day) < trunc(local_date, day) or
                trunc(c.date, day) = trunc(local_date, day) and to_char(c.startTime, 'HH24:MI') < to_char(local_time, 'HH24:MI'))
+          and (:excludeUnpaidWorkProjectsCount = 0 or p is null or p.code not in :excludeUnpaidWorkProjects)
         order by c.date desc, c.startTime desc
         """
     )
@@ -56,7 +65,12 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             "unpaidWorkAppointment.project.placementAddress"
         ]
     )
-    fun findPastAppointments(personId: Long, pageable: Pageable): Page<Contact>
+    fun findPastAppointments(
+        personId: Long,
+        excludeUnpaidWorkProjects: Set<String>,
+        excludeUnpaidWorkProjectsCount: Int = excludeUnpaidWorkProjects.size,
+        pageable: Pageable,
+    ): Page<Contact>
 
     @Query(
         """

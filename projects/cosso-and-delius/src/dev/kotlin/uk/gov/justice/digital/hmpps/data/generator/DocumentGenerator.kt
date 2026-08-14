@@ -4,17 +4,18 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.MISSING_COURT_
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.MISSING_MAIN_OFFENCE_EVENT
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object DocumentGenerator {
     val DEFAULT_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_MAIN_OFFENCE_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_COURT_APPEARANCE_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_DISPOSAL_DOCUMENT_UUID = UUID.randomUUID()
+    val TERMINATED_EVENT_DOCUMENT_UUID = UUID.randomUUID()
     val DEFAULT_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = EventGenerator.DEFAULT_EVENT.eventId,
+        primaryKeyId = EventGenerator.DEFAULT_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(DEFAULT_DOCUMENT_UUID),
         softDeleted = false,
@@ -30,7 +31,7 @@ object DocumentGenerator {
     val MISSING_MAIN_OFFENCE_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = MISSING_MAIN_OFFENCE_EVENT.eventId,
+        primaryKeyId = MISSING_MAIN_OFFENCE_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_MAIN_OFFENCE_DOCUMENT_UUID),
         softDeleted = false,
@@ -46,7 +47,7 @@ object DocumentGenerator {
     val MISSING_COURT_APPEARANCE_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = MISSING_COURT_APPEARANCE_EVENT.eventId,
+        primaryKeyId = MISSING_COURT_APPEARANCE_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_COURT_APPEARANCE_DOCUMENT_UUID),
         softDeleted = false,
@@ -62,7 +63,7 @@ object DocumentGenerator {
     val MISSING_DISPOSAL_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = EventGenerator.MISSING_DISPOSAL_EVENT.eventId,
+        primaryKeyId = EventGenerator.MISSING_DISPOSAL_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(MISSING_DISPOSAL_DOCUMENT_UUID),
         softDeleted = false,
@@ -75,10 +76,26 @@ object DocumentGenerator {
         lastUpdatedUserId = UserGenerator.DEFAULT_PROBATION_USER.id
     )
 
+    val TERMINATED_EVENT_DOCUMENT = DocumentEntity(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.DEFAULT_PERSON,
+        primaryKeyId = EventGenerator.TERMINATED_EVENT.id,
+        tableName = "EVENT",
+        externalReference = DocumentEntity.cossoBreachNoticeUrn(TERMINATED_EVENT_DOCUMENT_UUID),
+        softDeleted = false,
+        alfrescoId = UUID.randomUUID().toString(),
+        name = "Terminated Event Document.docx",
+        status = "Y",
+        workInProgress = "N",
+        lastSaved = ZonedDateTime.now(),
+        createdDatetime = ZonedDateTime.now(),
+        lastUpdatedUserId = UserGenerator.DEFAULT_PROBATION_USER.id
+    )
+
     val DEFAULT_COSSO_CREATED = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = EventGenerator.DEFAULT_EVENT.eventId,
+        primaryKeyId = EventGenerator.DEFAULT_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(UUID.fromString("00000000-0000-0000-0000-000000000001")),
         softDeleted = false,
@@ -94,7 +111,7 @@ object DocumentGenerator {
     val DEFAULT_COSSO_DELETED = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
-        primaryKeyId = EventGenerator.DEFAULT_EVENT.eventId,
+        primaryKeyId = EventGenerator.DEFAULT_EVENT.id,
         tableName = "EVENT",
         externalReference = DocumentEntity.cossoBreachNoticeUrn(UUID.fromString("00000000-0000-0000-0000-000000000003")),
         softDeleted = false,

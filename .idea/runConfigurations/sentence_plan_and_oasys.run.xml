@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="sentence-plan-and-oasys" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
-    <module name="probation-integration-services.sentence-plan-and-oasys.dev" />
+    <module name="probation-integration-services.suicide-risk-form-and-delius.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
     <method v="2">
       <option name="Make" enabled="true" />

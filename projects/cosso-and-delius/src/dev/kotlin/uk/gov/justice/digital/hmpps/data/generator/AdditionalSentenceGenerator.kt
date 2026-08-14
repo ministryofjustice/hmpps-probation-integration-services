@@ -13,7 +13,7 @@ object AdditionalSentenceGenerator {
         length = 2L,
         amount = BigDecimal.valueOf(100),
         notes = "Additional sentence notes",
-        eventId = DEFAULT_EVENT.eventId,
+        eventId = DEFAULT_EVENT.id,
         type = DEFAULT_ADDITIONAL_SENTENCE_TYPE,
         units = DEFAULT_UNITS
     )

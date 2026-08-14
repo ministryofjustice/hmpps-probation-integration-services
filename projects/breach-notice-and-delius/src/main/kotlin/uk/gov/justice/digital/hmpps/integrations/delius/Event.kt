@@ -5,11 +5,12 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
 @Table(name = "event")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Event(
 
     @ManyToOne
@@ -29,6 +30,9 @@ class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
+
+    @Column(name = "event_number")
+    val number: String,
 )
 
 @Immutable
@@ -189,6 +193,13 @@ class PssRequirementSubCategory(
     @Column(name = "pss_rqmnt_type_sub_cat_id")
     val id: Long
 ) : CodeAndDescription
+
+interface EventRepository : JpaRepository<Event, Long> {
+    fun findByPersonCrnAndNumber(crn: String, number: String): Event?
+}
+
+fun EventRepository.getByCrnAndNumber(crn: String, number: String): Event =
+    findByPersonCrnAndNumber(crn, number) ?: throw NotFoundException("Event", "event number", number)
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun getByEventId(eventId: Long): Disposal?

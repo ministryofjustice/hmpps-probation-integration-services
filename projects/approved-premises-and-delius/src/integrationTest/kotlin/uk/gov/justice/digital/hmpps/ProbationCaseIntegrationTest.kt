@@ -1,17 +1,13 @@
 package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
@@ -160,8 +156,8 @@ class ProbationCaseIntegrationTest(
             assertThat(contact.relationship, equalTo("Captains mate"))
             assertThat(contact.relationshipType.code, equalTo("DOC"))
             assertThat(contact.relationshipType.description, equalTo("Doctor"))
-            assertThat(contact.relationshipType.category.code, equalTo("DOC_LINKED"))
-            assertThat(contact.relationshipType.category.description, equalTo("Doctor Linked Type"))
+            assertThat(contact.relationshipType.category?.code, equalTo("DOC_LINKED"))
+            assertThat(contact.relationshipType.category?.description, equalTo("Doctor Linked Type"))
         }
     }
 }

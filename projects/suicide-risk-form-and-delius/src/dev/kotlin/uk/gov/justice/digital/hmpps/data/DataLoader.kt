@@ -59,8 +59,17 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ResponsibleOfficerGenerator.NO_USER_RESPONSIBLE_OFFICER)
         save(OfficeLocationGenerator.DEFAULT)
         save(OfficeLocationGenerator.DEFAULT_2)
+        save(EventGenerator.DEFAULT_EVENT)
+        save(EventGenerator.NO_DOCUMENT_EVENT)
+        save(EventGenerator.TERMINATED_EVENT)
+        save(NsiGenerator.DEFAULT_NSI)
         save(DocumentGenerator.DEFAULT_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.EVENT_CONTACT_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.EVENT_LEVEL_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.NSI_SUICIDE_RISK_FORM)
         save(DocumentGenerator.DELETED_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.TERMINATED_EVENT_SUICIDE_RISK_FORM)
         save(ContactGenerator.DEFAULT_CONTACT)
+        save(ContactGenerator.EVENT_CONTACT)
     }
 }

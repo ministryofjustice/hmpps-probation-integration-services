@@ -11,9 +11,12 @@ import uk.gov.justice.digital.hmpps.set
 
 object EventGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("123")
-    val DEFAULT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON)
+    val DEFAULT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "1")
     val DEFAULT_DISPOSAL = generateDisposal(DEFAULT_EVENT, DEFAULT_DISPOSAL_TYPE)
-    val UNSENTENCED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON)
+    val UNSENTENCED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "2")
+    val NO_DOCUMENT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "3")
+    val DELETED_DOCUMENT_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "4")
+    val TERMINATED_EVENT = generateEvent(PersonGenerator.DEFAULT_PERSON, number = "5", active = false)
 
     val DEFAULT_RQMNT_CATEGORY = generateRequirementMainCategory("DRMC")
     val DS_REQUIREMENT_SUB_CATEGORY = generateDataset(Dataset.REQUIREMENT_SUB_CATEGORY)
@@ -30,7 +33,7 @@ object EventGenerator {
         generateRequirement(DEFAULT_DISPOSAL, UNPAID_RQMT_CATEGORY, it)
     }
 
-    val PSS_EVENT = generateEvent(PersonGenerator.PSS_PERSON)
+    val PSS_EVENT = generateEvent(PersonGenerator.PSS_PERSON, number = "1")
     val PSS_DISPOSAL = generateDisposal(PSS_EVENT, DEFAULT_DISPOSAL_TYPE)
     val PSS_CUSTODY = generateCustody(PSS_DISPOSAL)
     val DEFAULT_PSS_CATEGORY = generatePssRequirementMainCategory("PSS1")
@@ -39,10 +42,11 @@ object EventGenerator {
 
     fun generateEvent(
         person: Person,
+        number: String = "1",
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = Event(person, null, active, softDeleted, id)
+    ) = Event(person, null, active, softDeleted, id, number)
 
     fun generateDisposal(
         event: Event,

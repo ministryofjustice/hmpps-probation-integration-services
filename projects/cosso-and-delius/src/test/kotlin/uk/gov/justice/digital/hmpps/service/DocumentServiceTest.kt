@@ -1,9 +1,9 @@
+import jakarta.persistence.EntityManager
+import jakarta.persistence.Query
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.kotlin.*
-import jakarta.persistence.EntityManager
-import jakarta.persistence.Query
 import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.service.DocumentService
@@ -15,6 +15,8 @@ class DocumentServiceTest {
     private val documentService = DocumentService(
         auditedInteractionService = mock(),
         documentRepository = documentRepository,
+        personRepository = mock(),
+        eventRepository = mock(),
         alfrescoUploadClient = mock(),
         auditUserService = mock(),
         entityManager = entityManager

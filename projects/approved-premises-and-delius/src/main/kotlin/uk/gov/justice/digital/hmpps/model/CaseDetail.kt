@@ -41,7 +41,7 @@ data class PersonalContact(
 data class RelationshipType(
     val code: String,
     val description: String,
-    val category: RelationshipTypeCategory
+    val category: RelationshipTypeCategory?
 )
 
 data class RelationshipTypeCategory(val code: String, val description: String)
