@@ -13,6 +13,7 @@ data class OverdueOutcome(
     val date: LocalDate,
     val start: LocalTime?,
     val end: LocalTime?,
+    val description: String?,
     val staff: Staff
 ) {
     data class Type(val code: String, val description: String)

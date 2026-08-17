@@ -524,6 +524,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(AppointmentGenerator.PERSON_APPOINTMENT)
         save(AppointmentGenerator.LATE_NIGHT_APPOINTMENT)
         save(AppointmentGenerator.SMS_APPOINTMENT)
+        save(AppointmentGenerator.SMS_APPOINTMENT_NO_DESCRIPTION)
         save(AppointmentGenerator.NON_SELECTABLE_OVERDUE_APPOINTMENT)
         save(AppointmentGenerator.NON_SELECTABLE_USER_DIARY_APPOINTMENT)
         saveAll(
