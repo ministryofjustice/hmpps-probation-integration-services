@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.StaffUser
+import uk.gov.justice.digital.hmpps.entity.staff.StaffUser
 import uk.gov.justice.digital.hmpps.user.AuditUser
 
 object UserGenerator {

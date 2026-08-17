@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.Registration
+import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.entity.person.PersonManager
+import uk.gov.justice.digital.hmpps.entity.person.Registration
 import java.time.LocalDate
 
 object PersonGenerator {

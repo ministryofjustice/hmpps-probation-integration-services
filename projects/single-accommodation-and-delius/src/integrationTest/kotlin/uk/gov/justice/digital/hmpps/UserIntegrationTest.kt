@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,10 +17,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class SingleAccommodationIntegrationTest @Autowired constructor(
-    private val mockMvc: MockMvc,
-    private val wireMockServer: WireMockServer,
-) {
+internal class UserIntegrationTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     @MockitoBean
     lateinit var telemetryService: TelemetryService

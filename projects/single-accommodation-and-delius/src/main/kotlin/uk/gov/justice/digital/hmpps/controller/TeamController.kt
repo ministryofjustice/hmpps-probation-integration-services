@@ -10,19 +10,14 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.CaseListService
 
 @RestController
-class SingleAccommodationController(
+class TeamController(
     private val caseListService: CaseListService,
 ) {
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
-    @GetMapping(value = ["/case-list/{username}"])
+    @GetMapping(value = ["/team/{teamCode}/case-list"])
     fun getCaseList(
-        @PathVariable username: String,
-        @RequestParam(required = false) teamCode: String?,
+        @PathVariable teamCode: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "50") size: Int,
-    ) = caseListService.getCaseList(username, teamCode, PageRequest.of(page, size, Sort.by("crn")))
-
-    @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
-    @GetMapping(value = ["/case/{username}/{crn}"])
-    fun getCase(@PathVariable crn: String, @PathVariable username: String) = caseListService.getCase(username, crn)
+    ) = caseListService.getTeamCaseIds(teamCode, PageRequest.of(page, size, Sort.by("crn")))
 }

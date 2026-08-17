@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.Caseload
+import uk.gov.justice.digital.hmpps.entity.caseload.Caseload
 
 object CaseloadGenerator {
     val CL_DEFAULT_1 = Caseload(
