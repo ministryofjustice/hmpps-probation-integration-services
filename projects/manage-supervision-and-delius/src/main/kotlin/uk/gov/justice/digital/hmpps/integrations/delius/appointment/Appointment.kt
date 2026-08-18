@@ -89,8 +89,10 @@ class Appointment(
 
     @Column(name = "attended", length = 1)
     @Convert(converter = YesNoConverter::class)
-    var attended: Boolean? = null
+    var attended: Boolean? = null,
 
+    @Column(name = "description")
+    val description: String? = null,
 ) {
     var partitionAreaId: Long = 0
 
