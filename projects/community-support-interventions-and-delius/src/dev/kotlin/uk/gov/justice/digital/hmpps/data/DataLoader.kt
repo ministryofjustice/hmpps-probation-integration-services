@@ -43,7 +43,7 @@ class DataLoader(dataManager: DataManager, private val entityManager: EntityMana
         // Add default_team_location_flag column to team_office_location before saving Team
         // (the @SQLJoinTableRestriction references this column on SELECT)
         entityManager.createNativeQuery(
-            "ALTER TABLE team_office_location ADD COLUMN IF NOT EXISTS default_team_location_flag CHAR DEFAULT 'Y'"
+            "ALTER TABLE team_office_location ADD COLUMN IF NOT EXISTS default_team_location_flag CHAR(1) DEFAULT 'Y'"
         ).executeUpdate()
 
         save(CommunityManagerGenerator.TEAM)
