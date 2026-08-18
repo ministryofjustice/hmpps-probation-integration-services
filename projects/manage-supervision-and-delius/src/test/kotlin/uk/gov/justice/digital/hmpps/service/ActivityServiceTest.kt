@@ -220,7 +220,9 @@ internal class ActivityServiceTest {
     }
 
     @Test
+    @Test
     fun `contactSearch default params are covered`() {
+        val request = ActivitySearchRequest(crn = "X000005")
         whenever(probationSearchClient.contactSearch(any())).thenReturn(
             ContactSearchResponse(
                 size = 10,
@@ -231,13 +233,14 @@ internal class ActivityServiceTest {
             )
         )
 
-        probationSearchClient.contactSearch(ActivitySearchRequest(crn = "X000005"))
+        probationSearchClient.contactSearch(request)
 
-        verify(probationSearchClient).contactSearch(any())
+        verify(probationSearchClient).contactSearch(eq(request))
     }
 
     @Test
     fun `contactSearchViaSemanticSearch default params are covered`() {
+        val request = ActivitySearchRequest(crn = "X000005")
         whenever(probationSearchClient.contactSearchViaSemanticSearch(any())).thenReturn(
             ContactSearchResponse(
                 size = 10,
@@ -248,8 +251,8 @@ internal class ActivityServiceTest {
             )
         )
 
-        probationSearchClient.contactSearchViaSemanticSearch(ActivitySearchRequest(crn = "X000005"))
+        probationSearchClient.contactSearchViaSemanticSearch(request)
 
-        verify(probationSearchClient).contactSearchViaSemanticSearch(any())
+        verify(probationSearchClient).contactSearchViaSemanticSearch(eq(request))
     }
 }
