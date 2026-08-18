@@ -220,7 +220,6 @@ internal class ActivityServiceTest {
     }
 
     @Test
-    @Test
     fun `contactSearch default params are covered`() {
         val request = ActivitySearchRequest(crn = "X000005")
         whenever(probationSearchClient.contactSearch(any())).thenReturn(
