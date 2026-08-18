@@ -97,10 +97,12 @@ internal class CaseloadIntegrationTest @Autowired constructor(
     companion object {
         @JvmStatic
         fun trimmedCaseloadArgs(): List<Arguments> = listOf(
-            Arguments.of("/staff/byid/${STAFF2.id}/caseload/managed-offenders", listOf(
-                generateManagedOffenderSummary(CASELOAD_ROLE_OM_3),
-                generateManagedOffenderSummary(CASELOAD_ROLE_OM_4)
-            )), Arguments.of(
+            Arguments.of(
+                "/staff/byid/${STAFF2.id}/caseload/managed-offenders", listOf(
+                    generateManagedOffenderSummary(CASELOAD_ROLE_OM_3),
+                    generateManagedOffenderSummary(CASELOAD_ROLE_OM_4)
+                )
+            ), Arguments.of(
                 "/team/N01BDT/caseload/managed-offenders", listOf(
                     generateManagedOffenderSummary(CASELOAD_ROLE_OM_3),
                     generateManagedOffenderSummary(CASELOAD_ROLE_OM_2),
