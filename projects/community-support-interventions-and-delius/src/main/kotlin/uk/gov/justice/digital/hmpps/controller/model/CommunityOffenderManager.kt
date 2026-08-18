@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.controller.model
 
-import java.lang.foreign.AddressLayout
-
 data class CommunityOffenderManager(
     val crn: String,
     val communityManager: CommunityManager
@@ -18,6 +16,6 @@ data class CommunityManager(
 
 data class Name(
     val forename: String,
-    val middlenames: String?,
+    val middleName: String?,
     val surname: String,
 )

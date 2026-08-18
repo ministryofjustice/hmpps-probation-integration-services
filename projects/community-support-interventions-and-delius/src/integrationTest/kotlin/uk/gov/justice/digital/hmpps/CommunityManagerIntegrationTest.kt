@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.controller.model.CommunityManager
@@ -14,7 +12,6 @@ import uk.gov.justice.digital.hmpps.controller.model.CommunityOffenderManager
 import uk.gov.justice.digital.hmpps.controller.model.Name
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.service.LdapService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -23,18 +20,11 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 internal class CommunityManagerIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc
 ) {
-    @MockitoBean
-    private lateinit var ldapService: LdapService
-
     @Test
     fun `get community manager returns full details`() {
         val crn = PersonGenerator.PERSON1.crn
-        val staffUser = CommunityManagerGenerator.STAFF_USER
         val staff = CommunityManagerGenerator.STAFF
         val team = CommunityManagerGenerator.TEAM
-
-        whenever(ldapService.findEmailForUsername(staffUser.userName)).thenReturn("john.smith@justice.gov.uk")
-        whenever(ldapService.findTeamForUsername(staffUser.userName)).thenReturn(team.code)
 
         mockMvc.get("/case/$crn/community-manager") { withToken() }
             .andExpect { status { isOk() } }
@@ -48,7 +38,7 @@ internal class CommunityManagerIntegrationTest @Autowired constructor(
                         officeName = CommunityManagerGenerator.OFFICE_LOCATION.description,
                         name = Name(
                             forename = staff.forename,
-                            middlenames = staff.middleName,
+                            middleName = staff.middleName,
                             surname = staff.surname,
                         ),
                         teamPhoneNumber = team.telephone,

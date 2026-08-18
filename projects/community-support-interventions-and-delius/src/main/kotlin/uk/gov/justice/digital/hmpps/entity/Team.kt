@@ -21,7 +21,7 @@ class Team(
     val code: String,
 
     @Column(name = "telephone")
-    val telephone: String,
+    val telephone: String? = null,
 
     @ManyToMany
     @JoinTable(

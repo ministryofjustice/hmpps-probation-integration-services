@@ -18,16 +18,16 @@ class CommunityManagerService(
     private val teamRepository: TeamRepository,
     private val pduRepository: PduRepository,
 ) {
-    fun getCommunityManagerForCrn(crn: String): CommunityOffenderManager? {
+    fun getCommunityManagerForCrn(crn: String): CommunityOffenderManager {
         val communityOffenderManager = communityManagerRepository.findByPersonCrn(crn).orNotFoundBy("crn", crn)
         val staffId = communityOffenderManager.staff.id
         val staffUser = staffUserRepository.findByStaffId(staffId).orNotFoundBy("staff", staffId)
         val staff = staffUser.staff.orNotFoundBy("staff", staffId)
         val emailAddress = ldapService.findEmailForUsername(staffUser.userName)
         val name = Name(staff.forename, staff.middleName, staff.surname)
-        val teamCode = ldapService.findTeamForUsername(staffUser.userName).orNotFoundBy("staff", staffId)
+        val teamCode = ldapService.findTeamForUsername(staffUser.userName).orNotFoundBy("defaultTeam", staffId)
         val team = teamRepository.findByCode(teamCode).orNotFoundBy("team", teamCode)
-        val pdu = pduRepository.findByTeamCode(teamCode)?.description.orNotFoundBy("team", teamCode)
+        val pdu = pduRepository.findByTeamCode(teamCode).orNotFoundBy("team", teamCode).description
         return CommunityOffenderManager(
             crn = crn,
             communityManager = CommunityManager(
