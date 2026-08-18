@@ -17,8 +17,3 @@ class Pdu(
     val code: String,
     val description: String,
 )
-
-interface PduRepository : JpaRepository<Pdu, Long> {
-    @Query("select t.district.borough from Team t where t.code = :code")
-    fun findByTeamCode(code: String): Pdu?
-}

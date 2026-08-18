@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.controller.model.CommunityManager
 import uk.gov.justice.digital.hmpps.controller.model.CommunityOffenderManager
 import uk.gov.justice.digital.hmpps.controller.model.Name
 import uk.gov.justice.digital.hmpps.entity.CommunityManagerRepository
-import uk.gov.justice.digital.hmpps.entity.PduRepository
 import uk.gov.justice.digital.hmpps.entity.StaffUserRepository
 import uk.gov.justice.digital.hmpps.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
@@ -16,18 +15,17 @@ class CommunityManagerService(
     private val staffUserRepository: StaffUserRepository,
     private val communityManagerRepository: CommunityManagerRepository,
     private val teamRepository: TeamRepository,
-    private val pduRepository: PduRepository,
 ) {
     fun getCommunityManagerForCrn(crn: String): CommunityOffenderManager {
         val communityOffenderManager = communityManagerRepository.findByPersonCrn(crn).orNotFoundBy("crn", crn)
         val staffId = communityOffenderManager.staff.id
-        val staffUser = staffUserRepository.findByStaffId(staffId).orNotFoundBy("staff", staffId)
-        val staff = staffUser.staff.orNotFoundBy("staff", staffId)
-        val emailAddress = ldapService.findEmailForUsername(staffUser.userName)
+        val staffUser = staffUserRepository.findByStaffId(staffId)
+        val staff = communityOffenderManager.staff
+        val emailAddress = ldapService.findEmailForUsername(staffUser?.userName)
         val name = Name(staff.forename, staff.middleName, staff.surname)
-        val teamCode = ldapService.findTeamForUsername(staffUser.userName).orNotFoundBy("defaultTeam", staffId)
-        val team = teamRepository.findByCode(teamCode).orNotFoundBy("team", teamCode)
-        val pdu = pduRepository.findByTeamCode(teamCode).orNotFoundBy("team", teamCode).description
+        val teamCode = ldapService.findTeamForUsername(staffUser?.userName)?.toLong()
+        val team = teamRepository.findById(teamCode!!).get()
+        val pdu = team.district?.borough?.description
         return CommunityOffenderManager(
             crn = crn,
             communityManager = CommunityManager(

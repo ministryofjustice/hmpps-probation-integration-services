@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.support.LdapNameBuilder
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
@@ -11,9 +13,11 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import javax.naming.directory.BasicAttribute
+import javax.naming.directory.BasicAttributes
 
 @Component
-class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+class DataLoader(dataManager: DataManager, private val ldapTemplate: LdapTemplate) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
@@ -43,5 +47,18 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(CommunityManagerGenerator.TEAM)
         save(CommunityManagerGenerator.TEAM_OFFICE_LOCATION)
         save(CommunityManagerGenerator.COMMUNITY_MANAGER)
+
+        // Create UserPreferences LDAP entry with the team's actual ID
+        val username = CommunityManagerGenerator.STAFF_USER.userName
+        val dn = LdapNameBuilder.newInstance()
+            .add("cn", username)
+            .add("cn", "UserPreferences")
+            .build()
+        val attributes = BasicAttributes(true).apply {
+            put(BasicAttribute("objectclass", "top").also { it.add("UserPreferences") })
+            put("cn", "UserPreferences")
+            put("defaultTeam", CommunityManagerGenerator.TEAM.id.toString())
+        }
+        ldapTemplate.bind(dn, null, attributes)
     }
 }
