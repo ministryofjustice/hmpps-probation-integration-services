@@ -149,7 +149,14 @@ internal class ActivityServiceTest {
         val contact = ContactGenerator.FIRST_APPT_CONTACT
 
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(probationSearchClient.contactSearchViaSemanticSearch(any(), eq(0), eq(10), eq("contactDate, desc"))).thenReturn(
+        whenever(
+            probationSearchClient.contactSearchViaSemanticSearch(
+                any(),
+                eq(0),
+                eq(10),
+                eq("contactDate, desc")
+            )
+        ).thenReturn(
             ContactSearchResponse(
                 size = 10,
                 page = 0,
@@ -163,7 +170,12 @@ internal class ActivityServiceTest {
         val res = service.activitySearch(crn, "2", searchRequest, pageable)
 
         val captor = argumentCaptor<ActivitySearchRequest>()
-        verify(probationSearchClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10), eq("contactDate, desc"))
+        verify(probationSearchClient).contactSearchViaSemanticSearch(
+            captor.capture(),
+            eq(0),
+            eq(10),
+            eq("contactDate, desc")
+        )
         val captured = captor.firstValue
 
         assertThat(captured.crn, equalTo(crn))
