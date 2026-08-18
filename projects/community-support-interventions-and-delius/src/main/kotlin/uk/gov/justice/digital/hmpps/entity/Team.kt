@@ -29,7 +29,7 @@ class Team(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "office_location_id")]
     )
-    @SQLJoinTableRestriction("default_team_location_flag = 1")
+    @SQLJoinTableRestriction("default_team_location_flag = Y")
     val officeLocations: MutableList<OfficeLocation> = mutableListOf()
 ) {
     val officeLocation: OfficeLocation?
