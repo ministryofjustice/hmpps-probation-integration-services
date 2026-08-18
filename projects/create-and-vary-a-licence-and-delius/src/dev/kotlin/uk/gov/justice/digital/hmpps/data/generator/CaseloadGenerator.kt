@@ -1,13 +1,16 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
+import uk.gov.justice.digital.hmpps.api.model.ManagedOffenderSummary
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.service.asStaff
+import uk.gov.justice.digital.hmpps.service.asStaffSummary
 import uk.gov.justice.digital.hmpps.service.asTeam
+import uk.gov.justice.digital.hmpps.service.asTeamSummary
 import java.time.LocalDate
 
 object CaseloadGenerator {
@@ -72,6 +75,7 @@ object CaseloadGenerator {
     )
 
     val MANAGED_OFFENDER = generateManagedOffender(CASELOAD_ROLE_OM_1, STAFF1, DEFAULT_TEAM)
+    val MANAGED_OFFENDER_SUMMARY = generateManagedOffenderSummary(CASELOAD_ROLE_OM_1)
 
     fun generateCaseload(
         staff: Staff,
@@ -111,4 +115,14 @@ object CaseloadGenerator {
         staff.asStaff(),
         team.asTeam()
     )
+
+    fun generateManagedOffenderSummary(caseload: Caseload) =
+        ManagedOffenderSummary(
+            caseload.crn,
+            caseload.person.nomsNumber,
+            Name(caseload.firstName, caseload.secondName, caseload.surname),
+            caseload.allocationDate,
+            caseload.staff.asStaffSummary(),
+            caseload.team.asTeamSummary()
+        )
 }

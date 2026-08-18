@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
+import uk.gov.justice.digital.hmpps.api.model.ManagedOffenderSummary
 import uk.gov.justice.digital.hmpps.service.TeamService
 
 @RestController
@@ -16,6 +16,6 @@ class TeamResource(
 
     @PreAuthorize("hasRole('PROBATION_API__CVL__CASE_DETAIL')")
     @GetMapping("/{teamCode}/caseload/managed-offenders")
-    fun getManagedOffendersByTeam(@PathVariable teamCode: String): List<ManagedOffender> =
+    fun getManagedOffendersByTeam(@PathVariable teamCode: String): List<ManagedOffenderSummary> =
         teamService.getManagedOffendersByTeam(teamCode)
 }

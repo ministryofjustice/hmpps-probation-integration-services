@@ -33,7 +33,7 @@ class StaffResource(
         )
 
     @GetMapping("/byid/{id}/caseload/managed-offenders")
-    fun getManagedOffenders(@PathVariable id: Long): List<ManagedOffender> =
+    fun getManagedOffenders(@PathVariable id: Long): List<ManagedOffenderSummary> =
         staffService.getManagedOffendersByStaffId(id)
 
     @PostMapping("/byid/{id}/caseload/team-managed-offenders")
@@ -41,7 +41,7 @@ class StaffResource(
         @PathVariable id: Long,
         @RequestBody body: SearchRequest?,
         @PageableDefault(page = 0, size = 100, sort = ["firstName", "surname"]) page: Pageable
-    ): PagedModel<ManagedOffender> = staffService.getTeamManagedOffendersByStaffId(id, body?.query, page)
+    ): PagedModel<ManagedOffenderSummary> = staffService.getTeamManagedOffendersByStaffId(id, body?.query, page)
 
     @GetMapping("/{staffCode}/caseload/managed-offenders")
     fun getManagedOffenders(@PathVariable staffCode: String): List<ManagedOffender> =
