@@ -44,7 +44,8 @@ class DataLoader(dataManager: DataManager, private val entityManager: EntityMana
         save(CommunityManagerGenerator.PDU)
 
         // Create the district table and link it to borough and team for the PduRepository native query
-        entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS district (district_id BIGINT PRIMARY KEY, borough_id BIGINT)").executeUpdate()
+        entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS district (district_id BIGINT PRIMARY KEY, borough_id BIGINT)")
+            .executeUpdate()
         entityManager.createNativeQuery("ALTER TABLE team ADD COLUMN IF NOT EXISTS district_id BIGINT").executeUpdate()
         entityManager.createNativeQuery(
             "MERGE INTO district (district_id, borough_id) VALUES (1, ${CommunityManagerGenerator.PDU.id})"

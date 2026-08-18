@@ -12,5 +12,6 @@ class CommunityManagerController(
 ) {
     @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_SUPPORT_INTERVENTIONS__CASE_DETAIL')")
     @GetMapping(value = ["/case/{crn}/community-manager"])
-    fun getCommunityManagerByCrn(@PathVariable("crn") crn: String) = communityManagerService.getCommunityManagerForCrn(crn)
+    fun getCommunityManagerByCrn(@PathVariable("crn") crn: String) =
+        communityManagerService.getCommunityManagerForCrn(crn)
 }

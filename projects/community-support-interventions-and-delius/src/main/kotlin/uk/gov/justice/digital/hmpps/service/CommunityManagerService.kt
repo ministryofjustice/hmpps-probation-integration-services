@@ -24,7 +24,7 @@ class CommunityManagerService(
         val staffUser = staffUserRepository.findByStaffId(staffId).orNotFoundBy("staff", staffId)
         val staff = staffUser.staff.orNotFoundBy("staff", staffId)
         val emailAddress = ldapService.findEmailForUsername(staffUser.userName)
-        val name = Name(staff.forename, staff.middleName, staff.surname )
+        val name = Name(staff.forename, staff.middleName, staff.surname)
         val teamCode = ldapService.findTeamForUsername(staffUser.userName).orNotFoundBy("staff", staffId)
         val team = teamRepository.findByCode(teamCode).orNotFoundBy("team", teamCode)
         val pdu = pduRepository.findByTeamCode(teamCode)?.description.orNotFoundBy("team", teamCode)
@@ -39,6 +39,5 @@ class CommunityManagerService(
                 teamPhoneNumber = team.telephone
             )
         )
-
     }
 }

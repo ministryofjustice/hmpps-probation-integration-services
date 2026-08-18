@@ -36,7 +36,6 @@ class Team(
         get() = officeLocations.singleOrNull()
 }
 
-
 interface TeamRepository : JpaRepository<Team, Long> {
     fun findByCode(code: String): Team?
 }
