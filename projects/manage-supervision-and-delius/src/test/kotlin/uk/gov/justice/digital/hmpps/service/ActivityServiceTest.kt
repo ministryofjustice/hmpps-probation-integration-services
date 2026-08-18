@@ -206,4 +206,38 @@ internal class ActivityServiceTest {
         verify(probationSearchClient).preload(crn)
         assertThat(result, equalTo(expectedResponse))
     }
+
+    @Test
+    fun `contactSearch default params are covered`() {
+        whenever(probationSearchClient.contactSearch(any())).thenReturn(
+            ContactSearchResponse(
+                size = 10,
+                page = 0,
+                totalResults = 0,
+                totalPages = 0,
+                results = emptyList()
+            )
+        )
+
+        probationSearchClient.contactSearch(ActivitySearchRequest(crn = "X000005"))
+
+        verify(probationSearchClient).contactSearch(any())
+    }
+
+    @Test
+    fun `contactSearchViaSemanticSearch default params are covered`() {
+        whenever(probationSearchClient.contactSearchViaSemanticSearch(any())).thenReturn(
+            ContactSearchResponse(
+                size = 10,
+                page = 0,
+                totalResults = 0,
+                totalPages = 0,
+                results = emptyList()
+            )
+        )
+
+        probationSearchClient.contactSearchViaSemanticSearch(ActivitySearchRequest(crn = "X000005"))
+
+        verify(probationSearchClient).contactSearchViaSemanticSearch(any())
+    }
 }
