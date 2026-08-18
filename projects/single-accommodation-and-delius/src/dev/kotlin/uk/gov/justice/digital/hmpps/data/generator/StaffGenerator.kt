@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.Provider
-import uk.gov.justice.digital.hmpps.integrations.delius.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.Team
+import uk.gov.justice.digital.hmpps.entity.staff.Provider
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 
 object StaffGenerator {
     val DEFAULT = Staff(

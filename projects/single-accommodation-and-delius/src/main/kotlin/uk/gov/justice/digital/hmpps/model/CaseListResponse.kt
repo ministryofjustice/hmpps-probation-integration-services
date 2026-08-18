@@ -37,8 +37,3 @@ data class Officer(
     val username: String,
     val code: String
 )
-
-data class CodeDescription(
-    val code: String,
-    val description: String
-)

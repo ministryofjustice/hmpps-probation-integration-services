@@ -1,14 +1,10 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity.person
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.entity.referencedata.ReferenceData
 import java.time.LocalDate
 
 @Entity
@@ -57,16 +53,3 @@ class Person(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 )
-
-interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
-    fun findByCrn(crn: String): Person?
-
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
-    @Query("select distinct p from Person p join Caseload c on p.id = c.person.id where c.staff.id = :staffId")
-    fun findByCaseloadStaffId(staffId: Long, pageable: Pageable): Page<Person>
-
-    @EntityGraph(attributePaths = ["gender", "manager.team", "manager.staff.user", "roshRegistrations.type"])
-    @Query("select distinct p from Person p join Caseload c on p.id = c.person.id where c.team.code = :teamCode")
-    fun findByCaseloadTeamCode(teamCode: String, pageable: Pageable): Page<Person>
-}
