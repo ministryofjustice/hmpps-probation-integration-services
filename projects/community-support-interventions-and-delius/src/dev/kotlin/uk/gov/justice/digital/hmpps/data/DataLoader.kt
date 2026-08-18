@@ -39,6 +39,13 @@ class DataLoader(dataManager: DataManager, private val entityManager: EntityMana
         save(CommunityManagerGenerator.STAFF)
         save(CommunityManagerGenerator.STAFF_USER)
         save(CommunityManagerGenerator.OFFICE_LOCATION)
+
+        // Add default_team_location_flag column to team_office_location before saving Team
+        // (the @SQLJoinTableRestriction references this column on SELECT)
+        entityManager.createNativeQuery(
+            "ALTER TABLE team_office_location ADD COLUMN IF NOT EXISTS default_team_location_flag INT DEFAULT 1"
+        ).executeUpdate()
+
         save(CommunityManagerGenerator.TEAM)
         save(CommunityManagerGenerator.COMMUNITY_MANAGER)
         save(CommunityManagerGenerator.PDU)
@@ -52,11 +59,6 @@ class DataLoader(dataManager: DataManager, private val entityManager: EntityMana
         ).executeUpdate()
         entityManager.createNativeQuery(
             "UPDATE team SET district_id = 1 WHERE team_id = ${CommunityManagerGenerator.TEAM.id}"
-        ).executeUpdate()
-
-        // Add default_team_location_flag column to team_office_location for the @SQLJoinTableRestriction on Team.officeLocations
-        entityManager.createNativeQuery(
-            "ALTER TABLE team_office_location ADD COLUMN IF NOT EXISTS default_team_location_flag INT DEFAULT 1"
         ).executeUpdate()
     }
 }
