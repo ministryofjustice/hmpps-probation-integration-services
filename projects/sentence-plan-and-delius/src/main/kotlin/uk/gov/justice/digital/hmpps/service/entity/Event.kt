@@ -21,7 +21,10 @@ class Event(
     @OneToOne(mappedBy = "event")
     var disposal: Disposal? = null,
 
-    @Column(name = "sp_goals_complete")
+    @Column(
+        name = "sp_goals_complete",
+        columnDefinition = "CHAR"
+    )
     var spGoalsComplete: String? = null,
 
     @Column(name = "sp_goals_date")
