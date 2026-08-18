@@ -14,6 +14,10 @@ spring:
         query.mutation_strategy.global_temporary:
             create_tables: false
             drop_tables: false
+  ldap:
+    base: ou=Users,dc=moj,dc=com
+    base-environment:
+      java.naming.ldap.derefAliases: never
   threads.virtual.enabled: true
 
 oauth2.roles:
