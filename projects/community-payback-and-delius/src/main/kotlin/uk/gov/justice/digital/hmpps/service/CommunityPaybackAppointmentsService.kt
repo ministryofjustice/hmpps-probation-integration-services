@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.orm.ObjectOptimisticLockingFailureException
@@ -389,27 +388,6 @@ class CommunityPaybackAppointmentsService(
         if (rowVersion != version) {
             throw ObjectOptimisticLockingFailureException(this::class.java, id!!)
         }
-    }
-
-    fun deleteAppointmentsForReference(reference: String) {
-        val appointments = unpaidWorkAppointmentRepository.findAppointments(
-            toDate = null,
-            references = listOf(reference),
-            crn = null,
-            eventNumber = null,
-            fromDate = LocalDate.now(),
-            projectCodes = null,
-            projectTypeCodes = null,
-            outcomeCodes = null,
-            appointmentIds = null,
-            pageable = PageRequest.of(0, 10000),
-        )
-            .filter { it.outcomeId == null }
-            .toList()
-            .map { appointment -> appointment.contact.externalReference!! }
-        appointmentService.bulkDelete(
-            references = appointments
-        )
     }
 
     companion object {
