@@ -4,10 +4,10 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import org.hibernate.annotations.SQLJoinTableRestriction
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -23,17 +23,16 @@ class Team(
     @Column(name = "telephone")
     val telephone: String? = null,
 
-    @ManyToMany
-    @JoinTable(
-        name = "team_office_location",
-        joinColumns = [JoinColumn(name = "team_id")],
-        inverseJoinColumns = [JoinColumn(name = "office_location_id")]
-    )
-    @SQLJoinTableRestriction("default_team_location_flag = 'Y'")
-    val officeLocations: MutableList<OfficeLocation> = mutableListOf()
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    val district: District? = null,
+
+    @OneToMany(mappedBy = "team")
+    @SQLRestriction("default_team_location_flag = 'Y'")
+    val officeLocations: MutableList<TeamOfficeLocation> = mutableListOf()
 ) {
     val officeLocation: OfficeLocation?
-        get() = officeLocations.singleOrNull()
+        get() = officeLocations.singleOrNull()?.officeLocation
 }
 
 interface TeamRepository : JpaRepository<Team, Long> {

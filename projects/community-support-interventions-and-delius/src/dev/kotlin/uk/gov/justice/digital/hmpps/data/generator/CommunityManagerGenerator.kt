@@ -1,12 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.CommunityManager
+import uk.gov.justice.digital.hmpps.entity.District
 import uk.gov.justice.digital.hmpps.entity.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.Pdu
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Staff
 import uk.gov.justice.digital.hmpps.entity.StaffUser
 import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.TeamOfficeLocation
 
 object CommunityManagerGenerator {
     val JOB_ROLE = ReferenceData(
@@ -35,17 +37,28 @@ object CommunityManagerGenerator {
         description = "Sheffield Office",
     )
 
-    val TEAM = Team(
-        id = IdGenerator.getAndIncrement(),
-        code = "N01T01",
-        telephone = "0114 123 4567",
-        officeLocations = mutableListOf(OFFICE_LOCATION),
-    )
-
     val PDU = Pdu(
         id = IdGenerator.getAndIncrement(),
         code = "N01",
         description = "South Yorkshire",
+    )
+
+    val DISTRICT = District(
+        id = IdGenerator.getAndIncrement(),
+        borough = PDU,
+    )
+
+    val TEAM = Team(
+        id = IdGenerator.getAndIncrement(),
+        code = "N01T01",
+        telephone = "0114 123 4567",
+        district = DISTRICT,
+    )
+
+    val TEAM_OFFICE_LOCATION = TeamOfficeLocation(
+        id = IdGenerator.getAndIncrement(),
+        team = TEAM,
+        officeLocation = OFFICE_LOCATION,
     )
 
     val COMMUNITY_MANAGER = CommunityManager(
@@ -56,4 +69,3 @@ object CommunityManagerGenerator {
         staff = STAFF,
     )
 }
-

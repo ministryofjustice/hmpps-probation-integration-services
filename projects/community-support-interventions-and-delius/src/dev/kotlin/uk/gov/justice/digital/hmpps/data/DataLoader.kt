@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
@@ -14,7 +13,7 @@ import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-class DataLoader(dataManager: DataManager, private val entityManager: EntityManager) : BaseDataLoader(dataManager) {
+class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
@@ -39,26 +38,10 @@ class DataLoader(dataManager: DataManager, private val entityManager: EntityMana
         save(CommunityManagerGenerator.STAFF)
         save(CommunityManagerGenerator.STAFF_USER)
         save(CommunityManagerGenerator.OFFICE_LOCATION)
-
-        // Add default_team_location_flag column to team_office_location before saving Team
-        // (the @SQLJoinTableRestriction references this column on SELECT)
-        entityManager.createNativeQuery(
-            "ALTER TABLE team_office_location ADD COLUMN IF NOT EXISTS default_team_location_flag CHAR(1) DEFAULT 'Y'"
-        ).executeUpdate()
-
-        save(CommunityManagerGenerator.TEAM)
-        save(CommunityManagerGenerator.COMMUNITY_MANAGER)
         save(CommunityManagerGenerator.PDU)
-
-        // Create the district table and link it to borough and team for the PduRepository native query
-        entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS district (district_id BIGINT PRIMARY KEY, borough_id BIGINT)")
-            .executeUpdate()
-        entityManager.createNativeQuery("ALTER TABLE team ADD COLUMN IF NOT EXISTS district_id BIGINT").executeUpdate()
-        entityManager.createNativeQuery(
-            "MERGE INTO district (district_id, borough_id) VALUES (1, ${CommunityManagerGenerator.PDU.id})"
-        ).executeUpdate()
-        entityManager.createNativeQuery(
-            "UPDATE team SET district_id = 1 WHERE team_id = ${CommunityManagerGenerator.TEAM.id}"
-        ).executeUpdate()
+        save(CommunityManagerGenerator.DISTRICT)
+        save(CommunityManagerGenerator.TEAM)
+        save(CommunityManagerGenerator.TEAM_OFFICE_LOCATION)
+        save(CommunityManagerGenerator.COMMUNITY_MANAGER)
     }
 }
