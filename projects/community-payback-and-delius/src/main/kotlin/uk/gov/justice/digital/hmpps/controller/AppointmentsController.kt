@@ -46,5 +46,4 @@ class AppointmentsController(
     fun deleteAppointmentsForReference(
         @RequestParam(required = true) reference: String,
     ) = communityPaybackAppointmentsService.deleteAppointmentsForReference(reference)
-
 }
