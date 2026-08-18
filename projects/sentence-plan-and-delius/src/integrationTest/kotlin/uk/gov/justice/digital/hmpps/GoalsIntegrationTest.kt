@@ -53,7 +53,7 @@ internal class GoalsIntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val event = eventRepository.findById(EventGenerator.DEFAULT_EVENT.id).get()
-        assertThat(event.spGoalsComplete).isEqualTo("Y")
+        assertThat(event.spGoalsComplete?.trim()).isEqualTo("Y")
         assertThat(event.spGoalsDate).isEqualTo(occurredAt.toLocalDate())
     }
 

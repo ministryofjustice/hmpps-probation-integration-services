@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.service.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.SqlTypes
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -21,10 +23,8 @@ class Event(
     @OneToOne(mappedBy = "event")
     var disposal: Disposal? = null,
 
-    @Column(
-        name = "sp_goals_complete",
-        columnDefinition = "CHAR"
-    )
+    @Column(name = "sp_goals_complete")
+    @JdbcTypeCode(SqlTypes.CHAR)
     var spGoalsComplete: String? = null,
 
     @Column(name = "sp_goals_date")
