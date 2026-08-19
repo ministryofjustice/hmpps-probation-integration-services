@@ -42,12 +42,20 @@ object TestData {
     val AP_PDU = ProbationDeliveryUnit(id(), "N07PDU", "London PDU", AP_PROVIDER.id, true)
     val AP_LAU = LocalAdminUnit(id(), "N07ACPR", "Accredited Programmes", AP_PDU, true)
     val AP_TEAM = Team(id(), "N07AP1", "AP Team 1", AP_LAU, listOf(), AP_PROVIDER, null)
-    val AP_TEAM_FUTURE = Team(id(), "N07AP2", "AP Team Future", AP_LAU, listOf(), AP_PROVIDER, LocalDate.now().plusDays(14))
-    val AP_TEAM_INACTIVE = Team(id(), "N07AP9", "AP Team Inactive", AP_LAU, listOf(), AP_PROVIDER, LocalDate.now().minusDays(1))
+    val AP_TEAM_FUTURE =
+        Team(id(), "N07AP2", "AP Team Future", AP_LAU, listOf(), AP_PROVIDER, LocalDate.now().plusDays(14))
+    val AP_TEAM_INACTIVE =
+        Team(id(), "N07AP9", "AP Team Inactive", AP_LAU, listOf(), AP_PROVIDER, LocalDate.now().minusDays(1))
     val AP_STAFF = StaffGenerator.generate("N07AP01", teams = listOf(AP_TEAM), middleName = "Middle")
     val AP_STAFF_TWO = StaffGenerator.generate("N07AP03", teams = listOf(AP_TEAM), middleName = "TestTwo")
-    val AP_STAFF_FUTURE = StaffGenerator.generate("N07AP02", teams = listOf(AP_TEAM_FUTURE), endDate = LocalDate.now().plusDays(14), middleName = "Future")
-    val AP_STAFF_INACTIVE = StaffGenerator.generate("N07AP98", teams = listOf(AP_TEAM), endDate = LocalDate.now().minusDays(1))
+    val AP_STAFF_FUTURE = StaffGenerator.generate(
+        "N07AP02",
+        teams = listOf(AP_TEAM_FUTURE),
+        endDate = LocalDate.now().plusDays(14),
+        middleName = "Future"
+    )
+    val AP_STAFF_INACTIVE =
+        StaffGenerator.generate("N07AP98", teams = listOf(AP_TEAM), endDate = LocalDate.now().minusDays(1))
     val AP_STAFF_INACTIVE_TEAM = StaffGenerator.generate("N07AP99", teams = listOf(AP_TEAM_INACTIVE))
     val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location", null, LAU)
     val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION), PROVIDER, null)
