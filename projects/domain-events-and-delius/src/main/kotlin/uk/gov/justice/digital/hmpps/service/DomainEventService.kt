@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.service
 import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Order.asc
 import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.readValue
@@ -27,7 +29,7 @@ class DomainEventService(
     private val notificationEnhancer: NotificationEnhancer,
     private val telemetryService: TelemetryService
 ) {
-    fun getDeltas(): List<DomainEvent> = domainEventRepository.findAll(Pageable.ofSize(batchSize)).content
+    fun getDeltas() = domainEventRepository.findAll(PageRequest.of(0, batchSize, Sort.by(asc("id")))).content
 
     fun deleteAll(deltas: List<DomainEvent>) = domainEventRepository.deleteAllByIdInBatch(deltas.map { it.id })
 

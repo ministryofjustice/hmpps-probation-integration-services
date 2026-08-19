@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Order.asc
 import tools.jackson.core.JacksonException
 import uk.gov.justice.digital.hmpps.data.generator.DomainEventGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
@@ -43,6 +47,15 @@ class DomainEventServiceTest {
             notificationEnhancer = notificationEnhancer,
             telemetryService = telemetryService,
         )
+    }
+
+    @Test
+    fun `messages are retrieved in ascending ID order`() {
+        whenever(domainEventRepository.findAll(any<PageRequest>())).thenReturn(PageImpl(emptyList()))
+
+        service.getDeltas()
+
+        verify(domainEventRepository).findAll(PageRequest.of(0, 50, Sort.by(asc("id"))))
     }
 
     @Test
