@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: sentence-plan-and-delius
+  serviceAccountName: sentence-plan-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/sentence-plan-and-delius
