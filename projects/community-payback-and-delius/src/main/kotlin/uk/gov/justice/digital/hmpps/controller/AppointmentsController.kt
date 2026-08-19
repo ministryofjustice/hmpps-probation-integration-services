@@ -45,6 +45,6 @@ class AppointmentsController(
     )
 
     @DeleteMapping("/{reference:[0-9a-fA-F-]{36}}")
-    fun deleteAppointment(@PathVariable reference: UUID,) =
+    fun deleteAppointment(@PathVariable reference: UUID) =
         communityPaybackAppointmentsService.deleteAppointment(reference)
 }

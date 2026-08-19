@@ -407,7 +407,7 @@ class CommunityPaybackAppointmentsService(
                 appointmentService.delete(appointment.contact.externalReference!!)
                 updateStatus(appointment.details)
             } ?: throw NotFoundException("Appointment with reference $reference not found")
-        }
+    }
 
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:appointment:"
