@@ -404,16 +404,15 @@ class CommunityPaybackAppointmentsService(
             references = listOf("$REFERENCE_PREFIX$reference"),
             pageable = Pageable.unpaged()
         ).filter { it.contact.outcome == null }
-            .firstOrNull{
-                 appointment ->
+            .firstOrNull { appointment ->
                 appointment.contact.softDeleted == false &&
                     appointment.contact.outcome == null &&
                     appointment.date.atTime(appointment.endTime)
                         .atZone(EuropeLondon)
                         .isAfter(ZonedDateTime.now(EuropeLondon))
             }?.let { appointment ->
-                val externalReference = appointment.contact.externalReference ?:
-                throw NotFoundException("Appointment with reference $reference not found")
+                val externalReference = appointment.contact.externalReference
+                    ?: throw NotFoundException("Appointment with reference $reference not found")
                 appointmentService.delete(appointment.contact.externalReference!!)
                 updateStatus(appointment.details)
             } ?: throw NotFoundException("Appointment with reference $reference not found")
