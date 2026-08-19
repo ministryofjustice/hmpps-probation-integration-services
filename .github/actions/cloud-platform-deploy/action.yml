@@ -92,6 +92,7 @@ runs:
           exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
             --history-max 10 \
             --install \
+            --force-replace \
             --reset-values \
             --rollback-on-failure \
             --set "version=${VERSION}" \
