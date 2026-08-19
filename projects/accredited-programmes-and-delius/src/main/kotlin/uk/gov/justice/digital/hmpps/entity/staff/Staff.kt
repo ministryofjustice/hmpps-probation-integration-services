@@ -18,6 +18,9 @@ class Staff(
 
     val forename: String,
 
+    @Column(name = "forename2")
+    val middleName: String? = null,
+
     val surname: String,
 
     @OneToOne(mappedBy = "staff")

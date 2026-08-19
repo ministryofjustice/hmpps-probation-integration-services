@@ -31,6 +31,26 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         """
     )
     fun findRegionMembers(providerCode: String): List<RegionMember>
+
+    @Query(
+        """
+            select 
+                s.code as staffCode, 
+                s.forename as forename, 
+                s.middleName as middleNames,
+                s.surname as surname,
+                t.code as teamCode,
+                t.description as teamDescription
+            from Staff s
+            join s.teams t
+            join t.localAdminUnit lau
+            where t.provider.code = :providerCode
+            and lau.code = :lauCode
+            and (t.endDate is null or t.endDate > current_date)
+            and (s.endDate is null or s.endDate > current_date)
+        """
+    )
+    fun findAccreditedProgrammesMembers(providerCode: String, lauCode: String): List<AccreditedProgrammesTeamMember>
 }
 
 fun StaffRepository.getAllByCodeIn(codes: List<String>) =
@@ -46,4 +66,13 @@ interface RegionMember {
     val pduDescription: String
     val regionCode: String
     val regionDescription: String
+}
+
+interface AccreditedProgrammesTeamMember {
+    val staffCode: String
+    val forename: String
+    val middleNames: String?
+    val surname: String
+    val teamCode: String
+    val teamDescription: String
 }
