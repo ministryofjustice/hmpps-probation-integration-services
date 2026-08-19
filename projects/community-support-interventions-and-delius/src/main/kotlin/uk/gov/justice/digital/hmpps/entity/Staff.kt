@@ -20,7 +20,7 @@ class Staff(
     val middleName: String? = null,
     @Column(name = "surname")
     val surname: String,
-    @Column(name = "officer_code")
+    @Column("officer_code", columnDefinition = "char(7)")
     val code: String,
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
