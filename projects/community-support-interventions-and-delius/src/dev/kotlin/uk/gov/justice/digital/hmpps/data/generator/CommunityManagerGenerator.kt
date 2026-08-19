@@ -67,5 +67,6 @@ object CommunityManagerGenerator {
         softDeleted = false,
         active = true,
         staff = STAFF,
+        team = TEAM,
     )
 }

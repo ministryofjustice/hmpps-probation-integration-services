@@ -8,7 +8,7 @@ data class CommunityOffenderManager(
 data class CommunityManager(
     val jobRole: String?,
     val emailAddress: String?,
-    val pdu: String?,
+    val pdu: String,
     val officeName: String?,
     val name: Name,
     val teamPhoneNumber: String?

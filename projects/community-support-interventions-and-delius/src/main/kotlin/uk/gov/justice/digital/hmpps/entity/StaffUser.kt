@@ -24,7 +24,6 @@ class StaffUser(
 )
 
 interface StaffUserRepository : JpaRepository<StaffUser, Long> {
-    fun findByUserName(userName: String): StaffUser?
 
     fun findByStaffId(id: Long): StaffUser?
 }

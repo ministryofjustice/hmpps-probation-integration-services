@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -23,9 +24,9 @@ class Team(
     @Column(name = "telephone")
     val telephone: String? = null,
 
-    @ManyToOne
-    @JoinColumn(name = "district_id")
-    val district: District? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id", nullable = false)
+    val district: District,
 
     @OneToMany(mappedBy = "team")
     @SQLRestriction("default_team_location_flag = 'Y'")
