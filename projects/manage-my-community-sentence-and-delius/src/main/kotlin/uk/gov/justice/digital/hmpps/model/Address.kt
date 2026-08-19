@@ -33,6 +33,7 @@ data class Address(
             district = district,
             county = county,
             postcode = postcode,
+            telephoneNumber = telephoneNumber,
         )
     }
 }
