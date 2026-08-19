@@ -30,7 +30,6 @@ class ActivityIntegrationTest : IntegrationTestBase() {
 
     @Test
     fun `activity search calls probation offender activity search`() {
-
         val person = OVERVIEW
         val searchResponse = ContactSearchResponse(
             page = 0, totalResults = 10, totalPages = 11, size = 3,
@@ -63,11 +62,8 @@ class ActivityIntegrationTest : IntegrationTestBase() {
             withToken()
             json = ActivitySearchRequest(crn = person.crn)
         }
-            .andExpect {
-                status { isOk() }
-            }
+            .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PersonActivity>()
-
 
         assertThat(res.personSummary.crn, equalTo(person.crn))
         assertThat(res.activities.size, equalTo(3))
