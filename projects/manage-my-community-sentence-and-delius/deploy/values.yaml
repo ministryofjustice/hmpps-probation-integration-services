@@ -2,7 +2,8 @@
 generic-service:
   productId: HMPPS518
   nameOverride: manage-my-community-sentence-and-delius
-
+  serviceAccountName: manage-my-community-sentence-and-delius
+  
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-my-community-sentence-and-delius
 
