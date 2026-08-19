@@ -46,12 +46,12 @@ internal class PublishingIntegrationTest @Autowired constructor(
 
         val messageTypes = messages.mapNotNull { it.eventType }
         assertThat(
-            messageTypes.sorted(),
+            messageTypes,
             equalTo(
                 listOf(
-                    "probation-case.engagement.created",
+                    "probation-case.risk-scores.ogrs.manual-calculation",
                     "probation-case.registration.added",
-                    "probation-case.risk-scores.ogrs.manual-calculation"
+                    "probation-case.engagement.created"
                 )
             )
         )
