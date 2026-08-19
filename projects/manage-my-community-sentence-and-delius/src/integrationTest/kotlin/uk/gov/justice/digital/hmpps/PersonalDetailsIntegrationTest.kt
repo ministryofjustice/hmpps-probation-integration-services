@@ -99,7 +99,8 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                                   "town": "Test Town",
                                   "district": "Test District",
                                   "county": "Test County",
-                                  "postcode": "TE1 1ST"
+                                  "postcode": "TE1 1ST",
+                                  "telephoneNumber": "01219991234"
                                 }
                               ]
                             }

@@ -67,7 +67,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "nationalStandards": false,
                               "lastUpdatedAt": "2024-01-01T00:00:00Z"
@@ -106,7 +107,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "attended": false,
                               "complied": false,
@@ -120,7 +122,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                   "town": "Test Town",
                                   "district": "Test District",
                                   "county": "Test County",
-                                  "postcode": "TE1 1ST"
+                                  "postcode": "TE1 1ST",
+                                  "telephoneNumber": "01219991234"
                                 },
                                 "project": {
                                   "code": "PRJ1",
@@ -181,7 +184,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "attended": true,
                               "complied": true,
@@ -208,7 +212,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "nationalStandards": false,
                               "lastUpdatedAt": "2024-01-01T00:00:00Z"
@@ -232,7 +237,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "attended": false,
                               "complied": false,
@@ -246,7 +252,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                   "town": "Test Town",
                                   "district": "Test District",
                                   "county": "Test County",
-                                  "postcode": "TE1 1ST"
+                                  "postcode": "TE1 1ST",
+                                  "telephoneNumber": "01219991234"
                                 },
                                 "project": {
                                   "code": "PRJ1",
@@ -282,7 +289,8 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "town": "Test Town",
                                 "district": "Test District",
                                 "county": "Test County",
-                                "postcode": "TE1 1ST"
+                                "postcode": "TE1 1ST",
+                                "telephoneNumber": "01219991234"
                               },
                               "attended": false,
                               "complied": false,

@@ -81,7 +81,8 @@ object TestData {
             town = "Test Town",
             district = "Test District",
             county = "Test County",
-            postcode = "TE1 1ST"
+            postcode = "TE1 1ST",
+            telephoneNumber = "01219991234"
         )
         val TEAM = Team(id(), "N01T01", "Test Team", "01000000001", listOf(OFFICE))
     }
