@@ -392,28 +392,15 @@ class CommunityPaybackAppointmentsService(
     }
 
     fun deleteAppointment(reference: UUID) {
-        unpaidWorkAppointmentRepository.findAppointments(
-            crn = null,
-            eventNumber = null,
-            fromDate = LocalDate.now(),
-            toDate = null,
-            projectCodes = null,
-            projectTypeCodes = null,
-            outcomeCodes = null,
-            appointmentIds = null,
-            references = listOf("$REFERENCE_PREFIX$reference"),
-            pageable = Pageable.unpaged()
-        ).filter { it.contact.outcome == null }
-            .firstOrNull { appointment ->
-                appointment.contact.softDeleted == false &&
-                    appointment.contact.outcome == null &&
-                    appointment.date.atTime(appointment.endTime)
-                        .atZone(EuropeLondon)
-                        .isAfter(ZonedDateTime.now(EuropeLondon))
-            }?.let { appointment ->
-                val externalReference = appointment.contact.externalReference
-                    ?: throw NotFoundException("Appointment with reference $reference not found")
-                appointmentService.delete(appointment.contact.externalReference!!)
+        val appt = unpaidWorkAppointmentRepository.findByContactExternalReferenceAndContactOutcomeIsNull("$REFERENCE_PREFIX$reference")
+            appt?.takeIf { appt ->
+                !appt.contact.softDeleted && appt.date.atTime(appt.endTime)
+                    .atZone(EuropeLondon)
+                    .isAfter(ZonedDateTime.now(EuropeLondon))
+            }
+            ?.let { appointment ->
+                appointmentService.delete("$REFERENCE_PREFIX$reference")
+                unpaidWorkAppointmentRepository.deleteById(appointment.id)
                 updateStatus(appointment.details)
             } ?: throw NotFoundException("Appointment with reference $reference not found")
     }

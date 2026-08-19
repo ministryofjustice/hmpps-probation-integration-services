@@ -514,6 +514,8 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
     @EntityGraph(value = "UnpaidWorkAppointment.all")
     fun findAll(spec: Specification<UnpaidWorkAppointment>, pageable: Pageable): Page<UnpaidWorkAppointment>
 
+    fun findByContactExternalReferenceAndContactOutcomeIsNull(contactExternalReference: String): UnpaidWorkAppointment?
+
     fun findAppointments(
         crn: String?,
         eventNumber: String?,

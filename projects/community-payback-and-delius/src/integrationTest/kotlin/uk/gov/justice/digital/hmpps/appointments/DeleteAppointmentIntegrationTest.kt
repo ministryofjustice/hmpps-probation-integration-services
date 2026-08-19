@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import uk.gov.justice.digital.hmpps.test.TestData
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 
 @Transactional
@@ -77,6 +78,34 @@ class DeleteAppointmentIntegrationTest @Autowired constructor(
         val request = TestData.createAppointmentWithOutcome().copy(
             reference = reference,
             date = LocalDate.now(),
+        )
+
+        val created = mockMvc
+            .post("/projects/${UPW_PROJECT_3.code}/appointments") {
+                withToken()
+                json = CreateAppointmentsRequest(listOf(request))
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
+
+        assertThat(unpaidWorkAppointmentRepository.findById(created.id)).isPresent
+
+        mockMvc
+            .delete("/appointments/$reference") { withToken() }
+            .andExpect { status { isNotFound() } }
+            .andReturn().response.contentAsJson<ErrorResponse>().also {
+                assertThat(it.message).isEqualTo("Appointment with reference $reference not found")
+            }
+    }
+
+    @Test
+    fun `delete a past appointment without an outcome returns 404`() {
+        val reference = UUID.randomUUID()
+        val request = TestData.createAppointment().copy(
+            reference = reference,
+            date = LocalDate.now().minusDays(1),
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(15, 0),
         )
 
         val created = mockMvc
