@@ -18,7 +18,7 @@ class Team(
     @Column(name = "team_id")
     val id: Long,
 
-    @Column(name = "code")
+    @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
     @Column(name = "telephone")
