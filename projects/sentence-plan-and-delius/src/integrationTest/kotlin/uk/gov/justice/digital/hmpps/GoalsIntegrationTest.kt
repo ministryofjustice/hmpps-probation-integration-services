@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.service.entity.EventRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import kotlin.text.get
 import org.mockito.kotlin.argThat
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
