@@ -390,6 +390,25 @@ class CommunityPaybackAppointmentsService(
         }
     }
 
+    fun deleteAppointment(reference: UUID) {
+        unpaidWorkAppointmentRepository.findAppointments(
+            crn = null,
+            eventNumber = null,
+            fromDate = LocalDate.now(),
+            toDate = null,
+            projectCodes = null,
+            projectTypeCodes = null,
+            outcomeCodes = null,
+            appointmentIds = null,
+            references = listOf("$REFERENCE_PREFIX$reference"),
+            pageable = Pageable.unpaged()
+        ).filter { it.contact.outcome == null }
+            .firstOrNull()?.let { appointment ->
+                appointmentService.delete(appointment.contact.externalReference!!)
+                updateStatus(appointment.details)
+            } ?: throw NotFoundException("Appointment with reference $reference not found")
+        }
+
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:appointment:"
     }
