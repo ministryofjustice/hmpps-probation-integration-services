@@ -24,7 +24,7 @@ internal class TeamResourceTest {
     fun `calls managed offenders endpoint`() {
         whenever(teamService.getManagedOffendersByTeam("N01BDT")).thenReturn(
             listOf(
-                CaseloadGenerator.MANAGED_OFFENDER
+                CaseloadGenerator.MANAGED_OFFENDER_SUMMARY
             )
         )
         val res = resource.getManagedOffendersByTeam("N01BDT")

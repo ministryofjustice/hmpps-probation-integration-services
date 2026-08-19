@@ -1,8 +1,11 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity.caseload
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 
 @Entity
 @Immutable

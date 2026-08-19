@@ -119,6 +119,7 @@ class AppointmentService(
                 it.date,
                 it.startTime?.toLocalTime(),
                 it.endTime?.toLocalTime(),
+                it.description,
                 Staff(
                     Name(forename = it.staff.forename, surname = it.staff.surname),
                     it.staff.code

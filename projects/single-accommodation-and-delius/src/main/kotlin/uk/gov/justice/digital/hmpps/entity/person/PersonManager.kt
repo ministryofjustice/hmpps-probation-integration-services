@@ -1,8 +1,10 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity.person
 
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import uk.gov.justice.digital.hmpps.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.entity.staff.Team
 
 @Entity
 @Table(name = "offender_manager")

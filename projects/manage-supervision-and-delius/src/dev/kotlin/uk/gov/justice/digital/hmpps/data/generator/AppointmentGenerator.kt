@@ -121,6 +121,22 @@ object AppointmentGenerator {
             teamId = DEFAULT_TEAM.id,
         )
 
+    val SMS_APPOINTMENT_NO_DESCRIPTION =
+        SentenceAppointment(
+            person = PersonGenerator.SMS_PERSON,
+            type = APPOINTMENT_TYPES[0],
+            date = ZonedDateTime.of(2024, 11, 26, 14, 0, 0, 0, EuropeLondon).toLocalDate(),
+            startTime = ZonedDateTime.of(2024, 11, 26, 14, 0, 0, 0, EuropeLondon),
+            endTime = ZonedDateTime.of(2024, 11, 26, 15, 0, 0, 0, EuropeLondon),
+            externalReference = "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000003",
+            description = null,
+            softDeleted = false,
+            notes = null,
+            sensitive = false,
+            staffId = DEFAULT_STAFF.id,
+            teamId = DEFAULT_TEAM.id,
+        )
+
     val NON_SELECTABLE_OVERDUE_APPOINTMENT =
         SentenceAppointment(
             person = PersonGenerator.SMS_PERSON,

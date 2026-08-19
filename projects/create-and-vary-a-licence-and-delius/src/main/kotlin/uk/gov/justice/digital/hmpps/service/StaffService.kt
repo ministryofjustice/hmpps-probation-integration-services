@@ -5,10 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
-import uk.gov.justice.digital.hmpps.api.model.PDUHead
-import uk.gov.justice.digital.hmpps.api.model.Staff
-import uk.gov.justice.digital.hmpps.api.model.StaffName
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload.CaseloadRole
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadRepository
@@ -44,18 +41,18 @@ class StaffService(
     fun findStaffForUsernames(usernames: List<String>): List<StaffName> =
         staffRepository.findByUserUsernameInIgnoreCase(usernames).map { it.asStaffName() }
 
-    fun getManagedOffendersByStaffId(id: Long): List<ManagedOffender> =
+    fun getManagedOffendersByStaffId(id: Long): List<ManagedOffenderSummary> =
         caseloadRepository.findByStaffIdAndRoleCode(id, CaseloadRole.OFFENDER_MANAGER.value)
-            .map { it.asManagedOffender() }
+            .map { it.asManagedOffenderSummary() }
 
     fun getManagedOffenders(staffCode: String): List<ManagedOffender> =
         caseloadRepository.findByStaffCodeAndRoleCode(staffCode, CaseloadRole.OFFENDER_MANAGER.value)
             .map { it.asManagedOffender() }
 
-    fun getTeamManagedOffendersByStaffId(id: Long, query: String?, page: Pageable): PagedModel<ManagedOffender> {
+    fun getTeamManagedOffendersByStaffId(id: Long, query: String?, page: Pageable): PagedModel<ManagedOffenderSummary> {
         val teamIds = staffRepository.findTeamIdsById(id).ifEmpty { return PagedModel(Page.empty(page)) }
         return caseloadRepository.findByTeamIdInAndRoleCode(teamIds, CaseloadRole.OFFENDER_MANAGER.value, query, page)
-            .map { it.asManagedOffender() }
+            .map { it.asManagedOffenderSummary() }
             .let { PagedModel(it) }
     }
 

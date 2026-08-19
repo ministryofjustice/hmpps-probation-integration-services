@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.referencedata.ReferenceData
 
 object ReferenceDataGenerator {
     val GENDER_MALE = ReferenceData(

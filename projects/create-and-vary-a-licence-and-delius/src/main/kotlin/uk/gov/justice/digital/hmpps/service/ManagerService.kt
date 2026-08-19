@@ -108,5 +108,26 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload.as
     team.asTeam()
 )
 
+fun uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload.asManagedOffenderSummary() =
+    ManagedOffenderSummary(
+        crn,
+        person.nomsNumber,
+        Name(firstName, secondName, surname),
+        allocationDate,
+        staff.asStaffSummary(),
+        team.asTeamSummary()
+    )
+
+fun Staff.asStaffSummary() = StaffSummary(
+    code,
+    name(),
+    isUnallocated()
+)
+
+fun Team.asTeamSummary() = TeamSummary(
+    code,
+    description
+)
+
 fun District.asDistrict() = uk.gov.justice.digital.hmpps.api.model.District(code, description, borough.asBorough())
 fun Borough.asBorough() = uk.gov.justice.digital.hmpps.api.model.Borough(code, description)

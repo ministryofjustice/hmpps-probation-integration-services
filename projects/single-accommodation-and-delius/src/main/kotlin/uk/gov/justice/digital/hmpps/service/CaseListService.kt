@@ -2,15 +2,19 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.web.PagedModel
 import org.springframework.data.web.PagedModel.PageMetadata
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.entity.person.RegisterType
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
-import uk.gov.justice.digital.hmpps.integrations.delius.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.StaffRepository
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.repository.KeyDateRepository
+import uk.gov.justice.digital.hmpps.repository.PersonRepository
+import uk.gov.justice.digital.hmpps.repository.StaffRepository
+import uk.gov.justice.digital.hmpps.repository.TeamRepository
 import java.time.LocalDate
 
 @Service
@@ -20,6 +24,7 @@ class CaseListService(
     private val personRepository: PersonRepository,
     private val keyDateRepository: KeyDateRepository,
     private val userAccessService: UserAccessService,
+    private val teamRepository: TeamRepository,
 ) {
     fun getCaseList(username: String, teamCode: String?, pageable: PageRequest): CaseListResponse {
         val staff = staffRepository.findByUserUsernameIgnoreCase(username).orNotFoundBy("username", username)
@@ -58,6 +63,10 @@ class CaseListService(
             )
         )
     }
+
+    fun getTeamCaseIds(teamCode: String, pageable: PageRequest) = if (teamRepository.existsByCode(teamCode)) {
+        PagedModel(personRepository.findCaseIdentifiersByTeamCode(teamCode, pageable))
+    } else throw NotFoundException("Team", "code", teamCode)
 
     fun getCase(username: String, crn: String): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
@@ -101,9 +110,8 @@ class CaseListService(
             description = manager.team.description
         ),
         gender = gender.description,
-        roshLevel = roshRegistrations
-            .firstOrNull { it.type.code in uk.gov.justice.digital.hmpps.integrations.delius.RegisterType.ROSH_CODES }
-            ?.type?.let { CodeDescription(it.code, it.description) },
+        roshLevel = roshRegistrations.firstOrNull { it.type.code in RegisterType.ROSH_CODES }?.type
+            ?.let { CodeDescription(it.code, it.description) },
         expectedReleaseDate = expectedReleaseDate,
         userExcluded = access.userExcluded,
         userRestricted = access.userRestricted,

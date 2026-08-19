@@ -18,10 +18,19 @@ class GetOverdueOutcomeTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<OverdueOutcomeAppointments>()
 
-        assertThat(response.content).hasSize(1)
-        with(response.content.first()) {
+        assertThat(response.content).hasSize(2)
+        val withDescription = response.content.first { it.date == LocalDate.of(2024, 11, 27) }
+        with(withDescription) {
             assertThat(type).isEqualTo(OverdueOutcome.Type("COAP", "Description for COAP"))
             assertThat(date).isEqualTo(LocalDate.of(2024, 11, 27))
+            assertThat(description).isEqualTo("Description")
+            assertThat(staff.code).isEqualTo("N01BDT1")
+        }
+        val withoutDescription = response.content.first { it.date == LocalDate.of(2024, 11, 26) }
+        with(withoutDescription) {
+            assertThat(type).isEqualTo(OverdueOutcome.Type("COAP", "Description for COAP"))
+            assertThat(date).isEqualTo(LocalDate.of(2024, 11, 26))
+            assertThat(description).isNull()
             assertThat(staff.code).isEqualTo("N01BDT1")
         }
     }

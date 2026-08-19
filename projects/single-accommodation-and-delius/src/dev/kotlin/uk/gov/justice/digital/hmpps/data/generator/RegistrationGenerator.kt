@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.RegisterType
+import uk.gov.justice.digital.hmpps.entity.person.RegisterType
 
 object RegisterTypeGenerator {
     val HIGH_ROSH = RegisterType(

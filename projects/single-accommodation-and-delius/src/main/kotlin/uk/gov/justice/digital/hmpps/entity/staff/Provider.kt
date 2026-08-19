@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius
+package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
