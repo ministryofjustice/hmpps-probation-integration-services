@@ -23,8 +23,7 @@ class Event(
     @OneToOne(mappedBy = "event")
     var disposal: Disposal? = null,
 
-    @Column(name = "sp_goals_complete")
-    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(name = "sp_goals_complete", columnDefinition = "char")
     var spGoalsComplete: String? = null,
 
     @Column(name = "sp_goals_date")
