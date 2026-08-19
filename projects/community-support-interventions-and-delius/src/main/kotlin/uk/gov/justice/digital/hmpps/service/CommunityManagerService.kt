@@ -16,19 +16,19 @@ class CommunityManagerService(
     private val communityManagerRepository: CommunityManagerRepository,
     private val teamRepository: TeamRepository,
 ) {
-    fun getCommunityManagerForCrn(crn: String)=
+    fun getCommunityManagerForCrn(crn: String) =
         with(communityManagerRepository.findByPersonCrn(crn).orNotFoundBy("crn", crn)) {
-        val emailAddress = staff.user?.userName?.let { ldapService.findEmailForUsername(it) }
-        CommunityOffenderManager(
-            crn = crn,
-            communityManager = CommunityManager(
-                name = Name(staff.forename, staff.middleName, staff.surname),
-                jobRole = staff.jobRole?.description,
-                officeName = team.officeLocation?.description,
-                pdu = team.district.borough.description,
-                emailAddress = emailAddress,
-                teamPhoneNumber = team.telephone,
+            val emailAddress = staff.user?.userName?.let { ldapService.findEmailForUsername(it) }
+            CommunityOffenderManager(
+                crn = crn,
+                communityManager = CommunityManager(
+                    name = Name(staff.forename, staff.middleName, staff.surname),
+                    jobRole = staff.jobRole?.description,
+                    officeName = team.officeLocation?.description,
+                    pdu = team.district.borough.description,
+                    emailAddress = emailAddress,
+                    teamPhoneNumber = team.telephone,
+                )
             )
-        )
-    }
+        }
 }

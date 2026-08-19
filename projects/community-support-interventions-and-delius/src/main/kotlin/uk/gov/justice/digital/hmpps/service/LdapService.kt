@@ -12,5 +12,4 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
     @WithSpan
     fun findEmailForUsername(@SpanAttribute userName: String?) =
         userName?.let { ldapTemplate.findEmailByUsername(it) }
-
 }
