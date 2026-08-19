@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.service.entity.EventRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.LocalDate
 
 @Service
 class GoalsService(
