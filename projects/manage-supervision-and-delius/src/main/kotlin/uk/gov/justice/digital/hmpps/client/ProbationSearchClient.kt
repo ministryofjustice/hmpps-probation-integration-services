@@ -15,7 +15,7 @@ interface ProbationSearchClient {
         @RequestBody body: ActivitySearchRequest,
         @RequestParam page: Int = 0,
         @RequestParam size: Int = 10,
-        @RequestParam sort: String = "contactDate,desc"
+        @RequestParam sort: String = "date,desc"
     ): ContactSearchResponse
 
     @PostExchange(url = "/search/contacts")
@@ -23,7 +23,7 @@ interface ProbationSearchClient {
         @RequestBody body: ActivitySearchRequest,
         @RequestParam page: Int = 0,
         @RequestParam size: Int = 10,
-        @RequestParam sort: String = "contactDate,desc"
+        @RequestParam sort: String = "date,desc"
     ): ContactSearchResponse
 
     @GetExchange(url = "/search/contacts/preload/{crn}")
