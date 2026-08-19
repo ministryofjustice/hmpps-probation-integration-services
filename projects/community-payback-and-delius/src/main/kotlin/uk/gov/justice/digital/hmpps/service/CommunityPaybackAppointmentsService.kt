@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.appointments.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.appointments.model.ReferencedEntities
 import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
@@ -403,7 +404,16 @@ class CommunityPaybackAppointmentsService(
             references = listOf("$REFERENCE_PREFIX$reference"),
             pageable = Pageable.unpaged()
         ).filter { it.contact.outcome == null }
-            .firstOrNull()?.let { appointment ->
+            .firstOrNull{
+                 appointment ->
+                appointment.contact.softDeleted == false &&
+                    appointment.contact.outcome == null &&
+                    appointment.date.atTime(appointment.endTime)
+                        .atZone(EuropeLondon)
+                        .isAfter(ZonedDateTime.now(EuropeLondon))
+            }?.let { appointment ->
+                val externalReference = appointment.contact.externalReference ?:
+                throw NotFoundException("Appointment with reference $reference not found")
                 appointmentService.delete(appointment.contact.externalReference!!)
                 updateStatus(appointment.details)
             } ?: throw NotFoundException("Appointment with reference $reference not found")
