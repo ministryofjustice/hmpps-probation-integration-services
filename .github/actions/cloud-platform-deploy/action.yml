@@ -91,7 +91,6 @@ runs:
           echo "::group::Helm upgrade (attempt $attempt)"
           exec helm upgrade "${PROJECT}" "projects/${PROJECT}/deploy" \
             --history-max 10 \
-            --force \
             --install \
             --reset-values \
             --rollback-on-failure \
