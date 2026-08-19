@@ -103,9 +103,9 @@ class DeleteAppointmentIntegrationTest @Autowired constructor(
         val reference = UUID.randomUUID()
         val request = TestData.createAppointment().copy(
             reference = reference,
-            date = LocalDate.now().minusDays(1),
-            startTime = LocalTime.of(9, 0),
-            endTime = LocalTime.of(15, 0),
+            date = LocalDate.now().plusDays(1),
+            startTime = LocalTime.of(0, 0),
+            endTime = LocalTime.of(0, 1),
         )
 
         val created = mockMvc
@@ -116,7 +116,10 @@ class DeleteAppointmentIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<CreatedAppointment>>().first()
 
-        assertThat(unpaidWorkAppointmentRepository.findById(created.id)).isPresent
+        // Move appointment to the past so it's no longer deletable
+        val appointment = unpaidWorkAppointmentRepository.findById(created.id).get()
+        appointment.date = LocalDate.now().minusDays(1)
+        unpaidWorkAppointmentRepository.saveAndFlush(appointment)
 
         mockMvc
             .delete("/appointments/$reference") { withToken() }
