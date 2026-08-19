@@ -56,7 +56,6 @@ object CommunityManagerGenerator {
     )
 
     val TEAM_OFFICE_LOCATION = TeamOfficeLocation(
-        id = IdGenerator.getAndIncrement(),
         team = TEAM,
         officeLocation = OFFICE_LOCATION,
     )
