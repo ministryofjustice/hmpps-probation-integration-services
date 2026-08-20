@@ -36,7 +36,11 @@ runs:
       id: remote
       run: |
         pull_token=$(curl -fsS 'https://ghcr.io/token?service=ghcr.io&scope=repository:ministryofjustice/hmpps-probation-integration-services/'"${project}"':pull' | jq -r '.token')
-        echo "digest=$(curl -fsSI -H "Authorization: Bearer $pull_token" "https://ghcr.io/v2/ministryofjustice/hmpps-probation-integration-services/${project}/manifests/latest" | awk -F': ' '/docker-content-digest/ {print $2}' | tr -d '\r')" | tee -a $GITHUB_OUTPUT
+        echo "digest=$(curl -fsSI \
+          -H "Authorization: Bearer $pull_token" \
+          -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+          "https://ghcr.io/v2/ministryofjustice/hmpps-probation-integration-services/${project}/manifests/latest" \
+          | awk -F': ' 'tolower($0) ~ /docker-content-digest/ {print $2}' | tr -d '\r')" | tee -a $GITHUB_OUTPUT
       shell: bash
       env:
         project: ${{ inputs.project }}
