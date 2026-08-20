@@ -392,13 +392,12 @@ class CommunityPaybackAppointmentsService(
     }
 
     fun deleteAppointment(reference: UUID) {
-        val appt =
-            unpaidWorkAppointmentRepository.findByContactExternalReferenceAndContactOutcomeIsNull("$REFERENCE_PREFIX$reference")
-        appt?.takeIf { appt ->
-            !appt.contact.softDeleted && appt.date.atTime(appt.endTime)
-                .atZone(EuropeLondon)
-                .isAfter(ZonedDateTime.now(EuropeLondon))
-        }
+        val appt = unpaidWorkAppointmentRepository.findByContactExternalReferenceAndContactOutcomeIsNull("$REFERENCE_PREFIX$reference")
+            appt?.takeIf { appt -> !appt.contact.softDeleted }
+                ?.also { require(appt.date.atTime(appt.endTime)
+                    .atZone(EuropeLondon)
+                    .isAfter(ZonedDateTime.now(EuropeLondon))) {"Cannot delete past-dated appointment"}
+            }
             ?.let { appointment ->
                 appointmentService.delete("$REFERENCE_PREFIX$reference")
                 unpaidWorkAppointmentRepository.deleteById(appointment.id)

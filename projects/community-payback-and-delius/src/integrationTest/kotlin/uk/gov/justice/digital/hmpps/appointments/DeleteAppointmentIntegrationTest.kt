@@ -99,7 +99,7 @@ class DeleteAppointmentIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `delete a past appointment without an outcome returns 404`() {
+    fun `delete a past appointment without an outcome returns 400`() {
         val reference = UUID.randomUUID()
         val request = TestData.createAppointment().copy(
             reference = reference,
@@ -123,9 +123,9 @@ class DeleteAppointmentIntegrationTest @Autowired constructor(
 
         mockMvc
             .delete("/appointments/$reference") { withToken() }
-            .andExpect { status { isNotFound() } }
+            .andExpect { status { isBadRequest() } }
             .andReturn().response.contentAsJson<ErrorResponse>().also {
-                assertThat(it.message).isEqualTo("Appointment with reference $reference not found")
+                assertThat(it.message).isEqualTo("Cannot delete past-dated appointment")
             }
     }
 }
