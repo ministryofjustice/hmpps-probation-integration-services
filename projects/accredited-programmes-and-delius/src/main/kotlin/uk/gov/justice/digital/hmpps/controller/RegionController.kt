@@ -4,18 +4,28 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.model.AccreditedProgrammesMembersResponse
 import uk.gov.justice.digital.hmpps.model.PduOfficeLocations
 import uk.gov.justice.digital.hmpps.model.RegionWithMembers
+import uk.gov.justice.digital.hmpps.service.GetAccreditedProgrammesMembers
 import uk.gov.justice.digital.hmpps.service.GetPdu
 import uk.gov.justice.digital.hmpps.service.GetRegion
 
 @RestController
 @RequestMapping("/regions")
-class RegionController(private val getRegion: GetRegion, private val getPdu: GetPdu) {
+class RegionController(
+    private val getRegion: GetRegion,
+    private val getPdu: GetPdu,
+    private val getAccreditedProgrammesMembers: GetAccreditedProgrammesMembers,
+) {
     @GetMapping("/{code}/members")
     fun getRegionMembers(@PathVariable code: String): RegionWithMembers = getRegion.withMembers(code)
 
     @GetMapping("/pdu/{pdu}/office-locations")
     fun getPduOfficeLocations(@PathVariable pdu: String): PduOfficeLocations =
         getPdu.pduOfficeLocations(pdu)
+
+    @GetMapping("/{providerCode}/local-admin-units/accredited-programmes/members")
+    fun getAccreditedProgrammesMembers(@PathVariable providerCode: String): AccreditedProgrammesMembersResponse =
+        getAccreditedProgrammesMembers.members(providerCode)
 }
