@@ -76,7 +76,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
         select count(distinct c.date)
         from Contact c
-        join NonStatutoryIntervention nsi on nsi.id = c.nsiId
+        join NonStatutoryInterventionIncludingTerminated nsi on nsi.id = c.nsiId
         where nsi.requirementId = :requirementId
         and c.rarActivity = true
         and c.attended = true
