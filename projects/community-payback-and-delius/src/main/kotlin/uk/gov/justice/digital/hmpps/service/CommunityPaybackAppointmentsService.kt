@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.appointments.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.appointments.model.ReferencedEntities
 import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.entity.contact.ContactType
@@ -388,6 +389,24 @@ class CommunityPaybackAppointmentsService(
         if (rowVersion != version) {
             throw ObjectOptimisticLockingFailureException(this::class.java, id!!)
         }
+    }
+
+    fun deleteAppointment(reference: UUID) {
+        val appt =
+            unpaidWorkAppointmentRepository.findByContactExternalReferenceAndContactOutcomeIsNull("$REFERENCE_PREFIX$reference")
+        appt?.takeIf { appt -> !appt.contact.softDeleted }
+            ?.also {
+                require(
+                    appt.date.atTime(appt.endTime)
+                        .atZone(EuropeLondon)
+                        .isAfter(ZonedDateTime.now(EuropeLondon))
+                ) { "Cannot delete past-dated appointment" }
+            }
+            ?.let { appointment ->
+                appointmentService.delete("$REFERENCE_PREFIX$reference")
+                unpaidWorkAppointmentRepository.deleteById(appointment.id)
+                updateStatus(appointment.details)
+            } ?: throw NotFoundException("Appointment with reference $reference not found")
     }
 
     companion object {
