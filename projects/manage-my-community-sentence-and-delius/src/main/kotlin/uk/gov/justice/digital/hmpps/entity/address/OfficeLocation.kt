@@ -26,4 +26,5 @@ class OfficeLocation(
     val county: String?,
     val postcode: String?,
     val endDate: LocalDate? = null,
+    val telephoneNumber: String?,
 )

@@ -45,13 +45,15 @@ class ActivityService(
                 "1" -> probationSearchClient.contactSearch(
                     probationSearchRequest,
                     pageable.pageNumber,
-                    pageable.pageSize
+                    pageable.pageSize,
+                    "contactDate, desc"
                 )
 
                 "2" -> probationSearchClient.contactSearchViaSemanticSearch(
                     probationSearchRequest,
                     pageable.pageNumber,
-                    pageable.pageSize
+                    pageable.pageSize,
+                    "contactDate, desc"
                 )
 
                 else -> throw IllegalArgumentException("Unsupported version: $version")
@@ -59,7 +61,8 @@ class ActivityService(
         val ids = response.results.map { it.id }
 
         val contactMap = contactRepository.findByPersonIdAndIdIn(summary.id, ids).associateBy { it.id }
-        val activities = ids.mapNotNull { contactId -> contactMap[contactId]?.toActivity() }
+        val activities =
+            ids.mapNotNull { contactId -> contactMap[contactId]?.toActivity() }
 
         return PersonActivitySearchResponse(
             size = response.size,

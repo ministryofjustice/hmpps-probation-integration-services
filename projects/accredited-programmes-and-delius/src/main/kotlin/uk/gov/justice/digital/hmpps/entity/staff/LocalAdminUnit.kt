@@ -12,6 +12,10 @@ class LocalAdminUnit(
     @Column(name = "district_id")
     val id: Long,
 
+    val code: String,
+
+    val description: String,
+
     @ManyToOne
     @JoinColumn(name = "borough_id")
     val probationDeliveryUnit: ProbationDeliveryUnit,

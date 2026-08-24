@@ -10,6 +10,7 @@ data class OfficeAddress(
     val district: String?,
     val county: String?,
     val postcode: String?,
+    val telephoneNumber: String?,
 ) {
     companion object {
         fun OfficeLocation.toModel() = OfficeAddress(
@@ -20,6 +21,7 @@ data class OfficeAddress(
             district = district,
             county = county,
             postcode = postcode,
+            telephoneNumber = telephoneNumber,
         )
     }
 }

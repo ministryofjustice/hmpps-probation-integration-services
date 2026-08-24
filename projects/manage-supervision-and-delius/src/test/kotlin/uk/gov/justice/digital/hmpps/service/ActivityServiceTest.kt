@@ -100,7 +100,7 @@ internal class ActivityServiceTest {
         val contact = ContactGenerator.FIRST_APPT_CONTACT
 
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(probationSearchClient.contactSearch(any(), eq(0), eq(10))).thenReturn(
+        whenever(probationSearchClient.contactSearch(any(), eq(0), eq(10), eq("contactDate, desc"))).thenReturn(
             ContactSearchResponse(
                 size = 10,
                 page = 0,
@@ -114,7 +114,7 @@ internal class ActivityServiceTest {
         val res = service.activitySearch(crn, "1", searchRequest, pageable)
 
         val captor = argumentCaptor<ActivitySearchRequest>()
-        verify(probationSearchClient).contactSearch(captor.capture(), eq(0), eq(10))
+        verify(probationSearchClient).contactSearch(captor.capture(), eq(0), eq(10), eq("contactDate, desc"))
         val captured = captor.firstValue
 
         assertThat(captured.crn, equalTo(crn))
@@ -149,7 +149,14 @@ internal class ActivityServiceTest {
         val contact = ContactGenerator.FIRST_APPT_CONTACT
 
         whenever(personRepository.findSummary(crn)).thenReturn(personSummary)
-        whenever(probationSearchClient.contactSearchViaSemanticSearch(any(), eq(0), eq(10))).thenReturn(
+        whenever(
+            probationSearchClient.contactSearchViaSemanticSearch(
+                any(),
+                eq(0),
+                eq(10),
+                eq("contactDate, desc")
+            )
+        ).thenReturn(
             ContactSearchResponse(
                 size = 10,
                 page = 0,
@@ -163,7 +170,12 @@ internal class ActivityServiceTest {
         val res = service.activitySearch(crn, "2", searchRequest, pageable)
 
         val captor = argumentCaptor<ActivitySearchRequest>()
-        verify(probationSearchClient).contactSearchViaSemanticSearch(captor.capture(), eq(0), eq(10))
+        verify(probationSearchClient).contactSearchViaSemanticSearch(
+            captor.capture(),
+            eq(0),
+            eq(10),
+            eq("contactDate, desc")
+        )
         val captured = captor.firstValue
 
         assertThat(captured.crn, equalTo(crn))
@@ -205,5 +217,41 @@ internal class ActivityServiceTest {
 
         verify(probationSearchClient).preload(crn)
         assertThat(result, equalTo(expectedResponse))
+    }
+
+    @Test
+    fun `contactSearch default params are covered`() {
+        val request = ActivitySearchRequest(crn = "X000005")
+        val response = ContactSearchResponse(
+            size = 10,
+            page = 0,
+            totalResults = 0,
+            totalPages = 0,
+            results = emptyList()
+        )
+
+        whenever(probationSearchClient.contactSearch(request)).thenReturn(response)
+
+        probationSearchClient.contactSearch(request)
+
+        verify(probationSearchClient).contactSearch(request)
+    }
+
+    @Test
+    fun `contactSearchViaSemanticSearch default params are covered`() {
+        val request = ActivitySearchRequest(crn = "X000005")
+        val response = ContactSearchResponse(
+            size = 10,
+            page = 0,
+            totalResults = 0,
+            totalPages = 0,
+            results = emptyList()
+        )
+
+        whenever(probationSearchClient.contactSearchViaSemanticSearch(request)).thenReturn(response)
+
+        probationSearchClient.contactSearchViaSemanticSearch(request)
+
+        verify(probationSearchClient).contactSearchViaSemanticSearch(request)
     }
 }

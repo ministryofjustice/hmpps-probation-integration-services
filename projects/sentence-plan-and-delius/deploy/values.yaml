@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: sentence-plan-and-delius
+  serviceAccountName: sentence-plan-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/sentence-plan-and-delius
@@ -17,8 +18,8 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     sentence-plan-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
-    sqs-hmpps-domain-events-secret:
-      MESSAGING_CONSUMER_QUEUE: sqs_queue_name
+    sentence-plan-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 generic-prometheus-alerts:
   targetApplication: sentence-plan-and-delius
 
