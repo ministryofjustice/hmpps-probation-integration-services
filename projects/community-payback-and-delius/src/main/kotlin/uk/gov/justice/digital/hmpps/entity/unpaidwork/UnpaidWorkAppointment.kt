@@ -499,7 +499,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         ) appointment_stats on appointment_stats.upw_project_id = project.upw_project_id
         where t.code = :teamCode
         and (:typeCodesCount = 0 or project_type.code_value in (:typeCodes))
-        and (project.completion_date is null or project.completion_date > current_date)
+        and (:activeOnly = false or project.completion_date is null or project.completion_date > current_date)
         """,
         nativeQuery = true
     )
@@ -507,6 +507,7 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         teamCode: String,
         typeCodes: List<String>,
         overdueDays: Int,
+        activeOnly: Boolean,
         pageable: Pageable,
         typeCodesCount: Int = typeCodes.count(),
     ): Page<Triple<Long, Int, Int>>
