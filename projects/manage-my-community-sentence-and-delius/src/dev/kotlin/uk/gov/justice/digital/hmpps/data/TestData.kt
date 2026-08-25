@@ -365,12 +365,17 @@ object TestData {
 
     object RarData {
         val RAR_NSI = NonStatutoryIntervention(id(), RAR_REQUIREMENT.id)
+        val RAR_NSI_TERMINATED = NonStatutoryIntervention(id(), RAR_REQUIREMENT.id, activeFlag = false)
         val RAR_CONTACT_1 = generate(LocalDate.of(2024, 1, 3), LocalTime.of(9, 0), LocalTime.of(10, 0))
         val RAR_CONTACT_2 = generate(LocalDate.of(2024, 1, 4), LocalTime.of(11, 0), LocalTime.of(12, 0))
         val RAR_CONTACT_3_SAME_DAY = generate(LocalDate.of(2024, 1, 4), LocalTime.of(15, 0), LocalTime.of(16, 0))
         val RAR_CONTACT_NOT_ATTENDED = generate(
             LocalDate.of(2024, 1, 5), LocalTime.of(11, 0), LocalTime.of(12, 0),
             attended = false, complied = false,
+        )
+        val RAR_CONTACT_TERMINATED_NSI = generate(
+            LocalDate.of(2024, 1, 6), LocalTime.of(9, 0), LocalTime.of(10, 0),
+            nsiId = RAR_NSI_TERMINATED.id
         )
 
         fun generate(
@@ -380,6 +385,7 @@ object TestData {
             type: ContactType = ReferenceData.NON_APPOINTMENT_CONTACT_TYPE,
             attended: Boolean? = true,
             complied: Boolean? = true,
+            nsiId: Long = RAR_NSI.id,
         ) = Contact(
             id = id(),
             personId = PersonData.DEFAULT.id,
@@ -388,7 +394,7 @@ object TestData {
             startTime = startTime,
             endTime = endTime,
             type = type,
-            nsiId = RAR_NSI.id,
+            nsiId = nsiId,
             staff = StaffData.STAFF,
             attended = attended,
             complied = complied,
