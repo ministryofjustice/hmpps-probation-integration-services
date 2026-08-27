@@ -82,7 +82,7 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve all upw projects for provider and team`() {
         mockMvc
-            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc&activeOnly=false") { withToken() }
             .andExpect {
                 status { isOk() }
                 jsonPath("$.content.length()") { value(3) }
@@ -107,7 +107,7 @@ class ProvidersIntegrationTest @Autowired constructor(
             .get("/providers/N01/teams/N01UPW/projects?overdueDays=8") { withToken() }
             .andExpect {
                 content {
-                    jsonPath("content.size()", 3)
+                    jsonPath("content.size()", 2)
                     jsonPath("content[*].oldestOverdueInDays", hasItem(7))
                 }
             }
@@ -115,7 +115,7 @@ class ProvidersIntegrationTest @Autowired constructor(
             .get("/providers/N01/teams/N01UPW/projects?overdueDays=6") { withToken() }
             .andExpect {
                 content {
-                    jsonPath("content.size()", 3)
+                    jsonPath("content.size()", 2)
                     jsonPath("content[*].oldestOverdueInDays", not(hasItem(7)))
                 }
             }
@@ -139,12 +139,12 @@ class ProvidersIntegrationTest @Autowired constructor(
             .get("/providers/N01/teams/N01UPW/projects?sort=overdueOutcomesCount,desc") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.content.length()") { value(3) }
+                jsonPath("$.content.length()") { value(2) }
                 jsonPath("$.content[0].overdueOutcomesCount") { value(1) }
             }
 
         mockMvc
-            .get("/providers/N01/teams/N01UPW/projects?sort=oldestOverdueInDays") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?sort=oldestOverdueInDays&activeOnly=false") { withToken() }
             .andExpect {
                 status { isOk() }
                 jsonPath("$.content.length()") { value(3) }
