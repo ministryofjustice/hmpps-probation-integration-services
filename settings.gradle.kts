@@ -94,14 +94,14 @@ dependencyResolutionManagement {
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.67.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.3.0")
-            library("notify", "uk.gov.service.notify:notifications-java-client:6.1.0-RELEASE")
+            library("notify", "uk.gov.service.notify:notifications-java-client:6.2.0-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.9.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.1")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.31.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.52.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.53.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
