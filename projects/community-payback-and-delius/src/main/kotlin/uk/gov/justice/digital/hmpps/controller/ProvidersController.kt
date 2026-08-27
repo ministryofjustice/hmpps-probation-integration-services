@@ -30,7 +30,7 @@ class ProvidersController(
         @PathVariable teamCode: String,
         @RequestParam typeCode: List<String> = emptyList(),
         @RequestParam(defaultValue = "45") overdueDays: Int,
-        @RequestParam(defaultValue = "false") activeOnly: Boolean,
+        @RequestParam(defaultValue = "true") activeOnly: Boolean,
         @PageableDefault(page = 0, size = 10, sort = ["name"]) pageable: Pageable
     ) = providersService.getProjectsForTeam(
         teamCode, typeCode, pageable.mapSorts(
