@@ -38,7 +38,6 @@ class ProjectService(
         unpaidWorkProjectRepository.saveAll(validateRequest(request.projects))
             .onEach { telemetryService.trackEvent("ProjectCreated", it.telemetry()) }
 
-
     private fun validateRequest(projects: List<CreateProjectRequest>): List<UnpaidWorkProject> {
         if (projects.isEmpty()) {
             throw InvalidRequestException("At least one project is required")
@@ -174,7 +173,10 @@ class ProjectService(
 
             project.localAdminUnitCode?.takeIf { it.isNotBlank() }?.let { localAdminUnitCode ->
                 val requestedLocalAdminUnit = localAdminUnitRepository
-                    .findByCodeAndProbationDeliveryUnitProviderCodeAndSelectableIsTrue(localAdminUnitCode, provider.code)
+                    .findByCodeAndProbationDeliveryUnitProviderCodeAndSelectableIsTrue(
+                        localAdminUnitCode,
+                        provider.code
+                    )
                     ?: throw InvalidRequestException(
                         "Invalid Local Admin Unit Code $localAdminUnitCode for provider ${provider.code}"
                     )

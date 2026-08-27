@@ -60,5 +60,16 @@ object TeamGenerator {
         endDate: LocalDate? = null,
         staff: List<Staff> = emptyList(),
         unallocatedStaff: List<Staff> = emptyList(),
-    ) = Team(id, code, description, provider, upwTeam, startDate, endDate, staff, unallocatedStaff, localAdminUnit = localAdminUnit)
+    ) = Team(
+        id,
+        code,
+        description,
+        provider,
+        upwTeam,
+        startDate,
+        endDate,
+        staff,
+        unallocatedStaff,
+        localAdminUnit = localAdminUnit
+    )
 }

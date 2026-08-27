@@ -25,6 +25,9 @@ class LocalAdminUnit(
 )
 
 interface LocalAdminUnitRepository : JpaRepository<LocalAdminUnit, Long> {
-    fun findByCodeAndProbationDeliveryUnitProviderCodeAndSelectableIsTrue(code: String, providerCode: String): LocalAdminUnit?
+    fun findByCodeAndProbationDeliveryUnitProviderCodeAndSelectableIsTrue(
+        code: String,
+        providerCode: String
+    ): LocalAdminUnit?
 }
 

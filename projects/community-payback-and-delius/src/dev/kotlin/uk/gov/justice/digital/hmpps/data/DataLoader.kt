@@ -70,6 +70,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PduGenerator.DEFAULT_PROVIDER_PDU)
         save(PduGenerator.SECOND_PROVIDER_PDU)
     }
+
     fun loadLaus() {
         save(LauGenerator.DEFAULT_PROVIDER_LOCAL_ADMIN_UNIT)
         save(LauGenerator.SECOND_PROVIDER_LOCAL_ADMIN_UNIT)
