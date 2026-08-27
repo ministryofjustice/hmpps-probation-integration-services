@@ -246,9 +246,9 @@ class ProvidersIntegrationTest @Autowired constructor(
             }
             .andReturn().response.contentAsJson<PickUpLocationsResponse>()
         assertThat(actual.locations.size).isEqualTo(1)
-        assertThat(actual.locations[0].description).isEqualTo("City Location")
-        assertThat(actual.locations[0].code).isEqualTo("LOC0001")
-        assertThat(actual.locations[0].postCode).isEqualTo("ZY98XW")
+        assertThat(actual.locations[0].description).isEqualTo("Second Provider Location")
+        assertThat(actual.locations[0].code).isEqualTo("LOC0201")
+        assertThat(actual.locations[0].postCode).isEqualTo("ZY98XZ")
     }
 
     private fun MockMvc.getSessions(

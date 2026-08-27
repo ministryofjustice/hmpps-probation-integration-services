@@ -16,6 +16,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     override fun setupData() {
         loadProviders()
+        loadPdus()
+        loadLaus()
         loadTeams()
         loadStaff()
         loadUsers()
@@ -62,6 +64,15 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ProbationAreaUserGenerator.DEFAULT_PROBATION_AREA_USER)
         save(ProbationAreaUserGenerator.SECOND_DEFAULT_PROBATION_AREA_USER)
         save(ProbationAreaUserGenerator.DEFAULT_USER_UNSELECTABLE_PROBATION_AREA)
+    }
+
+    fun loadPdus() {
+        save(PduGenerator.DEFAULT_PROVIDER_PDU)
+        save(PduGenerator.SECOND_PROVIDER_PDU)
+    }
+    fun loadLaus() {
+        save(LauGenerator.DEFAULT_PROVIDER_LOCAL_ADMIN_UNIT)
+        save(LauGenerator.SECOND_PROVIDER_LOCAL_ADMIN_UNIT)
     }
 
     fun loadTeams() {
@@ -126,6 +137,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     fun loadUnpaidWorkData() {
         save(UPWGenerator.DEFAULT_ADDRESS)
         save(UPWGenerator.DEFAULT_OFFICE_LOCATION)
+        save(UPWGenerator.SECOND_PROVIDER_OFFICE_LOCATION)
+        save(TeamGenerator.DEFAULT_TEAM_PICKUP_LOCATION)
         save(UPWGenerator.UPW_PROJECT_1)
         save(UPWGenerator.UPW_PROJECT_2)
         save(UPWGenerator.UPW_PROJECT_3)

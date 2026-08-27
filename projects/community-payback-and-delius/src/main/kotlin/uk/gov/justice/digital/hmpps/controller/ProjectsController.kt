@@ -1,15 +1,13 @@
 package uk.gov.justice.digital.hmpps.controller
 
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.hmpps.model.UpdateAppointmentRequest
 import uk.gov.justice.digital.hmpps.model.CreateAppointmentsRequest
+import uk.gov.justice.digital.hmpps.model.CreateProjectsRequest
+import uk.gov.justice.digital.hmpps.model.UpdateAppointmentRequest
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import uk.gov.justice.digital.hmpps.service.ProjectService
 import java.time.LocalDate
@@ -24,6 +22,10 @@ class ProjectsController(
 ) {
     @GetMapping(value = ["/{projectCode}"])
     fun getProject(@PathVariable projectCode: String) = projectService.getProject(projectCode)
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createProjects(@RequestBody request: CreateProjectsRequest) = projectService.createProjects(request)
 
     @GetMapping(value = ["/{projectCode}/appointments/{appointmentId}"])
     fun getAppointment(

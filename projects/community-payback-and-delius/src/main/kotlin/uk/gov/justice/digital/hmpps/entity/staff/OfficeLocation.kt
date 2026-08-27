@@ -62,8 +62,8 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     @Query(
         """
         select ol from OfficeLocation ol
-        join TeamOfficeLocation tol on tol.officeLocationId = ol.id
-        where tol.teamId = :teamId
+        join TeamOfficeLocation tol on tol.officeLocation.id = ol.id
+        where tol.team.id = :teamId
         and (ol.endDate is null or ol.endDate > current_date)
         and ol.provider.selectable = true
         """
