@@ -69,8 +69,17 @@ class CaseListService(
     } else throw NotFoundException("Team", "code", teamCode)
 
     fun getCase(username: String, crn: String): Case {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val access = userAccessService.caseAccessFor(username, crn)
+        return getCaseByAccess(crn, access)
+    }
+
+    fun getCase(crn: String): Case {
+        val access = CaseAccess(crn = crn, userExcluded = false, userRestricted = false)
+        return getCaseByAccess(crn, access)
+    }
+
+    private fun getCaseByAccess(crn: String, access: CaseAccess): Case {
+        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val caseLimitedAccess =
             userAccessService.checkLimitedAccessFor(listOf(crn)).access.single { it.crn == crn }.isLimitedAccess()
         return person.toCase(

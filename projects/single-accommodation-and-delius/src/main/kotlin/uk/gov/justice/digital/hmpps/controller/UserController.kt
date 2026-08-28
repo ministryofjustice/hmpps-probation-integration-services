@@ -25,4 +25,8 @@ class UserController(
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
     @GetMapping(value = ["/case/{username}/{crn}"])
     fun getCase(@PathVariable crn: String, @PathVariable username: String) = caseListService.getCase(username, crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
+    @GetMapping(value = ["/case/{crn}"])
+    fun getCaseByEvent(@PathVariable crn: String) = caseListService.getCase(crn)
 }
