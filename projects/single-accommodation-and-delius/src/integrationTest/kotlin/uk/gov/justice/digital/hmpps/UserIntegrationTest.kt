@@ -355,4 +355,91 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
 
         assertThat(response.roshLevel).isNull()
     }
+
+    @Test
+    fun `can retrieve case by event trigger without username`() {
+        val person = PersonGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        val response = mockMvc.get("/case/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response).isEqualTo(
+            Case(
+                crn = person.crn,
+                name = Name(
+                    forename = person.firstName,
+                    middleName = listOfNotNull(person.secondName, person.thirdName).joinToString(" ").ifEmpty { null },
+                    surname = person.surname
+                ),
+                nomsNumber = person.noms,
+                pncNumber = person.pnc,
+                dateOfBirth = person.dateOfBirth,
+                staff = Officer(
+                    name = Name(
+                        forename = staff.forename,
+                        middleName = staff.middleName,
+                        surname = staff.surname
+                    ),
+                    username = UserGenerator.DEFAULT.username,
+                    code = staff.code
+                ),
+                team = CodeDescription(code = team.code, description = team.description),
+                gender = person.gender.description,
+                roshLevel = CodeDescription("RHRH", "High RoSH"),
+                expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date,
+                userExcluded = false,
+                userRestricted = false,
+                exclusionMessage = null,
+                restrictionMessage = null,
+                limitedAccess = false,
+            )
+        )
+    }
+
+    @Test
+    fun `can retrieve excluded case by event trigger without user-specific LAO fields`() {
+        val person = PersonGenerator.EXCLUDED
+
+        val response = mockMvc.get("/case/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.userExcluded).isFalse()
+        assertThat(response.userRestricted).isFalse()
+        assertThat(response.exclusionMessage).isNull()
+        assertThat(response.restrictionMessage).isNull()
+        assertThat(response.limitedAccess).isTrue()
+    }
+
+    @Test
+    fun `can retrieve restricted case by event trigger without user-specific LAO fields`() {
+        val person = PersonGenerator.RESTRICTED
+
+        val response = mockMvc.get("/case/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<Case>()
+
+        assertThat(response.userExcluded).isFalse()
+        assertThat(response.userRestricted).isFalse()
+        assertThat(response.exclusionMessage).isNull()
+        assertThat(response.restrictionMessage).isNull()
+        assertThat(response.limitedAccess).isTrue()
+    }
+
+    @Test
+    fun `can't retrieve case by event trigger for non existent crn`() {
+        mockMvc.get("/case/A999999") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `can't retrieve case by event trigger without token`() {
+        val person = PersonGenerator.DEFAULT
+
+        mockMvc.get("/case/${person.crn}")
+            .andExpect { status { isUnauthorized() } }
+    }
 }
