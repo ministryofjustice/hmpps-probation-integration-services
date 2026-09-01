@@ -1,28 +1,42 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.*
-import uk.gov.justice.digital.hmpps.api.model.Person
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.*
+import uk.gov.justice.digital.hmpps.api.model.CaseDetails
+import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonDetailRepository
+import uk.gov.justice.digital.hmpps.integration.delius.person.entity.getPersonDetail
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.RequirementMainCategory
 
 @Service
 class ProbationCaseService(
     private val personDetailRepository: PersonDetailRepository,
-    private val personAddressRepository: PersonAddressRepository
+    private val eventRepository: EventRepository,
 ) {
-    fun findCase(crn: String): CaseDetails =
-        personDetailRepository.getPersonDetail(crn).asCaseDetail()
 
-    fun PersonDetail.asCaseDetail(): CaseDetails {
-        val mainAddress = personAddressRepository.mainAddress(id)?.asAddress()
-        return CaseDetails(
-            Identifiers(crn, noms?.trim(), pnc?.trim(), cro?.trim()),
-            Person(Name(surname, firstName, listOfNotNull(secondName, thirdName)), dob, gender?.codeDescription()),
-            Profile.from(language?.codeDescription(), ethnicity?.codeDescription(), religion?.codeDescription()),
-            ContactDetails.from(mainAddress, emailAddress, telephoneNumber, mobileNumber)
-        )
+    // A case is a standalone order only if all of a person's active events are standalone orders.
+    // A standalone order is an event that has at least one requirement,
+    // and all requirements are restrictive or unpaid work requirements.
+    fun isStandaloneOrderOnlyCase(crn: String): CaseDetails {
+        val person = personDetailRepository.getPersonDetail(crn)
+        val standaloneOrderOnly = isStandaloneOrderOnly(person.id)
+        return CaseDetails(standaloneOrderOnly = standaloneOrderOnly)
     }
 
-    fun PersonAddress.asAddress() =
-        Address(noFixedAbode, buildingName, addressNumber, streetName, district, town, county, postcode)
+    private fun isStandaloneOrderOnly(personId: Long): Boolean {
+        val events = eventRepository.findByPersonId(personId)
+
+        if (events.isEmpty()) {
+            return false
+        }
+
+        return events.all { event ->
+            event.disposal?.let { disposal ->
+                // All requirements must be either restrictive 'Y' or unpaid work (W)
+                disposal.requirements.isNotEmpty() && disposal.requirements.all { requirement ->
+                    requirement.mainCategory != null &&
+                        (requirement.mainCategory.restrictive || requirement.mainCategory.code == RequirementMainCategory.UPW_RQMNT_MAIN_CATEGORY)
+                }
+            } ?: false
+        }
+    }
 }

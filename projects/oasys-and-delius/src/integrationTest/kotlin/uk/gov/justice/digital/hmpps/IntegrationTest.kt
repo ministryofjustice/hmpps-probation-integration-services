@@ -5,21 +5,17 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import uk.gov.justice.digital.hmpps.api.model.*
+import uk.gov.justice.digital.hmpps.api.model.CaseDetails
+import uk.gov.justice.digital.hmpps.api.model.CodeDescription
+import uk.gov.justice.digital.hmpps.api.model.Registrations
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonDetail
-import uk.gov.justice.digital.hmpps.service.codeDescription
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -71,121 +67,71 @@ internal class IntegrationTest @Autowired constructor(
         assertTrue(reg2.active)
     }
 
-    @ParameterizedTest
-    @MethodSource("custodialSentences")
-    fun `releases are correctly returned`(person: PersonDetail, releaseRecall: ReleaseRecall) {
-        val res = mockMvc.get("/probation-cases/${person.crn}/release") { withToken() }
-            .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<ReleaseRecall>()
+    @Test
+    fun `returns standaloneOrderOnly true for a standalone case (restrictive rqmnt)`() {
+        val person = PersonGenerator.STANDALONE_ONLY_PERSON
 
-        assertThat(res, equalTo(releaseRecall))
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(res.standaloneOrderOnly, equalTo(true))
     }
 
     @Test
-    fun `should retrieve case details`() {
-        val person = PersonGenerator.DETAILED_PERSON
-        val address = PersonGenerator.DETAIL_ADDRESS
+    fun `returns standaloneOrderOnly true for a standalone case (upw rqmnt)`() {
+        val person = PersonGenerator.UPW_ONLY_PERSON
+
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(res.standaloneOrderOnly, equalTo(true))
+    }
+
+    @Test
+    fun `returns standaloneOrderOnly false when person has no events`() {
+        val person = PersonGenerator.NO_EVENTS_PERSON
+
         val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
-        assertThat(
-            res, equalTo(
-                CaseDetails(
-                    Identifiers(person.crn, person.noms, person.pnc, person.cro),
-                    Person(
-                        Name(
-                            person.surname,
-                            person.firstName,
-                            listOf(person.secondName!!)
-                        ),
-                        person.dob,
-                        PersonGenerator.GENDER.codeDescription()
-                    ),
-                    Profile(
-                        PersonGenerator.LANGUAGE.codeDescription(),
-                        PersonGenerator.ETHNICITY.codeDescription(),
-                        PersonGenerator.RELIGION.codeDescription()
-                    ),
-                    ContactDetails(
-                        Address.from(
-                            noFixedAbode = address.noFixedAbode,
-                            buildingNumber = address.addressNumber,
-                            streetName = address.streetName,
-                            postcode = address.postcode
-                        ),
-                        person.emailAddress,
-                        person.telephoneNumber,
-                        person.mobileNumber
-                    )
-                )
-            )
-        )
+        assertThat(res.standaloneOrderOnly, equalTo(false))
     }
 
     @Test
-    fun `should retrieve minimal case details`() {
-        val person = PersonGenerator.REGISTERED_PERSON
+    fun `returns standaloneOrderOnly false when event has no disposal`() {
+        val person = PersonGenerator.NO_DISPOSAL_PERSON
+
         val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<CaseDetails>()
 
-        assertThat(
-            res, equalTo(
-                CaseDetails(
-                    Identifiers(person.crn, person.noms, person.pnc, person.cro),
-                    Person(
-                        Name(
-                            person.surname,
-                            person.firstName,
-                            listOf()
-                        ),
-                        person.dob,
-                        null
-                    ),
-                    Profile.from(null, null, null),
-                    ContactDetails.from(null, null, null)
-                )
-            )
-        )
+        assertThat(res.standaloneOrderOnly, equalTo(false))
     }
 
-    companion object {
-        private val institution = SentenceGenerator.DEFAULT_INSTITUTION
+    @Test
+    fun `returns standaloneOrderOnly false when case has one upw requirement and one non upw or restrictive requirement`() {
+        val person = PersonGenerator.MIXED_ORDERS_PERSON
 
-        @JvmStatic
-        fun custodialSentences() = listOf(
-            Arguments.of(PersonGenerator.CUSTODY_PERSON, ReleaseRecall(null, null)),
-            Arguments.of(
-                PersonGenerator.RELEASED_PERSON,
-                ReleaseRecall(
-                    Release(
-                        SentenceGenerator.RELEASE.date.toLocalDate(),
-                        null,
-                        Institution(
-                            institution.id,
-                            institution.establishment,
-                            institution.code,
-                            institution.description,
-                            institution.name,
-                            CodeDescription(
-                                institution.type!!.code, institution.type!!.description
-                            ),
-                            false,
-                            institution.nomisCdeCode,
-                        ),
-                        CodeDescription(SentenceGenerator.RELEASE_TYPE.code, SentenceGenerator.RELEASE_TYPE.description)
-                    ),
-                    Recall(
-                        SentenceGenerator.RECALL.date.toLocalDate(),
-                        CodeDescription(
-                            SentenceGenerator.RECALL_REASON.code,
-                            SentenceGenerator.RECALL_REASON.description
-                        ),
-                        null
-                    )
-                )
-            )
-        )
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(res.standaloneOrderOnly, equalTo(false))
+    }
+
+    @Test
+    fun `returns standaloneOrderOnly false when disposal has no requirements`() {
+        val person = PersonGenerator.EMPTY_REQUIREMENTS_PERSON
+
+        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<CaseDetails>()
+
+        assertThat(res.standaloneOrderOnly, equalTo(false))
     }
 }
