@@ -12,7 +12,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import uk.gov.justice.digital.hmpps.api.model.CaseDetails
 import uk.gov.justice.digital.hmpps.api.model.CodeDescription
 import uk.gov.justice.digital.hmpps.api.model.Registrations
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -70,68 +69,48 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `returns standaloneOrderOnly true for a standalone case (restrictive rqmnt)`() {
         val person = PersonGenerator.STANDALONE_ONLY_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(true))
     }
 
     @Test
     fun `returns standaloneOrderOnly true for a standalone case (upw rqmnt)`() {
         val person = PersonGenerator.UPW_ONLY_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(true))
     }
 
     @Test
     fun `returns standaloneOrderOnly false when person has no events`() {
         val person = PersonGenerator.NO_EVENTS_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(false))
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
     }
 
     @Test
     fun `returns standaloneOrderOnly false when event has no disposal`() {
         val person = PersonGenerator.NO_DISPOSAL_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(false))
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
     }
 
     @Test
     fun `returns standaloneOrderOnly false when case has one upw requirement and one non upw or restrictive requirement`() {
         val person = PersonGenerator.MIXED_ORDERS_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(false))
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
     }
 
     @Test
     fun `returns standaloneOrderOnly false when disposal has no requirements`() {
         val person = PersonGenerator.EMPTY_REQUIREMENTS_PERSON
-
-        val res = mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
-            .andReturn().response.contentAsJson<CaseDetails>()
-
-        assertThat(res.standaloneOrderOnly, equalTo(false))
+            .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
     }
 }
