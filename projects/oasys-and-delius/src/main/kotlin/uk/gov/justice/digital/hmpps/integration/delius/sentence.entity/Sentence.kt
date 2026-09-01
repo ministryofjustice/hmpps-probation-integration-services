@@ -98,7 +98,7 @@ class RequirementMainCategory(
     @Convert(converter = NumericBooleanConverter::class)
     val restrictive: Boolean,
 
-) {
+    ) {
     companion object {
         const val UPW_RQMNT_MAIN_CATEGORY = "W"
     }
