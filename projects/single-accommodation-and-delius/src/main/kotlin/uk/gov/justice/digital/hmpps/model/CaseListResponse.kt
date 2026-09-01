@@ -19,11 +19,11 @@ data class Case(
     val gender: String,
     val roshLevel: CodeDescription?,
     val expectedReleaseDate: LocalDate?,
-    val userExcluded: Boolean,
-    val userRestricted: Boolean,
+    val userExcluded: Boolean?,
+    val userRestricted: Boolean?,
     val exclusionMessage: String?,
     val restrictionMessage: String?,
-    val limitedAccess: Boolean,
+    val limitedAccess: Boolean?,
 )
 
 data class Name(

@@ -92,7 +92,7 @@ class CaseListService(
     private fun CaseAccess.isLimitedAccess() = this.userExcluded || this.userRestricted
 
     private fun Person.toCase(
-        access: CaseAccess,
+        access: CaseAccess?,
         expectedReleaseDate: LocalDate?,
         limitedAccess: Boolean,
     ) = Case(
@@ -122,10 +122,10 @@ class CaseListService(
         roshLevel = roshRegistrations.firstOrNull { it.type.code in RegisterType.ROSH_CODES }?.type
             ?.let { CodeDescription(it.code, it.description) },
         expectedReleaseDate = expectedReleaseDate,
-        userExcluded = access.userExcluded,
-        userRestricted = access.userRestricted,
-        exclusionMessage = access.exclusionMessage,
-        restrictionMessage = access.restrictionMessage,
-        limitedAccess = limitedAccess,
+        userExcluded = access?.userExcluded,
+        userRestricted = access?.userRestricted,
+        exclusionMessage = access?.exclusionMessage,
+        restrictionMessage = access?.restrictionMessage,
+        limitedAccess = if (limitedAccess) true else null,
     )
 }

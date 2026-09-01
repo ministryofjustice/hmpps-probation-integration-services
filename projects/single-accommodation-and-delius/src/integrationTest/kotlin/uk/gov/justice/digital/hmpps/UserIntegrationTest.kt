@@ -70,7 +70,7 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
                 userRestricted = false,
                 exclusionMessage = null,
                 restrictionMessage = null,
-                limitedAccess = false
+                limitedAccess = null
             )
         )
     }
@@ -186,7 +186,7 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
                 userRestricted = false,
                 exclusionMessage = null,
                 restrictionMessage = null,
-                limitedAccess = false,
+                limitedAccess = null,
             )
         )
     }
@@ -394,7 +394,7 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
                 userRestricted = false,
                 exclusionMessage = null,
                 restrictionMessage = null,
-                limitedAccess = false,
+                limitedAccess = null,
             )
         )
     }
