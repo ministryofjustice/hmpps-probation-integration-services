@@ -81,7 +81,8 @@ class CaseListService(
     private fun getCaseByAccess(access: CaseAccess): Case {
         val person = personRepository.findByCrn(access.crn).orNotFoundBy("CRN", access.crn)
         val caseLimitedAccess =
-            userAccessService.checkLimitedAccessFor(listOf(access.crn)).access.single { it.crn == access.crn }.isLimitedAccess()
+            userAccessService.checkLimitedAccessFor(listOf(access.crn)).access.single { it.crn == access.crn }
+                .isLimitedAccess()
         return person.toCase(
             access,
             keyDateRepository.findExpectedReleaseDates(person.id),
