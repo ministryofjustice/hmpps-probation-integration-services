@@ -1,44 +1,52 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integration.delius.provider.entity.Institution
-import uk.gov.justice.digital.hmpps.integration.delius.reference.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.*
-import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Event
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Requirement
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.RequirementMainCategory
 
 object SentenceGenerator {
-    val INSTITUTION_TYPE = ReferenceDataGenerator.generate("INST1")
-    val DEFAULT_INSTITUTION = generateInstitution("HMPDEF", nomisCdeCode = "DEF")
-    val CUSTODY_STATUS = ReferenceDataGenerator.generate("C")
-    val RELEASE_TYPE = ReferenceDataGenerator.generate("REL")
-    val RECALL_REASON = generateRecallReason("REC")
-    val CUSTODIAL_SENTENCE = generateCustodialSentence(PersonGenerator.CUSTODY_PERSON.asPerson())
-    val RELEASED_SENTENCE = generateCustodialSentence(PersonGenerator.RELEASED_PERSON.asPerson())
-    val RELEASE =
-        generateRelease(RELEASED_SENTENCE, date = ZonedDateTime.now().minusDays(1), institution = DEFAULT_INSTITUTION)
-    val RECALL = generateRecall(RELEASE)
+    val RESTRICTIVE_MAIN_CATEGORY =
+        generateRequirementMainCategory(code = "R", description = "Restrictive", restrictive = true)
+    val UPW_MAIN_CATEGORY =
+        generateRequirementMainCategory(
+            code = RequirementMainCategory.UPW_RQMNT_MAIN_CATEGORY,
+            description = "Unpaid Work",
+            restrictive = false
+        )
+    val NON_STANDALONE_MAIN_CATEGORY =
+        generateRequirementMainCategory(code = "X", description = "Non-standalone", restrictive = false)
 
-    fun generateCustodialSentence(
-        person: Person,
-        status: ReferenceData = CUSTODY_STATUS,
-        institution: Institution? = DEFAULT_INSTITUTION,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Custody(
-        generateDisposal(generateEvent(person)),
-        status,
-        institution,
-        emptyList(),
-        softDeleted,
-        id
-    )
+    val STANDALONE_EVENT = generateEvent(PersonGenerator.STANDALONE_ONLY_PERSON.asPerson())
+    val STANDALONE_DISPOSAL = generateDisposal(STANDALONE_EVENT)
+    val STANDALONE_REQUIREMENT = generateRequirement(STANDALONE_DISPOSAL, RESTRICTIVE_MAIN_CATEGORY)
+
+    val UPW_ONLY_EVENT = generateEvent(PersonGenerator.UPW_ONLY_PERSON.asPerson())
+    val UPW_ONLY_DISPOSAL = generateDisposal(UPW_ONLY_EVENT)
+    val UPW_ONLY_REQUIREMENT = generateRequirement(UPW_ONLY_DISPOSAL, UPW_MAIN_CATEGORY)
+
+    val MIXED_EVENT_STANDALONE = generateEvent(PersonGenerator.MIXED_ORDERS_PERSON.asPerson())
+    val MIXED_DISPOSAL_STANDALONE = generateDisposal(MIXED_EVENT_STANDALONE)
+    val MIXED_REQUIREMENT_STANDALONE = generateRequirement(MIXED_DISPOSAL_STANDALONE, UPW_MAIN_CATEGORY)
+
+    val MIXED_EVENT_NON_STANDALONE = generateEvent(PersonGenerator.MIXED_ORDERS_PERSON.asPerson())
+    val MIXED_DISPOSAL_NON_STANDALONE = generateDisposal(MIXED_EVENT_NON_STANDALONE)
+    val MIXED_REQUIREMENT_NON_STANDALONE =
+        generateRequirement(MIXED_DISPOSAL_NON_STANDALONE, NON_STANDALONE_MAIN_CATEGORY)
+
+    val NO_DISPOSAL_EVENT = generateEvent(PersonGenerator.NO_DISPOSAL_PERSON.asPerson())
+
+    val EMPTY_REQUIREMENTS_EVENT = generateEvent(PersonGenerator.EMPTY_REQUIREMENTS_PERSON.asPerson())
+    val EMPTY_REQUIREMENTS_DISPOSAL = generateDisposal(EMPTY_REQUIREMENTS_EVENT)
 
     fun generateDisposal(
         event: Event,
+        requirements: MutableList<Requirement> = mutableListOf(),
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, active, softDeleted, id)
+    ) = Disposal(event, requirements, active, softDeleted, id)
 
     fun generateEvent(
         person: Person,
@@ -47,40 +55,18 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Event(person, null, active, softDeleted, id)
 
-    fun generateInstitution(
-        code: String,
-        description: String = "Description of $code",
-        type: ReferenceData? = INSTITUTION_TYPE,
-        name: String? = "Name of $code",
-        nomisCdeCode: String? = "NOM$code",
-        establishment: Boolean = true,
-        private: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Institution(code, description, type, name, nomisCdeCode, establishment, private, id)
-
-    fun generateRelease(
-        custody: Custody,
-        type: ReferenceData = RELEASE_TYPE,
-        date: ZonedDateTime = ZonedDateTime.now(),
-        institution: Institution? = null,
-        notes: String? = null,
-        softDeleted: Boolean = false,
-        createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Release(custody, type, date, institution, notes, null, softDeleted, createdDateTime, id)
-
-    fun generateRecall(
-        release: Release,
-        date: ZonedDateTime = ZonedDateTime.now(),
-        reason: RecallReason = RECALL_REASON,
-        notes: String? = null,
+    fun generateRequirement(
+        disposal: Disposal,
+        mainCategory: RequirementMainCategory?,
+        active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Recall(release, date, reason, notes, softDeleted, id)
+    ) = Requirement(id, mainCategory, disposal, active, softDeleted)
 
-    fun generateRecallReason(
+    fun generateRequirementMainCategory(
         code: String,
-        description: String = "Description of $code",
+        description: String,
+        restrictive: Boolean,
         id: Long = IdGenerator.getAndIncrement()
-    ) = RecallReason(code, description, id)
+    ) = RequirementMainCategory(id, code, description, restrictive)
 }
