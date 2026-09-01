@@ -30,6 +30,7 @@ class ProvidersController(
         @PathVariable teamCode: String,
         @RequestParam typeCode: List<String> = emptyList(),
         @RequestParam(defaultValue = "45") overdueDays: Int,
+        @RequestParam(defaultValue = "true") activeOnly: Boolean,
         @PageableDefault(page = 0, size = 10, sort = ["name"]) pageable: Pageable
     ) = providersService.getProjectsForTeam(
         teamCode, typeCode, pageable.mapSorts(
@@ -37,7 +38,8 @@ class ProvidersController(
             "overdueOutcomesCount" to "coalesce(appointment_stats.overdue_count, 0)",
             "oldestOverdueInDays" to "coalesce(appointment_stats.overdue_days, 0)"
         ),
-        overdueDays
+        overdueDays,
+        activeOnly
     )
 
     @GetMapping(value = ["/{providerCode}/teams/{teamCode}/sessions"])

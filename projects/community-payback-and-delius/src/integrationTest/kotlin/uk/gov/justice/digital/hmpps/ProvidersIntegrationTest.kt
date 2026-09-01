@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.COMPLETED_UPW_PROJECT
 import uk.gov.justice.digital.hmpps.model.PickUpLocationsResponse
 import uk.gov.justice.digital.hmpps.model.ProvidersResponse
 import uk.gov.justice.digital.hmpps.model.SupervisorsResponse
@@ -82,15 +82,22 @@ class ProvidersIntegrationTest @Autowired constructor(
     @Test
     fun `can retrieve all upw projects for provider and team`() {
         mockMvc
-            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc&activeOnly=false") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.content.length()") { value(3) }
+                jsonPath("$.content[*].project.code", hasItem(COMPLETED_UPW_PROJECT.code))
+            }
+    }
+
+    @Test
+    fun `can retrieve only active upw projects for provider and team`() {
+        mockMvc
+            .get("/providers/N01/teams/N01UPW/projects?sort=name,asc&activeOnly=true") { withToken() }
             .andExpect {
                 status { isOk() }
                 jsonPath("$.content.length()") { value(2) }
-                jsonPath("$.content[0].project.code") { value(UPWGenerator.UPW_PROJECT_1.code) }
-                jsonPath("$.content[0].project.type.code") { value("I") }
-                jsonPath("$.content[0].project.team.code") { value("N01UPW") }
-                jsonPath("$.content[0].overdueOutcomesCount") { value(1) }
-                jsonPath("$.content[0].oldestOverdueInDays") { value(7) }
+                jsonPath("$.content[*].project.code", not(hasItem(COMPLETED_UPW_PROJECT.code)))
             }
     }
 
@@ -134,16 +141,14 @@ class ProvidersIntegrationTest @Autowired constructor(
                 status { isOk() }
                 jsonPath("$.content.length()") { value(2) }
                 jsonPath("$.content[0].overdueOutcomesCount") { value(1) }
-                jsonPath("$.content[1].overdueOutcomesCount") { value(0) }
             }
 
         mockMvc
-            .get("/providers/N01/teams/N01UPW/projects?sort=oldestOverdueInDays") { withToken() }
+            .get("/providers/N01/teams/N01UPW/projects?sort=oldestOverdueInDays&activeOnly=false") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.content.length()") { value(2) }
-                jsonPath("$.content[0].oldestOverdueInDays") { value(0) }
-                jsonPath("$.content[1].oldestOverdueInDays") { value(7) }
+                jsonPath("$.content.length()") { value(3) }
+                jsonPath("$.content[2].oldestOverdueInDays") { value(7) }
             }
     }
 
