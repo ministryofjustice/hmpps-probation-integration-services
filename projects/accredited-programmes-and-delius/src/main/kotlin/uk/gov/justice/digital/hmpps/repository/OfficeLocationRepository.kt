@@ -10,10 +10,10 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
         select o from OfficeLocation o
         join fetch o.localAdminUnit lau
         join fetch lau.probationDeliveryUnit pdu
-        where pdu.regionId = :regionId and pdu.selectable = true and lau.selectable = true
+        where pdu.provider.id = :regionId and pdu.selectable = true and lau.selectable = true
     """
     )
-    fun findByRegionId(regionId: Long): List<OfficeLocation>
+    fun findByProviderId(regionId: Long): List<OfficeLocation>
 
     @Query(
         """

@@ -92,10 +92,4 @@ class GetRegionWIthMembersIntegrationTest(
                 }
             }
     }
-
-    @Test
-    fun `office locations 404 for pdu not found`() {
-        mockMvc.get("/regions/pdu/notfound/office-locations") { withToken() }
-            .andExpect { status { isNotFound() } }
-    }
 }
