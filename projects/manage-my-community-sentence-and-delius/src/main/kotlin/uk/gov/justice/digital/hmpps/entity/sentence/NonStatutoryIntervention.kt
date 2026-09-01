@@ -8,7 +8,7 @@ import org.hibernate.type.NumericBooleanConverter
 @Entity
 @Immutable
 @Table(name = "nsi")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class NonStatutoryIntervention(
     @Id
     @Column(name = "nsi_id")

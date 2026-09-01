@@ -110,7 +110,7 @@ class CaseDetailService(
     }
 
     private fun Team.pduOfficeLocations() =
-        officeLocationRepository.findByRegionId(localAdminUnit.probationDeliveryUnit.regionId)
+        officeLocationRepository.findByProviderId(localAdminUnit.probationDeliveryUnit.provider.id)
             .groupBy { it.localAdminUnit.probationDeliveryUnit.toCodedValue() }
             .map { (key, value) -> PduOfficeLocations(key.code, key.description, value.map { it.toCodedValue() }) }
 

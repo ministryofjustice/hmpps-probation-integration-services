@@ -2,10 +2,14 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.CUSTODY_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DETAILED_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EMPTY_REQUIREMENTS_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MIXED_ORDERS_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.NO_DISPOSAL_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.NO_EVENTS_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTERED_PERSON
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RELEASED_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.STANDALONE_ONLY_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.UPW_ONLY_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.JOHN_SMITH
@@ -17,7 +21,6 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.FLAG
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.LEVEL
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
-import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Custody
 import java.time.ZonedDateTime
 
 @Component
@@ -57,7 +60,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     }
 
     fun personData() {
-        saveAll(REGISTERED_PERSON, RELEASED_PERSON, CUSTODY_PERSON, DETAILED_PERSON)
+        saveAll(
+            REGISTERED_PERSON,
+            DETAILED_PERSON,
+            STANDALONE_ONLY_PERSON,
+            UPW_ONLY_PERSON,
+            NO_EVENTS_PERSON,
+            MIXED_ORDERS_PERSON,
+            NO_DISPOSAL_PERSON,
+            EMPTY_REQUIREMENTS_PERSON
+        )
         save(PersonGenerator.DETAIL_ADDRESS)
     }
 
@@ -79,18 +91,27 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     fun custodialData() {
         saveAll(
-            SentenceGenerator.INSTITUTION_TYPE,
-            SentenceGenerator.DEFAULT_INSTITUTION,
-            SentenceGenerator.CUSTODY_STATUS,
-            SentenceGenerator.RELEASE_TYPE,
-            SentenceGenerator.RECALL_REASON
+            SentenceGenerator.RESTRICTIVE_MAIN_CATEGORY,
+            SentenceGenerator.UPW_MAIN_CATEGORY,
+            SentenceGenerator.NON_STANDALONE_MAIN_CATEGORY
         )
-        persistCustody(SentenceGenerator.CUSTODIAL_SENTENCE)
-        persistCustody(SentenceGenerator.RELEASED_SENTENCE)
-        saveAll(SentenceGenerator.RELEASE, SentenceGenerator.RECALL)
-    }
 
-    fun persistCustody(custody: Custody) {
-        saveAll(custody.disposal.event, custody.disposal, custody)
+        saveAll(
+            SentenceGenerator.STANDALONE_EVENT,
+            SentenceGenerator.STANDALONE_DISPOSAL,
+            SentenceGenerator.STANDALONE_REQUIREMENT,
+            SentenceGenerator.UPW_ONLY_EVENT,
+            SentenceGenerator.UPW_ONLY_DISPOSAL,
+            SentenceGenerator.UPW_ONLY_REQUIREMENT,
+            SentenceGenerator.MIXED_EVENT_STANDALONE,
+            SentenceGenerator.MIXED_DISPOSAL_STANDALONE,
+            SentenceGenerator.MIXED_REQUIREMENT_STANDALONE,
+            SentenceGenerator.MIXED_EVENT_NON_STANDALONE,
+            SentenceGenerator.MIXED_DISPOSAL_NON_STANDALONE,
+            SentenceGenerator.MIXED_REQUIREMENT_NON_STANDALONE,
+            SentenceGenerator.NO_DISPOSAL_EVENT,
+            SentenceGenerator.EMPTY_REQUIREMENTS_EVENT,
+            SentenceGenerator.EMPTY_REQUIREMENTS_DISPOSAL
+        )
     }
 }

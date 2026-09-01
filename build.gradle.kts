@@ -4,6 +4,8 @@ import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
+import uk.gov.justice.digital.hmpps.gradle.ConfigManager
+import uk.gov.justice.digital.hmpps.gradle.pluginmanagers.DependencyManagementPluginManager
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
@@ -11,13 +13,19 @@ plugins {
     kotlin("jvm") version "2.4.10"
     kotlin("plugin.noarg") version "2.4.10" apply false
     kotlin("plugin.spring") version "2.4.10" apply false
-    id("org.springframework.boot") version "4.1.0" apply false
+    id("org.springframework.boot") version "4.1.1" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.gorylenko.gradle-git-properties") version "4.0.1" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
     id("idea")
+}
+buildscript {
+    repositories { gradlePluginPortal() }
+    dependencies {
+        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.6")
+    }
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -77,6 +85,16 @@ subprojects {
         plugin("idea")
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
+    }
+
+    // Apply plugin managers from HMPPS Spring Boot Gradle plugin
+    listOf(
+        // Overrides managed dependency versions to resolve security vulnerability alerts
+        DependencyManagementPluginManager(project),
+    ).apply {
+        forEach { pluginManager.apply(it.pluginProject) }
+        forEach(ConfigManager::configure)
+        afterEvaluate { forEach(ConfigManager::afterEvaluate) }
     }
 
     tasks {
