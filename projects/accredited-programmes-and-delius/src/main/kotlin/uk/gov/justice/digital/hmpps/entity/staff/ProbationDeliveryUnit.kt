@@ -14,12 +14,11 @@ class ProbationDeliveryUnit(
     val id: Long,
     val code: String,
     val description: String,
-
-    @Column("probation_area_id")
-    val regionId: Long,
-
+    @ManyToOne
+    @JoinColumn("probation_area_id")
+    val provider: Provider,
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean,
+    val selectable: Boolean = true,
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }

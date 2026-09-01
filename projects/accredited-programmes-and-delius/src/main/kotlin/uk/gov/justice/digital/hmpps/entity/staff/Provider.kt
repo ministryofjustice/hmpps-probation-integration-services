@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.entity.staff
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.model.CodedValue
 
 @Entity
@@ -17,6 +15,8 @@ class Provider(
     @Column(columnDefinition = "char(3)")
     val code: String,
     val description: String,
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true,
 ) {
     fun toCodedValue() = CodedValue(code, description)
 }
