@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.model
 
+import jakarta.validation.constraints.NotBlank
+
 data class Code(
+    @field:NotBlank
     val code: String
 )
 

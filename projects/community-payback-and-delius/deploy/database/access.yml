@@ -3,11 +3,13 @@ database:
     username_key: /community-payback-and-delius/db-username
     password_key: /community-payback-and-delius/db-password
     tables:
+      - address
       - audited_interaction
       - contact
       - contact_alert
       - enforcement
       - event
+      - upw_project
       - upw_appointment
       - upw_adjustment
       - upw_details

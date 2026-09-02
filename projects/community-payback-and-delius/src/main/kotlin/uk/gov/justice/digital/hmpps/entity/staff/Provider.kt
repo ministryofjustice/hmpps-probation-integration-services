@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Immutable
@@ -20,3 +21,7 @@ class Provider(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean
 )
+
+interface ProviderRepository : JpaRepository<Provider, Long> {
+    fun findByCodeIn(codes: Collection<String>): List<Provider>
+}

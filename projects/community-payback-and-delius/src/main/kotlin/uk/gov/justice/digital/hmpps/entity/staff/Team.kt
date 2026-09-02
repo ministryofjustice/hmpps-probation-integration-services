@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
@@ -55,6 +56,13 @@ class Team(
     )
     @SQLRestriction("officer_code like '%U' and (end_date is null or end_date > current_date)")
     val unallocatedStaff: List<Staff>,
+
+    @OneToMany(mappedBy = "team")
+    val officeLocations: List<TeamOfficeLocation> = emptyList(),
+
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    val localAdminUnit: LocalAdminUnit? = null,
 ) {
     fun unallocatedStaff() = checkNotNull(unallocatedStaff.singleOrNull()) {
         "Team $code does not have a single unallocated staff member"
@@ -90,6 +98,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
 
     fun getByCode(code: String): Team = findTeamByCode(code).orNotFoundBy("code", code)
 
+    @EntityGraph(attributePaths = ["provider", "localAdminUnit", "localAdminUnit.probationDeliveryUnit", "officeLocations"])
     fun findTeamsByCodeIn(teamCodes: List<String>): List<Team>
 
     fun getByCodeIn(codes: List<String>) = codes.toSet().let { codes ->

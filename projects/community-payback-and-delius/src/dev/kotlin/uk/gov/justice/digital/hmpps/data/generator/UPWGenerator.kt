@@ -35,6 +35,15 @@ object UPWGenerator {
         town = "City",
         postcode = "ZY98XW"
     )
+    val SECOND_PROVIDER_OFFICE_LOCATION = generateOfficeLocation(
+        code = "LOC0201",
+        description = "Second Provider Location",
+        addressNumber = "2001",
+        streetName = "Provider Street",
+        town = "City",
+        postcode = "ZY98XZ",
+        provider = ProviderGenerator.SECOND_PROVIDER,
+    )
 
     val UPW_PROJECT_1 = generateUpwProject(
         name = "Default UPW Project",
@@ -588,6 +597,7 @@ object UPWGenerator {
         name: String,
         code: String,
         team: Team,
+        provider: Provider = team.provider,
         placementAddress: Address?,
         projectType: ReferenceData,
         availability: List<UnpaidWorkProjectAvailability> = listOf(),
@@ -601,21 +611,22 @@ object UPWGenerator {
         beneficiaryContactAddress: Address? = placementAddress
 
     ) = UnpaidWorkProject(
-        id,
-        name,
-        code,
-        team,
-        placementAddress,
-        projectType,
-        availability,
-        hiVisRequired,
-        expectedEndDate,
-        completionDate,
-        beneficiary,
-        beneficiaryContactName,
-        beneficiaryEmailAddress,
-        beneficiaryUrl,
-        beneficiaryContactAddress,
+        id = id,
+        name = name,
+        code = code,
+        provider = provider,
+        team = team,
+        placementAddress = placementAddress,
+        projectType = projectType,
+        availability = availability,
+        hiVisRequired = hiVisRequired,
+        expectedEndDate = expectedEndDate,
+        completionDate = completionDate,
+        beneficiary = beneficiary,
+        beneficiaryContactName = beneficiaryContactName,
+        beneficiaryEmailAddress = beneficiaryEmailAddress,
+        beneficiaryUrl = beneficiaryUrl,
+        beneficiaryContactAddress = beneficiaryContactAddress,
     )
 
     fun generateUpwProjectAvailability(
@@ -798,7 +809,16 @@ object UPWGenerator {
         county: String? = null,
         postcode: String? = null,
         telephoneNumber: String? = null,
-    ) = Address(id, buildingName, addressNumber, streetName, town, county, postcode, telephoneNumber)
+    ) = Address(
+        id = id,
+        buildingName = buildingName,
+        addressNumber = addressNumber,
+        streetName = streetName,
+        town = town,
+        county = county,
+        postcode = postcode,
+        telephoneNumber = telephoneNumber,
+    )
 
     fun generateOfficeLocation(
         id: Long = IdGenerator.getAndIncrement(),
@@ -809,10 +829,11 @@ object UPWGenerator {
         streetName: String? = null,
         town: String? = null,
         county: String? = null,
-        postcode: String? = null
+        postcode: String? = null,
+        provider: Provider = ProviderGenerator.DEFAULT_PROVIDER,
     ) = OfficeLocation(
         id, code, description, buildingName, addressNumber, streetName, town, county, postcode,
-        ProviderGenerator.DEFAULT_PROVIDER, ZonedDateTime.now().minusDays(7), null
+        provider, ZonedDateTime.now().minusDays(7), null
     )
 
     fun generateRequirement(

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
+import uk.gov.justice.digital.hmpps.utils.Extensions.reportMissing
 
 @Entity
 @Immutable
@@ -75,6 +76,21 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     """
     )
     fun findByDatasetCode(datasetCode: String): List<ReferenceData>
+
+    @Query(
+        """
+        select rd from ReferenceData rd
+        join Dataset ds on rd.datasetId = ds.id
+        where ds.code = :datasetCode and rd.code in (:codes) and rd.selectable = true
+    """
+    )
+    fun findSelectableByDatasetCodeAndCodeIn(datasetCode: String, codes: Collection<String>): List<ReferenceData>
+}
+
+fun ReferenceDataRepository.getProjectTypesByCodeIn(codes: Collection<String>): Map<String, ReferenceData> {
+    return findSelectableByDatasetCodeAndCodeIn(Dataset.UPW_PROJECT_TYPE, codes.toSet())
+        .associateBy { it.code }
+        .reportMissing("Project Type Code(s)", codes.toSet())
 }
 
 fun ReferenceDataRepository.getWorkQuality(code: String): ReferenceData =
