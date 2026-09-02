@@ -77,6 +77,7 @@ class UnpaidWorkProject(
     val completionDate: LocalDate?,
 
     val beneficiary: String?,
+    @Column(name = "beneficiary_address")
     val beneficiaryAdditionalDetails: String? = null,
     val beneficiaryContactName: String?,
     val beneficiaryEmailAddress: String?,
