@@ -10,9 +10,12 @@ import org.springframework.data.jpa.domain.Specification.allOf
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 
 object Extensions {
-    inline fun <K, reified V> Map<K, V>.reportMissing(required: Set<K>) = also {
+    inline fun <K, reified V> Map<K, V>.reportMissing(required: Set<K>) =
+        reportMissing("${V::class.simpleName}", required)
+
+    inline fun <K, reified V> Map<K, V>.reportMissing(name: String, required: Set<K>) = also {
         val missing = required - keys
-        require(missing.isEmpty()) { "Invalid ${V::class.simpleName}: $missing" }
+        require(missing.isEmpty()) { "Invalid $name: $missing" }
     }
 
     fun Pageable.mapSorts(vararg pairs: Pair<String, String>): Pageable {

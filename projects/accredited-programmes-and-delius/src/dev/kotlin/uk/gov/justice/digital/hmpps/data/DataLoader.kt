@@ -30,6 +30,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.PDU_2)
         save(TestData.LAU)
         save(TestData.LAU_2)
+        save(TestData.INACTIVE_PROVIDER)
+        save(TestData.PDU_IN_INACTIVE_PROVIDER)
         save(TestData.OFFICE_LOCATION)
         save(TestData.TEAM)
         save(TestData.TEAM_2)

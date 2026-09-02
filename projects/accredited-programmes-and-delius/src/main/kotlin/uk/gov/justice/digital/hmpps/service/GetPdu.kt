@@ -14,7 +14,7 @@ class GetPdu(
 ) {
 
     fun pduOfficeLocations(code: String): PduOfficeLocations {
-        val pdu = pduRepository.getByCodeAndSelectableTrue(code).orNotFoundBy("code", code)
+        val pdu = pduRepository.getByCodeAndSelectableTrueAndProviderSelectableTrue(code).orNotFoundBy("code", code)
         return PduOfficeLocations(
             pdu.code, pdu.description,
             officeLocationRepository.findByPduCode(code)
