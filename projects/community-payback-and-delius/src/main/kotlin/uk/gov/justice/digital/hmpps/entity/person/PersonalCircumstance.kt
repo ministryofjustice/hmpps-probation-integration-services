@@ -41,7 +41,8 @@ class PersonalCircumstance(
     @Column(name = "end_date")
     val endDate: ZonedDateTime? = null,
 
-    @Column(name = "notes", columnDefinition = "clob")
+    @jakarta.persistence.Lob
+    @Column(name = "notes")
     val notes: String? = null,
 
     @Column(columnDefinition = "number")
