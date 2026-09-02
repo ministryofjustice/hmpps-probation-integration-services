@@ -198,9 +198,10 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns active personal circumstances only when requested`() {
-        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=true") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=true") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
 
         assertThat(response).hasSize(2)
         assertThat(response[0].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE.code)
@@ -216,9 +217,10 @@ class CaseControllerIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns all personal circumstances when activeOnly is false`() {
-        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=false") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+        val response =
+            mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=false") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
 
         assertThat(response).hasSize(3)
         assertThat(response.map { it.type.code }).containsExactly(
