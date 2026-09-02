@@ -69,8 +69,8 @@ class ProjectService(
             }
             require(
                 project.beneficiaryDetails.slaStartDate == null ||
-                project.beneficiaryDetails.slaEndDate == null ||
-                !project.beneficiaryDetails.slaEndDate.isBefore(project.beneficiaryDetails.slaStartDate)
+                    project.beneficiaryDetails.slaEndDate == null ||
+                    !project.beneficiaryDetails.slaEndDate.isBefore(project.beneficiaryDetails.slaStartDate)
             ) {
                 "SLA End Date must be on or after SLA Start Date for project code ${project.code}"
             }
