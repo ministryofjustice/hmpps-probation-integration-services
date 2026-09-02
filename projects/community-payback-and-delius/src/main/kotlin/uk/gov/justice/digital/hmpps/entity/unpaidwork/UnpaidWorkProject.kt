@@ -77,7 +77,8 @@ class UnpaidWorkProject(
     val completionDate: LocalDate?,
 
     val beneficiary: String?,
-    @Column(name = "beneficiary_address")
+    @Lob
+    @Column(name = "beneficiary_notes")
     val beneficiaryAdditionalDetails: String? = null,
     val beneficiaryContactName: String?,
     val beneficiaryEmailAddress: String?,
@@ -109,6 +110,7 @@ class UnpaidWorkProject(
     @Column(name = "placement_url")
     val placementUrl: String? = null,
 
+    @Lob
     @Column(name = "placement_notes")
     val placementNotes: String? = null,
 
