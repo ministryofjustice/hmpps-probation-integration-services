@@ -176,17 +176,56 @@ class CaseControllerIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `returns active personal circumstances sorted by start date`() {
+    fun `returns all personal circumstances sorted by start date by default`() {
 
         val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).hasSize(3)
+        assertThat(response[0].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE3.code)
+        assertThat(response[0].subType).isNull()
+        assertThat(response[0].startDate).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE3.startDate)
+        assertThat(response[0].endDate).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE3.endDate)
+        assertThat(response[0].verified).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE3.evidenced)
+        assertThat(response[0].notes).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE3.notes)
+
+        assertThat(response[1].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE.code)
+        assertThat(response[1].subType?.code).isEqualTo(PersonalCircumstancesGenerator.SUBTYPE.code)
+        assertThat(response[2].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE2.code)
+        assertThat(response[2].subType).isNull()
+    }
+
+    @Test
+    fun `returns active personal circumstances only when requested`() {
+        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=true") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
 
         assertThat(response).hasSize(2)
         assertThat(response[0].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE.code)
         assertThat(response[0].subType?.code).isEqualTo(PersonalCircumstancesGenerator.SUBTYPE.code)
+        assertThat(response[0].startDate).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE1.startDate)
+        assertThat(response[0].endDate).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE1.endDate)
+        assertThat(response[0].verified).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE1.evidenced)
+        assertThat(response[0].notes).isEqualTo(PersonalCircumstancesGenerator.PERSONALCIRCUMSTANCE1.notes)
+
         assertThat(response[1].type.code).isEqualTo(PersonalCircumstancesGenerator.TYPE2.code)
         assertThat(response[1].subType).isNull()
+    }
+
+    @Test
+    fun `returns all personal circumstances when activeOnly is false`() {
+        val response = mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/personal-circumstances?activeOnly=false") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<List<PersonalCircumstances>>()
+
+        assertThat(response).hasSize(3)
+        assertThat(response.map { it.type.code }).containsExactly(
+            PersonalCircumstancesGenerator.TYPE3.code,
+            PersonalCircumstancesGenerator.TYPE.code,
+            PersonalCircumstancesGenerator.TYPE2.code
+        )
     }
 
     @Test

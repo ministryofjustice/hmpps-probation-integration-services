@@ -21,7 +21,9 @@ object PersonalCircumstancesGenerator {
             type = TYPE,
             subType = SUBTYPE,
             startDate = now.minusDays(10),
-            endDate = null
+            endDate = null,
+            notes = "Active circumstance note",
+            evidenced = true
         )
 
     val PERSONALCIRCUMSTANCE2 =
@@ -31,7 +33,9 @@ object PersonalCircumstancesGenerator {
             type = TYPE2,
             subType = null,
             startDate = now.minusDays(2),
-            endDate = now.plusDays(5)
+            endDate = now.plusDays(5),
+            notes = "Second active note",
+            evidenced = false
         )
 
     val PERSONALCIRCUMSTANCE3 =
@@ -41,6 +45,8 @@ object PersonalCircumstancesGenerator {
             type = TYPE3,
             subType = null,
             startDate = now.minusDays(20),
-            endDate = now.minusDays(1)
+            endDate = now.minusDays(1),
+            notes = "Inactive circumstance note",
+            evidenced = true
         )
 }

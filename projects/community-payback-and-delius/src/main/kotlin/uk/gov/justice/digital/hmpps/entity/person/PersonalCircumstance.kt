@@ -8,15 +8,16 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "personal_circumstance")
 @Immutable
-@SQLRestriction("soft_deleted = 0 and (end_date is null OR end_date > current_date)")
 class PersonalCircumstance(
     @Id
     @Column(name = "personal_circumstance_id")
@@ -40,9 +41,15 @@ class PersonalCircumstance(
     @Column(name = "end_date")
     val endDate: ZonedDateTime? = null,
 
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Convert(converter = YesNoConverter::class)
+    val evidenced: Boolean? = false
 )
 
 @Entity
@@ -74,5 +81,18 @@ class PersonalCircumstanceSubType(
 )
 
 interface PersonalCircumstanceRepository : JpaRepository<PersonalCircumstance, Long> {
-    fun findByPerson_CrnOrderByStartDate(crn: String): List<PersonalCircumstance>
+    @Query(
+        """
+        select pc
+        from PersonalCircumstance pc
+        where pc.person.crn = :crn
+          and pc.softDeleted = false
+          and (:activeOnly = false or pc.endDate is null or pc.endDate > current_timestamp)
+        order by pc.startDate
+        """
+    )
+    fun findByCrnOrderByStartDate(
+        @Param("crn") crn: String,
+        @Param("activeOnly") activeOnly: Boolean
+    ): List<PersonalCircumstance>
 }

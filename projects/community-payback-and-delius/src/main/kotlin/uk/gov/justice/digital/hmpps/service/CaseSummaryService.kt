@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepos
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.*
-import java.time.ZonedDateTime
 
 @Service
 class CaseSummaryService(
@@ -103,14 +102,18 @@ class CaseSummaryService(
             restrictionMessage = "username not provided so cannot determine restriction",
         )
 
-    fun getPersonalCircumstances(crn: String): List<PersonalCircumstances> {
+    fun getPersonalCircumstances(crn: String, activeOnly: Boolean): List<PersonalCircumstances> {
         if (!personRepository.existsByCrn(crn)) throw NotFoundException("Person", "crn", crn)
-        val circumstances = personalCircumstanceRepository.findByPerson_CrnOrderByStartDate(crn)
+        val circumstances = personalCircumstanceRepository.findByCrnOrderByStartDate(crn, activeOnly)
         return circumstances
             .map {
                 PersonalCircumstances(
                     type = CodeDescription(it.type.code, it.type.description),
-                    subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) }
+                    subType = it.subType?.let { subType -> CodeDescription(subType.code, subType.description) },
+                    startDate = it.startDate,
+                    endDate = it.endDate,
+                    verified = it.evidenced,
+                    notes = it.notes
                 )
             }
     }
