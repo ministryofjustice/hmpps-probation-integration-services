@@ -390,8 +390,8 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
                 gender = person.gender.description,
                 roshLevel = CodeDescription("RHRH", "High RoSH"),
                 expectedReleaseDate = KeyDateGenerator.EXPECTED_RELEASE.date,
-                userExcluded = false,
-                userRestricted = false,
+                userExcluded = null,
+                userRestricted = null,
                 exclusionMessage = null,
                 restrictionMessage = null,
                 limitedAccess = null,
@@ -407,8 +407,8 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Case>()
 
-        assertThat(response.userExcluded).isFalse()
-        assertThat(response.userRestricted).isFalse()
+        assertThat(response.userExcluded).isNull()
+        assertThat(response.userRestricted).isNull()
         assertThat(response.exclusionMessage).isNull()
         assertThat(response.restrictionMessage).isNull()
         assertThat(response.limitedAccess).isTrue()
@@ -422,8 +422,8 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
             .andExpect { status { is2xxSuccessful() } }
             .andReturn().response.contentAsJson<Case>()
 
-        assertThat(response.userExcluded).isFalse()
-        assertThat(response.userRestricted).isFalse()
+        assertThat(response.userExcluded).isNull()
+        assertThat(response.userRestricted).isNull()
         assertThat(response.exclusionMessage).isNull()
         assertThat(response.restrictionMessage).isNull()
         assertThat(response.limitedAccess).isTrue()

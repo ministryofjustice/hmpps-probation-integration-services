@@ -49,7 +49,7 @@ class CaseListService(
 
         val responsibleCases = cases.map { person ->
             val access = checkNotNull(userLimitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            val isLimitedAccessCase = caseLimitedAccess[person.crn] ?: false
+            val isLimitedAccessCase = caseLimitedAccess[person.crn]
             person.toCase(access, expectedReleaseDates[person.id], isLimitedAccessCase)
         }
 
@@ -74,7 +74,7 @@ class CaseListService(
     }
 
     fun getCase(crn: String): Case {
-        val access = CaseAccess(crn = crn, userExcluded = false, userRestricted = false)
+        val access = CaseAccess(crn = crn, userExcluded = null, userRestricted = null)
         return getCaseByAccess(access)
     }
 
@@ -90,12 +90,16 @@ class CaseListService(
         )
     }
 
-    private fun CaseAccess.isLimitedAccess() = this.userExcluded || this.userRestricted
+    private fun CaseAccess.isLimitedAccess(): Boolean? = when {
+        userExcluded == true || userRestricted == true -> true
+        userExcluded == null || userRestricted == null -> null
+        else -> false
+    }
 
     private fun Person.toCase(
         access: CaseAccess?,
         expectedReleaseDate: LocalDate?,
-        limitedAccess: Boolean,
+        limitedAccess: Boolean?,
     ) = Case(
         crn = crn,
         name = Name(
@@ -127,6 +131,6 @@ class CaseListService(
         userRestricted = access?.userRestricted,
         exclusionMessage = access?.exclusionMessage,
         restrictionMessage = access?.restrictionMessage,
-        limitedAccess = if (limitedAccess) true else null,
+        limitedAccess = if (limitedAccess == true) true else null,
     )
 }

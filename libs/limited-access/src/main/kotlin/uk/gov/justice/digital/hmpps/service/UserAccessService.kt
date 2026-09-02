@@ -67,8 +67,8 @@ class UserAccessService(private val uar: UserAccessRepository) {
 
 data class CaseAccess(
     val crn: String,
-    val userExcluded: Boolean,
-    val userRestricted: Boolean,
+    val userExcluded: Boolean?,
+    val userRestricted: Boolean?,
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null
 )
