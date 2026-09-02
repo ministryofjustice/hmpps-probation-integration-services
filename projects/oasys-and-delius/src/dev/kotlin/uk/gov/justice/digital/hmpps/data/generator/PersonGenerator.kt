@@ -9,10 +9,18 @@ import java.time.LocalDate
 object PersonGenerator {
     val REGISTERED_PERSON =
         generate("R123456", firstName = "Reginald", surname = "Regency", dob = LocalDate.now().minusYears(27))
-    val RELEASED_PERSON =
-        generate("B123456", firstName = "Barry", surname = "Brown", dob = LocalDate.now().minusYears(39))
-    val CUSTODY_PERSON =
-        generate("C123456", firstName = "Charles", surname = "Chaplin", dob = LocalDate.now().minusYears(42))
+    val STANDALONE_ONLY_PERSON =
+        generate("S123456", firstName = "Standalone", surname = "Standalone", dob = LocalDate.now().minusYears(31))
+    val UPW_ONLY_PERSON =
+        generate("U123456", firstName = "Upw", surname = "Upw", dob = LocalDate.now().minusYears(30))
+    val NO_EVENTS_PERSON =
+        generate("P123456", firstName = "NoEvents", surname = "NoEvents", dob = LocalDate.now().minusYears(28))
+    val MIXED_ORDERS_PERSON =
+        generate("M123456", firstName = "Mixed", surname = "Mixed", dob = LocalDate.now().minusYears(34))
+    val NO_DISPOSAL_PERSON =
+        generate("N123456", firstName = "NoDisposal", surname = "NoDisposal", dob = LocalDate.now().minusYears(29))
+    val EMPTY_REQUIREMENTS_PERSON =
+        generate("E123456", firstName = "Empty", surname = "Empty", dob = LocalDate.now().minusYears(33))
 
     val GENDER = ReferenceDataGenerator.generate("GEN", "Gender")
     val ETHNICITY = ReferenceDataGenerator.generate("ETH", "Ethnicity")

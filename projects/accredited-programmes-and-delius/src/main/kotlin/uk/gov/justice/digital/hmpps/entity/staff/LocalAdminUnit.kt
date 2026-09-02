@@ -21,5 +21,5 @@ class LocalAdminUnit(
     val probationDeliveryUnit: ProbationDeliveryUnit,
 
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean,
+    val selectable: Boolean = true,
 )
