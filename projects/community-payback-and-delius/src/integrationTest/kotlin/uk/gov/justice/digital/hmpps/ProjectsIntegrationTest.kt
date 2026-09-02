@@ -151,7 +151,7 @@ class ProjectsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
             assertThat(it.message).isEqualTo("Validation failure")
-            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].team" && field.message == "must not be blank" }
+            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].team.code" && field.message == "must not be blank" }
         }
     }
 
@@ -173,7 +173,7 @@ class ProjectsIntegrationTest @Autowired constructor(
             )
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
             assertThat(it.message).isEqualTo("Validation failure")
-            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].type" && field.message == "must not be blank" }
+            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].type.code" && field.message == "must not be blank" }
         }
     }
 
