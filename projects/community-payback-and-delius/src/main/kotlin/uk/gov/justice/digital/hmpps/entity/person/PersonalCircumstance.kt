@@ -88,7 +88,7 @@ interface PersonalCircumstanceRepository : JpaRepository<PersonalCircumstance, L
         from PersonalCircumstance pc
         where pc.person.crn = :crn
           and pc.softDeleted = false
-          and (:activeOnly = false or pc.endDate is null or pc.endDate > current_timestamp)
+          and (:activeOnly = false or pc.endDate is null or pc.endDate > current_date)
         order by pc.startDate
         """
     )
