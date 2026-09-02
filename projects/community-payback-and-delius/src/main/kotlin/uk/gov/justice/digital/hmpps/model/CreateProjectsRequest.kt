@@ -1,20 +1,19 @@
 package uk.gov.justice.digital.hmpps.model
 
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
 import java.time.LocalDate
 
 data class CreateProjectsRequest(
-    val projects: List<CreateProjectRequest>
+    @field:Valid val projects: List<CreateProjectRequest>
 )
 
 data class CreateProjectRequest(
-    val providerCode: String,
-    val pduCode: String? = null,
-    val localAdminUnitCode: String? = null,
-    val teamCode: String,
-    val projectTypeCode: String,
-    val code: String,
-    val name: String,
-    val defaultPickupPointCode: String,
+    @field:Valid val team: Code,
+    @field:Valid val type: Code,
+    @field:NotBlank val code: String,
+    @field:NotBlank val name: String,
+    @field:Valid val pickUpLocation: Code,
     val hiVisRequired: Boolean = false,
     val reportToSite: Boolean = false,
     val startDate: LocalDate,

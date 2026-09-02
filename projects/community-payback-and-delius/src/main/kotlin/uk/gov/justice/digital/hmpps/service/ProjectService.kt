@@ -5,9 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getProjectTypesByCodeIn
 import uk.gov.justice.digital.hmpps.entity.person.Address
-import uk.gov.justice.digital.hmpps.entity.staff.LocalAdminUnitRepository
-import uk.gov.justice.digital.hmpps.entity.staff.ProbationDeliveryUnitRepository
-import uk.gov.justice.digital.hmpps.entity.staff.ProviderRepository
 import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProject
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectRepository
@@ -24,9 +21,6 @@ import java.time.ZonedDateTime
 class ProjectService(
     private val unpaidWorkProjectRepository: UnpaidWorkProjectRepository,
     private val teamRepository: TeamRepository,
-    private val providerRepository: ProviderRepository,
-    private val localAdminUnitRepository: LocalAdminUnitRepository,
-    private val probationDeliveryUnitRepository: ProbationDeliveryUnitRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val telemetryService: TelemetryService,
 ) {
@@ -39,177 +33,65 @@ class ProjectService(
             .onEach { telemetryService.trackEvent("ProjectCreated", it.telemetry()) }
 
     private fun validateRequest(projects: List<CreateProjectRequest>): List<UnpaidWorkProject> {
-        if (projects.isEmpty()) {
-            throw InvalidRequestException("At least one project is required")
-        }
-
-        // Validate mandatory fields for each project
-        projects.forEach { project ->
-            if (project.providerCode.isBlank()) {
-                throw InvalidRequestException("Provider Code must not be blank for project ${project.code}")
-            }
-            if (project.teamCode.isBlank()) {
-                throw InvalidRequestException("Team Code must not be blank for project ${project.code}")
-            }
-            if (project.projectTypeCode.isBlank()) {
-                throw InvalidRequestException("Project Type Code must not be blank for project ${project.code}")
-            }
-            if (project.code.isBlank()) {
-                throw InvalidRequestException("Project code must not be blank for project ${project.code}")
-            }
-            if (project.name.isBlank()) {
-                throw InvalidRequestException("Project name must not be blank for project ${project.code}")
-            }
-            if (project.defaultPickupPointCode.isBlank()) {
-                throw InvalidRequestException("Default Pickup Point Code must not be blank for project ${project.code}")
-            }
-
-            if (!project.code.startsWith(project.providerCode)) {
-                throw InvalidRequestException(
-                    "Project code ${project.code} must start with Provider Code ${project.providerCode}"
-                )
-            }
-            if (project.expectedEndDate != null && project.expectedEndDate.isBefore(project.startDate)) {
-                throw InvalidRequestException(
-                    "Expected End Date must be on or after Start Date for project code ${project.code}"
-                )
-            }
-            if (project.completionDate != null && project.completionDate.isBefore(project.startDate)) {
-                throw InvalidRequestException(
-                    "Completion Date must be on or after Start Date for project code ${project.code}"
-                )
-            }
-            if (
-                project.beneficiaryDetails.slaStartDate != null &&
-                project.beneficiaryDetails.slaEndDate != null &&
-                project.beneficiaryDetails.slaEndDate.isBefore(project.beneficiaryDetails.slaStartDate)
-            ) {
-                throw InvalidRequestException(
-                    "SLA End Date must be on or after SLA Start Date for project code ${project.code}"
-                )
-            }
-        }
+        require(projects.isNotEmpty()) { "At least one project is required" }
 
         // Check for duplicate project codes submitted in request
-        val duplicateCodes = projects
-            .groupingBy { it.code }
-            .eachCount()
-            .filterValues { it > 1 }
-            .keys
-            .sorted()
-        if (duplicateCodes.isNotEmpty()) {
-            throw InvalidRequestException(
-                "Duplicate project codes in request: ${duplicateCodes.joinToString(", ")}"
-            )
+        projects.groupingBy { it.code }.eachCount().filterValues { it > 1 }.let { duplicates ->
+            require(duplicates.isEmpty()) { "Duplicate project codes in request: ${duplicates.keys.sorted()}" }
         }
 
         // Check if projects already exist in database
-        val existingCodes = unpaidWorkProjectRepository
-            .findByCodeIn(projects.map { it.code })
-            .map { it.code }
-            .sorted()
-        if (existingCodes.isNotEmpty()) {
-            throw InvalidRequestException(
-                "Project codes must be unique, existing projects with codes found: ${existingCodes.joinToString(", ")}"
-            )
+        unpaidWorkProjectRepository.findByCodeIn(projects.map { it.code }).map { it.code }.let { existingCodes ->
+            require(existingCodes.isEmpty()) {
+                "Project codes must be unique, existing projects with codes found: ${existingCodes.sorted()}"
+            }
         }
 
         // Validate project types in request are part of selectable reference data
-        val projectTypesByCode = referenceDataRepository.getProjectTypesByCodeIn(projects.map { it.projectTypeCode })
-        val missingProjectTypeCodes = projects.map { it.projectTypeCode }.toSet() - projectTypesByCode.keys
-        if (missingProjectTypeCodes.isNotEmpty()) {
-            throw InvalidRequestException(
-                "Invalid Project Type Code(s): ${missingProjectTypeCodes.sorted().joinToString(", ")}"
-            )
-        }
+        val projectTypesByCode = referenceDataRepository.getProjectTypesByCodeIn(projects.map { it.type.code })
 
-        // Validate providers exist and are selectable
-        val providersByCode = providerRepository.findByCodeIn(projects.map { it.providerCode }.toSet())
-            .filter { it.selectable }
-            .associateBy { it.code }
-        val missingProviderCodes = projects.map { it.providerCode }.toSet() - providersByCode.keys
-        if (missingProviderCodes.isNotEmpty()) {
-            throw InvalidRequestException(
-                "Invalid Provider Code(s): ${missingProviderCodes.sorted().joinToString(", ")}"
-            )
-        }
-
-        val teamsByCode = teamRepository.getByCodeIn(projects.map { it.teamCode })
+        val teamsByCode = teamRepository.getByCodeIn(projects.map { it.team.code })
 
         // Map to UnpaidWorkProject Entity
         return projects.map { project ->
-            val team = teamsByCode.getValue(project.teamCode)
-            val provider = providersByCode.getValue(project.providerCode)
+            val team = teamsByCode.getValue(project.team.code)
+            val provider = team.provider
+
+            // Validate project-level fields
+            require(project.code.startsWith(provider.code)) {
+                "Project code ${project.code} must start with Provider Code ${provider.code}"
+            }
+            require(project.expectedEndDate == null || !project.expectedEndDate.isBefore(project.startDate)) {
+                "Expected End Date must be on or after Start Date for project code ${project.code}"
+            }
+            require(project.completionDate == null || !project.completionDate.isBefore(project.startDate)) {
+                "Completion Date must be on or after Start Date for project code ${project.code}"
+            }
+            require(
+                project.beneficiaryDetails.slaStartDate == null ||
+                project.beneficiaryDetails.slaEndDate == null ||
+                !project.beneficiaryDetails.slaEndDate.isBefore(project.beneficiaryDetails.slaStartDate)
+            ) {
+                "SLA End Date must be on or after SLA Start Date for project code ${project.code}"
+            }
 
             // Validate team constraints
-            if (!team.unpaidWorkTeam) {
-                throw InvalidRequestException("Team ${project.teamCode} is not an unpaid work team")
-            }
-
-            if (team.endDate?.isAfter(LocalDate.now()) == false) {
-                throw InvalidRequestException("Team ${project.teamCode} is not active")
-            }
-
-            if (team.provider.id != provider.id) {
-                throw InvalidRequestException(
-                    "Team ${team.code} is not part of provider ${project.providerCode} for project code ${project.code}"
-                )
-            }
-
-            project.pduCode?.takeIf { it.isNotBlank() }?.let { pduCode ->
-                val requestedPdu = probationDeliveryUnitRepository
-                    .findByCodeAndProviderCodeAndSelectableIsTrue(pduCode, provider.code)
-                    ?: throw InvalidRequestException(
-                        "Invalid PDU Code $pduCode for provider ${provider.code}"
-                    )
-
-                val teamPdu = team.localAdminUnit?.probationDeliveryUnit
-                if (teamPdu == null || teamPdu.id != requestedPdu.id) {
-                    throw InvalidRequestException(
-                        "Team ${team.code} is not part of PDU $pduCode for project code ${project.code}"
-                    )
-                }
-            }
-
-            project.localAdminUnitCode?.takeIf { it.isNotBlank() }?.let { localAdminUnitCode ->
-                val requestedLocalAdminUnit = localAdminUnitRepository
-                    .findByCodeAndProbationDeliveryUnitProviderCodeAndSelectableIsTrue(
-                        localAdminUnitCode,
-                        provider.code
-                    )
-                    ?: throw InvalidRequestException(
-                        "Invalid Local Admin Unit Code $localAdminUnitCode for provider ${provider.code}"
-                    )
-
-                val teamLocalAdminUnit = team.localAdminUnit
-                if (teamLocalAdminUnit == null || teamLocalAdminUnit.id != requestedLocalAdminUnit.id) {
-                    throw InvalidRequestException(
-                        "Team ${team.code} is not part of Local Admin Unit $localAdminUnitCode for project code ${project.code}"
-                    )
-                }
-
-                project.pduCode?.takeIf { it.isNotBlank() }?.let { pduCode ->
-                    if (requestedLocalAdminUnit.probationDeliveryUnit.code != pduCode) {
-                        throw InvalidRequestException(
-                            "Local Admin Unit $localAdminUnitCode is not part of PDU $pduCode for project code ${project.code}"
-                        )
-                    }
-                }
-            }
+            require(team.unpaidWorkTeam) { "Team ${project.team.code} is not an unpaid work team" }
+            require(team.endDate?.isAfter(LocalDate.now()) != false) { "Team ${project.team.code} is not active" }
 
             val pickupPoint = team.officeLocations
                 .map { it.officeLocation }
-                .filter { it.code == project.defaultPickupPointCode && it.provider.code == project.providerCode }
+                .filter { it.code == project.pickUpLocation.code && it.provider.code == provider.code }
                 .singleOrNull { it.endDate == null || it.endDate.isAfter(ZonedDateTime.now()) }
                 ?: throw InvalidRequestException(
-                    "Default Pickup Point Code ${project.defaultPickupPointCode} is not assigned to team ${team.code} in provider ${project.providerCode}"
+                    "Pick Up Location Code ${project.pickUpLocation.code} is not assigned to team ${team.code} in provider ${provider.code}"
                 )
 
             // Create Unpaid Work Project Entity
             UnpaidWorkProject(
                 provider = provider,
                 team = team,
-                projectType = projectTypesByCode.getValue(project.projectTypeCode),
+                projectType = projectTypesByCode.getValue(project.type.code),
                 code = project.code,
                 name = project.name,
                 pickupPointLocation = pickupPoint,
@@ -266,20 +148,13 @@ class ProjectService(
         streetName: String?,
         telephoneNumber: String?,
         townCity: String?,
-    ) =
-        if (buildingNumber != null || buildingName != null || county != null || postcode != null ||
-            streetName != null || telephoneNumber != null || townCity != null
-        ) {
-            Address(
-                addressNumber = buildingNumber,
-                buildingName = buildingName,
-                county = county,
-                postcode = postcode,
-                streetName = streetName,
-                telephoneNumber = telephoneNumber,
-                town = townCity,
-            )
-        } else {
-            null
-        }
+    ) = Address(
+        addressNumber = buildingNumber,
+        buildingName = buildingName,
+        county = county,
+        postcode = postcode,
+        streetName = streetName,
+        telephoneNumber = telephoneNumber,
+        town = townCity,
+    )
 }

@@ -17,10 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.SECOND_PROVIDER_
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_1
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator.UPW_PROJECT_AVAILABILITY_1
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProjectRepository
-import uk.gov.justice.digital.hmpps.model.CreateProjectBeneficiaryDetails
-import uk.gov.justice.digital.hmpps.model.CreateProjectPlacementDetails
-import uk.gov.justice.digital.hmpps.model.CreateProjectRequest
-import uk.gov.justice.digital.hmpps.model.CreateProjectsRequest
+import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -121,18 +118,62 @@ class ProjectsIntegrationTest @Autowired constructor(
             json = CreateProjectsRequest(
                 projects = listOf(
                     CreateProjectRequest(
-                        providerCode = ProviderGenerator.DEFAULT_PROVIDER.code,
                         code = "",
                         name = "ETE Community Campus - Alison Courses",
-                        teamCode = TeamGenerator.DEFAULT_UPW_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                        team = Code(TeamGenerator.DEFAULT_UPW_TEAM.code),
+                        type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                        pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                         startDate = LocalDate.now(),
                     )
                 )
             )
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).contains("Project code must not be blank for project")
+            assertThat(it.message).isEqualTo("Validation failure")
+            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].code" && field.message == "must not be blank" }
+        }
+    }
+
+    @Test
+    fun `returns 400 when team code is blank`() {
+        mockMvc.post("/projects") {
+            withToken()
+            json = CreateProjectsRequest(
+                projects = listOf(
+                    CreateProjectRequest(
+                        code = "N01BULK1",
+                        name = "Blank Team Code",
+                        team = Code(""),
+                        type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                        pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
+                        startDate = LocalDate.now(),
+                    )
+                )
+            )
+        }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
+            assertThat(it.message).isEqualTo("Validation failure")
+            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].team" && field.message == "must not be blank" }
+        }
+    }
+
+    @Test
+    fun `returns 400 when project type code is blank`() {
+        mockMvc.post("/projects") {
+            withToken()
+            json = CreateProjectsRequest(
+                projects = listOf(
+                    CreateProjectRequest(
+                        code = "N01BULK2",
+                        name = "Blank Project Type Code",
+                        team = Code(TeamGenerator.DEFAULT_UPW_TEAM.code),
+                        type = Code(""),
+                        pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
+                        startDate = LocalDate.now(),
+                    )
+                )
+            )
+        }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
+            assertThat(it.message).isEqualTo("Validation failure")
+            assertThat(it.fields).anyMatch { field -> field.field == "projects[0].type" && field.message == "must not be blank" }
         }
     }
 
@@ -143,21 +184,19 @@ class ProjectsIntegrationTest @Autowired constructor(
         val request = CreateProjectsRequest(
             projects = listOf(
                 CreateProjectRequest(
-                    providerCode = UPW_PROJECT_1.team.provider.code,
                     code = existingCode,
                     name = "Test New Project",
-                    teamCode = UPW_PROJECT_1.team.code,
-                    projectTypeCode = UPW_PROJECT_1.projectType.code,
-                    defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                    team = Code(UPW_PROJECT_1.team.code),
+                    type = Code(UPW_PROJECT_1.projectType.code),
+                    pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                     hiVisRequired = true,
                     startDate = LocalDate.now(),
                 ), CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                     code = newCode,
                     name = "ETE Community Campus - Health & Safety - Mandatory",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     hiVisRequired = true,
                     reportToSite = true,
                     startDate = LocalDate.now(),
@@ -182,7 +221,7 @@ class ProjectsIntegrationTest @Autowired constructor(
             withToken()
             json = request
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).isEqualTo("Project codes must be unique, existing projects with codes found: $existingCode")
+            assertThat(it.message).isEqualTo("Project codes must be unique, existing projects with codes found: [$existingCode]")
         }
 
         assertThat(unpaidWorkProjectRepository.count()).isEqualTo(countBefore)
@@ -197,39 +236,35 @@ class ProjectsIntegrationTest @Autowired constructor(
         val request = CreateProjectsRequest(
             projects = listOf(
                 CreateProjectRequest(
-                    providerCode = UPW_PROJECT_1.team.provider.code,
                     code = existingCode,
                     name = UPW_PROJECT_1.name,
-                    teamCode = UPW_PROJECT_1.team.code,
-                    projectTypeCode = UPW_PROJECT_1.projectType.code,
-                    defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                    team = Code(UPW_PROJECT_1.team.code),
+                    type = Code(UPW_PROJECT_1.projectType.code),
+                    pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                     startDate = LocalDate.now(),
                 ),
                 CreateProjectRequest(
-                    providerCode = UPW_PROJECT_1.team.provider.code,
                     code = existingCode,
                     name = "Project 1",
-                    teamCode = UPW_PROJECT_1.team.code,
-                    projectTypeCode = UPW_PROJECT_1.projectType.code,
-                    defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                    team = Code(UPW_PROJECT_1.team.code),
+                    type = Code(UPW_PROJECT_1.projectType.code),
+                    pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                     startDate = LocalDate.now(),
                 ),
                 CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                     code = newCode,
                     name = "ETE Community Campus - Manual Handling - Mandatory",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     startDate = LocalDate.now(),
                 ),
                 CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                     code = newCode,
                     name = "Project 2",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     startDate = LocalDate.now(),
                 ),
             )
@@ -241,7 +276,7 @@ class ProjectsIntegrationTest @Autowired constructor(
             withToken()
             json = request
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).isEqualTo("Duplicate project codes in request: $existingCode, $newCode")
+            assertThat(it.message).isEqualTo("Duplicate project codes in request: [$existingCode, $newCode]")
         }
 
         assertThat(unpaidWorkProjectRepository.count()).isEqualTo(countBefore)
@@ -254,12 +289,11 @@ class ProjectsIntegrationTest @Autowired constructor(
         val request = CreateProjectsRequest(
             projects = listOf(
                 CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                     code = newCode,
                     name = "ETE Community Campus - Manual Handling - Mandatory",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     hiVisRequired = true,
                     reportToSite = true,
                     startDate = LocalDate.now(),
@@ -303,25 +337,19 @@ class ProjectsIntegrationTest @Autowired constructor(
         val request = CreateProjectsRequest(
             projects = listOf(
                 CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
-                    pduCode = PduGenerator.SECOND_PROVIDER_PDU.code,
-                    localAdminUnitCode = LauGenerator.SECOND_PROVIDER_LOCAL_ADMIN_UNIT.code,
                     code = firstCode,
                     name = "Minimal Project",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     startDate = startDate,
                 ),
                 CreateProjectRequest(
-                    providerCode = ProviderGenerator.SECOND_PROVIDER.code,
-                    pduCode = PduGenerator.SECOND_PROVIDER_PDU.code,
-                    localAdminUnitCode = LauGenerator.SECOND_PROVIDER_LOCAL_ADMIN_UNIT.code,
                     code = secondCode,
                     name = "Fully Populated Project",
-                    teamCode = OTHER_PROVIDER_TEAM.code,
-                    projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                    defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                    team = Code(OTHER_PROVIDER_TEAM.code),
+                    type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                    pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                     hiVisRequired = true,
                     reportToSite = true,
                     startDate = startDate,
@@ -393,9 +421,23 @@ class ProjectsIntegrationTest @Autowired constructor(
         assertThat(minimalProject.beneficiaryEmailAddress).isNull()
         assertThat(minimalProject.beneficiaryUrl).isNull()
         assertThat(minimalProject.beneficiaryAdditionalDetails).isNull()
-        assertThat(minimalProject.beneficiaryContactAddress).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress).isNotNull
+        assertThat(minimalProject.beneficiaryContactAddress!!.buildingName).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.addressNumber).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.streetName).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.town).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.county).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.postcode).isNull()
+        assertThat(minimalProject.beneficiaryContactAddress!!.telephoneNumber).isNull()
         assertThat(minimalProject.locationDescription).isNull()
-        assertThat(minimalProject.placementAddress).isNull()
+        assertThat(minimalProject.placementAddress).isNotNull
+        assertThat(minimalProject.placementAddress!!.buildingName).isNull()
+        assertThat(minimalProject.placementAddress!!.addressNumber).isNull()
+        assertThat(minimalProject.placementAddress!!.streetName).isNull()
+        assertThat(minimalProject.placementAddress!!.town).isNull()
+        assertThat(minimalProject.placementAddress!!.county).isNull()
+        assertThat(minimalProject.placementAddress!!.postcode).isNull()
+        assertThat(minimalProject.placementAddress!!.telephoneNumber).isNull()
         assertThat(minimalProject.placementContactName).isNull()
         assertThat(minimalProject.placementEmailAddress).isNull()
         assertThat(minimalProject.placementUrl).isNull()
@@ -454,12 +496,11 @@ class ProjectsIntegrationTest @Autowired constructor(
             json = CreateProjectsRequest(
                 projects = listOf(
                     CreateProjectRequest(
-                        providerCode = ProviderGenerator.DEFAULT_PROVIDER.code,
                         code = "N99BULK1",
                         name = "Bad Provider Prefix",
-                        teamCode = TeamGenerator.DEFAULT_UPW_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                        team = Code(TeamGenerator.DEFAULT_UPW_TEAM.code),
+                        type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                        pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                         startDate = LocalDate.now(),
                     )
                 )
@@ -476,12 +517,11 @@ class ProjectsIntegrationTest @Autowired constructor(
             json = CreateProjectsRequest(
                 projects = listOf(
                     CreateProjectRequest(
-                        providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                         code = "N02BULK3",
                         name = "Bad Date",
-                        teamCode = OTHER_PROVIDER_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
+                        team = Code(OTHER_PROVIDER_TEAM.code),
+                        type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                        pickUpLocation = Code(SECOND_PROVIDER_OFFICE_LOCATION.code),
                         startDate = LocalDate.now(),
                         completionDate = LocalDate.now().minusDays(1),
                     )
@@ -499,86 +539,17 @@ class ProjectsIntegrationTest @Autowired constructor(
             json = CreateProjectsRequest(
                 projects = listOf(
                     CreateProjectRequest(
-                        providerCode = ProviderGenerator.SECOND_PROVIDER.code,
                         code = "N02BULK7",
                         name = "Mismatched Pickup Point",
-                        teamCode = OTHER_PROVIDER_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = DEFAULT_OFFICE_LOCATION.code,
+                        team = Code(OTHER_PROVIDER_TEAM.code),
+                        type = Code(ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code),
+                        pickUpLocation = Code(DEFAULT_OFFICE_LOCATION.code),
                         startDate = LocalDate.now(),
                     )
                 )
             )
         }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).contains("Default Pickup Point Code ${DEFAULT_OFFICE_LOCATION.code} is not assigned to team ${OTHER_PROVIDER_TEAM.code} in provider ${ProviderGenerator.SECOND_PROVIDER.code}")
-        }
-    }
-
-    @Test
-    fun `returns 400 when provider code does not exist or is not selectable`() {
-        mockMvc.post("/projects") {
-            withToken()
-            json = CreateProjectsRequest(
-                projects = listOf(
-                    CreateProjectRequest(
-                        providerCode = "ZZZ",
-                        code = "ZZZBULK8",
-                        name = "Unknown Provider",
-                        teamCode = OTHER_PROVIDER_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
-                        startDate = LocalDate.now(),
-                    )
-                )
-            )
-        }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).isEqualTo("Invalid Provider Code(s): ZZZ")
-        }
-    }
-
-    @Test
-    fun `returns 400 when pdu code is invalid for provider`() {
-        mockMvc.post("/projects") {
-            withToken()
-            json = CreateProjectsRequest(
-                projects = listOf(
-                    CreateProjectRequest(
-                        providerCode = ProviderGenerator.SECOND_PROVIDER.code,
-                        pduCode = "BADPDU",
-                        code = "N02BULK8",
-                        name = "Invalid PDU",
-                        teamCode = OTHER_PROVIDER_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
-                        startDate = LocalDate.now(),
-                    )
-                )
-            )
-        }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).isEqualTo("Invalid PDU Code BADPDU for provider ${ProviderGenerator.SECOND_PROVIDER.code}")
-        }
-    }
-
-    @Test
-    fun `returns 400 when local admin unit code is invalid for provider`() {
-        mockMvc.post("/projects") {
-            withToken()
-            json = CreateProjectsRequest(
-                projects = listOf(
-                    CreateProjectRequest(
-                        providerCode = ProviderGenerator.SECOND_PROVIDER.code,
-                        localAdminUnitCode = "BADLAU",
-                        code = "N02BULK9",
-                        name = "Invalid Local Admin Unit",
-                        teamCode = OTHER_PROVIDER_TEAM.code,
-                        projectTypeCode = ReferenceDataGenerator.ELEARNING_PROJECT_TYPE.code,
-                        defaultPickupPointCode = SECOND_PROVIDER_OFFICE_LOCATION.code,
-                        startDate = LocalDate.now(),
-                    )
-                )
-            )
-        }.andExpect { status { isBadRequest() } }.andReturn().response.contentAsJson<ErrorResponse>().also {
-            assertThat(it.message).isEqualTo("Invalid Local Admin Unit Code BADLAU for provider ${ProviderGenerator.SECOND_PROVIDER.code}")
+            assertThat(it.message).contains("Pick Up Location Code ${DEFAULT_OFFICE_LOCATION.code} is not assigned to team ${OTHER_PROVIDER_TEAM.code} in provider ${ProviderGenerator.SECOND_PROVIDER.code}")
         }
     }
 }

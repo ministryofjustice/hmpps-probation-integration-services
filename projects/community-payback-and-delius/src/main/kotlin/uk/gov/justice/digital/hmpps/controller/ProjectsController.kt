@@ -25,7 +25,7 @@ class ProjectsController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createProjects(@RequestBody request: CreateProjectsRequest) = projectService.createProjects(request)
+    fun createProjects(@Valid @RequestBody request: CreateProjectsRequest) = projectService.createProjects(request)
 
     @GetMapping(value = ["/{projectCode}/appointments/{appointmentId}"])
     fun getAppointment(

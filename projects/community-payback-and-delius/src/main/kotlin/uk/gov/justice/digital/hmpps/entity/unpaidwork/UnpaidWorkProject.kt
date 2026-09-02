@@ -113,7 +113,7 @@ class UnpaidWorkProject(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "selectable")
-    val selectable: Boolean = true,
+    val selectable: Boolean = false,
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
