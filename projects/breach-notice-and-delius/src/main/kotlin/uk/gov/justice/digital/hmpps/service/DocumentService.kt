@@ -60,7 +60,7 @@ class DocumentService(
 
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): Document {
         val urn = breachNoticeUrn(UUID.fromString(event.breachNoticeId))
-        return documentRepository.findByExternalReference(urn)?.also {
+        return documentRepository.findByExternalReferenceAndSoftDeletedFalse(urn)?.also {
             audit["documentId"] = it.id
             audit["alfrescoDocumentId"] = it.alfrescoId
             audit["entityId"] = it.primaryKeyId
@@ -71,7 +71,11 @@ class DocumentService(
 
     private fun updateParent(document: Document) {
         val hasOtherDocuments = documentRepository
-            .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
+            .existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                document.tableName,
+                document.primaryKeyId,
+                document.id
+            )
 
         // update deploy/database/access.yml if new tables are included
         val query = when (document.tableName) {

@@ -22,6 +22,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DocumentGenerator.UPW_BREACH_NOTICE)
         save(DocumentGenerator.UNSENTENCED_BREACH_NOTICE)
         save(DocumentGenerator.DELETED_BREACH_NOTICE)
+        save(DocumentGenerator.SOFT_DELETED_BREACH_NOTICE)
         save(DocumentGenerator.TERMINATED_EVENT_BREACH_NOTICE)
         lao()
         pssData()
