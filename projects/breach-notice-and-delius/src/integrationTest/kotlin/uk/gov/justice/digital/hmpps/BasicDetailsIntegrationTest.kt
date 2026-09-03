@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.BREACH_NOTICE_ID
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.SOFT_DELETED_BREACH_NOTICE_ID
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -61,6 +62,18 @@ internal class BasicDetailsIntegrationTest : BaseIntegrationTest() {
     fun `can retrieve crn from breach notice id successfully`() {
         val person = PersonGenerator.DEFAULT_PERSON
         val response = mockMvc.get("/case/$BREACH_NOTICE_ID") {
+            withToken()
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(person.crn)
+    }
+
+    @Test
+    fun `can retrieve crn from soft deleted breach notice id successfully`() {
+        val person = PersonGenerator.DEFAULT_PERSON
+        val response = mockMvc.get("/case/$SOFT_DELETED_BREACH_NOTICE_ID") {
             withToken()
         }
             .andExpect { status { is2xxSuccessful() } }
