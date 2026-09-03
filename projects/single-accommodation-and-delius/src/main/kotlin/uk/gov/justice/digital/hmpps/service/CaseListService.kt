@@ -78,7 +78,11 @@ class CaseListService(
     private fun getCaseByAccess(crn: String, access: CaseAccess?): Case {
         val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val caseLimitedAccess =
-            userAccessService.checkLimitedAccessFor(listOf(access?.crn ?: crn)).access.single { it.crn == access?.crn ?: crn }
+            userAccessService.checkLimitedAccessFor(
+                listOf(
+                    access?.crn ?: crn
+                )
+            ).access.single { it.crn == access?.crn ?: crn }
                 .isLimitedAccess()
         return person.toCase(
             access,
