@@ -92,8 +92,5 @@ interface PersonalCircumstanceRepository : JpaRepository<PersonalCircumstance, L
         order by pc.startDate
         """
     )
-    fun findByCrnOrderByStartDate(
-        @Param("crn") crn: String,
-        @Param("activeOnly") activeOnly: Boolean
-    ): List<PersonalCircumstance>
+    fun findByCrnOrderByStartDate(crn: String, activeOnly: Boolean): List<PersonalCircumstance>
 }
