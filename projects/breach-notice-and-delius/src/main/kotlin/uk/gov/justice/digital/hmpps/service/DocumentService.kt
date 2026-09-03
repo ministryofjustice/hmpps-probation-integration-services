@@ -71,7 +71,11 @@ class DocumentService(
 
     private fun updateParent(document: Document) {
         val hasOtherDocuments = documentRepository
-            .existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(document.tableName, document.primaryKeyId, document.id)
+            .existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                document.tableName,
+                document.primaryKeyId,
+                document.id
+            )
 
         // update deploy/database/access.yml if new tables are included
         val query = when (document.tableName) {
