@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import jakarta.persistence.EntityManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
@@ -11,6 +10,7 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.CourtReportRepository
 import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.Document.Companion.psrUrn
@@ -30,7 +30,6 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val auditUserService: AuditUserService,
-    private val entityManager: EntityManager,
     private val courtReportRepository: CourtReportRepository,
 ) : AuditableService(auditedInteractionService) {
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
@@ -43,8 +42,7 @@ class DocumentService(
         document.createdDatetime = ZonedDateTime.now()
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
-        val previousAlfrescoId = document.alfrescoId
-        alfrescoUploadClient.delete(previousAlfrescoId)
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
         document.alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file)).id
         documentRepository.save(document)
         updateCourtReport(document.courtReport.id, event.occurredAt)
