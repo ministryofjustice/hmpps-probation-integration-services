@@ -33,6 +33,10 @@ object DocumentGenerator {
     val TERMINATED_EVENT_BREACH_NOTICE =
         generateDocument(TERMINATED_EVENT_BREACH_NOTICE_ID, TERMINATED_EVENT.id, "EVENT")
 
+    val SOFT_DELETED_BREACH_NOTICE_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000008")
+    val SOFT_DELETED_BREACH_NOTICE =
+        generateDocument(SOFT_DELETED_BREACH_NOTICE_ID, DELETED_DOCUMENT_APPOINTMENT.id, "CONTACT", softDeleted = true)
+
     fun generateDocument(
         breachNoticeUuid: UUID,
         primaryKeyId: Long,
