@@ -40,5 +40,6 @@ class CaseController(
     @GetMapping("/{crn}/personal-circumstances")
     fun getPersonalCircumstances(
         @PathVariable crn: String,
-    ) = caseSummaryService.getPersonalCircumstances(crn)
+        @RequestParam(required = false, defaultValue = "false") activeOnly: Boolean
+    ) = caseSummaryService.getPersonalCircumstances(crn, activeOnly)
 }
