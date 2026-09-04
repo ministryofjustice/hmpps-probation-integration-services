@@ -79,7 +79,7 @@ class RegisterType(
         const val SUICIDE_SELFHARM_CODE = "ALSH" // Suicide or Self-Harm
         const val RISK_TO_CHILDREN_CODE = "RCHD" // Risk to Children
         const val RISK_TO_KNOWN_ADULT_CODE = "REG15" // Risk to Known Adult
-        const val RISK_TO_PRISONER_CODE = "REG16" // Risk to Known Adult
+        const val RISK_TO_PRISONER_CODE = "REG16" // Risk to Prisoner
         const val RISK_TO_PUBLIC_CODE = "REG17" // Risk to Public
         const val RISK_TO_STAFF_CODE = "AV2S" // Risk to Staff
     }
