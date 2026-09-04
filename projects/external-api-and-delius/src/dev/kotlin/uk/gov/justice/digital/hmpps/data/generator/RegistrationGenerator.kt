@@ -13,6 +13,13 @@ object RegistrationGenerator {
     val SUICIDE_SELFHARM_TYPE = generateType(RegisterType.SUICIDE_SELFHARM_CODE)
     val WARRANT_SUMMONS_TYPE = generateType(RegisterType.WARRANT_SUMMONS_CODE)
     val MAPPA_TYPE = generateType(RegisterType.MAPPA_CODE)
+
+    val RISK_TO_CHILDREN_TYPE = generateType(RegisterType.RISK_TO_CHILDREN_CODE)
+    val RISK_TO_KNOWN_ADULT_TYPE = generateType(RegisterType.RISK_TO_KNOWN_ADULT_CODE)
+    val RISK_TO_PRISONER_TYPE = generateType(RegisterType.RISK_TO_PRISONER_CODE)
+    val RISK_TO_PUBLIC_TYPE = generateType(RegisterType.RISK_TO_PUBLIC_CODE)
+    val RISK_TO_STAFF_TYPE = generateType(RegisterType.RISK_TO_STAFF_CODE)
+
     val CATEGORIES = Category.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val LEVELS = Level.entries.map { generateReferenceData(it.name) }.associateBy { it.code }
     val INVALID_MAPPA_LEVEL = generateReferenceData("L1", "Level 1")
