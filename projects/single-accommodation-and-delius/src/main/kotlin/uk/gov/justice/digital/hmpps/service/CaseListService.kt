@@ -49,7 +49,7 @@ class CaseListService(
 
         val responsibleCases = cases.map { person ->
             val access = checkNotNull(userLimitedAccess[person.crn]) { "Access not found for CRN ${person.crn}" }
-            val isLimitedAccessCase = caseLimitedAccess[person.crn] ?: false
+            val isLimitedAccessCase = caseLimitedAccess[person.crn]
             person.toCase(access, expectedReleaseDates[person.id], isLimitedAccessCase)
         }
 
@@ -69,10 +69,21 @@ class CaseListService(
     } else throw NotFoundException("Team", "code", teamCode)
 
     fun getCase(username: String, crn: String): Case {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val access = userAccessService.caseAccessFor(username, crn)
+        return getCaseByAccess(crn, access)
+    }
+
+    fun getCase(crn: String) = getCaseByAccess(crn, access = null)
+
+    private fun getCaseByAccess(crn: String, access: CaseAccess?): Case {
+        val person = personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val caseLimitedAccess =
-            userAccessService.checkLimitedAccessFor(listOf(crn)).access.single { it.crn == crn }.isLimitedAccess()
+            userAccessService.checkLimitedAccessFor(
+                listOf(
+                    access?.crn ?: crn
+                )
+            ).access.single { it.crn == access?.crn ?: crn }
+                .isLimitedAccess()
         return person.toCase(
             access,
             keyDateRepository.findExpectedReleaseDates(person.id),
@@ -83,9 +94,9 @@ class CaseListService(
     private fun CaseAccess.isLimitedAccess() = this.userExcluded || this.userRestricted
 
     private fun Person.toCase(
-        access: CaseAccess,
+        access: CaseAccess?,
         expectedReleaseDate: LocalDate?,
-        limitedAccess: Boolean,
+        limitedAccess: Boolean?,
     ) = Case(
         crn = crn,
         name = Name(
@@ -113,10 +124,10 @@ class CaseListService(
         roshLevel = roshRegistrations.firstOrNull { it.type.code in RegisterType.ROSH_CODES }?.type
             ?.let { CodeDescription(it.code, it.description) },
         expectedReleaseDate = expectedReleaseDate,
-        userExcluded = access.userExcluded,
-        userRestricted = access.userRestricted,
-        exclusionMessage = access.exclusionMessage,
-        restrictionMessage = access.restrictionMessage,
-        limitedAccess = limitedAccess,
+        userExcluded = access?.userExcluded,
+        userRestricted = access?.userRestricted,
+        exclusionMessage = access?.exclusionMessage,
+        restrictionMessage = access?.restrictionMessage,
+        limitedAccess = if (limitedAccess == true) true else null,
     )
 }
