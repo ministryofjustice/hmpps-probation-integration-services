@@ -125,7 +125,8 @@ class DocumentUploadIntegrationTest @Autowired constructor(
     inner class AllSupportedFormats {
         @Test
         fun `doc formats`() {
-            val docFormats = listOf("doc", "docx", "rtf", "txt", "dot", "dotm", "docm", "odt", "xml", "wpd", "wri", "wps")
+            val docFormats =
+                listOf("doc", "docx", "rtf", "txt", "dot", "dotm", "docm", "odt", "xml", "wpd", "wri", "wps")
             docFormats.forEach { ext ->
                 documentService.validateFile("test.$ext", testFileContent)
             }
