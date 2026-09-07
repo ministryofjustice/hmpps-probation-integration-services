@@ -3,13 +3,11 @@ package uk.gov.justice.digital.hmpps.controller
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
+import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
 import java.time.LocalDate
 import java.util.UUID
@@ -18,7 +16,8 @@ import java.util.UUID
 @RequestMapping("/appointments")
 @PreAuthorize("hasRole('PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL')")
 class AppointmentsController(
-    private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService
+    private val communityPaybackAppointmentsService: CommunityPaybackAppointmentsService,
+    private val documentService: DocumentService
 ) {
     @GetMapping
     fun getAppointments(
@@ -47,4 +46,24 @@ class AppointmentsController(
     @DeleteMapping("/{reference:[0-9a-fA-F-]{36}}")
     fun deleteAppointment(@PathVariable reference: UUID) =
         communityPaybackAppointmentsService.deleteAppointment(reference)
+
+    @PostMapping("/{appointmentId}/documents")
+    fun uploadAppointmentDocument(
+        @PathVariable appointmentId: Long,
+        @RequestParam file: MultipartFile
+    ): DocumentUploadResponse {
+        val appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId)
+        val filename = file.originalFilename ?: "document"
+        val document = documentService.uploadAppointmentDocument(
+            appointment = appointment,
+            filename = filename,
+            file = file.bytes,
+            userId = 0L
+        )
+        return DocumentUploadResponse(
+            documentId = document.id,
+            filename = document.name,
+            alfrescoId = document.alfrescoId
+        )
+    }
 }
