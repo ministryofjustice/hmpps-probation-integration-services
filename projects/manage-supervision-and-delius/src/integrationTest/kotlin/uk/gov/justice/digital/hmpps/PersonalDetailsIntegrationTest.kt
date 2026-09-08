@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.user.UserUpdated
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -228,6 +229,29 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.pnc, equalTo(person.pnc))
         assertThat(res.dateOfBirth, equalTo(person.dateOfBirth))
         assertThat(res.name, equalTo(Name(person.forename, person.secondName, person.surname)))
+    }
+
+    @Test
+    fun `person updated details are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.get("/personal-details/${person.crn}/updated") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserUpdated>()
+
+        assertThat(res.username.isNotBlank()).isTrue()
+        assertThat(res.name.forename.isNotBlank()).isTrue()
+        assertThat(res.name.surname.isNotBlank()).isTrue()
+        assertThat(res.updatedDateTime).isNotNull()
+    }
+
+    @Test
+    fun `person updated details not found`() {
+        mockMvc.get("/personal-details/X999999/updated") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test

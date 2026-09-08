@@ -11,10 +11,12 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
+import uk.gov.justice.digital.hmpps.api.model.user.UserUpdated
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
@@ -392,6 +394,17 @@ class PersonalDetailsService(
                     )
                 )
             }
+        )
+    }
+
+    fun getUpdated(crn: String): UserUpdated {
+        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
+        val updatedDateTime = person.lastUpdatedDatetime
+        val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUser?.id?.toString() ?: "null")
+        return UserUpdated(
+            username = user.username,
+            name = Name(forename = user.forename, surname = user.surname),
+            updatedDateTime = updatedDateTime
         )
     }
 }
