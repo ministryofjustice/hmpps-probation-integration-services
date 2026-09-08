@@ -64,11 +64,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
 
     fun findByExternalReferenceAndSoftDeletedFalse(urn: String): Document?
 
-    fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
-
     fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(tableName: String, primaryKeyId: Long, id: Long): Boolean
-
-    fun findByTableNameAndPrimaryKeyIdIn(tableName: String, primaryKeyId: List<Long>): List<Document>
 
     fun findByTableNameAndPrimaryKeyIdInAndSoftDeletedFalse(tableName: String, primaryKeyId: List<Long>): List<Document>
 
