@@ -101,6 +101,10 @@ class Person(
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null,
 
+    @Column(name = "allow_sms")
+    @Convert(converter = YesNoConverter::class)
+    val smsAllowed: Boolean? = null,
+
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
@@ -134,6 +138,15 @@ interface PersonSummaryEntity {
 }
 
 interface PersonRepository : JpaRepository<Person, Long> {
+
+    @Query(
+        value = """
+            select p.smsAllowed as allowSms
+            from Person p
+            where p.crn = :crn 
+        """
+    )
+    fun findAllowSmsByCrn(crn: String): Boolean?
 
     @EntityGraph(attributePaths = ["gender", "religion", "language", "sexualOrientation", "genderIdentity", "lastUpdatedUser"])
     fun findByCrn(crn: String): Person?
