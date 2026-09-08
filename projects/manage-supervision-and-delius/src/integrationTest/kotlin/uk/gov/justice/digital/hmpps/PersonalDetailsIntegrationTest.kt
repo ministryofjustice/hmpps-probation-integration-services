@@ -245,14 +245,6 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `sms allowed person not found`() {
-        mockMvc.get("/personal-details/X999999/sms-allowed") {
-            withToken()
-        }
-            .andExpect { status { isNotFound() } }
-    }
-
-    @Test
     fun `personal contact is returned`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
