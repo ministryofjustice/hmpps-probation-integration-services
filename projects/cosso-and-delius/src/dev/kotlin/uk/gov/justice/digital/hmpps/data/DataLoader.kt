@@ -42,6 +42,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             DocumentGenerator.MISSING_COURT_APPEARANCE_DOCUMENT,
             DocumentGenerator.MISSING_DISPOSAL_DOCUMENT,
             DocumentGenerator.TERMINATED_EVENT_DOCUMENT,
+            DocumentGenerator.SOFT_DELETED_DOCUMENT,
             DocumentGenerator.DEFAULT_COSSO_DELETED,
             DocumentGenerator.DEFAULT_COSSO_CREATED,
             ContactGenerator.DEFAULT_ENFORCEABLE_CONTACT,
