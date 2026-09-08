@@ -398,10 +398,10 @@ class PersonalDetailsService(
     }
 
     fun getSmsAllowed(crn: String): SmsAllowed {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
+        val sms = personRepository.findAllowSmsByCrn(crn)
         return SmsAllowed(
             crn = crn,
-            smsAllowed = person.smsAllowed
+            smsAllowed = sms
         )
     }
 }

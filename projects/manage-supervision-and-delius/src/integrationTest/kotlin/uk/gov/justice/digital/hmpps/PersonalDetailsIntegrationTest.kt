@@ -241,7 +241,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<SmsAllowed>()
 
         assertThat(res.crn, equalTo(person.crn))
-        assertThat(res.smsAllowed, equalTo(person.smsAllowed))
+        assertThat(res.smsAllowed, equalTo(false))
     }
 
     @Test
