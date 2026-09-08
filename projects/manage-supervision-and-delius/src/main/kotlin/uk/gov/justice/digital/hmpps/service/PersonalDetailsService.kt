@@ -102,7 +102,7 @@ class PersonalDetailsService(
     private fun updatePersonContact(person: Person): Person =
         transactionTemplate.execute {
             updatePerson(person)
-        }!!
+        }
 
     private fun updatePersonAddress(personAddress: PersonAddress): PersonAddress =
         transactionTemplate.execute {
@@ -113,7 +113,7 @@ class PersonalDetailsService(
             }
 
             updatedAddress
-        }!!
+        }
 
     private fun createMainAddress(personAddress: PersonAddress) =
         audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->

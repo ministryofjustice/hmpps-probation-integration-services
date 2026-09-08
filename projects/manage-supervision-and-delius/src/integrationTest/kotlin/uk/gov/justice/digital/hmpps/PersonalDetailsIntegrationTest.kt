@@ -602,8 +602,9 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
                 .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email")
                 .isEqualTo(expectedResponse)
         }
+    }
 
-        companion object {
+        companion object{
             @JvmStatic
             fun personContactDetails() = listOf(
                 PersonContactEditRequest(),
