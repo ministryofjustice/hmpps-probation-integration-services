@@ -11,10 +11,12 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
+import uk.gov.justice.digital.hmpps.api.model.user.UserUpdated
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
@@ -100,7 +102,7 @@ class PersonalDetailsService(
     private fun updatePersonContact(person: Person): Person =
         transactionTemplate.execute {
             updatePerson(person)
-        }!!
+        }
 
     private fun updatePersonAddress(personAddress: PersonAddress): PersonAddress =
         transactionTemplate.execute {
@@ -111,7 +113,7 @@ class PersonalDetailsService(
             }
 
             updatedAddress
-        }!!
+        }
 
     private fun createMainAddress(personAddress: PersonAddress) =
         audit(BusinessInteractionCode.INSERT_ADDRESS) { audit ->
@@ -392,6 +394,16 @@ class PersonalDetailsService(
                     )
                 )
             }
+        )
+    }
+
+    fun getUpdated(crn: String): UserUpdated {
+        val person = personRepository.getPerson(crn)
+        val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUserId)
+        return UserUpdated(
+            username = user.username,
+            name = Name(forename = user.forename, surname = user.surname),
+            updatedDateTime = person.lastUpdatedDatetime
         )
     }
 }

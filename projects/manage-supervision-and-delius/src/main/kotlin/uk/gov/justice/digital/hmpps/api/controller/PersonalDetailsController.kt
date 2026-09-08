@@ -110,4 +110,10 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
         @PathVariable noteId: Int
     ) =
         personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
+
+    @GetMapping("/updated")
+    @Operation(summary = "Get the last updated timestamp and user details for a person")
+    fun getPersonUpdated(
+        @PathVariable crn: String
+    ) = personalDetailsService.getUpdated(crn)
 }
