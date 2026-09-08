@@ -64,6 +64,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(EventGenerator.TERMINATED_EVENT)
         save(NsiGenerator.DEFAULT_NSI)
         save(DocumentGenerator.DEFAULT_SUICIDE_RISK_FORM)
+        save(DocumentGenerator.SOFT_DELETED_SUICIDE_RISK_FORM)
         save(DocumentGenerator.EVENT_CONTACT_SUICIDE_RISK_FORM)
         save(DocumentGenerator.EVENT_LEVEL_SUICIDE_RISK_FORM)
         save(DocumentGenerator.NSI_SUICIDE_RISK_FORM)

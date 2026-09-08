@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import jakarta.persistence.*
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -10,7 +9,6 @@ import java.util.*
 
 @Entity
 @Table(name = "document")
-@SQLRestriction("soft_deleted = 0")
 class Document(
 
     @ManyToOne
@@ -64,9 +62,15 @@ class Document(
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun findByExternalReference(urn: String): Document?
 
+    fun findByExternalReferenceAndSoftDeletedFalse(urn: String): Document?
+
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
+    fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(tableName: String, primaryKeyId: Long, id: Long): Boolean
+
     fun findByTableNameAndPrimaryKeyIdIn(tableName: String, primaryKeyId: List<Long>): List<Document>
+
+    fun findByTableNameAndPrimaryKeyIdInAndSoftDeletedFalse(tableName: String, primaryKeyId: List<Long>): List<Document>
 
     @Query(
         """
