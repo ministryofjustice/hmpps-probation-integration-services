@@ -403,9 +403,9 @@ class PersonalDetailsService(
         return SmsAllowed(
             crn = crn,
             smsAllowed = sms
-          )
+        )
     }
-    
+
     fun getUpdated(crn: String): UserUpdated {
         val person = personRepository.getPerson(crn)
         val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUserId)

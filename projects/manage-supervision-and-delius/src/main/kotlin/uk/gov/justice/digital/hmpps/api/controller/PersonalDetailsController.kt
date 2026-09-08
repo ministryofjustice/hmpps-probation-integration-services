@@ -116,7 +116,7 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     fun getSmsAllowed(
         @PathVariable crn: String,
     ) = personalDetailsService.getSmsAllowed(crn)
-    
+
     @GetMapping("/updated")
     @Operation(summary = "Get the last updated timestamp and user details for a person")
     fun getPersonUpdated(
