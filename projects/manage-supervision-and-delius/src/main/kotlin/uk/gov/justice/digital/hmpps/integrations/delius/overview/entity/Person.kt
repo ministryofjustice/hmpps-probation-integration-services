@@ -101,6 +101,10 @@ class Person(
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null,
 
+    @Column(name = "allow_sms")
+    @Convert(converter = YesNoConverter::class)
+    val smsAllowed: Boolean? = null,
+
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 

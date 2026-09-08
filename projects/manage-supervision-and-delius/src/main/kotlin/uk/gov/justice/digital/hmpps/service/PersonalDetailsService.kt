@@ -11,10 +11,12 @@ import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Disability
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Document
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.Provision
+import uk.gov.justice.digital.hmpps.api.model.sms.SmsAllowed
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.*
@@ -392,6 +394,14 @@ class PersonalDetailsService(
                     )
                 )
             }
+        )
+    }
+
+    fun getSmsAllowed(crn: String): SmsAllowed {
+        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
+        return SmsAllowed(
+            crn = crn,
+            smsAllowed = person.smsAllowed
         )
     }
 }

@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.sms.SmsAllowed
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -228,6 +229,27 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.pnc, equalTo(person.pnc))
         assertThat(res.dateOfBirth, equalTo(person.dateOfBirth))
         assertThat(res.name, equalTo(Name(person.forename, person.secondName, person.surname)))
+    }
+
+    @Test
+    fun `sms allowed details are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.get("/personal-details/${person.crn}/sms-allowed") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SmsAllowed>()
+
+        assertThat(res.crn, equalTo(person.crn))
+        assertThat(res.smsAllowed, equalTo(person.smsAllowed))
+    }
+
+    @Test
+    fun `sms allowed person not found`() {
+        mockMvc.get("/personal-details/X999999/sms-allowed") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
     }
 
     @Test

@@ -110,4 +110,10 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
         @PathVariable noteId: Int
     ) =
         personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
+
+    @GetMapping("/sms-allowed")
+    @Operation(summary = "Displays whether SMS contact allowed with the person")
+    fun getSmsAllowed(
+        @PathVariable crn: String,
+    ) = personalDetailsService.getSmsAllowed(crn)
 }
