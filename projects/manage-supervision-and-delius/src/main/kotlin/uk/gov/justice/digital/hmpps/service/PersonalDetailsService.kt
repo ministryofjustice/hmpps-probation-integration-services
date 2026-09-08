@@ -398,9 +398,7 @@ class PersonalDetailsService(
     }
 
     fun getUpdated(crn: String): UserUpdated {
-        val person = personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
-        val updatedDateTime = person.lastUpdatedDatetime
-        val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUser?.id?.toString() ?: "null")
+        val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUserId)
         return UserUpdated(
             username = user.username,
             name = Name(forename = user.forename, surname = user.surname),

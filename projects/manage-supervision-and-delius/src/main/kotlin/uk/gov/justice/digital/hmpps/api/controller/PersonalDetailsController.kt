@@ -112,8 +112,8 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
         personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
 
     @GetMapping("/updated")
-    @Operation(summary = "Get the last updated date and time and name for person")
-    fun getPersonUpdatedNameAndDateAndTime(
-        @PathVariable crn: String,
+    @Operation(summary = "Get the last updated timestamp and user details for a person")
+    fun getPersonUpdated(
+        @PathVariable crn: String
     ) = personalDetailsService.getUpdated(crn)
 }

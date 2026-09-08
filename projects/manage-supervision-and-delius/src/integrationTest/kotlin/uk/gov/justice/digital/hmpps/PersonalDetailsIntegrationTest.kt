@@ -240,11 +240,9 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserUpdated>()
 
-        assertThat(res.username.isNotBlank()).isTrue()
-        assertThat(res.name.forename.isNotBlank()).isTrue()
-        assertThat(res.name.surname.isNotBlank()).isTrue()
+        assertThat(res.username, equalTo(AUDIT_USER.username))
+        assertThat(res.name, equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname)))
         assertThat(res.updatedDateTime).isNotNull()
-    }
 
     @Test
     fun `person updated details not found`() {
