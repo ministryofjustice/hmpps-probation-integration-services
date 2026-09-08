@@ -139,7 +139,8 @@ interface PersonSummaryEntity {
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
-    @Query(value = """
+    @Query(
+        value = """
             select p.smsAllowed as allowSms
             from Person p
             where p.crn = :crn 
