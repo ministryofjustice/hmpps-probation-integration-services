@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
-import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -10,7 +9,6 @@ import java.util.*
 
 @Entity
 @Table(name = "document")
-@SQLRestriction("soft_deleted = 0")
 class DocumentEntity(
     @Id
     @Column(name = "document_id")
@@ -100,9 +98,15 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     )
     fun findEventIdFromDocument(urn: String): Long?
 
-    fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
+    fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+        tableName: String,
+        primaryKeyId: Long,
+        id: Long
+    ): Boolean
 
     fun findByExternalReference(urn: String): DocumentEntity?
+
+    fun findByExternalReferenceAndSoftDeletedFalse(urn: String): DocumentEntity?
 
     @Query(
         """

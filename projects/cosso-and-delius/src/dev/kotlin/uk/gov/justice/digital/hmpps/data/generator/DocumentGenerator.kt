@@ -12,6 +12,7 @@ object DocumentGenerator {
     val MISSING_COURT_APPEARANCE_DOCUMENT_UUID = UUID.randomUUID()
     val MISSING_DISPOSAL_DOCUMENT_UUID = UUID.randomUUID()
     val TERMINATED_EVENT_DOCUMENT_UUID = UUID.randomUUID()
+    val SOFT_DELETED_DOCUMENT_UUID = UUID.randomUUID()
     val DEFAULT_DOCUMENT = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         person = PersonGenerator.DEFAULT_PERSON,
@@ -117,6 +118,22 @@ object DocumentGenerator {
         softDeleted = false,
         alfrescoId = "00000000-0000-0000-0000-000000000003",
         name = "test.pdf",
+        status = "Y",
+        workInProgress = "N",
+        lastUpdatedUserId = UserGenerator.DEFAULT_PROBATION_USER.id,
+        lastSaved = ZonedDateTime.now(),
+        createdDatetime = ZonedDateTime.now()
+    )
+
+    val SOFT_DELETED_DOCUMENT = DocumentEntity(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.DEFAULT_PERSON,
+        primaryKeyId = 999999,
+        tableName = "CONTACT",
+        externalReference = DocumentEntity.cossoBreachNoticeUrn(SOFT_DELETED_DOCUMENT_UUID),
+        softDeleted = true,
+        alfrescoId = UUID.randomUUID().toString(),
+        name = "soft-deleted-test.pdf",
         status = "Y",
         workInProgress = "N",
         lastUpdatedUserId = UserGenerator.DEFAULT_PROBATION_USER.id,
