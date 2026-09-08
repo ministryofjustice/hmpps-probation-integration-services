@@ -66,7 +66,11 @@ interface DocumentRepository : JpaRepository<Document, Long> {
 
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
-    fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(tableName: String, primaryKeyId: Long, id: Long): Boolean
+    fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+        tableName: String,
+        primaryKeyId: Long,
+        id: Long
+    ): Boolean
 
     fun findByTableNameAndPrimaryKeyIdIn(tableName: String, primaryKeyId: List<Long>): List<Document>
 

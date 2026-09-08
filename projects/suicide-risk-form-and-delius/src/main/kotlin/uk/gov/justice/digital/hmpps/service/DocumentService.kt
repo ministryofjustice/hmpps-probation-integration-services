@@ -74,8 +74,9 @@ class DocumentService(
     }
 
     fun listDocumentsForContacts(contactIds: List<Long>): ContactDocumentResponse {
-        val contactsToDocs = documentRepository.findByTableNameAndPrimaryKeyIdInAndSoftDeletedFalse("CONTACT", contactIds)
-            .groupBy { it.primaryKeyId }
+        val contactsToDocs =
+            documentRepository.findByTableNameAndPrimaryKeyIdInAndSoftDeletedFalse("CONTACT", contactIds)
+                .groupBy { it.primaryKeyId }
 
         val contactDocs = contactIds
             .map {
@@ -110,7 +111,11 @@ class DocumentService(
 
     private fun updateParent(document: Document) {
         val hasOtherDocuments = documentRepository
-            .existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(document.tableName, document.primaryKeyId, document.id)
+            .existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                document.tableName,
+                document.primaryKeyId,
+                document.id
+            )
 
         // update deploy/database/access.yml if new tables are included
         val query = when (document.tableName) {
