@@ -399,7 +399,7 @@ class PersonalDetailsService(
 
     fun getUpdated(crn: String): UserUpdated {
         val person = personRepository.getPerson(crn)
-        val user = person. lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUserId)
+        val user = person.lastUpdatedUser.orNotFoundBy("userId", person.lastUpdatedUserId)
         return UserUpdated(
             username = user.username,
             name = Name(forename = user.forename, surname = user.surname),
