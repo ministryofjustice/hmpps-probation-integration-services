@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTie
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3TierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -40,7 +39,6 @@ class TierUpdateService(
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val optimisationTables: OptimisationTables,
-    private val personWithV3TierRepository: PersonWithV3TierRepository,
     private val telemetryService: TelemetryService,
 ) {
     fun updateTier(crn: String, tierCalculation: TierCalculationV2) {
@@ -75,7 +73,7 @@ class TierUpdateService(
     }
 
     fun updateV3TierColumn(crn: String, tierCalculation: TierCalculationV3) {
-        val person = personWithV3TierRepository.findByCrnAndSoftDeletedFalse(crn).orIgnore { "PersonNotFound" }
+        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn).orIgnore { "PersonNotFound" }
         val tier = referenceDataRepository.getV3Tier(tierCalculation.tierScore, tierCalculation.provisional)
         val telemetry = mapOf(
             "crn" to person.crn,
@@ -87,7 +85,7 @@ class TierUpdateService(
             telemetryService.trackEvent("UnchangedV3TierIgnored", telemetry)
         } else {
             person.v3TierId = tier.id
-            personWithV3TierRepository.save(person)
+            personRepository.save(person)
             telemetryService.trackEvent("TierV3UpdateSuccess", telemetry)
         }
     }
