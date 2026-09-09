@@ -244,6 +244,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.username, equalTo(AUDIT_USER.username))
         assertThat(res.name, equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname)))
         assertThat(res.updatedDateTime).isNotNull()
+    }
 
         @Test
         fun `person updated details not found`() {
@@ -603,7 +604,6 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
                 .usingRecursiveComparison().ignoringFields("telephoneNumber", "mobileNumber", "email")
                 .isEqualTo(expectedResponse)
         }
-    }
 
     companion object {
         @JvmStatic
@@ -617,7 +617,7 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         )
     }
 
-    @Test
+        @Test
     @Transactional
     fun `when first main address with no notes - address is created (with delius usertoken)`() {
 
