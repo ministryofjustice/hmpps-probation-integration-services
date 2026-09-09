@@ -411,7 +411,9 @@ class PersonalDetailsService(
     fun updatePersonContactAllowSms(crn: String, smsAllowed: Boolean): Boolean {
         val person = personRepository.getPerson(crn)
         person.smsAllowed = smsAllowed
-        return updatePerson(person).smsAllowed == smsAllowed
+        val updated = updatePersonContact(person)
+        notifier.caseUpdated(updated)
+        return updated.smsAllowed!!
     }
 }
 
