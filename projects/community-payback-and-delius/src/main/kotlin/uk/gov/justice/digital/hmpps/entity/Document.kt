@@ -47,8 +47,10 @@ class Document(
     val softDeleted: Boolean,
 
     @Id
+    @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
+    @uk.gov.justice.digital.hmpps.jpa.GeneratedId(generator = "document_id_generator")
     @Column(name = "document_id")
-    val id: Long,
+    val id: Long = 0,
 ) {
     companion object {
         const val COMMUNITY_PAYBACK_URN_PREFIX: String = "urn:hmpps:community-payback:appointment-document:"

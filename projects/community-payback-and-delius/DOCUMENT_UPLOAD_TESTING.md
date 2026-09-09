@@ -5,15 +5,12 @@
 
 ## Executive Summary
 
-A comprehensive test suite with **22 integration tests** for the document upload feature in the Community Payback service has been successfully implemented and is **fully passing**.
+A test suite covering the document upload feature has been added.
 
 ### Quick Statistics
 - **Total Tests**: 22
-- **Test Status**: ✅ ALL PASSING  
-- **Build Status**: ✅ BUILD SUCCESSFUL
-- **Execution Time**: ~537ms
-- **Pass Rate**: 100%
-
+- **Scope**: File extension validation (via `DocumentService.validateFile()`)
+- **Notes**: This document intentionally does not assert CI/build status in-repo documentation.
 ---
 
 ## Test Coverage Overview
