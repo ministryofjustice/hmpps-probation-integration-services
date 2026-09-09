@@ -29,6 +29,9 @@ class Disposal(
     @OneToMany(mappedBy = "disposal")
     val requirements: List<RequirementEntity>,
 
+    @Column(name = "disposal_date")
+    val startDate: LocalDate,
+
     val terminationDate: LocalDate? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
