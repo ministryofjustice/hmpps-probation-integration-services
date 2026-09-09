@@ -255,6 +255,20 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `update sms allowed for person`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.post("/personal-details/${person.crn}/contact/allow-sms?smsAllowed=true") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Boolean>()
+        assertThat(res, equalTo(true))
+        mockMvc.post("/personal-details/${person.crn}/contact/allow-sms?smsAllowed=false") {
+            withToken()
+        }
+    }
+
+    @Test
     fun `personal contact is returned`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
