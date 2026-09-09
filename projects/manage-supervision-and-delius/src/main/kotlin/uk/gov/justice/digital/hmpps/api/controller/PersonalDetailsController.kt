@@ -27,8 +27,8 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     @PostMapping("/contact/allow-sms")
     @WithDeliusUser
     @Operation(summary = "Update personal allow sms flag")
-    fun updatePersonalContactAllowSms(@PathVariable crn: String, @RequestParam value: Boolean) =
-        personalDetailsService.updatePersonContactAllowSms(crn, value)
+    fun updatePersonalContactAllowSms(@PathVariable crn: String, @RequestParam smsAllowed: Boolean) =
+        personalDetailsService.updatePersonContactAllowSms(crn, smsAllowed)
 
     @PostMapping("/address")
     @WithDeliusUser
