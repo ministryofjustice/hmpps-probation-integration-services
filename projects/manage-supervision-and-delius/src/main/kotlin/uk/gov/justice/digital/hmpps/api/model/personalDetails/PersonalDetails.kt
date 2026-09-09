@@ -37,7 +37,7 @@ data class PersonalDetails(
     val lastUpdatedBy: Name? = null,
     val addressTypes: List<AddressType> = emptyList(),
     val staffContacts: List<Contact>,
-    val allowSms: Boolean?,
+    val allowSms: Boolean? = null,
 )
 
 data class PersonalDetailsSummary(
