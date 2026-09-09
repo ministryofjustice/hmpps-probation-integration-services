@@ -64,12 +64,14 @@ class TierDetailsService(
     private fun mapToConvictions(eventEntities: List<EventEntity>) = eventEntities.mapNotNull { event ->
         event.disposal?.let { disposal ->
             Conviction(
-                disposal.terminationDate,
-                disposal.disposalType.sentenceType,
-                event.inBreach,
-                disposal.requirements.mapNotNull { rq ->
+                terminationDate = disposal.terminationDate,
+                sentenceTypeCode = disposal.disposalType.sentenceType,
+                breached = event.inBreach,
+                requirements = disposal.requirements.mapNotNull { rq ->
                     rq.mainCategory?.code?.let { Requirement(it, rq.mainCategory.restrictive) }
-                }
+                },
+                mainOffence = event.mainOffence.offence.toModel(),
+                additionalOffences = event.additionalOffences.map { it.offence.toModel() }
             )
         }
     }

@@ -37,6 +37,20 @@ class TierDetailsTest @Autowired constructor(
                 jsonPath("$.convictions[0].breached") { isBoolean() }
                 jsonPath("$.convictions[0].sentenceTypeCode") { value(DisposalTypeGenerator.DEFAULT.sentenceType) }
                 jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode") { value("MAIN") }
+                jsonPath("$.convictions.length()") { value(2) }
+                jsonPath("$.convictions[0].mainOffence.code") { value("00100") }
+                jsonPath("$.convictions[0].mainOffence.description") { value("Main offence") }
+                jsonPath("$.convictions[0].mainOffence.sentencingAct2026Exclusion") { value(true) }
+                jsonPath("$.convictions[0].additionalOffences.length()") { value(2) }
+                jsonPath("$.convictions[0].additionalOffences[0].code") { value("00300") }
+                jsonPath("$.convictions[0].additionalOffences[0].description") { value("Additional offence") }
+                jsonPath("$.convictions[0].additionalOffences[0].sentencingAct2026Exclusion") { value(true) }
+                jsonPath("$.convictions[0].additionalOffences[1].code") { value("00400") }
+                jsonPath("$.convictions[0].additionalOffences[1].description") { value("Additional offence without exclusion flag") }
+                jsonPath("$.convictions[0].additionalOffences[1].sentencingAct2026Exclusion") { value(false) }
+                jsonPath("$.convictions[1].mainOffence.code") { value("00200") }
+                jsonPath("$.convictions[1].mainOffence.description") { value("Other main offence") }
+                jsonPath("$.convictions[1].mainOffence.sentencingAct2026Exclusion") { value(false) }
             }
     }
 
