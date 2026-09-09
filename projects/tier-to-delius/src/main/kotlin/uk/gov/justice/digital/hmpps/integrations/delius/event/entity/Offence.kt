@@ -21,11 +21,11 @@ class Offence(
 
     @Column(columnDefinition = "char")
     @Convert(converter = YesNoConverter::class)
-    val sa2026ExcludedOffence: Boolean? = null,
+    val sa26ExcludedOffence: Boolean? = null,
 ) {
     fun toModel() = Offence(
         code = code,
         description = description,
-        sentencingAct2026Exclusion = sa2026ExcludedOffence == true,
+        sentencingAct2026Exclusion = sa26ExcludedOffence == true,
     )
 }
