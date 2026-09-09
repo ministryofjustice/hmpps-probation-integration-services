@@ -55,6 +55,7 @@ class PersonalDetailsService(
         person.telephoneNumber = request.phoneNumber
         person.mobileNumber = request.mobileNumber
         person.emailAddress = request.emailAddress
+        request.allowSms?.let { person.smsAllowed = it }
 
         val updated = updatePersonContact(person)
 

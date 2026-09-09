@@ -605,6 +605,33 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             .isEqualTo(expectedResponse)
     }
 
+    @Test
+    @Transactional
+    fun `update allowSms only for a person`() {
+        val person = PERSONAL_DETAILS
+
+        val before = mockMvc.get("/personal-details/${person.crn}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        val response = mockMvc.post("/personal-details/${person.crn}/contact") {
+            withToken()
+            json = PersonContactEditRequest(
+                phoneNumber = before.telephoneNumber,
+                mobileNumber = before.mobileNumber,
+                emailAddress = before.email,
+                allowSms = true
+            )
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonalDetails>()
+
+        assertThat(response.allowSms, equalTo(true))
+        assertThat(response)
+            .usingRecursiveComparison().ignoringFields("allowSms")
+            .isEqualTo(before)
+    }
+
     companion object {
         @JvmStatic
         fun personContactDetails() = listOf(
@@ -704,6 +731,11 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     @Transactional
     fun `when all fields are posted for an existing main address all are updated`() {
+        clearTopicMessages()
+        val updateAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.UPDATE_ADDRESS.code)
+        val existingUpdateAddressAuditRecordCount =
+            auditedInteractionRepository.findAll().count { it.businessInteractionId == updateAddressId.id }
+
         val request = PersonAddressEditRequest(
             buildingName = "Building",
             buildingNumber = "23",
@@ -737,10 +769,9 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<AddressOverview>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
 
-        val insertAddressId = businessInteractionRepository.getByCode(BusinessInteractionCode.INSERT_ADDRESS.code)
-        val insertAddressAuditRecords =
-            auditedInteractionRepository.findAll().filter { it.businessInteractionId == insertAddressId.id }
-        assertThat(insertAddressAuditRecords.size, equalTo(1))
+        val updateAddressAuditRecords =
+            auditedInteractionRepository.findAll().filter { it.businessInteractionId == updateAddressId.id }
+        assertThat(updateAddressAuditRecords.size, equalTo(existingUpdateAddressAuditRecordCount + 1))
 
         assertThat(updateResponse.lastUpdated, equalTo(LocalDate.now()))
         assertThat(
@@ -847,3 +878,12 @@ fun MockHttpServletRequestBuilder.withDeliusUserToken(token: String) =
 
 fun MockHttpServletRequestDsl.withDeliusUserToken(token: String) =
     header(HttpHeaders.AUTHORIZATION, "Bearer $token")
+
+private fun PersonalDetailsIntegrationTest.clearTopicMessages() {
+    val channel = channelManager.getChannel(topicName)
+    while (true) {
+        val message = channel.receive() ?: break
+        channel.done(message.id)
+    }
+}
+

@@ -9,7 +9,8 @@ data class PersonContactEditRequest(
     @field:Size(max = 35)
     val mobileNumber: String? = null,
     @field:Size(max = 255)
-    val emailAddress: String? = null
+    val emailAddress: String? = null,
+    val allowSms: Boolean? = null
 )
 
 data class PersonAddressEditRequest(

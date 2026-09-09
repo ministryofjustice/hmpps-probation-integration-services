@@ -103,7 +103,7 @@ class Person(
 
     @Column(name = "allow_sms")
     @Convert(converter = YesNoConverter::class)
-    val smsAllowed: Boolean? = null,
+    var smsAllowed: Boolean? = null,
 
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
