@@ -407,6 +407,12 @@ class PersonalDetailsService(
             updatedDateTime = person.lastUpdatedDatetime
         )
     }
+
+    fun updatePersonContactAllowSms(crn: String, smsAllowed: Boolean): Boolean {
+        val person = personRepository.getPerson(crn)
+        person.smsAllowed = smsAllowed
+        return smsAllowed
+    }
 }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.PersonalCircumstance.toCircumstance(
