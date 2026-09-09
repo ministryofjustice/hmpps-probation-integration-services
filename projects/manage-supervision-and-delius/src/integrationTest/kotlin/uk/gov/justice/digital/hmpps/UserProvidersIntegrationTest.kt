@@ -97,7 +97,6 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
                 ),
                 "peter.parker@moj.gov.uk",
             ),
-            unallocatedUser,
             User(
                 STAFF_USER_2.staff!!.code,
                 STAFF_USER_2.username,
@@ -160,5 +159,3 @@ class UserProvidersIntegrationTest : IntegrationTestBase() {
         )
     }
 }
-
-val unallocatedUser = User("Unallocated", "Unallocated", "Unallocated", Name("Unallocated", null, "Unallocated"), null)

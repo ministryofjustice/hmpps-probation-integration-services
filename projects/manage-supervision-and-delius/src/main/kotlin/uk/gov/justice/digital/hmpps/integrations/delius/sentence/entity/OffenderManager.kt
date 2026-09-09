@@ -207,7 +207,6 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
 
     @Query(
         """
-            SELECT code, username, surname, forename, role FROM (
             SELECT  u.DISTINGUISHED_NAME as username, 
                     s.officer_code as code,
                     u.surname as surname, 
@@ -221,10 +220,7 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
             WHERE s.START_DATE <= CURRENT_DATE
             AND (s.END_DATE IS NULL OR s.END_DATE > CURRENT_DATE)
             AND t.CODE = :teamCode
-            UNION
-            SELECT 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated', 'Unallocated'
-            FROM dual)
-            ORDER BY Upper(surname)
+            ORDER BY Upper(u.surname)
           """, nativeQuery = true
     )
     fun findStaffByTeam(teamCode: String): List<StaffAndRole>
