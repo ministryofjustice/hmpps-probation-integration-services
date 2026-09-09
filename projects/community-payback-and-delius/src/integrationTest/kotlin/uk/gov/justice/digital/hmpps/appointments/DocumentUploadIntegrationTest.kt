@@ -755,66 +755,189 @@ class DocumentUploadIntegrationTest @Autowired constructor(
     @Nested
     inner class AlternativeExtensions {
         @Test
-        fun `accept rtf format`() { documentService.validateFile("doc.rtf", testFileContent) }
-        @Test fun `accept txt format`() { documentService.validateFile("doc.txt", testFileContent) }
-        @Test fun `accept dot format`() { documentService.validateFile("doc.dot", testFileContent) }
-        @Test fun `accept dotm format`() { documentService.validateFile("doc.dotm", testFileContent) }
-        @Test fun `accept docm format`() { documentService.validateFile("doc.docm", testFileContent) }
-        @Test fun `accept odt format`() { documentService.validateFile("doc.odt", testFileContent) }
-        @Test fun `accept xml format`() { documentService.validateFile("doc.xml", testFileContent) }
-        @Test fun `accept wpd format`() { documentService.validateFile("doc.wpd", testFileContent) }
-        @Test fun `accept wri format`() { documentService.validateFile("doc.wri", testFileContent) }
-        @Test fun `accept wps format`() { documentService.validateFile("doc.wps", testFileContent) }
+        fun `accept rtf format`() {
+            documentService.validateFile("doc.rtf", testFileContent)
+        }
+
+        @Test
+        fun `accept txt format`() {
+            documentService.validateFile("doc.txt", testFileContent)
+        }
+
+        @Test
+        fun `accept dot format`() {
+            documentService.validateFile("doc.dot", testFileContent)
+        }
+
+        @Test
+        fun `accept dotm format`() {
+            documentService.validateFile("doc.dotm", testFileContent)
+        }
+
+        @Test
+        fun `accept docm format`() {
+            documentService.validateFile("doc.docm", testFileContent)
+        }
+
+        @Test
+        fun `accept odt format`() {
+            documentService.validateFile("doc.odt", testFileContent)
+        }
+
+        @Test
+        fun `accept xml format`() {
+            documentService.validateFile("doc.xml", testFileContent)
+        }
+
+        @Test
+        fun `accept wpd format`() {
+            documentService.validateFile("doc.wpd", testFileContent)
+        }
+
+        @Test
+        fun `accept wri format`() {
+            documentService.validateFile("doc.wri", testFileContent)
+        }
+
+        @Test
+        fun `accept wps format`() {
+            documentService.validateFile("doc.wps", testFileContent)
+        }
     }
 
     @Nested
     inner class SpreadsheetAlternatives {
-        @Test fun `accept xls format`() { documentService.validateFile("sheet.xls", testFileContent) }
-        @Test fun `accept xlsb format`() { documentService.validateFile("sheet.xlsb", testFileContent) }
-        @Test fun `accept csv format`() { documentService.validateFile("sheet.csv", testFileContent) }
+        @Test
+        fun `accept xls format`() {
+            documentService.validateFile("sheet.xls", testFileContent)
+        }
+
+        @Test
+        fun `accept xlsb format`() {
+            documentService.validateFile("sheet.xlsb", testFileContent)
+        }
+
+        @Test
+        fun `accept csv format`() {
+            documentService.validateFile("sheet.csv", testFileContent)
+        }
     }
 
     @Nested
     inner class ImageAlternatives {
-        @Test fun `accept bmp format`() { documentService.validateFile("img.bmp", testFileContent) }
-        @Test fun `accept gif format`() { documentService.validateFile("img.gif", testFileContent) }
-        @Test fun `accept jpeg format`() { documentService.validateFile("img.jpeg", testFileContent) }
+        @Test
+        fun `accept bmp format`() {
+            documentService.validateFile("img.bmp", testFileContent)
+        }
+
+        @Test
+        fun `accept gif format`() {
+            documentService.validateFile("img.gif", testFileContent)
+        }
+
+        @Test
+        fun `accept jpeg format`() {
+            documentService.validateFile("img.jpeg", testFileContent)
+        }
     }
 
     @Nested
     inner class AudioAlternatives {
-        @Test fun `accept m4a format`() { documentService.validateFile("audio.m4a", testFileContent) }
-        @Test fun `accept flac format`() { documentService.validateFile("audio.flac", testFileContent) }
-        @Test fun `accept mp4 format`() { documentService.validateFile("audio.mp4", testFileContent) }
-        @Test fun `accept wav format`() { documentService.validateFile("audio.wav", testFileContent) }
-        @Test fun `accept wma format`() { documentService.validateFile("audio.wma", testFileContent) }
-        @Test fun `accept aac format`() { documentService.validateFile("audio.aac", testFileContent) }
+        @Test
+        fun `accept m4a format`() {
+            documentService.validateFile("audio.m4a", testFileContent)
+        }
+
+        @Test
+        fun `accept flac format`() {
+            documentService.validateFile("audio.flac", testFileContent)
+        }
+
+        @Test
+        fun `accept mp4 format`() {
+            documentService.validateFile("audio.mp4", testFileContent)
+        }
+
+        @Test
+        fun `accept wav format`() {
+            documentService.validateFile("audio.wav", testFileContent)
+        }
+
+        @Test
+        fun `accept wma format`() {
+            documentService.validateFile("audio.wma", testFileContent)
+        }
+
+        @Test
+        fun `accept aac format`() {
+            documentService.validateFile("audio.aac", testFileContent)
+        }
     }
 
     @Nested
     inner class RejectArchives {
-        @Test fun `reject rar`() { assertThrows<IllegalArgumentException> { documentService.validateFile("arch.rar", testFileContent) } }
-        @Test fun `reject 7z`() { assertThrows<IllegalArgumentException> { documentService.validateFile("arch.7z", testFileContent) } }
-        @Test fun `reject tar`() { assertThrows<IllegalArgumentException> { documentService.validateFile("arch.tar", testFileContent) } }
-        @Test fun `reject gz`() { assertThrows<IllegalArgumentException> { documentService.validateFile("arch.gz", testFileContent) } }
+        @Test
+        fun `reject rar`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("arch.rar", testFileContent) }
+        }
+
+        @Test
+        fun `reject 7z`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("arch.7z", testFileContent) }
+        }
+
+        @Test
+        fun `reject tar`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("arch.tar", testFileContent) }
+        }
+
+        @Test
+        fun `reject gz`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("arch.gz", testFileContent) }
+        }
     }
 
     @Nested
     inner class RejectExecutables {
-        @Test fun `reject pif`() { assertThrows<IllegalArgumentException> { documentService.validateFile("prog.pif", testFileContent) } }
-        @Test fun `reject scr`() { assertThrows<IllegalArgumentException> { documentService.validateFile("prog.scr", testFileContent) } }
+        @Test
+        fun `reject pif`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("prog.pif", testFileContent) }
+        }
+
+        @Test
+        fun `reject scr`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("prog.scr", testFileContent) }
+        }
     }
 
     @Nested
     inner class RejectScripts {
-        @Test fun `reject htm`() { assertThrows<IllegalArgumentException> { documentService.validateFile("page.htm", testFileContent) } }
-        @Test fun `reject vbs`() { assertThrows<IllegalArgumentException> { documentService.validateFile("script.vbs", testFileContent) } }
+        @Test
+        fun `reject htm`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("page.htm", testFileContent) }
+        }
+
+        @Test
+        fun `reject vbs`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("script.vbs", testFileContent) }
+        }
     }
 
     @Nested
     inner class RejectSystemFiles {
-        @Test fun `reject dll`() { assertThrows<IllegalArgumentException> { documentService.validateFile("lib.dll", testFileContent) } }
-        @Test fun `reject sys`() { assertThrows<IllegalArgumentException> { documentService.validateFile("sys.sys", testFileContent) } }
-        @Test fun `reject msi`() { assertThrows<IllegalArgumentException> { documentService.validateFile("inst.msi", testFileContent) } }
+        @Test
+        fun `reject dll`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("lib.dll", testFileContent) }
+        }
+
+        @Test
+        fun `reject sys`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("sys.sys", testFileContent) }
+        }
+
+        @Test
+        fun `reject msi`() {
+            assertThrows<IllegalArgumentException> { documentService.validateFile("inst.msi", testFileContent) }
+        }
     }
 }
