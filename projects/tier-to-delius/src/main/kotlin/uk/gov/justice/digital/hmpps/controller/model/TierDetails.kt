@@ -26,7 +26,10 @@ data class Registration(
 )
 
 data class Conviction(
+    val startDate: LocalDate,
     val terminationDate: LocalDate?,
+    val latestReleaseDate: LocalDate?,
+    val isCustodial: Boolean,
     val sentenceTypeCode: String?,
     val breached: Boolean,
     val requirements: List<Requirement>,

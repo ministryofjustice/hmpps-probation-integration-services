@@ -34,6 +34,9 @@ class TierDetailsTest @Autowired constructor(
                 jsonPath("$.registrations[0].level") { value(RegistrationGenerator.DEFAULT.level?.code) }
                 jsonPath("$.registrations[0].category") { value(RegistrationGenerator.DEFAULT.category?.code) }
                 jsonPath("$.latestReleaseDate") { value("2020-01-01") }
+                jsonPath("$.convictions[0].startDate") { value(DisposalGenerator.DEFAULT.startDate.toString()) }
+                jsonPath("$.convictions[0].latestReleaseDate") { value("2020-01-01") }
+                jsonPath("$.convictions[0].isCustodial") { value(true) }
                 jsonPath("$.convictions[0].breached") { isBoolean() }
                 jsonPath("$.convictions[0].sentenceTypeCode") { value(DisposalTypeGenerator.DEFAULT.sentenceType) }
                 jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode") { value("MAIN") }
@@ -48,6 +51,9 @@ class TierDetailsTest @Autowired constructor(
                 jsonPath("$.convictions[0].additionalOffences[1].code") { value("00400") }
                 jsonPath("$.convictions[0].additionalOffences[1].description") { value("Additional offence without exclusion flag") }
                 jsonPath("$.convictions[0].additionalOffences[1].sentencingAct2026Exclusion") { value(false) }
+                jsonPath("$.convictions[1].startDate") { value(DisposalGenerator.RECALLED.startDate.toString()) }
+                jsonPath("$.convictions[1].latestReleaseDate") { doesNotExist() }
+                jsonPath("$.convictions[1].isCustodial") { value(true) }
                 jsonPath("$.convictions[1].mainOffence.code") { value("00200") }
                 jsonPath("$.convictions[1].mainOffence.description") { value("Other main offence") }
                 jsonPath("$.convictions[1].mainOffence.sentencingAct2026Exclusion") { value(false) }

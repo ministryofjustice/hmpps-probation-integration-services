@@ -64,7 +64,11 @@ class TierDetailsService(
     private fun mapToConvictions(eventEntities: List<EventEntity>) = eventEntities.mapNotNull { event ->
         event.disposal?.let { disposal ->
             Conviction(
+                startDate = disposal.startDate,
                 terminationDate = disposal.terminationDate,
+                latestReleaseDate = disposal.custody?.releases?.maxByOrNull { it.date }
+                    ?.takeIf { it.recall == null }?.date,
+                isCustodial = disposal.custody != null,
                 sentenceTypeCode = disposal.disposalType.sentenceType,
                 breached = event.inBreach,
                 requirements = disposal.requirements.mapNotNull { rq ->
