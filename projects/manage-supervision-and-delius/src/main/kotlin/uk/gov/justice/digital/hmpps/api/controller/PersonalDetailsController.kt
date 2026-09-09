@@ -111,12 +111,6 @@ class PersonalDetailsController(private val personalDetailsService: PersonalDeta
     ) =
         personalDetailsService.getPersonProvisionsSingleNote(crn, provisionId, noteId)
 
-    @GetMapping("/sms-allowed")
-    @Operation(summary = "Displays whether SMS contact allowed with the person")
-    fun getSmsAllowed(
-        @PathVariable crn: String,
-    ) = personalDetailsService.getSmsAllowed(crn)
-
     @GetMapping("/updated")
     @Operation(summary = "Get the last updated timestamp and user details for a person")
     fun getPersonUpdated(

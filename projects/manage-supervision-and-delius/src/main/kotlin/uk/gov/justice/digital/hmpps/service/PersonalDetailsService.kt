@@ -249,7 +249,8 @@ class PersonalDetailsService(
             lastUpdated = person.lastUpdatedDatetime.toLocalDate(),
             lastUpdatedBy = person.lastUpdatedUser?.let { Name(forename = it.forename, surname = it.surname) },
             addressTypes = addressTypes,
-            staffContacts = contactService.getActivePersonManagers(person.id)
+            staffContacts = contactService.getActivePersonManagers(person.id),
+            allowSms = person.smsAllowed
         )
     }
 
@@ -395,14 +396,6 @@ class PersonalDetailsService(
                     )
                 )
             }
-        )
-    }
-
-    fun getSmsAllowed(crn: String): SmsAllowed {
-        val sms = personRepository.findAllowSmsByCrn(crn)
-        return SmsAllowed(
-            crn = crn,
-            smsAllowed = sms
         )
     }
 
