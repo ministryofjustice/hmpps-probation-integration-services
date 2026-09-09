@@ -110,7 +110,8 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
 
     @Test
     fun `get appointments combines all optional parameters`() {
-        mockMvc.get("/appointments?" +
+        mockMvc.get(
+            "/appointments?" +
                 "username=${UserGenerator.DEFAULT_USER.username}&" +
                 "crn=${PersonGenerator.DEFAULT_PERSON.crn}&" +
                 "eventNumber=1&" +
@@ -123,7 +124,8 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
                 "references=${UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REF_UUID}&" +
                 "sort=date,desc&" +
                 "page=0&" +
-                "size=20") {
+                "size=20"
+        ) {
             withToken()
         }
             .andExpect { status { isOk() } }
@@ -178,30 +180,38 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments all optional filter combinations`() {
         // Covers all optional filter paths through getAppointments
-        mockMvc.get("/appointments?" +
+        mockMvc.get(
+            "/appointments?" +
                 "username=${UserGenerator.DEFAULT_USER.username}&" +
-                "crn=${PersonGenerator.DEFAULT_PERSON.crn}") {
+                "crn=${PersonGenerator.DEFAULT_PERSON.crn}"
+        ) {
             withToken()
         }
             .andExpect { status { isOk() } }
 
-        mockMvc.get("/appointments?" +
+        mockMvc.get(
+            "/appointments?" +
                 "username=${UserGenerator.DEFAULT_USER.username}&" +
-                "eventNumber=1") {
+                "eventNumber=1"
+        ) {
             withToken()
         }
             .andExpect { status { isOk() } }
 
-        mockMvc.get("/appointments?" +
+        mockMvc.get(
+            "/appointments?" +
                 "username=${UserGenerator.DEFAULT_USER.username}&" +
-                "fromDate=${LocalDate.now()}") {
+                "fromDate=${LocalDate.now()}"
+        ) {
             withToken()
         }
             .andExpect { status { isOk() } }
 
-        mockMvc.get("/appointments?" +
+        mockMvc.get(
+            "/appointments?" +
                 "username=${UserGenerator.DEFAULT_USER.username}&" +
-                "toDate=${LocalDate.now()}") {
+                "toDate=${LocalDate.now()}"
+        ) {
             withToken()
         }
             .andExpect { status { isOk() } }
