@@ -58,7 +58,7 @@ class AppointmentsController(
             appointment = appointment,
             filename = filename,
             file = file.bytes,
-            userId = 0L
+            userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
         )
         return DocumentUploadResponse(
             documentId = document.id,
