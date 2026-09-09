@@ -49,7 +49,6 @@ import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetails
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_1
 import uk.gov.justice.digital.hmpps.data.generator.personalDetails.PersonDetailsGenerator.PROVISION_2
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Person
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.service.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
@@ -263,8 +262,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<Boolean>()
-
         assertThat(res, equalTo(true))
+        mockMvc.post("/personal-details/${person.crn}/contact/allow-sms?value=false") {
+            withToken()
+        }
     }
 
     @Test
