@@ -39,6 +39,9 @@ class Person(
     @Column(name = "current_tier")
     var currentTier: Long? = null,
 
+    @Column(name = "v3_tier_id")
+    var v3TierId: Long? = null,
+
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
