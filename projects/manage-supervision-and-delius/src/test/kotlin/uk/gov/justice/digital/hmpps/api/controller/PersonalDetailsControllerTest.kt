@@ -71,7 +71,8 @@ internal class PersonalDetailsControllerTest {
             aliases = emptyList(),
             genderIdentity = null,
             selfDescribedGender = null,
-            staffContacts = listOf()
+            staffContacts = listOf(),
+            allowSms = null,
         )
         whenever(personalDetailsService.getPersonalDetails(crn)).thenReturn(personalDetails)
         val res = controller.getPersonalDetails("X000005")
@@ -192,7 +193,8 @@ internal class PersonalDetailsControllerTest {
             aliases = emptyList(),
             genderIdentity = null,
             selfDescribedGender = null,
-            staffContacts = listOf()
+            staffContacts = listOf(),
+            allowSms = true,
         )
         whenever(personalDetailsService.updatePersonalAddressDetails(crn, request)).thenReturn(personalDetails)
         val res = controller.updatePersonalAddressDetails(crn, request)
