@@ -118,8 +118,8 @@ interface StaffPersonRepository : JpaRepository<Staff, Long> {
 
 fun StaffPersonRepository.getUnallocatedUserAndTeamAssociation(officerCode: String) =
     findUnallocatedUserAndTeamAssociation(officerCode) ?: throw NotFoundException(
-        "User", "username",
-        "Unallocated in team $officerCode"
+        "Staff", "officerCode",
+        officerCode
     )
 
 @Entity
