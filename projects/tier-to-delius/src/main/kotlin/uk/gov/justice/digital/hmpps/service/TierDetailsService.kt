@@ -5,8 +5,11 @@ import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
 import uk.gov.justice.digital.hmpps.controller.model.Requirement
 import uk.gov.justice.digital.hmpps.controller.model.TierDetails
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventWithSa2026ExclusionsRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.flagged.EventWithSa2026Exclusions
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.previousEnforcementActivity
 import uk.gov.justice.digital.hmpps.integrations.delius.oasys.assessment.OASYSAssessmentRepository
@@ -25,20 +28,33 @@ class TierDetailsService(
     val caseEntityRepository: CaseEntityRepository,
     val registrationRepository: RegistrationRepository,
     val eventRepository: EventRepository,
+    val eventWithSa2026ExclusionsRepository: EventWithSa2026ExclusionsRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
     val ogrsAssessmentRepository: OGRSAssessmentRepository,
     val nsiRepository: NsiRepository,
-    val rsrScoreHistoryRepository: RsrScoreHistoryRepository
+    val rsrScoreHistoryRepository: RsrScoreHistoryRepository,
+    val featureFlags: FeatureFlags,
 ) {
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
         val registrationEntities = registrationRepository.findByPersonIdOrderByDateDesc(case.id)
-        val eventEntities = eventRepository.findByPersonCrn(crn)
-        val convictions = mapToConvictions(eventEntities)
+
+        val (convictions, latestReleaseDate, hasActiveEvent) = if (featureFlags.enabled("tier-to-delius-sa2026-exclusions")) {
+            val eventEntities = eventWithSa2026ExclusionsRepository.findByPersonCrn(crn)
+            val convictions = mapToConvictionsWithSa2026Exclusions(eventEntities)
+            val latestReleaseDate = eventEntities.mapNotNull { it.disposal?.custody }.flatMap { it.releases }
+                .maxByOrNull { it.date }?.takeIf { it.recall == null }?.date
+            Triple(convictions, latestReleaseDate, eventEntities.isNotEmpty())
+        } else {
+            val eventEntities = eventRepository.findByPersonCrn(crn)
+            val convictions = mapToConvictions(eventEntities)
+            val latestReleaseDate = eventEntities.mapNotNull { it.disposal?.custody }.flatMap { it.releases }
+                .maxByOrNull { it.date }?.takeIf { it.recall == null }?.date
+            Triple(convictions, latestReleaseDate, eventEntities.isNotEmpty())
+        }
+
         val ogrsScore = getRiskOgrs(case)
         val rsrScore = getStaticOrDynamicRsrScore(case)
-        val latestReleaseDate = eventEntities.mapNotNull { it.disposal?.custody }.flatMap { it.releases }
-            .maxByOrNull { it.date }?.takeIf { it.recall == null }?.date
 
         return TierDetails(
             gender = case.gender.description,
@@ -57,7 +73,7 @@ class TierDetailsService(
             convictions = convictions,
             previousEnforcementActivity = nsiRepository.previousEnforcementActivity(case.id),
             latestReleaseDate = latestReleaseDate,
-            hasActiveEvent = eventEntities.isNotEmpty()
+            hasActiveEvent = hasActiveEvent
         )
     }
 
@@ -79,6 +95,26 @@ class TierDetailsService(
             )
         }
     }
+
+    private fun mapToConvictionsWithSa2026Exclusions(eventEntities: List<EventWithSa2026Exclusions>) =
+        eventEntities.mapNotNull { event ->
+            event.disposal?.let { disposal ->
+                Conviction(
+                    startDate = disposal.startDate,
+                    terminationDate = disposal.terminationDate,
+                    latestReleaseDate = disposal.custody?.releases?.maxByOrNull { it.date }
+                        ?.takeIf { it.recall == null }?.date,
+                    isCustodial = disposal.custody != null,
+                    sentenceTypeCode = disposal.disposalType.sentenceType,
+                    breached = event.inBreach,
+                    requirements = disposal.requirements.mapNotNull { rq ->
+                        rq.mainCategory?.code?.let { Requirement(it, rq.mainCategory.restrictive) }
+                    },
+                    mainOffence = event.mainOffence.offence.toModel(),
+                    additionalOffences = event.additionalOffences.map { it.offence.toModel() }
+                )
+            }
+        }
 
     private fun getRiskOgrs(case: CaseEntity): Long? {
         val oasysAssessment = oasysAssessmentRepository.findLatest(case.id)
