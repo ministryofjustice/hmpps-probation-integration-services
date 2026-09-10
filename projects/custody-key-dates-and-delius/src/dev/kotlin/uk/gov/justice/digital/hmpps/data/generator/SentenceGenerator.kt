@@ -22,8 +22,21 @@ object SentenceGenerator {
     fun generateOrderManager(event: Event, providerId: Long = 1, teamId: Long = 2, staffId: Long = 3) =
         OrderManager(IdGenerator.getAndIncrement(), event, providerId, teamId, staffId)
 
-    fun generateDisposal(event: Event, type: DisposalType = DEFAULT_DISPOSAL_TYPE) =
-        Disposal(IdGenerator.getAndIncrement(), event, type)
+    fun generateDisposal(
+        event: Event,
+        type: DisposalType = DEFAULT_DISPOSAL_TYPE,
+        disposalDate: LocalDate = LocalDate.now(),
+        sdsPlus: Boolean? = null,
+        notionalEndDate: LocalDate? = null
+    ) =
+        Disposal(
+            IdGenerator.getAndIncrement(),
+            event,
+            type,
+            date = disposalDate,
+            notionalEndDate = notionalEndDate,
+            sdsPlus = sdsPlus
+        )
 
     fun generateDisposalType(
         requiredInformation: String = "L1",

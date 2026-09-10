@@ -16,11 +16,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCustodialSentence
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposalType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
@@ -63,22 +63,30 @@ internal class CustodyDateUpdateServiceTest {
     @Mock
     lateinit var telemetryService: TelemetryService
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
 
     @BeforeEach
     fun setup() {
         custodyDateUpdateService = CustodyDateUpdateService(
-            prisonApi,
-            personRepository,
-            custodyRepository,
-            disposalRepository,
-            referenceDataRepository,
-            keyDateRepository,
-            contactService,
-            telemetryService,
-            crdsApiClient,
-            KeyDateCalculator()
+            prisonApi = prisonApi,
+            personRepository = personRepository,
+            custodyRepository = custodyRepository,
+            disposalRepository = disposalRepository,
+            referenceDataRepository = referenceDataRepository,
+            keyDateRepository = keyDateRepository,
+            contactService = contactService,
+            telemetryService = telemetryService,
+            crdsApiClient = crdsApiClient,
+            keyDateCalculator = KeyDateCalculator(),
+            featureFlags = featureFlags,
         )
+    }
+
+    private fun featureFlagEnabled(enabled: Boolean) {
+        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
     }
 
     @Test
@@ -96,6 +104,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `messages for people without a noms number are ignored`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, "AB356Z")
 
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
@@ -110,6 +119,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `Multiple matching custody logged to telemetry`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -129,6 +139,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `No matching custody logged to telemetry`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -147,9 +158,10 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `key date save and delete not called without appropriate key dates`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
-        val custody = SentenceGenerator.generateCustodialSentence(
-            disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent()),
             bookingRef = booking.bookingNo
         )
 
@@ -170,6 +182,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `PSSED is included when disposal type has PSS_RQMNT Y`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val pssDate = LocalDate.of(2025, 6, 1)
         val custody = generateCustodialSentence(
@@ -208,6 +221,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `PSSED is excluded when disposal type does not have PSS_RQMNT Y`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val pssDate = LocalDate.of(2025, 6, 1)
         val custody = generateCustodialSentence(
@@ -264,6 +278,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `eligible SDS disposal updates disposal and creates EMED and FTHRD key dates`() {
+        featureFlagEnabled(false)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
             CustodyDateType.SENTENCE_EXPIRY_DATE,
@@ -331,6 +346,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ dates and flag are not set when disposal sentence type is not SC`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody = generateCustodialSentence(
             disposal = generateDisposal(generateEvent(), generateDisposalType(sentenceType = "NC")),
@@ -377,6 +393,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ dates and flag are not set when disposal is not L1`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody = generateCustodialSentence(
             disposal = generateDisposal(generateEvent(), generateDisposalType(requiredInformation = "L2")),
@@ -422,6 +439,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ flag not updated when sentence envelope and custody booking ids are mismatched`() {
+        featureFlagEnabled(false)
         val booking = Booking(1234567, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val custody =
             generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
@@ -480,6 +498,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ flag null defaults to regular SDS calculation for EM end date`() {
+        featureFlagEnabled(false)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
             CustodyDateType.SENTENCE_EXPIRY_DATE,
@@ -541,6 +560,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @Test
     fun `SDS+ dates and flag are not set when CRDS API returns 404`() {
+        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val disposal = generateDisposal(generateEvent())
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
@@ -591,5 +611,96 @@ internal class CustodyDateUpdateServiceTest {
                 assertThat(saved.any { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }, equalTo(false))
                 assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
             })
+    }
+
+    @Test
+    fun `Feature flag enabled uses disposal notional end date when sentence expiry date is missing`() {
+        featureFlagEnabled(true)
+        listOf(
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE,
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val disposal = generateDisposal(
+            generateEvent(),
+            disposalDate = LocalDate.of(2024, 1, 1),
+            notionalEndDate = LocalDate.of(2025, 1, 1)
+        )
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(custody.id)
+        )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
+        verify(disposalRepository, never()).save(any<Disposal>())
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(
+                    saved.single { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }.date,
+                    equalTo(LocalDate.of(2024, 5, 26))
+                )
+                assertThat(
+                    saved.single { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }.date,
+                    equalTo(LocalDate.of(2024, 9, 1))
+                )
+            }
+        )
+    }
+
+    @Test
+    fun `Feature flag enabled does not create final third date when disposal sds plus is true`() {
+        featureFlagEnabled(true)
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                DatasetCode.KEY_DATE_TYPE,
+                CustodyDateType.PRESUMPTIVE_EM_END_DATE.code
+            )
+        ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[CustodyDateType.PRESUMPTIVE_EM_END_DATE.code]!!)
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val disposal = generateDisposal(
+            generateEvent(),
+            disposalDate = LocalDate.of(2024, 1, 1),
+            notionalEndDate = LocalDate.of(2025, 1, 1),
+            sdsPlus = true
+        )
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(custody.id)
+        )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
+        verify(disposalRepository, never()).save(any<Disposal>())
+        verify(keyDateRepository, never()).delete(any<KeyDate>())
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
+                assertThat(saved.any { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }, equalTo(true))
+            }
+        )
     }
 }

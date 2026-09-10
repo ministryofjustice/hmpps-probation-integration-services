@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
@@ -30,6 +31,7 @@ class CustodyDateUpdateService(
     private val telemetryService: TelemetryService,
     private val crdsApiClient: CrdsApiClient,
     private val keyDateCalculator: KeyDateCalculator,
+    private val featureFlags: FeatureFlags,
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         try {
@@ -47,6 +49,7 @@ class CustodyDateUpdateService(
 
     private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false, clientSource: String = "messaging") {
         if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry(clientSource))
+        val calculateDatesFromDelius = featureFlags.enabled("calculate-key-dates-from-delius")
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
             ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry(clientSource))
@@ -55,22 +58,30 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val sdsEligible = custody.disposal?.isDeliusSdsCase() == true
-        val envelope = if (sdsEligible) {
+        val isStatutoryCustodyDeterminateSentence = custody.disposal?.isDisposalL1Sc() == true
+        // Only fetch CRDS data when feature flag is disabled
+        val envelope = if (!calculateDatesFromDelius && isStatutoryCustodyDeterminateSentence) {
             try {
                 crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
             } catch (e: RestClientResponseException) {
                 if (e.statusCode == HttpStatus.NOT_FOUND) null else throw e
             }
         } else null
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
+        val updated = calculateKeyDateChanges(
+            sentenceDetail,
+            custody,
+            envelope,
+            calculateDatesFromDelius,
+            isStatutoryCustodyDeterminateSentence
+        )
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
-                if (sdsEligible && envelope != null) {
+                // Only update disposal.sdsPlus when using CRDS (feature flag off)
+                if (!calculateDatesFromDelius && isStatutoryCustodyDeterminateSentence && envelope != null) {
                     if (booking.id != envelope.bookingId) {
                         telemetryService.trackEvent(
                             "SentenceEnvelopeBookingIdMismatch", mapOf(
@@ -94,6 +105,17 @@ class CustodyDateUpdateService(
     }
 
     private fun calculateKeyDateChanges(
+        sentenceDetail: SentenceDetail,
+        custody: Custody,
+        envelope: OperativeSentenceEnvelope?,
+        calculateDatesFromDelius: Boolean,
+        isDisposalEligibleForFinalThirdDate: Boolean
+    ) =
+        if (calculateDatesFromDelius) {
+            calculateKeyDateChangesFromDelius(sentenceDetail, custody, isDisposalEligibleForFinalThirdDate)
+        } else calculateKeyDateChangesUsingCRDS(sentenceDetail, custody, envelope)
+
+    private fun calculateKeyDateChangesUsingCRDS(
         sentenceDetail: SentenceDetail,
         custody: Custody,
         envelope: OperativeSentenceEnvelope?
@@ -123,6 +145,51 @@ class CustodyDateUpdateService(
             }
         )
 
+    private fun calculateKeyDateChangesFromDelius(
+        sentenceDetail: SentenceDetail,
+        custody: Custody,
+        isDisposalEligibleForFinalThirdDate: Boolean,
+    ): List<KeyDate> {
+        val sentenceEndDate = custody.deliusSentenceEndDate(sentenceDetail)
+
+        return listOfNotNull(
+            custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
+            custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
+            custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
+            custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
+            custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
+            custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
+            custody.keyDate(
+                POST_SENTENCE_SUPERVISION_END_DATE.code,
+                sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
+            custody.keyDate(
+                SUSPENSION_DATE_IF_RESET.code,
+                keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
+            ),
+            custody.keyDate(
+                PRESUMPTIVE_EM_END_DATE.code,
+                sentenceEndDate?.takeIf { isDisposalEligibleForFinalThirdDate }?.let {
+                    keyDateCalculator.presumptiveElectronicMonitoringEndDateFromDelius(
+                        it,
+                        custody.disposal?.date,
+                        custody.disposal?.sdsPlus
+                    )
+                }
+            ),
+            custody.keyDate(
+                FINAL_THIRD_START_DATE.code,
+                sentenceEndDate?.takeIf {
+                    isDisposalEligibleForFinalThirdDate &&
+                        custody.disposal?.sdsPlus != true &&
+                        custody.disposal?.date?.isAfter(it) == false
+                }
+                    ?.let {
+                        keyDateCalculator.finalThirdDateFromDelius(it, custody.disposal?.date)
+                    }
+            )
+        )
+    }
+
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {
         val existing = keyDates.filter { it.type.code == code }.removeDuplicates()
         return if (existing != null) {
@@ -141,7 +208,10 @@ class CustodyDateUpdateService(
         return firstOrNull()
     }
 
-    private fun Disposal.isDeliusSdsCase(): Boolean = type.sdsSentence
+    private fun Custody.deliusSentenceEndDate(sentenceDetail: SentenceDetail) =
+        sentenceDetail.sentenceExpiryDate ?: disposal?.notionalEndDate
+
+    private fun Disposal.isDisposalL1Sc(): Boolean = type.isStatutoryCustody && type.determinateSentence
 
     private fun Booking.telemetry(clientSource: String) = mapOf(
         "nomsNumber" to offenderNo,
