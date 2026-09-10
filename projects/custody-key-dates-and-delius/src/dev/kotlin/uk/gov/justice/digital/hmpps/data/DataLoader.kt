@@ -41,7 +41,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         val event = save(generateEvent(PersonGenerator.DEFAULT))
         save(generateOrderManager(event))
-        val disposal = save(generateDisposal(event))
+        val disposal = save(generateDisposal(event, disposalDate = LocalDate.parse("2025-07-22")))
         DEFAULT_CUSTODY = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
@@ -78,13 +78,19 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN, "48340A", keyDateTypes)
 
-        createPersonWithKeyDates(PersonGenerator.SDS_PLUS_PERSON, "78340A", keyDateTypes)
+        createPersonWithKeyDates(
+            PersonGenerator.SDS_PLUS_PERSON,
+            "78340A",
+            keyDateTypes,
+            sdsPlus = true,
+            disposalDate = LocalDate.parse("2024-09-10")
+        )
 
         save(SentenceGenerator.PSS_DISPOSAL_TYPE)
         val pssPerson = save(PersonGenerator.PSS_PERSON)
         val pssEvent = save(generateEvent(pssPerson, "1"))
         save(generateOrderManager(pssEvent))
-        val pssDisposal = save(generateDisposal(pssEvent, SentenceGenerator.PSS_DISPOSAL_TYPE))
+        val pssDisposal = save(generateDisposal(pssEvent, SentenceGenerator.PSS_DISPOSAL_TYPE, disposalDate = LocalDate.parse("2025-07-22")))
         save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
@@ -92,17 +98,22 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 "68340A"
             )
         )
+
+        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON, "88340A", keyDateTypes)
+        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON_SDS_PLUS, "98340A", keyDateTypes)
     }
 
     private fun createPersonWithKeyDates(
         personRef: Person,
         bookingRef: String,
-        keyDateTypes: List<ReferenceData>
+        keyDateTypes: List<ReferenceData>,
+        sdsPlus: Boolean? = null,
+        disposalDate: LocalDate = LocalDate.parse("2025-07-22")
     ): Custody {
         val person = save(personRef)
         val event = save(generateEvent(person, "1"))
         save(generateOrderManager(event))
-        val disposal = save(generateDisposal(event))
+        val disposal = save(generateDisposal(event, sdsPlus = sdsPlus, disposalDate = disposalDate))
         val custody = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,

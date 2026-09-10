@@ -78,6 +78,29 @@ internal class KeyDateCalculatorTest {
         assertThat(result, equalTo(expected))
     }
 
+    @ParameterizedTest
+    @MethodSource("deliusEmedCases")
+    fun `calculate presumptive em end date from delius`(
+        sentenceEndDate: LocalDate?,
+        disposalDate: LocalDate?,
+        sdsPlus: Boolean?,
+        expected: LocalDate?
+    ) {
+        val result = calculator.presumptiveElectronicMonitoringEndDateFromDelius(sentenceEndDate, disposalDate, sdsPlus)
+        assertThat(result, equalTo(expected))
+    }
+
+    @ParameterizedTest
+    @MethodSource("deliusFinalThirdCases")
+    fun `calculate final third date from delius`(
+        sentenceEndDate: LocalDate?,
+        disposalDate: LocalDate?,
+        expected: LocalDate?
+    ) {
+        val result = calculator.finalThirdDateFromDelius(sentenceEndDate, disposalDate)
+        assertThat(result, equalTo(expected))
+    }
+
     companion object {
         @JvmStatic
         fun suspensionDateCases() = listOf(
@@ -127,6 +150,24 @@ internal class KeyDateCalculatorTest {
             arguments(LocalDate.of(2025, 1, 1), 365L, LocalDate.of(2024, 9, 1)),
             arguments(LocalDate.of(2025, 1, 1), 730L, LocalDate.of(2024, 5, 2)),
             arguments(LocalDate.of(2025, 1, 1), 1000L, LocalDate.of(2024, 2, 2))
+        )
+
+        @JvmStatic
+        fun deliusEmedCases() = listOf(
+            arguments(null, LocalDate.of(2024, 1, 1), false, null),
+            arguments(LocalDate.of(2025, 1, 1), null, false, null),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 2), false, null),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), false, LocalDate.of(2024, 5, 26)),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), true, LocalDate.of(2024, 9, 1)),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), null, LocalDate.of(2024, 5, 26))
+        )
+
+        @JvmStatic
+        fun deliusFinalThirdCases() = listOf(
+            arguments(null, LocalDate.of(2024, 1, 1), null),
+            arguments(LocalDate.of(2025, 1, 1), null, null),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 2), null),
+            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2024, 9, 1))
         )
     }
 }

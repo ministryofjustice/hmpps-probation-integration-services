@@ -72,6 +72,12 @@ class Disposal(
     @Convert(converter = YesNoConverter::class)
     var sdsPlus: Boolean? = null,
 
+    @Column(name = "disposal_date")
+    val date: LocalDate,
+
+    @Column(name = "notional_end_date")
+    val notionalEndDate: LocalDate? = null,
+
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0,
@@ -104,7 +110,7 @@ data class DisposalType(
     val pssRequirement: Boolean? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
-    val sdsSentence: Boolean get() = sentenceType == "SC" && requiredInformation == "L1"
+    val isStatutoryCustody: Boolean get() = sentenceType == "SC"
 }
 
 @Immutable
