@@ -7,6 +7,7 @@ import org.hibernate.type.NumericBooleanConverter
 
 @Entity
 @Immutable
+@Table(name = "main_offence")
 @SQLRestriction("soft_deleted = 0")
 class MainOffence(
     @Id
