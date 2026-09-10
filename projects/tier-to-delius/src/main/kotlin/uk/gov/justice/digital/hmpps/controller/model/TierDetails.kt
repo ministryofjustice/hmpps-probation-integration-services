@@ -33,7 +33,7 @@ data class Conviction(
     val sentenceTypeCode: String?,
     val breached: Boolean,
     val requirements: List<Requirement>,
-    val mainOffence: Offence?,
+    val mainOffence: Offence,
     val additionalOffences: List<Offence>,
 )
 

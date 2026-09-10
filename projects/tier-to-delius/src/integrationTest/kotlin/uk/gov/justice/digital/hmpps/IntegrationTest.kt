@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3TierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.NotificationExtensions.withCrn
@@ -31,7 +30,6 @@ internal class IntegrationTest @Autowired constructor(
     private val managementTierDevRepository: ManagementTierDevRepository,
     private val contactRepository: ContactRepository,
     private val wireMockServer: WireMockServer,
-    private val personWithV3TierRepository: PersonWithV3TierRepository,
     @MockitoBean private val featureFlags: FeatureFlags,
     @MockitoBean private val telemetryService: TelemetryService,
 ) {
@@ -155,12 +153,8 @@ internal class IntegrationTest @Autowired constructor(
     private fun Person.contacts() = contactRepository.findAll().filter { it.person.id == id }
     private fun Person.managementTiers() = managementTierDevRepository.findAllByIdPersonIdOrderByIdDateChanged(id)
 
-    private fun Person.v3Tier(): String? =
-        personWithV3TierRepository.findByCrnAndSoftDeletedFalse(crn)?.v3TierId?.let {
-            referenceDataRepository.findByIdOrNull(
-                it
-            )
-        }?.code
+    private fun Person.v3Tier(): String? = personRepository.findByCrnAndSoftDeletedIsFalse(crn)?.v3TierId
+        ?.let { referenceDataRepository.findByIdOrNull(it) }?.code
 
     private fun Person.currentTier(): String? = currentTier?.let { referenceDataRepository.findByIdOrNull(it) }?.code
 
