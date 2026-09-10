@@ -3,7 +3,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate.ddl-auto: none # TODO re-enable once "tier-to-delius-sa2026-exclusions" flag is enabled in production (23rd September)
     properties:
       hibernate:
         timezone.default_storage: NORMALIZE

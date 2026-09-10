@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.event.entity.flagged
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
@@ -7,22 +7,22 @@ import org.hibernate.type.NumericBooleanConverter
 
 @Entity
 @Immutable
-@Table(name = "main_offence")
+@Table(name = "additional_offence")
 @SQLRestriction("soft_deleted = 0")
-class MainOffence(
+class AdditionalOffenceWithSa2026Exclusions(
     @Id
-    @Column(name = "main_offence_id")
+    @Column(name = "additional_offence_id")
     val id: Long,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "event_id")
-    val event: EventEntity? = null,
+    val event: EventWithSa2026Exclusions? = null,
 
     @JoinColumn(name = "offence_id")
     @ManyToOne
-    val offence: Offence,
+    val offence: OffenceWithSa2026Exclusions,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 )
