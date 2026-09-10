@@ -103,7 +103,7 @@ class Staff(
     fun isUnallocated(): Boolean = code.endsWith("U")
 }
 
-interface StaffPersonRepository  : JpaRepository<Staff, Long> {
+interface StaffPersonRepository : JpaRepository<Staff, Long> {
     @Query(
         """
             SELECT 1 AS userId, st.id AS staffId, t.id AS teamId, t.provider.id AS providerId
@@ -121,6 +121,7 @@ fun StaffPersonRepository.getUnallocatedUserAndTeamAssociation(officerCode: Stri
         "User", "username",
         "Unallocated in team $officerCode"
     )
+
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -209,7 +210,6 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long> {
     )
     fun findUserAndTeamAssociation(username: String, teamCode: String): UserTeam?
 
-
     @Query(
         """
             SELECT l
@@ -265,7 +265,6 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
         "User", "username",
         "$username in team $teamCode"
     )
-
 
 interface UserTeam {
     val userId: Long

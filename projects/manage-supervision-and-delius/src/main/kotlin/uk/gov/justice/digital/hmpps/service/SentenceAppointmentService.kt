@@ -108,7 +108,7 @@ class SentenceAppointmentService(
 
             val userAndTeam = if (createAppointment.user.username.equals("UNALLOCATED", ignoreCase = true)) {
                 staffPersonRepository.getUnallocatedUserAndTeamAssociation(
-                    createAppointment.user.teamCode+"U"
+                    createAppointment.user.teamCode + "U"
                 )
             } else {
                 staffUserRepository.getUserAndTeamAssociation(
