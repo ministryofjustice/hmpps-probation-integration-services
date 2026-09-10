@@ -106,7 +106,7 @@ class Staff(
 interface StaffPersonRepository : JpaRepository<Staff, Long> {
     @Query(
         """
-            SELECT 1 AS userId, st.id AS staffId, t.id AS teamId, t.provider.id AS providerId
+            SELECT st.id AS staffId, t.id AS teamId, t.provider.id AS providerId
             FROM Staff st
             JOIN  ContactStaffTeam cst ON cst.id.staffId = st.id
             JOIN  Team t ON t.id = cst.id.team.id
@@ -267,7 +267,7 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
     )
 
 interface UserTeam {
-    val userId: Long
+    val userId: Long?
     val staffId: Long
     val teamId: Long
     val providerId: Long

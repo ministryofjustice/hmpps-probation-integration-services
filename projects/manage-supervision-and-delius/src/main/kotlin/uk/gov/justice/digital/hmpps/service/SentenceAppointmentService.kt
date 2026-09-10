@@ -106,7 +106,7 @@ class SentenceAppointmentService(
                 require(createAppointment.outcomeRecorded) { "An outcome must be provided for an appointment in the past." }
             }
 
-            val userAndTeam = if (createAppointment.user.username.equals("UNALLOCATED", ignoreCase = true)) {
+            val userAndTeam = if (createAppointment.user.username.equals("Unallocated", ignoreCase = true)) {
                 staffPersonRepository.getUnallocatedUserAndTeamAssociation(
                     createAppointment.user.teamCode + "U"
                 )
