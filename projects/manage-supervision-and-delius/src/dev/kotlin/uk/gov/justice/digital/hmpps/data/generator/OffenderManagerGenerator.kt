@@ -71,7 +71,7 @@ object OffenderManagerGenerator {
     )
     val STAFF_4 = Staff(
         IdGenerator.getAndIncrement(),
-        "N01UATU",
+        "N07T02U",
         "Unallocated",
         "Staff",
         DEFAULT_PROVIDER,
@@ -99,6 +99,7 @@ object OffenderManagerGenerator {
     )
     val STAFF_TEAM = ContactStaffTeam(StaffTeamLinkId(STAFF_1.id, TEAM))
     val STAFF_TEAM_1 = ContactStaffTeam(StaffTeamLinkId(STAFF_2.id, TEAM))
+    val STAFF_TEAM_2 = ContactStaffTeam(StaffTeamLinkId(STAFF_4.id, TEAM))
 
     val PAU_USER_RECORD1 = ProbationAreaUser(ProbationAreaUserId(STAFF_USER_1, DEFAULT_PROVIDER))
     val PROVIDER_2 = generateProvider("W01", selectable = true)
