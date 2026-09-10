@@ -103,6 +103,25 @@ class Staff(
     fun isUnallocated(): Boolean = code.endsWith("U")
 }
 
+interface StaffPersonRepository : JpaRepository<Staff, Long> {
+    @Query(
+        """
+            SELECT st.id AS staffId, t.id AS teamId, t.provider.id AS providerId
+            FROM Staff st
+            JOIN  ContactStaffTeam cst ON cst.id.staffId = st.id
+            JOIN  Team t ON t.id = cst.id.team.id
+            WHERE UPPER(st.code) = UPPER(:officerCode)
+        """
+    )
+    fun findUnallocatedUserAndTeamAssociation(officerCode: String): UserTeam?
+}
+
+fun StaffPersonRepository.getUnallocatedUserAndTeamAssociation(officerCode: String) =
+    findUnallocatedUserAndTeamAssociation(officerCode) ?: throw NotFoundException(
+        "Staff", "officerCode",
+        officerCode
+    )
+
 @Entity
 @Immutable
 @Table(name = "user_")
@@ -248,7 +267,7 @@ fun StaffUserRepository.getUserAndTeamAssociation(username: String, teamCode: St
     )
 
 interface UserTeam {
-    val userId: Long
+    val userId: Long?
     val staffId: Long
     val teamId: Long
     val providerId: Long
