@@ -1,0 +1,21 @@
+{
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Type": "Notification",
+  "Timestamp": "2019-10-21T14:01:18.500Z",
+  "Message": "{\"eventType\":\"person.case-note.created\",\"version\":1,\"description\":\"A prison case note has been created\",\"occurredAt\":\"2022-10-18T08:19:19.451579+01:00\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/case-notes/AA0001A/9f0a2112-acde-4501-b1f9-3f2f5f04e427\",\"additionalInformation\":{\"id\":\"9f0a2112-acde-4501-b1f9-3f2f5f04e427\",\"legacyId\":\"576778\",\"type\":\"RESET\",\"subType\":\"GUIDINT\"},\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"AA0001A\"}]}}",
+  "TopicArn": "arn:aws:sns:eu-west-1:000000000000:offender_events",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "person.case-note.created"
+    },
+    "type": {
+      "Type": "String",
+      "Value": "RESET"
+    },
+    "subType": {
+      "Type": "String",
+      "Value": "GUIDINT"
+    }
+  }
+}

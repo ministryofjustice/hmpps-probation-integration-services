@@ -185,6 +185,39 @@ class CaseNotesIntegrationTest @Autowired constructor(
 
     @Order(5)
     @Test
+    fun `create a new case note for guided interview`() {
+        val nomisCaseNote = PrisonCaseNoteGenerator.GUIDED_INTERVIEW
+
+        channelManager.getChannel(queueName).publishAndWait(
+            prepNotification(CaseNoteMessageGenerator.GUIDED_INTERVIEW, wireMockserver.port())
+        )
+
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
+        val saved =
+            caseNoteRepository.findByExternalReference("${DeliusCaseNote.CASE_NOTE_URN_PREFIX}${nomisCaseNote.id}")
+        assertNotNull(saved)
+
+        assertThat(
+            saved!!.notes,
+            stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
+        )
+
+        assertThat(
+            saved.type.code,
+            equalTo(CaseNoteNomisTypeGenerator.GUIDED.type.code)
+        )
+
+        assertThat(
+            saved.eventId,
+            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
+        )
+
+        val staff = staffRepository.findById(saved.staffId).orElseThrow()
+        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B000"))
+    }
+
+    @Order(6)
+    @Test
     fun `migrate case notes successfully when noms number added`() {
         val offender = requireNotNull(offenderRepository.findByNomsIdAndSoftDeletedIsFalse("A4578BX"))
         val originals = caseNoteRepository.findAll().filter { it.offender.id == offender.id }
@@ -211,7 +244,7 @@ class CaseNotesIntegrationTest @Autowired constructor(
         assertThat(saved.size, equalTo(5))
     }
 
-    @Order(6)
+    @Order(7)
     @Test
     fun `case note not of interest - noop`() {
         val existing = CaseNoteMessageGenerator.EXISTS_IN_DELIUS
@@ -228,7 +261,7 @@ class CaseNotesIntegrationTest @Autowired constructor(
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
 
-    @Order(7)
+    @Order(8)
     @Test
     fun `create an active alert`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.CREATED_ALERT
@@ -253,7 +286,7 @@ class CaseNotesIntegrationTest @Autowired constructor(
         assertThat(staff.forename, equalTo("John"))
     }
 
-    @Order(8)
+    @Order(9)
     @Test
     fun `updated to deactivate alert`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.UPDATED_ALERT
@@ -282,7 +315,7 @@ class CaseNotesIntegrationTest @Autowired constructor(
         assertThat(staff.forename, equalTo("Jane"))
     }
 
-    @Order(9)
+    @Order(10)
     @Test
     fun `alert made inactive`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.INACTIVE_ALERT

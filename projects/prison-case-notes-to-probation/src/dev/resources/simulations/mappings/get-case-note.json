@@ -44,6 +44,20 @@
     {
       "request": {
         "method": "GET",
+        "url": "/case-notes/AA0001A/9f0a2112-acde-4501-b1f9-3f2f5f04e427"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-guided-interview.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/case-notes/AA0001A/da82e1df-1a74-486e-842c-6ce961575211"
       },
       "response": {
