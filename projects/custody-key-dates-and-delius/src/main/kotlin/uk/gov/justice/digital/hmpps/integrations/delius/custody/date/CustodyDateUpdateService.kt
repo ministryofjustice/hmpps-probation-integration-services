@@ -49,7 +49,7 @@ class CustodyDateUpdateService(
 
     private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false, clientSource: String = "messaging") {
         if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry(clientSource))
-        val calculateDatesFromDelius = featureFlags.enabled("calculateFinalThirdDateFromDelius")
+        val calculateDatesFromDelius = featureFlags.enabled("calculate-key-dates-from-delius")
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
             ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry(clientSource))

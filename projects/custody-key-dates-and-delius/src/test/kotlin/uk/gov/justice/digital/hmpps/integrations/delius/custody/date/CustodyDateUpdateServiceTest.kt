@@ -86,7 +86,7 @@ internal class CustodyDateUpdateServiceTest {
     }
 
     private fun featureFlagEnabled(enabled: Boolean) {
-        whenever(featureFlags.enabled("calculateFinalThirdDateFromDelius")).thenReturn(enabled)
+        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
     }
 
     @Test

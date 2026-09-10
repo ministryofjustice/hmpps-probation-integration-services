@@ -284,6 +284,6 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     private fun featureFlagEnabled(enabled: Boolean) {
-        whenever(featureFlags.enabled("calculateFinalThirdDateFromDelius")).thenReturn(enabled)
+        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
     }
 }
