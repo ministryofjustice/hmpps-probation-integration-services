@@ -28,4 +28,12 @@ object CaseNoteNomisTypeGenerator {
             false
         )
     )
+    val GUIDED = CaseNoteNomisType(
+        "RESET GUIDINT",
+        CaseNoteType(
+            IdGenerator.getAndIncrement(),
+            "NOMIS033",
+            false
+        )
+    )
 }

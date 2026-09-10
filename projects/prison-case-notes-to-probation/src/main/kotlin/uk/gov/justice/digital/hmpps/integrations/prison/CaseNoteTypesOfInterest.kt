@@ -5,7 +5,7 @@ object CaseNoteTypesOfInterest {
         "PRISON" to setOf("RELEASE"),
         "TRANSFER" to setOf("FROMTOL"),
         "GEN" to setOf("OSE"),
-        "RESET" to setOf("BCST"),
+        "RESET" to setOf("BCST", "GUIDINT"),
         "OMIC" to setOf(),
         "OMIC_OPD" to setOf(),
         "KA" to setOf()
