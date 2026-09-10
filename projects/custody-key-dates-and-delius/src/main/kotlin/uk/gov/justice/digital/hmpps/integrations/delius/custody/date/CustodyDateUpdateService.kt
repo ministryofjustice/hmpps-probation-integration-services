@@ -67,7 +67,13 @@ class CustodyDateUpdateService(
                 if (e.statusCode == HttpStatus.NOT_FOUND) null else throw e
             }
         } else null
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope, calculateDatesFromDelius, isDisposalEligibleForFinalThirdDate)
+        val updated = calculateKeyDateChanges(
+            sentenceDetail,
+            custody,
+            envelope,
+            calculateDatesFromDelius,
+            isDisposalEligibleForFinalThirdDate
+        )
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
