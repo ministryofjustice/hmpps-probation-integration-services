@@ -58,9 +58,9 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val isDisposalEligibleForFinalThirdDate = custody.disposal?.isDisposalL1Sc() == true
+        val isStatutoryCustodyDeterminateSentence = custody.disposal?.isDisposalL1Sc() == true
         // Only fetch CRDS data when feature flag is disabled
-        val envelope = if (!calculateDatesFromDelius && isDisposalEligibleForFinalThirdDate) {
+        val envelope = if (!calculateDatesFromDelius && isStatutoryCustodyDeterminateSentence) {
             try {
                 crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
             } catch (e: RestClientResponseException) {
@@ -72,7 +72,7 @@ class CustodyDateUpdateService(
             custody,
             envelope,
             calculateDatesFromDelius,
-            isDisposalEligibleForFinalThirdDate
+            isStatutoryCustodyDeterminateSentence
         )
         if (updated.isEmpty()) {
             telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
@@ -81,7 +81,7 @@ class CustodyDateUpdateService(
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
                 // Only update disposal.sdsPlus when using CRDS (feature flag off)
-                if (!calculateDatesFromDelius && isDisposalEligibleForFinalThirdDate && envelope != null) {
+                if (!calculateDatesFromDelius && isStatutoryCustodyDeterminateSentence && envelope != null) {
                     if (booking.id != envelope.bookingId) {
                         telemetryService.trackEvent(
                             "SentenceEnvelopeBookingIdMismatch", mapOf(

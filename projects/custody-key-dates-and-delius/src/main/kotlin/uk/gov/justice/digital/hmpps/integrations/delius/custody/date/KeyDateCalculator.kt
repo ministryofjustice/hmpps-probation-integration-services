@@ -39,7 +39,7 @@ class KeyDateCalculator {
      * Calculate EMED using Delius data
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
      * For SDS Sentences, EMED = sentenceEndDate - (60% of the sentence length calculated as sentenceEndDate - disposal_date)
-     * For SDS+ Sentences, EMED = SED - (1/3rd of the sentence length)
+     * For SDS+ Sentences, EMED = sentenceEndDate - (1/3rd of the sentence length calculated as sentenceEndDate - disposal_date)
      */
     fun presumptiveElectronicMonitoringEndDateFromDelius(
         sentenceEndDate: LocalDate?,
