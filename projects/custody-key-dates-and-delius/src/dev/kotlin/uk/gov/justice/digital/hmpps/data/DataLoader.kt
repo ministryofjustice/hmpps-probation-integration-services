@@ -90,7 +90,13 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         val pssPerson = save(PersonGenerator.PSS_PERSON)
         val pssEvent = save(generateEvent(pssPerson, "1"))
         save(generateOrderManager(pssEvent))
-        val pssDisposal = save(generateDisposal(pssEvent, SentenceGenerator.PSS_DISPOSAL_TYPE, disposalDate = LocalDate.parse("2025-07-22")))
+        val pssDisposal = save(
+            generateDisposal(
+                pssEvent,
+                SentenceGenerator.PSS_DISPOSAL_TYPE,
+                disposalDate = LocalDate.parse("2025-07-22")
+            )
+        )
         save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
