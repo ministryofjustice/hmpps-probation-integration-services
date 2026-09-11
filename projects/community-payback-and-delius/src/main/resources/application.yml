@@ -25,9 +25,6 @@ spring:
       hmpps-auth:
         token-uri: http://localhost:${dev.wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
-  servlet.multipart:
-    max-file-size: 50MB
-    max-request-size: 50MB
 
 oauth2.roles:
   - PROBATION_API__COMMUNITY_PAYBACK__CASE_DETAIL
