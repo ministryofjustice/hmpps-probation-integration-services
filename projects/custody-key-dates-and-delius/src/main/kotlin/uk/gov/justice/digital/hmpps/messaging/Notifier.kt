@@ -19,9 +19,11 @@ import kotlin.streams.asSequence
 class Notifier(
     private val personRepository: PersonRepository,
     @Qualifier("queuePublisher") private val queuePublisher: NotificationPublisher,
+    @Qualifier("topicPublisher") private val topicPublisher: NotificationPublisher,
 ) {
     companion object {
         const val BULK_KEY_DATE_UPDATE = "custody-key-dates.internal.bulk-update"
+        const val PROBATION_KEY_DATE_UPDATE = "probation-case.custody-key-dates.updated"
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
@@ -37,6 +39,25 @@ class Notifier(
                 count++
             }
         log.info("Published $count messages successfully")
+    }
+
+    fun publishChange(nomisId: String) {
+        topicPublisher.publish(
+            Notification(
+                message = HmppsDomainEvent(
+                    eventType = PROBATION_KEY_DATE_UPDATE,
+                    description = "Probation case updated with custody key dates",
+                    version = 1,
+                    personReference = PersonReference(
+                        listOfNotNull(
+                            PersonIdentifier("NOMS", nomisId),
+                            personRepository.findCrnByNomisId(nomisId)?.let { PersonIdentifier("CRN", it) }
+                        )
+                    )
+                ),
+                attributes = MessageAttributes(PROBATION_KEY_DATE_UPDATE)
+            )
+        )
     }
 
     private fun notification(identifier: PersonIdentifier, dryRun: Boolean) =

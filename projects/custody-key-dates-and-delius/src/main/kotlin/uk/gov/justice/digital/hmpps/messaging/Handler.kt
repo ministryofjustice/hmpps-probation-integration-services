@@ -22,7 +22,8 @@ class Handler(
     override val converter: KeyDateChangedEventConverter,
     private val cduService: CustodyDateUpdateService,
     private val telemetryService: TelemetryService,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val notifier: Notifier,
 ) : NotificationHandler<Any> {
     @Publish(
         messages = [
@@ -43,16 +44,23 @@ class Handler(
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
-            is HmppsDomainEvent -> message.personReference.findNomsNumber()
-                ?.let { cduService.updateCustodyKeyDates(it, message.dryRun) }
-
-            is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
-            is ProbationOffenderEvent -> when (notification.eventType) {
-                "SENTENCE_CHANGED",
-                    -> personRepository.findNomsIdByCrn(message.crn)?.let { cduService.updateCustodyKeyDates(it) }
-
-                else -> throw IllegalArgumentException("Unexpected offender event type: ${notification.eventType}")
+            is HmppsDomainEvent -> message.personReference.findNomsNumber()?.let {
+                val changed = cduService.updateCustodyKeyDates(it, message.dryRun)
+                if (changed) notifier.publishChange(it)
             }
+
+            is CustodyDateChanged -> {
+                val changed = cduService.updateCustodyKeyDates(message.bookingId)
+                if (changed) notifier.publishChange(message.offenderIdDisplay)
+            }
+
+            is ProbationOffenderEvent if notification.eventType == "SENTENCE_CHANGED" ->
+                personRepository.findNomsIdByCrn(message.crn)?.let {
+                    val changed = cduService.updateCustodyKeyDates(it)
+                    if (changed) notifier.publishChange(it)
+                }
+
+            else -> error("Unexpected event type: ${notification.eventType}")
         }
     }
 
@@ -60,7 +68,7 @@ class Handler(
 }
 
 @Message
-data class CustodyDateChanged(val bookingId: Long)
+data class CustodyDateChanged(val bookingId: Long, val offenderIdDisplay: String)
 
 @Message
 data class ProbationOffenderEvent(val crn: String)

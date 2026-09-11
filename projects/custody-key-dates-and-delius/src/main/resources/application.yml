@@ -59,6 +59,7 @@ dev:
 messaging:
   consumer.queue: message-queue
   producer.queue: message-queue
+  producer.topic: domain-events
 
 integrations:
   prison-api:

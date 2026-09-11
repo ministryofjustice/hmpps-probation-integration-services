@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.*
@@ -18,8 +19,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.messaging.CustodyDateChanged
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
@@ -34,6 +35,8 @@ import java.util.concurrent.CompletableFuture
 internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
     private val queueName: String,
+    @Value("\${messaging.producer.topic}")
+    private val topicName: String,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
     private val custodyRepository: CustodyRepository
@@ -46,6 +49,14 @@ internal class IntegrationTest @Autowired constructor(
     lateinit var telemetryService: TelemetryService
 
     private val sedDate = "2025-09-10"
+
+    @BeforeEach
+    fun clearTopic() {
+        val topic = channelManager.getChannel(topicName)
+        do {
+            val message = topic.receive()?.also { topic.done(it.id) }
+        } while (message != null)
+    }
 
     @Test
     fun `Custody Key Dates updated as expected`() {
@@ -82,6 +93,8 @@ internal class IntegrationTest @Autowired constructor(
             anyMap(),
             anyMap()
         )
+
+        verifyDomainEventPublished(PersonGenerator.DEFAULT)
     }
 
     @Test
@@ -129,28 +142,8 @@ internal class IntegrationTest @Autowired constructor(
             anyMap(),
             anyMap()
         )
-    }
 
-    private fun verifyUpdatedKeyDates(custody: Custody) {
-        val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
-        val crd = custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)
-        val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
-        val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
-        val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
-        val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
-        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
-
-        assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
-        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
-        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
-        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
-        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
-        assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
-
-        assertThat(led?.softDeleted, equalTo(false))
+        verifyDomainEventPublished(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN)
     }
 
     @Test
@@ -231,6 +224,55 @@ internal class IntegrationTest @Autowired constructor(
         )
     }
 
+    @Test
+    fun `PSSED key date is added when disposal type has pss requirement`() {
+        featureFlagEnabled(true)
+        val noms = PersonGenerator.PSS_PERSON.nomsId
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_DATE_CHANGED,
+            attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
+        )
+        // Override to use PSS person's booking
+        val pssNotification = notification.copy(
+            message = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
+        )
+        channelManager.getChannel(queueName).publishAndWait(pssNotification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.PSS_PERSON.id, "68340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
+        assertNotNull(pssed)
+        assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
+    }
+
+    private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
+
+    private fun featureFlagEnabled(enabled: Boolean) {
+        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
+    }
+
+    private fun verifyUpdatedKeyDates(custody: Custody) {
+        val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
+        val crd = custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)
+        val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
+        val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
+        val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
+        val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
+        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
+
+        assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
+        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
+        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
+        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
+        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+        assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
+
+        assertThat(led?.softDeleted, equalTo(false))
+    }
+
     private fun verifyContactCreated() {
         val event = DEFAULT_CUSTODY.disposal!!.event
         val contact = contactRepository.findAll()
@@ -260,30 +302,25 @@ internal class IntegrationTest @Autowired constructor(
         )
     }
 
-    private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
+    private fun verifyDomainEventPublished(person: Person) {
+        val topic = channelManager.getChannel(topicName)
 
-    @Test
-    fun `PSSED key date is added when disposal type has pss requirement`() {
-        featureFlagEnabled(true)
-        val noms = PersonGenerator.PSS_PERSON.nomsId
-        val notification = Notification(
-            message = MessageGenerator.SENTENCE_DATE_CHANGED,
-            attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
+        val notification = topic.pollFor(1).single().also { topic.done(it.id) }
+        val event = notification.message as HmppsDomainEvent
+        assertThat(notification.eventType, equalTo("probation-case.custody-key-dates.updated"))
+        assertThat(event.eventType, equalTo("probation-case.custody-key-dates.updated"))
+        assertThat(event.version, equalTo(1))
+        assertThat(event.description, equalTo("Probation case updated with custody key dates"))
+        assertThat(
+            event.personReference,
+            equalTo(
+                PersonReference(
+                    listOf(
+                        PersonIdentifier("NOMS", person.nomsId!!),
+                        PersonIdentifier("CRN", person.crn)
+                    )
+                )
+            )
         )
-        // Override to use PSS person's booking
-        val pssNotification = notification.copy(
-            message = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
-        )
-        channelManager.getChannel(queueName).publishAndWait(pssNotification)
-
-        val custodyId = custodyRepository.findCustodyId(PersonGenerator.PSS_PERSON.id, "68340A").first()
-        val custody = custodyRepository.findCustodyById(custodyId)
-        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
-        assertNotNull(pssed)
-        assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
-    }
-
-    private fun featureFlagEnabled(enabled: Boolean) {
-        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
     }
 }
