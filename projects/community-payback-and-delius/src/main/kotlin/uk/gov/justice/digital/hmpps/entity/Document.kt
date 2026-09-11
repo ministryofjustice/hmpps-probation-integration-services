@@ -23,7 +23,7 @@ class Document(
     @Column
     val primaryKeyId: Long,
 
-    @Column
+    @Column(name = "table_name")
     val tableName: String,
 
     val externalReference: String,
@@ -32,6 +32,10 @@ class Document(
 
     var createdDatetime: ZonedDateTime? = null,
 
+    @Column(name = "created_by_user_id")
+    var createdByUserId: Long? = null,
+
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long? = null,
 
     @Column(columnDefinition = "char")

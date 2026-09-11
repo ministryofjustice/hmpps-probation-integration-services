@@ -39,6 +39,7 @@ class DocumentService(
             externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
             lastSaved = ZonedDateTime.now(),
             createdDatetime = ZonedDateTime.now(),
+            createdByUserId = userId,
             lastUpdatedUserId = userId,
             workInProgress = "N",
             status = "Y",
