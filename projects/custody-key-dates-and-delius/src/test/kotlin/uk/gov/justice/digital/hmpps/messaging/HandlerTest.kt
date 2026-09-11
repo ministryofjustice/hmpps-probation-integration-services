@@ -29,12 +29,15 @@ internal class HandlerTest {
     @Mock
     lateinit var cduService: CustodyDateUpdateService
 
+    @Mock
+    lateinit var notifier: Notifier
+
     lateinit var handler: Handler
 
     @Test
     fun `handles unexpected event type`() {
-        handler = Handler(converter, cduService, telemetryService, personRepository)
-        val exception = assertThrows<IllegalArgumentException> {
+        handler = Handler(converter, cduService, telemetryService, personRepository, notifier)
+        val exception = assertThrows<IllegalStateException> {
             handler.handle(
                 Notification(
                     message = MessageGenerator.SENTENCE_CHANGED,
@@ -42,6 +45,6 @@ internal class HandlerTest {
                 )
             )
         }
-        assertThat(exception.message, equalTo("Unexpected offender event type: UNKNOWN"))
+        assertThat(exception.message, equalTo("Unexpected event type: UNKNOWN"))
     }
 }

@@ -33,29 +33,31 @@ class CustodyDateUpdateService(
     private val keyDateCalculator: KeyDateCalculator,
     private val featureFlags: FeatureFlags,
 ) {
-    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
-        try {
-            val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
-            updateCustodyKeyDates(booking, dryRun, clientSource)
-        } catch (e: RestClientResponseException) {
-            if (e.statusCode != HttpStatus.NOT_FOUND) throw e
-        }
+    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") = try {
+        val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
+        updateCustodyKeyDates(booking, dryRun, clientSource)
+    } catch (e: RestClientResponseException) {
+        if (e.statusCode != HttpStatus.NOT_FOUND) throw e else false
     }
 
-    fun updateCustodyKeyDates(bookingId: Long) {
+    fun updateCustodyKeyDates(bookingId: Long): Boolean {
         val booking = prisonApi.getBooking(bookingId)
-        updateCustodyKeyDates(booking)
+        return updateCustodyKeyDates(booking)
     }
 
-    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false, clientSource: String = "messaging") {
-        if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry(clientSource))
+    private fun updateCustodyKeyDates(
+        booking: Booking,
+        dryRun: Boolean = false,
+        clientSource: String = "messaging"
+    ): Boolean {
+        if (!booking.active) return noUpdate("BookingNotActive", booking.telemetry(clientSource))
         val calculateDatesFromDelius = featureFlags.enabled("calculate-key-dates-from-delius")
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
-            ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry(clientSource))
+            ?: return noUpdate("MissingNomsNumber", booking.telemetry(clientSource))
         val custodyId = custodyRepository.findCustodyId(person.id, booking.bookingNo).run {
-            if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry(clientSource))
-            singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
+            if (size > 1) return noUpdate("DuplicateBookingRef", booking.telemetry(clientSource))
+            singleOrNull() ?: return noUpdate("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val isStatutoryCustodyDeterminateSentence = custody.disposal?.isDisposalL1Sc() == true
@@ -75,7 +77,7 @@ class CustodyDateUpdateService(
             isStatutoryCustodyDeterminateSentence
         )
         if (updated.isEmpty()) {
-            telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
+            return noUpdate("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
@@ -101,6 +103,7 @@ class CustodyDateUpdateService(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
                 booking.telemetry(clientSource) + updated.associateBy({ it.type.code }, { it.date.toString() })
             )
+            return !dryRun
         }
     }
 
@@ -218,4 +221,9 @@ class CustodyDateUpdateService(
         "bookingRef" to bookingNo,
         "clientSource" to clientSource
     )
+
+    private fun noUpdate(message: String, telemetry: Map<String, String>): Boolean {
+        telemetryService.trackEvent(message, telemetry)
+        return false
+    }
 }
