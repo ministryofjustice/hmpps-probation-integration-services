@@ -44,6 +44,10 @@ class CommunityPaybackAppointmentsService(
     private val officeLocationRepository: OfficeLocationRepository,
     private val teamRepository: TeamRepository,
 ) {
+    fun getAppointmentForDocumentUpload(appointmentId: Long): UnpaidWorkAppointment {
+        return unpaidWorkAppointmentRepository.getAppointment(appointmentId)
+    }
+
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
