@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
@@ -21,6 +22,7 @@ class RecallAction(
     private val recallRepository: RecallRepository,
     private val licenceConditionService: LicenceConditionService,
     private val contactService: ContactService,
+    private val domainEventService: DomainEventService,
 ) : PrisonerMovementAction {
 
     private val eotlRecallContactNotes = """${System.lineSeparator()}
@@ -74,6 +76,7 @@ class RecallAction(
                 endOfTemporaryLicence = recallReason.isEotl()
             )
         }
+        domainEventService.publishRecall(recall)
         return ActionResult.Success(ActionResult.Type.Recalled, prisonerMovement.telemetryProperties())
     }
 
