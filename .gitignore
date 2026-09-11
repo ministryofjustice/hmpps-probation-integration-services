@@ -52,3 +52,7 @@ out/
 ### Application specific ###
 *.db
 doc/tech-docs/docs/
+
+### Guard against contributors' global gitignore rules (e.g. "*.json") ###
+### hiding required WireMock stub mappings / test fixtures from git ###
+!**/simulations/**/*.json
