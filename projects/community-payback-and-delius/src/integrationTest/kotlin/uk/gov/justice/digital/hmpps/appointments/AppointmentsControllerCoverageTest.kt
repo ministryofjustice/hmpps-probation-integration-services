@@ -31,11 +31,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments with project codes filter`() {
         val projectCode = UPWGenerator.UPW_PROJECT_1.code
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&projectCodes=$projectCode") {
-            withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&projectCodes=$projectCode") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).isNotEmpty.allSatisfy { assertThat(it.project.code).isEqualTo(projectCode) }
     }
@@ -59,11 +60,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments with project type codes filter`() {
         val projectTypeCode = ReferenceDataGenerator.INDIVIDUAL_PLACEMENT_PROJECT_TYPE.code
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&projectTypeCodes=$projectTypeCode") {
-            withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&projectTypeCodes=$projectTypeCode") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).isNotEmpty
             .allSatisfy { assertThat(it.project.projectType.code).isEqualTo(projectTypeCode) }
@@ -71,11 +73,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
 
     @Test
     fun `get appointments with outcome codes filter`() {
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=NO_OUTCOME") {
-            withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&outcomeCodes=NO_OUTCOME") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).isNotEmpty.allSatisfy { assertThat(it.outcome).isNull() }
     }
@@ -83,11 +86,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments with appointment IDs filter`() {
         val id1 = UPWGenerator.DEFAULT_UPW_APPOINTMENT.id
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&appointmentIds=$id1") {
-            withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&appointmentIds=$id1") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).hasSize(1)
         assertThat(response.content.single().id).isEqualTo(id1)
@@ -96,11 +100,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments with references filter`() {
         val reference = UPWGenerator.DEFAULT_CONTACT_EXTERNAL_REF_UUID
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&references=$reference") {
-            withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+        val response =
+            mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&references=$reference") {
+                withToken()
+            }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content).isNotEmpty
             .allSatisfy { assertThat(it.externalReference).isEqualTo(reference) }
@@ -228,11 +233,12 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
     @Test
     fun `get appointments with different page sizes`() {
         listOf(5, 10, 20, 50).forEach { size ->
-            val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&page=0&size=$size") {
-                withToken()
-            }
-                .andExpect { status { isOk() } }
-                .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+            val response =
+                mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}&page=0&size=$size") {
+                    withToken()
+                }
+                    .andExpect { status { isOk() } }
+                    .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
             assertThat(response.content).hasSizeLessThanOrEqualTo(size)
             assertThat(response.page.size).isEqualTo(size.toLong())
