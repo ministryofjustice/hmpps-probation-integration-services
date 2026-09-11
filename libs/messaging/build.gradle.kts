@@ -5,6 +5,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("tools.jackson.module:jackson-module-kotlin")
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("com.amazonaws:amazon-sqs-java-extended-client-lib:2.1.2")
 
     api(platform(libs.aws))
     api("io.awspring.cloud:spring-cloud-aws-autoconfigure")
