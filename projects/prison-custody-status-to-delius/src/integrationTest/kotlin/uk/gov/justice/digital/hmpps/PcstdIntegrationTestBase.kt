@@ -37,6 +37,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRe
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.Movement
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -167,6 +169,11 @@ open class PcstdIntegrationTestBase {
         )
         assertThat(release.type.code, equalTo(releaseType.code))
         assertThat(release.reasonCode, equalTo(reasonCode))
+        verifyDomainEvent(
+            custody,
+            "probation-case.release.added",
+            "A release has been recorded in the probation system"
+        )
     }
 
     internal fun verifyRecall(custody: Custody, dateTime: ZonedDateTime, rrc: RecallReason.Code, reasonCode: String) {
@@ -177,6 +184,24 @@ open class PcstdIntegrationTestBase {
         )
         assertThat(recall.reason.code, equalTo(rrc.value))
         assertThat(recall.reasonCode, equalTo(reasonCode))
+        verifyDomainEvent(
+            custody,
+            "probation-case.recall.added",
+            "A recall has been recorded in the probation system"
+        )
+    }
+
+    private fun verifyDomainEvent(custody: Custody, eventType: String, description: String) {
+        val event = custody.disposal.event
+        val domainEvents = domainEventRepository.findAll()
+            .map { objectMapper.readValue<HmppsDomainEvent>(it.messageBody) }
+            .filter { it.eventType == eventType && it.personReference.findCrn() == event.person.crn }
+        assertThat(domainEvents, hasSize(1))
+
+        val message = domainEvents.single()
+        assertThat(message.description, equalTo(description))
+        assertThat(message.personReference, equalTo(PersonReference(listOf(PersonIdentifier("CRN", event.person.crn)))))
+        assertThat(message.additionalInformation, equalTo(mapOf("eventNumber" to event.number)))
     }
 
     internal fun verifyContact(custody: Custody, type: ContactType.Code) {

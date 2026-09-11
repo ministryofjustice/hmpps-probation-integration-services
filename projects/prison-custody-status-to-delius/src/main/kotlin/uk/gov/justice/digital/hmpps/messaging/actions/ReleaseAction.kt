@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging.actions
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -9,8 +8,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType.Code.COMMITTAL_PSSR_BREACH
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
@@ -36,6 +35,7 @@ class ReleaseAction(
     private val contactService: ContactService,
     private val eventService: EventService,
     private val featureFlags: FeatureFlags,
+    private val domainEventService: DomainEventService,
 ) : PrisonerMovementAction {
     override val name: String
         get() = "Release"
@@ -64,7 +64,7 @@ class ReleaseAction(
     ): ActionResult {
         if (custody.canBeReleased()) {
             val releaseDate = prisonerMovement.occurredAt.truncatedTo(ChronoUnit.DAYS)
-            releaseRepository.save(
+            val release = releaseRepository.save(
                 Release(
                     date = releaseDate,
                     type = type,
@@ -90,6 +90,7 @@ class ReleaseAction(
                 event.manager()
             )
             eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
+            domainEventService.publishRelease(release)
             return ActionResult.Success(ActionResult.Type.Released, prisonerMovement.telemetryProperties())
         } else if (custody.disposal.type.code == COMMITTAL_PSSR_BREACH.value) {
             val event = custody.disposal.event

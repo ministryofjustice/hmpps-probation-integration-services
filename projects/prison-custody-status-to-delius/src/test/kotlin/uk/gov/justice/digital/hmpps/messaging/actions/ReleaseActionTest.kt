@@ -17,10 +17,9 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -34,7 +33,6 @@ import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class ReleaseActionTest {
@@ -59,6 +57,9 @@ internal class ReleaseActionTest {
 
     @Mock
     internal lateinit var featureFlags: FeatureFlags
+
+    @Mock
+    internal lateinit var domainEventService: DomainEventService
 
     @InjectMocks
     internal lateinit var action: ReleaseAction
@@ -146,6 +147,7 @@ internal class ReleaseActionTest {
             ZonedDateTime.now().minusDays(1)
         )
         withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
+        doAnswer<Release> { it.getArgument(0) }.whenever(releaseRepository).save(any())
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, event.disposal!!.custody!!))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
@@ -155,6 +157,7 @@ internal class ReleaseActionTest {
         verify(releaseRepository).save(release.capture())
         assertThat(release.firstValue.institutionId, equalTo(event.disposal?.custody?.institution?.id))
         verify(contactService).createContact(any(), any(), any(), any(), anyOrNull())
+        verify(domainEventService).publishRelease(release.firstValue)
     }
 
     @ParameterizedTest
@@ -201,6 +204,7 @@ internal class ReleaseActionTest {
         withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
         whenever(institutionRepository.findByCode(InstitutionCode.UNKNOWN.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN])
+        doAnswer<Release> { it.getArgument(0) }.whenever(releaseRepository).save(any())
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, event.disposal!!.custody!!))
         assertThat(res, instanceOf(ActionResult.Success::class.java))
@@ -213,6 +217,7 @@ internal class ReleaseActionTest {
             equalTo(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]?.id)
         )
         verify(contactService).createContact(any(), any(), any(), any(), anyOrNull())
+        verify(domainEventService).publishRelease(release.firstValue)
     }
 
     companion object {
