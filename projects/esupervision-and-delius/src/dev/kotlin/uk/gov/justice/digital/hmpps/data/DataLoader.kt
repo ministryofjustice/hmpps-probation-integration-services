@@ -44,6 +44,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.PUNCTUATION_IN_NAME,
             PersonGenerator.SENSITIVE_CONTACT,
             PersonGenerator.SENSITIVE_CONTACT_MANAGER,
+            ReferenceDataGenerator.LENGTH_UNIT_MONTHS,
             OffenceGenerator.BURGLARY,
             EventGenerator.EVENT_1,
             EventGenerator.EVENT_2,
