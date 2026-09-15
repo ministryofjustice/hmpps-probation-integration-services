@@ -102,8 +102,8 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.31.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.55.0")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.56.0")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
@@ -114,7 +114,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.5.0"
+    id("com.gradle.develocity") version "4.5.1"
     id("com.github.burrunan.s3-build-cache") version "1.9.9"
 }
 
