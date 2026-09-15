@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.LENGTH_UNIT_MONTHS
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.entity.event.offence.MainOffence
@@ -16,14 +17,27 @@ object EventGenerator {
     val EVENT_1 = generateEvent(
         number = 1,
         referralDate = LocalDate.of(2025, 12, 1),
-        disposal = Disposal(id(), LocalDate.of(2025, 12, 1), CUSTODY),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2025, 12, 1),
+            type = CUSTODY,
+            notionalEndDate = LocalDate.of(2027, 6, 1),
+        ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
         active = false,
     )
     val EVENT_2 = generateEvent(
         number = 2,
         referralDate = LocalDate.of(2026, 3, 1),
-        disposal = Disposal(id(), LocalDate.of(2026, 3, 1), COMMUNITY_ORDER),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2026, 3, 1),
+            type = COMMUNITY_ORDER,
+            length = 24,
+            lengthUnit = LENGTH_UNIT_MONTHS,
+            notionalEndDate = LocalDate.of(2028, 3, 1),
+            enteredNotionalEndDate = LocalDate.of(2028, 6, 1),
+        ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
     val EVENT_3 = generateEvent(
@@ -43,7 +57,12 @@ object EventGenerator {
         number = 1,
         person = PersonGenerator.NO_ACTIVE_EVENT_PERSON,
         referralDate = LocalDate.of(2026, 2, 1),
-        disposal = Disposal(id(), LocalDate.of(2026, 2, 1), COMMUNITY_ORDER),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2026, 2, 1),
+            type = COMMUNITY_ORDER,
+            notionalEndDate = LocalDate.of(2027, 2, 1),
+        ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
         active = false,
     )
@@ -51,14 +70,24 @@ object EventGenerator {
         number = 1,
         person = PersonGenerator.FALLBACK_EVENT_PERSON,
         referralDate = LocalDate.of(2026, 1, 1),
-        disposal = Disposal(id(), LocalDate.of(2026, 1, 1), COMMUNITY_ORDER),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2026, 1, 1),
+            type = COMMUNITY_ORDER,
+            notionalEndDate = LocalDate.of(2027, 1, 1),
+        ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
     )
     val FALLBACK_EVENT_2 = generateEvent(
         number = 2,
         person = PersonGenerator.FALLBACK_EVENT_PERSON,
         referralDate = LocalDate.of(2026, 4, 1),
-        disposal = Disposal(id(), LocalDate.of(2026, 4, 1), COMMUNITY_ORDER),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2026, 4, 1),
+            type = COMMUNITY_ORDER,
+            notionalEndDate = LocalDate.of(2028, 1, 1),
+        ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
     )
 

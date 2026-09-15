@@ -450,7 +450,10 @@ internal class IntegrationTest @Autowired constructor(
                               },
                               "sentence": {
                                 "date": "2026-03-01",
-                                "description": "ORA Community Order (24 Months)"
+                                "description": "ORA Community Order (24 Months)",
+                                "expectedEndDate": "2028-06-01",
+                                "length": 24,
+                                "lengthUnit": "Months"
                               }
                             },
                             {
@@ -524,6 +527,22 @@ internal class IntegrationTest @Autowired constructor(
             jsonPath("$[0].events.length()") { value(2) }
             jsonPath("$[0].events[0].number") { value(2) }
             jsonPath("$[0].events[1].number") { value(3) }
+            jsonPath("$[0].events[0].sentence.expectedEndDate") { value("2028-06-01") }
+            jsonPath("$[0].events[0].sentence.length") { value(24) }
+            jsonPath("$[0].events[0].sentence.lengthUnit") { value("Months") }
+        }
+    }
+
+    @Test
+    fun `get multiple contact details sorts events by sentence expected end date descending`() {
+        mockMvc.post("/cases") {
+            json = listOf(PersonGenerator.FALLBACK_EVENT_PERSON.crn)
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].events.length()") { value(2) }
+            jsonPath("$[0].events[0].number") { value(2) }
+            jsonPath("$[0].events[1].number") { value(1) }
         }
     }
 
