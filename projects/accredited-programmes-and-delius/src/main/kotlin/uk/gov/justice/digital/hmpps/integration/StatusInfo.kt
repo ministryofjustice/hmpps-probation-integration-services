@@ -12,7 +12,7 @@ data class StatusInfo(
         AWAITING_ASSESSMENT("EIBA"),
         BREACH("EIBI"),
         DEPRIORITISED("EIBG"),
-        DEFERRED("EIBL"),
+        ON_HOLD("EIBL"),
         ON_PROGRAMME("EIBE"),
         PROGRAMME_COMPLETE("EIBF"),
         RECALL("EIBJ"),
