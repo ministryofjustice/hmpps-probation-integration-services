@@ -12,7 +12,7 @@ data class Document(
     val createdAt: ZonedDateTime?,
     val lastUpdated: ZonedDateTime?,
     val author: Name? = null,
-    val sensitive: Boolean? = null,
+    val sensitive: Boolean? = false,
 )
 
 data class PersonDocuments(

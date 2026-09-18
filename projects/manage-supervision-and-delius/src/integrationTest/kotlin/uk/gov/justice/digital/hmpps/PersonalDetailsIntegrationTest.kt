@@ -136,6 +136,8 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.documents[1].name, equalTo("other.doc"))
         assertThat(res.documents[0].id, equalTo("00000000-0000-0000-0000-000000000001"))
         assertThat(res.documents[1].id, equalTo("00000000-0000-0000-0000-000000000002"))
+        assertThat(res.documents[0].sensitive, equalTo(false))
+        assertThat(res.documents[1].sensitive, equalTo(false))
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
