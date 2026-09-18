@@ -209,7 +209,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `appointment documents contain correct names and alfresco ids`() {
+    fun `appointment documents contain correct names and alfresco ids and sensitive flags`() {
         val person = OVERVIEW
         val id = ContactGenerator.NEXT_APPT_CONTACT.id
         val res = mockMvc.get("/schedule/${person.crn}/appointment/$id") { withDeliusUserToken("DeliusUser") }
@@ -220,6 +220,10 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(
             res.appointment.documents.map { it.name },
             equalTo(listOf("contact.doc", "contact2.doc", "dic.doc"))
+        )
+        assertThat(
+            res.appointment.documents.map { it.status },
+            equalTo(listOf("Sensitive", null, "Sensitive"))
         )
     }
 
