@@ -20,6 +20,6 @@ class RegionController(
 
 
     @PreAuthorize("hasRole('PROBATION_API__EMDI__REFERENCE_DATA')")
-    @GetMapping(value = ["/regions/{regionCode}/pdu"])
+    @GetMapping(value = ["/{regionCode}/pdu"])
     fun getPdus(@PathVariable("regionCode") regionCode: String): List<CodedValue> = referenceDataService.pdus(regionCode)
 }
