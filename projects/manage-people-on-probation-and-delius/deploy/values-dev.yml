@@ -3,7 +3,7 @@ generic-service:
     host: manage-people-on-probation-and-delius-dev.hmpps.service.justice.gov.uk
 
   scheduledDowntime:
-    enabled: true
+    enabled: false
 
   env:
     SENTRY_ENVIRONMENT: dev
