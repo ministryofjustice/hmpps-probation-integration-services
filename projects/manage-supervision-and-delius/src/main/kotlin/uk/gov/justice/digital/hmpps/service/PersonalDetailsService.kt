@@ -527,7 +527,7 @@ fun ContactAddress.toAddress() = uk.gov.justice.digital.hmpps.api.model.personal
 )
 
 fun PersonDocument.toDocument() =
-    Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated, status = status)
+    Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated, sensitive = sensitive)
 
 fun PersonSummaryEntity.toPersonSummary() =
     PersonSummary(Name(forename, secondName, surname), crn, id, pnc, noms, dateOfBirth.toLocalDate())

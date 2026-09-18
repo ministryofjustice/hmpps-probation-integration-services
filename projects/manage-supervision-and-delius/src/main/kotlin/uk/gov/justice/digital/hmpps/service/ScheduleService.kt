@@ -249,11 +249,12 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.Docu
         name = name,
         createdAt = createdAt,
         lastUpdated = lastUpdated,
-        author = author
+        author = author,
+        sensitive = sensitive,
     )
 
 fun ContactDocument.toDocument() =
-    Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated)
+    Document(id = alfrescoId, name = name, createdAt = createdAt, lastUpdated = lastUpdated, sensitive = sensitive)
 
 fun ContactDocument.authorId() = lastUpdatedUserId ?: createdByUserId
 
