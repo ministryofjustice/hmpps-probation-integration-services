@@ -12,6 +12,7 @@ data class Document(
     val createdAt: ZonedDateTime?,
     val lastUpdated: ZonedDateTime?,
     val author: Name? = null,
+    val status: Boolean? = null,
 )
 
 data class PersonDocuments(
