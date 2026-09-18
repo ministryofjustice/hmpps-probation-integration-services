@@ -110,6 +110,10 @@ class Contact(
     @Column(name = "alert_active")
     var alertActive: Boolean? = false,
 
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "document_linked")
+    var documentLinked: Boolean? = false,
+
     @CreatedDate
     @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
