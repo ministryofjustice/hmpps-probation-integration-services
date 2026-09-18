@@ -222,7 +222,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
             equalTo(listOf("contact.doc", "contact2.doc", "dic.doc"))
         )
         assertThat(
-            res.appointment.documents.map { it.sensitive},
+            res.appointment.documents.map { it.sensitive },
             equalTo(listOf(true, false, true))
         )
     }
