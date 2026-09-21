@@ -350,7 +350,10 @@ internal class UserAccessServiceTest {
             PageImpl(
                 listOf(
                     limitedAccessRow(
-                        startDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:15:30Z"), shouldThrow = true),
+                        startDate = oracle.sql.TIMESTAMPTZ(
+                            ZonedDateTime.parse("2026-09-21T10:15:30Z"),
+                            shouldThrow = true
+                        ),
                         createdDateTime = "2026-09-21T10:16:30Z",
                     )
                 ),
