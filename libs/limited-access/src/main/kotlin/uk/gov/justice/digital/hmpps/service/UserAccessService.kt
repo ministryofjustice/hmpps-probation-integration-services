@@ -92,7 +92,7 @@ class UserAccessService(private val uar: UserAccessRepository) {
         is Timestamp -> toInstant().atZone(ZoneOffset.UTC)
         is LocalDateTime -> atZone(ZoneOffset.UTC)
         is CharSequence -> toString().toLimitedAccessDateTime()
-        else -> asOracleOffsetDateTime()?.toZonedDateTime()
+        else -> asOracleZonedDateTime()
             ?: throw UnsupportedOperationException("Cannot convert ${this::class.qualifiedName} to ZonedDateTime")
     }
 
@@ -102,13 +102,13 @@ class UserAccessService(private val uar: UserAccessRepository) {
             .recoverCatching { LocalDateTime.parse(this).atZone(ZoneOffset.UTC) }
             .getOrThrow()
 
-    private fun Any.asOracleOffsetDateTime(): OffsetDateTime? {
+    private fun Any.asOracleZonedDateTime(): ZonedDateTime? {
         if (javaClass.name != "oracle.sql.TIMESTAMPTZ") return null
 
         return runCatching {
-            javaClass.getMethod("offsetDateTimeValue").invoke(this) as OffsetDateTime
+            javaClass.getMethod("toZonedDateTime").invoke(this) as ZonedDateTime
         }.getOrElse {
-            throw UnsupportedOperationException("Cannot convert ${this::class.qualifiedName} to OffsetDateTime", it)
+            throw UnsupportedOperationException("Cannot convert ${this::class.qualifiedName} to ZonedDateTime", it)
         }
     }
 }
