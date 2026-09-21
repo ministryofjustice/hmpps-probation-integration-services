@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.controller
 
-
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,8 +17,8 @@ class RegionController(
     @GetMapping
     fun getRegions(): List<CodedValue> = referenceDataService.regions()
 
-
     @PreAuthorize("hasRole('PROBATION_API__EMDI__REFERENCE_DATA')")
     @GetMapping(value = ["/{regionCode}/pdu"])
-    fun getPdus(@PathVariable("regionCode") regionCode: String): List<CodedValue> = referenceDataService.pdus(regionCode)
+    fun getPdus(@PathVariable("regionCode") regionCode: String): List<CodedValue> =
+        referenceDataService.pdus(regionCode)
 }
