@@ -227,7 +227,6 @@ internal class UserAccessServiceTest {
         )
     }
 
-
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
@@ -240,19 +239,20 @@ internal class UserAccessServiceTest {
             object : PersonAccess {
                 override val crn = "R123456"
 
-                                                    @Test
-                                                    @Suppress("UNUSED")
-                            fun `allCases returns empty page from repository`() {
-                                val pageable = PageRequest.of(0, 10)
-                                                        val expected: PageImpl<LimitedAccessRow> = PageImpl(emptyList(), pageable, 0)
-                                whenever(uar.getAll(pageable)).thenReturn(expected)
+                @Test
+                @Suppress("UNUSED")
+                fun `allCases returns empty page from repository`() {
+                    val pageable = PageRequest.of(0, 10)
+                    val expected: PageImpl<LimitedAccessRow> = PageImpl(emptyList(), pageable, 0)
+                    whenever(uar.getAll(pageable)).thenReturn(expected)
 
-                                val res = userAccessService.allCases(pageable)
+                    val res = userAccessService.allCases(pageable)
 
-                                assertThat(res, equalTo(expected))
-                                assertThat(res.totalElements, equalTo(0L))
-                                assertThat(res.content, hasSize(0))
-                            }
+                    assertThat(res, equalTo(expected))
+                    assertThat(res.totalElements, equalTo(0L))
+                    assertThat(res.content, hasSize(0))
+                }
+
                 override val excluded = false
                 override val restricted = true
                 override val exclusionMessage = null
