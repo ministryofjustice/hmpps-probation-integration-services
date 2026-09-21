@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -20,6 +21,9 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
+import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -239,6 +243,129 @@ internal class UserAccessServiceTest {
         assertThat(res.content, hasSize(0))
     }
 
+    @Test
+    fun `allCases maps zoned offset timestamp and local datetimes`() {
+        val pageable = PageRequest.of(0, 10)
+        whenever(uar.getAll(pageable)).thenReturn(
+            PageImpl(
+                listOf(
+                    limitedAccessRow(
+                        startDate = ZonedDateTime.parse("2026-09-21T10:15:30Z"),
+                        endDate = OffsetDateTime.parse("2026-09-21T11:15:30+01:00"),
+                        createdDateTime = Timestamp.from(java.time.Instant.parse("2026-09-21T10:16:30Z")),
+                        lastUpdatedDateTime = LocalDateTime.parse("2026-09-21T10:17:30"),
+                    )
+                ),
+                pageable,
+                1
+            )
+        )
+
+        val res = userAccessService.allCases(pageable).content.single()
+
+        assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
+        assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00")))
+        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
+        assertThat(res.lastUpdatedDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:17:30Z")))
+    }
+
+    @Test
+    fun `allCases maps string datetime values`() {
+        val pageable = PageRequest.of(0, 10)
+        whenever(uar.getAll(pageable)).thenReturn(
+            PageImpl(
+                listOf(
+                    limitedAccessRow(
+                        startDate = "2026-09-21T10:15:30Z",
+                        endDate = "2026-09-21T11:15:30+01:00[Europe/London]",
+                        createdDateTime = "2026-09-21T10:16:30",
+                        lastUpdatedDateTime = null,
+                    )
+                ),
+                pageable,
+                1
+            )
+        )
+
+        val res = userAccessService.allCases(pageable).content.single()
+
+        assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
+        assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")))
+        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
+        assertThat(res.lastUpdatedDateTime, nullValue())
+    }
+
+    @Test
+    fun `allCases maps oracle timestamp with timezone values`() {
+        val pageable = PageRequest.of(0, 10)
+        whenever(uar.getAll(pageable)).thenReturn(
+            PageImpl(
+                listOf(
+                    limitedAccessRow(
+                        startDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:15:30Z")),
+                        endDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")),
+                        createdDateTime = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:16:30Z")),
+                        lastUpdatedDateTime = null,
+                    )
+                ),
+                pageable,
+                1
+            )
+        )
+
+        val res = userAccessService.allCases(pageable).content.single()
+
+        assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
+        assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")))
+        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
+    }
+
+    @Test
+    fun `allCases throws for unsupported datetime types`() {
+        val pageable = PageRequest.of(0, 10)
+        whenever(uar.getAll(pageable)).thenReturn(
+            PageImpl(
+                listOf(
+                    limitedAccessRow(
+                        startDate = 1,
+                        createdDateTime = "2026-09-21T10:16:30Z",
+                    )
+                ),
+                pageable,
+                1
+            )
+        )
+
+        val error = assertThrows<UnsupportedOperationException> {
+            userAccessService.allCases(pageable)
+        }
+
+        assertThat(error.message, equalTo("Cannot convert kotlin.Int to ZonedDateTime"))
+    }
+
+    @Test
+    fun `allCases wraps oracle conversion failures`() {
+        val pageable = PageRequest.of(0, 10)
+        whenever(uar.getAll(pageable)).thenReturn(
+            PageImpl(
+                listOf(
+                    limitedAccessRow(
+                        startDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:15:30Z"), shouldThrow = true),
+                        createdDateTime = "2026-09-21T10:16:30Z",
+                    )
+                ),
+                pageable,
+                1
+            )
+        )
+
+        val error = assertThrows<UnsupportedOperationException> {
+            userAccessService.allCases(pageable)
+        }
+
+        assertThat(error.message, equalTo("Cannot convert oracle.sql.TIMESTAMPTZ to ZonedDateTime"))
+    }
+
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
@@ -292,4 +419,26 @@ internal class UserAccessServiceTest {
                 CaseAccess("N123456", userExcluded = false, userRestricted = false)
             )
         )
+
+    private fun limitedAccessRow(
+        crn: String = "B123456",
+        username: String = "john-smith",
+        type: String = "Restriction",
+        exclusionMessage: String? = null,
+        restrictionMessage: String? = null,
+        startDate: Any,
+        endDate: Any? = null,
+        createdDateTime: Any,
+        lastUpdatedDateTime: Any? = null,
+    ) = object : LimitedAccessRow {
+        override val crn = crn
+        override val username = username
+        override val type = type
+        override val exclusionMessage = exclusionMessage
+        override val restrictionMessage = restrictionMessage
+        override val startDate = startDate
+        override val endDate = endDate
+        override val createdDateTime = createdDateTime
+        override val lastUpdatedDateTime = lastUpdatedDateTime
+    }
 }
