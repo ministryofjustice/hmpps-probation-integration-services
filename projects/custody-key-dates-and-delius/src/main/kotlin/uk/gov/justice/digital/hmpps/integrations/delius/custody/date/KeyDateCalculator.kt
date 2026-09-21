@@ -38,16 +38,16 @@ class KeyDateCalculator {
     /**
      * Calculate EMED using Delius data
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
-     * For SDS Sentences, EMED = sentenceEndDate - (60% of the sentence length calculated as sentenceEndDate - disposal_date)
-     * For SDS+ Sentences, EMED = sentenceEndDate - (1/3rd of the sentence length calculated as sentenceEndDate - disposal_date)
+     * For SDS Sentences, EMED = sentenceEndDate - (60% of disposal length in days).
+     * For SDS+ Sentences, EMED = sentenceEndDate - (1/3rd of disposal length in days).
      */
     fun presumptiveElectronicMonitoringEndDateFromDelius(
         sentenceEndDate: LocalDate?,
-        disposalDate: LocalDate?,
+        sentenceLengthInDays: Long?,
         sdsPlus: Boolean?
     ): LocalDate? {
         val endDate = sentenceEndDate ?: return null
-        val lengthInDays = calculateSentenceLengthInDays(disposalDate, endDate) ?: return null
+        val lengthInDays = sentenceLengthInDays ?: return null
         val deduction = if (sdsPlus == true) {
             ceil(lengthInDays / 3.0).toLong()
         } else {
@@ -59,14 +59,14 @@ class KeyDateCalculator {
     /**
      * Calculate Final Third Date using Delius data
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
-     * FTHRD = sentenceEndDate - 1/3 sentence length (calculated as sentenceEndDate - disposal_date)
+     * FTHRD = sentenceEndDate - (1/3rd of disposal length in days).
      */
     fun finalThirdDateFromDelius(
         sentenceEndDate: LocalDate?,
-        disposalDate: LocalDate?
+        sentenceLengthInDays: Long?
     ): LocalDate? {
         val endDate = sentenceEndDate ?: return null
-        val lengthInDays = calculateSentenceLengthInDays(disposalDate, endDate) ?: return null
+        val lengthInDays = sentenceLengthInDays ?: return null
         val deduction = ceil(lengthInDays / 3.0).toLong()
         return endDate.minusDays(deduction)
     }
@@ -85,18 +85,4 @@ class KeyDateCalculator {
                 null
             }
         }
-
-    /**
-     * Calculate sentence length in days from disposal date to end date.
-     * Returns null when either date is missing or disposal is after the end date.
-     */
-    private fun calculateSentenceLengthInDays(
-        disposalDate: LocalDate?,
-        endDate: LocalDate?
-    ): Long? {
-        val start = disposalDate ?: return null
-        val end = endDate ?: return null
-        if (start.isAfter(end)) return null
-        return ChronoUnit.DAYS.between(start, end)
-    }
 }

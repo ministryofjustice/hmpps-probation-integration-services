@@ -630,8 +630,8 @@ internal class CustodyDateUpdateServiceTest {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val disposal = generateDisposal(
             generateEvent(),
-            disposalDate = LocalDate.of(2024, 1, 1),
-            notionalEndDate = LocalDate.of(2025, 1, 1)
+            notionalEndDate = LocalDate.of(2025, 1, 1),
+            lengthInDays = 366L
         )
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -675,9 +675,9 @@ internal class CustodyDateUpdateServiceTest {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
         val disposal = generateDisposal(
             generateEvent(),
-            disposalDate = LocalDate.of(2024, 1, 1),
             notionalEndDate = LocalDate.of(2025, 1, 1),
-            sdsPlus = true
+            sdsPlus = true,
+            lengthInDays = 366L
         )
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -700,6 +700,70 @@ internal class CustodyDateUpdateServiceTest {
             check<List<KeyDate>> { saved ->
                 assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
                 assertThat(saved.any { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }, equalTo(true))
+            }
+        )
+    }
+
+    @Test
+    fun `Feature flag enabled uses disposal length for final third`() {
+        featureFlagEnabled(true)
+        listOf(
+            CustodyDateType.PRESUMPTIVE_EM_END_DATE,
+            CustodyDateType.FINAL_THIRD_START_DATE,
+        ).forEach { type ->
+            whenever(
+                referenceDataRepository.findByDatasetAndCode(
+                    DatasetCode.KEY_DATE_TYPE,
+                    type.code
+                )
+            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
+        }
+        val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
+        val disposal = generateDisposal(
+            generateEvent(),
+            lengthInDays = 820L
+        )
+        val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
+        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
+            SentenceDetail(
+                sentenceExpiryDate = LocalDate.of(
+                    2027,
+                    3,
+                    12
+                )
+            )
+        )
+        whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
+            PersonGenerator.DEFAULT
+        )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(
+            listOf(
+                custody.id
+            )
+        )
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                DatasetCode.KEY_DATE_TYPE,
+                CustodyDateType.SENTENCE_EXPIRY_DATE.code
+            )
+        )
+            .thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[CustodyDateType.SENTENCE_EXPIRY_DATE.code]!!)
+
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+
+        verify(keyDateRepository).saveAll(
+            check<List<KeyDate>> { saved ->
+                assertThat(
+                    saved.single { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }.date,
+                    equalTo(LocalDate.of(2026, 6, 11))
+                )
+                assertThat(
+                    saved.single { it.type.code == CustodyDateType.PRESUMPTIVE_EM_END_DATE.code }.date,
+                    equalTo(LocalDate.of(2025, 11, 5))
+                )
             }
         )
     }

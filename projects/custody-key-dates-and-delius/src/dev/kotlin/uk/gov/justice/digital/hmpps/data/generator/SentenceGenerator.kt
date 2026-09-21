@@ -25,17 +25,17 @@ object SentenceGenerator {
     fun generateDisposal(
         event: Event,
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
-        disposalDate: LocalDate = LocalDate.now(),
         sdsPlus: Boolean? = null,
-        notionalEndDate: LocalDate? = null
+        notionalEndDate: LocalDate? = null,
+        lengthInDays: Long? = null
     ) =
         Disposal(
             IdGenerator.getAndIncrement(),
             event,
             type,
-            date = disposalDate,
             notionalEndDate = notionalEndDate,
-            sdsPlus = sdsPlus
+            sdsPlus = sdsPlus,
+            lengthInDays = lengthInDays
         )
 
     fun generateDisposalType(

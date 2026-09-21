@@ -174,7 +174,7 @@ class CustodyDateUpdateService(
                 sentenceEndDate?.takeIf { isDisposalEligibleForFinalThirdDate }?.let {
                     keyDateCalculator.presumptiveElectronicMonitoringEndDateFromDelius(
                         it,
-                        custody.disposal?.date,
+                        custody.disposal?.lengthInDays,
                         custody.disposal?.sdsPlus
                     )
                 }
@@ -183,11 +183,13 @@ class CustodyDateUpdateService(
                 FINAL_THIRD_START_DATE.code,
                 sentenceEndDate?.takeIf {
                     isDisposalEligibleForFinalThirdDate &&
-                        custody.disposal?.sdsPlus != true &&
-                        custody.disposal?.date?.isAfter(it) == false
+                        custody.disposal?.sdsPlus != true
                 }
                     ?.let {
-                        keyDateCalculator.finalThirdDateFromDelius(it, custody.disposal?.date)
+                        keyDateCalculator.finalThirdDateFromDelius(
+                            it,
+                            custody.disposal?.lengthInDays
+                        )
                     }
             )
         )

@@ -72,11 +72,11 @@ class Disposal(
     @Convert(converter = YesNoConverter::class)
     var sdsPlus: Boolean? = null,
 
-    @Column(name = "disposal_date")
-    val date: LocalDate,
-
     @Column(name = "notional_end_date")
     val notionalEndDate: LocalDate? = null,
+
+    @Column(name = "length_in_days")
+    val lengthInDays: Long? = null,
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
