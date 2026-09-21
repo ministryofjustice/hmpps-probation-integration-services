@@ -25,8 +25,10 @@ object LimitedAccessGenerator {
         id = 2L
     )
     val LAO_EXCLUSION =
-        Exclusion(LAO_EXCLUDED_PERSON, LAO_EXCLUDED_USER, ZonedDateTime.now(), null, IdGenerator.getAndIncrement(),
-            ZonedDateTime.now(), null)
+        Exclusion(
+            LAO_EXCLUDED_PERSON, LAO_EXCLUDED_USER, ZonedDateTime.now(), null, IdGenerator.getAndIncrement(),
+            ZonedDateTime.now(), null
+        )
     val LAO_RESTRICTION = Restriction(
         LAO_RESTRICTED_PERSON,
         LAO_RESTRICTED_USER,
