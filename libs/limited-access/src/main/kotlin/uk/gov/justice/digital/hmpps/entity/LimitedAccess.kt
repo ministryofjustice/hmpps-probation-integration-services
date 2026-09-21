@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 @Immutable
@@ -215,10 +214,10 @@ interface LimitedAccessRow {
     val type: String
     val exclusionMessage: String?
     val restrictionMessage: String?
-    val startDate: OffsetDateTime
-    val endDate: OffsetDateTime?
-    val createdDateTime: OffsetDateTime
-    val lastUpdatedDateTime: OffsetDateTime?
+    val startDate: Any
+    val endDate: Any?
+    val createdDateTime: Any
+    val lastUpdatedDateTime: Any?
 }
 
 data class LimitedAccessDetail(

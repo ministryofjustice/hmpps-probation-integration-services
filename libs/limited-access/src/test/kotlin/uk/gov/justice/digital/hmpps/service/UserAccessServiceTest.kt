@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
-import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -194,10 +193,10 @@ internal class UserAccessServiceTest {
             override val type = "Restriction"
             override val exclusionMessage: String? = null
             override val restrictionMessage: String? = null
-            override val startDate = OffsetDateTime.parse("2026-09-21T10:15:30Z")
-            override val endDate: OffsetDateTime? = null
-            override val createdDateTime = OffsetDateTime.parse("2026-09-21T10:16:30Z")
-            override val lastUpdatedDateTime: OffsetDateTime? = null
+            override val startDate = "2026-09-21T10:15:30Z"
+            override val endDate: Any? = null
+            override val createdDateTime = "2026-09-21T10:16:30Z"
+            override val lastUpdatedDateTime: Any? = null
         }
         val expected: PageImpl<LimitedAccessRow> = PageImpl(listOf(row), pageable, 1)
         whenever(uar.getAll(pageable)).thenReturn(expected)
