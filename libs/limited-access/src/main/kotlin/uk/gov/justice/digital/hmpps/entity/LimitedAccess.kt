@@ -189,7 +189,6 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     fun checkLimitedAccessFor(crns: List<String>): List<PersonAccess>
 }
 
-
 interface PersonAccess {
     val crn: String
     val excluded: Boolean
