@@ -88,7 +88,8 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     @Query("select u from LimitedAccessUser u where upper(u.username) = upper(:username) ")
     fun findByUsername(username: String): LimitedAccessUser?
 
-    @Query("""
+    @Query(
+        """
         select crn,
        distinguished_name as username,
        type,
@@ -118,7 +119,8 @@ from ( ( select offender_id,
 join offender on offender.offender_id = l.offender_id
 join user_ on user_.user_id = l.user_id
 order by crn
-    """, nativeQuery = true)
+    """, nativeQuery = true
+    )
     fun getAll(page: Pageable): Page<LimitedAccessUser>
 
     @Query(
