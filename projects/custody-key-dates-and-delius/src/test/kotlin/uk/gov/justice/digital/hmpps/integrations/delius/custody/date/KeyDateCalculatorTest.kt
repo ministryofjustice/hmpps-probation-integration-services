@@ -82,11 +82,15 @@ internal class KeyDateCalculatorTest {
     @MethodSource("deliusEmedCases")
     fun `calculate presumptive em end date from delius`(
         sentenceEndDate: LocalDate?,
-        disposalDate: LocalDate?,
+        sentenceLengthInDays: Long?,
         sdsPlus: Boolean?,
         expected: LocalDate?
     ) {
-        val result = calculator.presumptiveElectronicMonitoringEndDateFromDelius(sentenceEndDate, disposalDate, sdsPlus)
+        val result = calculator.presumptiveElectronicMonitoringEndDateFromDelius(
+            sentenceEndDate,
+            sentenceLengthInDays,
+            sdsPlus
+        )
         assertThat(result, equalTo(expected))
     }
 
@@ -94,10 +98,13 @@ internal class KeyDateCalculatorTest {
     @MethodSource("deliusFinalThirdCases")
     fun `calculate final third date from delius`(
         sentenceEndDate: LocalDate?,
-        disposalDate: LocalDate?,
+        sentenceLengthInDays: Long?,
         expected: LocalDate?
     ) {
-        val result = calculator.finalThirdDateFromDelius(sentenceEndDate, disposalDate)
+        val result = calculator.finalThirdDateFromDelius(
+            sentenceEndDate,
+            sentenceLengthInDays
+        )
         assertThat(result, equalTo(expected))
     }
 
@@ -154,20 +161,22 @@ internal class KeyDateCalculatorTest {
 
         @JvmStatic
         fun deliusEmedCases() = listOf(
-            arguments(null, LocalDate.of(2024, 1, 1), false, null),
+            arguments(null, 366L, false, null),
             arguments(LocalDate.of(2025, 1, 1), null, false, null),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 2), false, null),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), false, LocalDate.of(2024, 5, 26)),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), true, LocalDate.of(2024, 9, 1)),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), null, LocalDate.of(2024, 5, 26))
+            arguments(LocalDate.of(2025, 1, 1), 366L, false, LocalDate.of(2024, 5, 26)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, true, LocalDate.of(2024, 9, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, null, LocalDate.of(2024, 5, 26)),
+            arguments(LocalDate.of(2027, 3, 12), 820L, false, LocalDate.of(2025, 11, 5))
         )
 
         @JvmStatic
         fun deliusFinalThirdCases() = listOf(
-            arguments(null, LocalDate.of(2024, 1, 1), null),
+            arguments(null, 366L, null),
             arguments(LocalDate.of(2025, 1, 1), null, null),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 2), null),
-            arguments(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2024, 9, 1))
+            arguments(LocalDate.of(2025, 1, 1), 366L, LocalDate.of(2024, 9, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 9L, LocalDate.of(2024, 12, 29)),
+            arguments(LocalDate.of(2027, 3, 12), 820L, LocalDate.of(2026, 6, 11)),
+            arguments(LocalDate.of(2042, 10, 23), 7427L, LocalDate.of(2036, 1, 12))
         )
     }
 }

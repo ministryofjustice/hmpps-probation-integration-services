@@ -157,7 +157,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(custody.disposal?.sdsPlus, equalTo(true))
         assertThat(
             custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-05-11"))
+            equalTo(LocalDate.parse("2025-08-24"))
         )
         assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
     }

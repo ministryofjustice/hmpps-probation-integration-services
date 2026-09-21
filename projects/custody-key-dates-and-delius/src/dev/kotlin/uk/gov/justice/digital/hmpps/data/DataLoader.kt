@@ -41,7 +41,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
         val event = save(generateEvent(PersonGenerator.DEFAULT))
         save(generateOrderManager(event))
-        val disposal = save(generateDisposal(event, disposalDate = LocalDate.parse("2025-07-22")))
+        val disposal = save(
+            generateDisposal(
+                event,
+                lengthInDays = 50
+            )
+        )
         DEFAULT_CUSTODY = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
@@ -82,8 +87,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.SDS_PLUS_PERSON,
             "78340A",
             keyDateTypes,
-            sdsPlus = true,
-            disposalDate = LocalDate.parse("2024-09-10")
+            sdsPlus = true
         )
 
         save(SentenceGenerator.PSS_DISPOSAL_TYPE)
@@ -93,8 +97,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         val pssDisposal = save(
             generateDisposal(
                 pssEvent,
-                SentenceGenerator.PSS_DISPOSAL_TYPE,
-                disposalDate = LocalDate.parse("2025-07-22")
+                SentenceGenerator.PSS_DISPOSAL_TYPE
             )
         )
         save(
@@ -114,12 +117,17 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         bookingRef: String,
         keyDateTypes: List<ReferenceData>,
         sdsPlus: Boolean? = null,
-        disposalDate: LocalDate = LocalDate.parse("2025-07-22")
     ): Custody {
         val person = save(personRef)
         val event = save(generateEvent(person, "1"))
         save(generateOrderManager(event))
-        val disposal = save(generateDisposal(event, sdsPlus = sdsPlus, disposalDate = disposalDate))
+        val disposal = save(
+            generateDisposal(
+                event,
+                sdsPlus = sdsPlus,
+                lengthInDays = 50
+            )
+        )
         val custody = save(
             generateCustodialSentence(
                 ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
