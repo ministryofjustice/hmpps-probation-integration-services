@@ -115,7 +115,26 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
         join offender on offender.offender_id = l.offender_id
         join user_ on user_.user_id = l.user_id
         order by offender.crn
-    """, nativeQuery = true
+    """,
+        countQuery = """
+        select count(1)
+        from ( ( select offender_id,
+                        user_id,
+                        'Restriction'        as type,
+                        restriction_time     as start_date,
+                        restriction_end_time as end_date
+                 from restriction )
+               union all
+               ( select offender_id,
+                        user_id,
+                        'Exclusion' as type,
+                        exclusion_date,
+                        exclusion_end_time
+                 from exclusion ) ) l
+        join offender on offender.offender_id = l.offender_id
+        join user_ on user_.user_id = l.user_id
+    """,
+        nativeQuery = true
     )
     fun getAll(page: Pageable): Page<LimitedAccessRow>
 
