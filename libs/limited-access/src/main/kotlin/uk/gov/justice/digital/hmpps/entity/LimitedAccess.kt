@@ -95,41 +95,41 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
                l.type as type,
                offender.exclusion_message as exclusionMessage,
                offender.restriction_message as restrictionMessage,
-               cast(l.start_date as timestamp with time zone) as startDate,
-               cast(l.end_date as timestamp with time zone) as endDate,
-               cast(l.start_date as timestamp with time zone) as createdDateTime,
-               cast(l.end_date as timestamp with time zone) as lastUpdatedDateTime
+               l.start_date as startDate,
+               l.end_date as endDate,
+               l.start_date as createdDateTime,
+               l.end_date as lastUpdatedDateTime
         from ( ( select offender_id,
                         user_id,
-                        'Restriction'        as type,
-                        restriction_time     as start_date,
-                        restriction_end_time as end_date
+                        'Restriction' as type,
+                        cast(restriction_time as timestamp with time zone) as start_date,
+                        cast(restriction_end_time as timestamp with time zone) as end_date
                  from restriction )
                union all
                ( select offender_id,
                         user_id,
                         'Exclusion' as type,
-                        exclusion_date,
-                        exclusion_end_time
+                        cast(exclusion_date as timestamp with time zone) as start_date,
+                        cast(exclusion_end_time as timestamp with time zone) as end_date
                  from exclusion ) ) l
         join offender on offender.offender_id = l.offender_id
         join user_ on user_.user_id = l.user_id
-        order by offender.crn
+        order by offender.crn, l.type, user_.distinguished_name
     """,
         countQuery = """
         select count(1)
         from ( ( select offender_id,
                         user_id,
-                        'Restriction'        as type,
-                        restriction_time     as start_date,
-                        restriction_end_time as end_date
+                        'Restriction' as type,
+                        cast(restriction_time as timestamp with time zone) as start_date,
+                        cast(restriction_end_time as timestamp with time zone) as end_date
                  from restriction )
                union all
                ( select offender_id,
                         user_id,
                         'Exclusion' as type,
-                        exclusion_date,
-                        exclusion_end_time
+                        cast(exclusion_date as timestamp with time zone) as start_date,
+                        cast(exclusion_end_time as timestamp with time zone) as end_date
                  from exclusion ) ) l
         join offender on offender.offender_id = l.offender_id
         join user_ on user_.user_id = l.user_id
@@ -188,6 +188,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     )
     fun checkLimitedAccessFor(crns: List<String>): List<PersonAccess>
 }
+
 
 interface PersonAccess {
     val crn: String
