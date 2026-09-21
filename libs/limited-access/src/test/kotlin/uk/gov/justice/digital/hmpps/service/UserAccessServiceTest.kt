@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.entity.ExclusionDetail
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessRow
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
@@ -168,7 +169,7 @@ internal class UserAccessServiceTest {
 
     @Test
     fun `allCaseAccessForCrn includes messages from person record`() {
-        val person = uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson(
+        val person = LimitedAccessPerson(
             crn = "E123456",
             exclusionMessage = "You are excluded",
             restrictionMessage = "Access is restricted",
@@ -185,7 +186,7 @@ internal class UserAccessServiceTest {
     }
 
     @Test
-    fun `allCases delegates to repository`() {
+    fun `allCases delegates to repository and maps result`() {
         val pageable = PageRequest.of(2, 25)
         val row = object : LimitedAccessRow {
             override val crn = "B123456"
@@ -227,6 +228,18 @@ internal class UserAccessServiceTest {
         )
     }
 
+    @Test
+    fun `allCases returns empty page from repository`() {
+        val pageable = PageRequest.of(0, 10)
+        val expected: PageImpl<LimitedAccessRow> = PageImpl(emptyList(), pageable, 0)
+        whenever(uar.getAll(pageable)).thenReturn(expected)
+
+        val res = userAccessService.allCases(pageable)
+
+        assertThat(res.totalElements, equalTo(0L))
+        assertThat(res.content, hasSize(0))
+    }
+
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
@@ -238,20 +251,6 @@ internal class UserAccessServiceTest {
             },
             object : PersonAccess {
                 override val crn = "R123456"
-
-                @Test
-                @Suppress("UNUSED")
-                fun `allCases returns empty page from repository`() {
-                    val pageable = PageRequest.of(0, 10)
-                    val expected: PageImpl<LimitedAccessRow> = PageImpl(emptyList(), pageable, 0)
-                    whenever(uar.getAll(pageable)).thenReturn(expected)
-
-                    val res = userAccessService.allCases(pageable)
-
-                    assertThat(res, equalTo(expected))
-                    assertThat(res.totalElements, equalTo(0L))
-                    assertThat(res.content, hasSize(0))
-                }
 
                 override val excluded = false
                 override val restricted = true

@@ -15,13 +15,13 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.AllCaseAccess
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
-import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -232,38 +232,48 @@ internal class UserAccessIntegrationTest @Autowired constructor(
             .andExpect {
                 status { is2xxSuccessful() }
             }
-            .andReturn().response
+            .andReturn().response.contentAsJson<AllCasesResponse>()
 
-        val body = objectMapper.readTree(response.contentAsString)
-        val content = body["content"].toList()
+        assertThat(response.content, hasSize(4))
+        assertThat(response.page.size, equalTo(10L))
+        assertThat(response.page.number, equalTo(0L))
+        assertThat(response.page.totalElements, equalTo(4L))
+        assertThat(response.page.totalPages, equalTo(1L))
 
-        assertThat(body["totalElements"].asLong(), equalTo(4L))
-        assertThat(body["number"].asInt(), equalTo(0))
-        assertThat(body["size"].asInt(), equalTo(10))
-        assertThat(content, hasSize(4))
+        val excluded = response.content.first { it.crn == "E123456" }
+        assertThat(excluded.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(excluded.type, equalTo("Exclusion"))
+        assertThat(excluded.exclusionMessage, equalTo(PersonGenerator.EXCLUDED.exclusionMessage))
+        assertThat(excluded.restrictionMessage, equalTo(null))
+        assertThat(excluded.startDate, notNullValue())
+        assertThat(excluded.createdDateTime, notNullValue())
 
-        val excluded = content.first { it["crn"].asText() == "E123456" }
-        assertThat(excluded["username"].asText(), equalTo(UserGenerator.DEFAULT.username))
-        assertThat(excluded["type"].asText(), equalTo("Exclusion"))
-        assertThat(excluded["exclusionMessage"].asText(), equalTo(PersonGenerator.EXCLUDED.exclusionMessage))
-        assertThat(excluded["restrictionMessage"], equalTo(null))
-        assertThat(excluded["startDate"].asText(), notNullValue())
-        assertThat(excluded["createdDateTime"].asText(), notNullValue())
+        val restricted = response.content.first { it.crn == "R123456" }
+        assertThat(restricted.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(restricted.type, equalTo("Restriction"))
+        assertThat(restricted.exclusionMessage, equalTo(null))
+        assertThat(restricted.restrictionMessage, equalTo(PersonGenerator.RESTRICTED.restrictionMessage))
+        assertThat(restricted.startDate, notNullValue())
+        assertThat(restricted.createdDateTime, notNullValue())
 
-        val restricted = content.first { it["crn"].asText() == "R123456" }
-        assertThat(restricted["username"].asText(), equalTo(UserGenerator.RESTRICTED.username))
-        assertThat(restricted["type"].asText(), equalTo("Restriction"))
-        assertThat(restricted["exclusionMessage"], equalTo(null))
-        assertThat(restricted["restrictionMessage"].asText(), equalTo(PersonGenerator.RESTRICTED.restrictionMessage))
-        assertThat(restricted["startDate"].asText(), notNullValue())
-        assertThat(restricted["createdDateTime"].asText(), notNullValue())
+        val bothExclusion = response.content.first { it.crn == "B123456" && it.type == "Exclusion" }
+        val bothRestriction = response.content.first { it.crn == "B123456" && it.type == "Restriction" }
 
-        val bothExclusion = content.first { it["crn"].asText() == "B123456" && it["type"].asText() == "Exclusion" }
-        val bothRestriction = content.first { it["crn"].asText() == "B123456" && it["type"].asText() == "Restriction" }
-
-        assertThat(bothExclusion["username"].asText(), equalTo(UserGenerator.DEFAULT.username))
-        assertThat(bothRestriction["username"].asText(), equalTo(UserGenerator.RESTRICTED.username))
-        assertThat(bothExclusion["exclusionMessage"].asText(), equalTo(PersonGenerator.BOTH.exclusionMessage))
-        assertThat(bothRestriction["restrictionMessage"].asText(), equalTo(PersonGenerator.BOTH.restrictionMessage))
+        assertThat(bothExclusion.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(bothRestriction.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(bothExclusion.exclusionMessage, equalTo(PersonGenerator.BOTH.exclusionMessage))
+        assertThat(bothRestriction.restrictionMessage, equalTo(PersonGenerator.BOTH.restrictionMessage))
     }
+
+    private data class AllCasesResponse(
+        val content: List<LimitedAccessDetail>,
+        val page: PageMetadata,
+    )
+
+    private data class PageMetadata(
+        val size: Long,
+        val number: Long,
+        val totalElements: Long,
+        val totalPages: Long,
+    )
 }
