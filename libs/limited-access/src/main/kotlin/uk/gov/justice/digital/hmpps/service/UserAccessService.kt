@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
@@ -62,6 +62,10 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 firstOrNull { it.restricted }?.restrictionMessage
             )
         }
+    }
+
+    fun allCases(page: Pageable): Any {
+        return uar.getAll(page)
     }
 }
 

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import jakarta.validation.constraints.Size
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.service.UserAccessService
@@ -27,4 +28,11 @@ class UserAccessController(
     fun getAllExclusionsAndRestrictionsForCrn(
         @PathVariable crn: String,
     ) = userAccessService.allCaseAccessForCrn(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__ACCESS_CONTROLS__READ')")
+    @GetMapping("/all-cases")
+    fun getAllCases(
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "1000") size: Int
+    ) = userAccessService.allCases(PageRequest.of(page, size))
 }

@@ -10,6 +10,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.entity.ExclusionDetail
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
@@ -80,12 +82,14 @@ internal class UserAccessServiceTest {
         whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
 
         val res = userAccessService.allCaseAccessForCrn("B123456")
+        val excludedFrom = checkNotNull(res.excludedFrom)
+        val restrictedTo = checkNotNull(res.restrictedTo)
 
         assertThat(res.crn, equalTo("B123456"))
-        assertThat(res.excludedFrom!!.size, equalTo(1))
-        assertThat(res.excludedFrom!![0].username, equalTo("excluded-user"))
-        assertThat(res.restrictedTo!!.size, equalTo(1))
-        assertThat(res.restrictedTo!![0].username, equalTo("restricted-user"))
+        assertThat(excludedFrom.size, equalTo(1))
+        assertThat(excludedFrom[0].username, equalTo("excluded-user"))
+        assertThat(restrictedTo.size, equalTo(1))
+        assertThat(restrictedTo[0].username, equalTo("restricted-user"))
     }
 
     @Test
@@ -145,13 +149,28 @@ internal class UserAccessServiceTest {
         assertThat(res.restrictionMessage, equalTo("Access is restricted"))
     }
 
-    private fun stubExclusionDetail(username: String) = object : ExclusionDetail {
+    @Test
+    fun `allCases delegates to repository`() {
+        val pageable = PageRequest.of(2, 25)
+        val expected = PageImpl(listOf(LimitedAccessUser("john-smith", 1L)), pageable, 1)
+        whenever(uar.getAll(pageable)).thenReturn(expected)
+
+        val res = userAccessService.allCases(pageable)
+
+        assertThat(res, equalTo(expected))
+    }
+
+    private fun stubExclusionDetail(
+        username: String,
+    ) = object : ExclusionDetail {
         override val username = username
         override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
         override val until: ZonedDateTime? = null
     }
 
-    private fun stubRestrictionDetail(username: String) = object : RestrictionDetail {
+    private fun stubRestrictionDetail(
+        username: String,
+    ) = object : RestrictionDetail {
         override val username = username
         override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
         override val until: ZonedDateTime? = null

@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
@@ -84,6 +87,39 @@ class LimitedAccessUser(
 interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     @Query("select u from LimitedAccessUser u where upper(u.username) = upper(:username) ")
     fun findByUsername(username: String): LimitedAccessUser?
+
+    @Query("""
+        select crn,
+       distinguished_name as username,
+       type,
+       exclusion_message,
+       restriction_message,
+       start_date,
+       l.end_date,
+       l.created_datetime,
+       l.last_updated_datetime
+from ( ( select offender_id,
+                user_id,
+                'Restriction'        as type,
+                restriction_date     as start_date,
+                restriction_end_date as end_date,
+                created_datetime,
+                last_updated_datetime
+         from restriction )
+       union all
+       ( select offender_id,
+                user_id,
+                'Exclusion',
+                exclusion_date,
+                exclusion_end_date,
+                created_datetime,
+                last_updated_datetime
+         from exclusion ) ) l
+join offender on offender.offender_id = l.offender_id
+join user_ on user_.user_id = l.user_id
+order by crn
+    """, nativeQuery = true)
+    fun getAll(page: Pageable): Page<LimitedAccessUser>
 
     @Query(
         """
