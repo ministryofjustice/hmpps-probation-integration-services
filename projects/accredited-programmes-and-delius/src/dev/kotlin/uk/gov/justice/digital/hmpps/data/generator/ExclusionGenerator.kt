@@ -15,5 +15,7 @@ object ExclusionGenerator {
         end = null,
         id = id(),
         start = ZonedDateTime.now(),
+        createdDateTime = ZonedDateTime.now(),
+        lastUpdatedDateTime = null,
     )
 }

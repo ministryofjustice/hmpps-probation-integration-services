@@ -44,7 +44,8 @@ object LimitedAccessGenerator {
         user = LAO_USER,
         start = ZonedDateTime.now(),
         end = null,
-        id = IdGenerator.getAndIncrement()
+        id = IdGenerator.getAndIncrement(),
+        ZonedDateTime.now(), null
     )
 
     val RESTRICTION = Restriction(
@@ -52,7 +53,8 @@ object LimitedAccessGenerator {
         user = LAO_USER,
         start = ZonedDateTime.now(),
         end = null,
-        id = IdGenerator.getAndIncrement()
+        id = IdGenerator.getAndIncrement(),
+        ZonedDateTime.now(), null
     )
 }
 
