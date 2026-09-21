@@ -3,15 +3,11 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.*
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
-import uk.gov.justice.digital.hmpps.api.model.appointment.RecreateAppointmentRequest
-import uk.gov.justice.digital.hmpps.api.model.appointment.RecreatedAppointment
+import uk.gov.justice.digital.hmpps.api.model.appointment.*
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.ATTENDED_COMPLIED
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator.POP_RESCHEDULED_OUTCOME
@@ -21,6 +17,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.STAFF_1
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment
@@ -373,6 +371,79 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(newAppointment.startTime?.toLocalTime()).isCloseTo(request.startTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.endTime?.toLocalTime()).isCloseTo(request.endTime, within(1, ChronoUnit.SECONDS))
         assertThat(newAppointment.outcome?.code).isNull()
+    }
+
+    @Test
+    fun `enforcement flag is recalculated on original and recreated appointments`() {
+        val created = mockMvc.post("/appointment/${PersonGenerator.RECREATE_PPCRN_PERSON_3.crn}") {
+            withUserToken(PI_USER.username)
+            json = CreateAppointment(
+                User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code),
+                type = CreateAppointment.Type.PlannedVideoContactNS.code,
+                start = ZonedDateTime.now().plusDays(10),
+                end = ZonedDateTime.now().plusDays(10).plusHours(1),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID(),
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val originalCreatedContact = contactRepository.findById(created.appointments[0].id).get()
+        assertThat(originalCreatedContact.enforcementFlag).isEqualTo(true)
+
+        val request = recreateRequest(date = LocalDate.now().plusDays(20))
+
+        val recreated = mockMvc.put("/appointments/${created.appointments[0].id}/recreate") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val originalAppointment = appointmentRepository.getAppointment(created.appointments[0].id)
+        assertThat(originalAppointment.outcome?.code).isEqualTo(SERVICE_RESCHEDULED_OUTCOME.code)
+
+        val originalContact = contactRepository.findById(created.appointments[0].id).get()
+        assertThat(originalContact.enforcementFlag).isNull()
+
+        val newAppointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(newAppointment.date).isEqualTo(request.date)
+
+        val newContact = contactRepository.findById(recreated.id).get()
+        assertThat(newContact.enforcementFlag).isEqualTo(true)
+    }
+
+    @Test
+    fun `enforcement flag is cleared on recreated appointment when new appointment has an outcome`() {
+        val created = mockMvc.post("/appointment/${PersonGenerator.RECREATE_PPCRN_PERSON_3.crn}") {
+            withUserToken(PI_USER.username)
+            json = CreateAppointment(
+                User(STAFF_USER_1.username, TEAM.code, DEFAULT_LOCATION.code),
+                type = CreateAppointment.Type.PlannedVideoContactNS.code,
+                start = ZonedDateTime.now().plusDays(10),
+                end = ZonedDateTime.now().plusDays(10).plusHours(1),
+                eventId = PersonGenerator.EVENT_1.id,
+                uuid = UUID.randomUUID(),
+            )
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val request = recreateRequest(
+            date = LocalDate.now().minusDays(2),
+            outcomeRecorded = true,
+        )
+
+        val recreated = mockMvc.put("/appointments/${created.appointments[0].id}/recreate") {
+            withUserToken(PI_USER.username)
+            json = request
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        assertThat(contactRepository.findById(created.appointments[0].id).get().enforcementFlag).isNull()
+        assertThat(contactRepository.findById(recreated.id).get().enforcementFlag).isNull()
     }
 
     @Test
