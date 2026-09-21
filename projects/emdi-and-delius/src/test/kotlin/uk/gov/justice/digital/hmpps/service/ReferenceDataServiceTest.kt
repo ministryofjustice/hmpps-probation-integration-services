@@ -32,7 +32,7 @@ internal class ReferenceDataServiceTest {
             Provider(id = 1, code = "N01", description = "N01 Provider", selectable = true),
             Provider(id = 2, code = "N02", description = "N02 Provider", selectable = true)
         )
-        given(providerRepository.findBySelectableTrue()).willReturn(providers)
+        given(providerRepository.findBySelectableTrueOrderByCode()).willReturn(providers)
 
         val result = referenceDataService.regions()
 
@@ -44,7 +44,7 @@ internal class ReferenceDataServiceTest {
 
     @Test
     fun `regions returns empty list when no providers are selectable`() {
-        given(providerRepository.findBySelectableTrue()).willReturn(emptyList())
+        given(providerRepository.findBySelectableTrueOrderByCode()).willReturn(emptyList())
 
         val result = referenceDataService.regions()
 

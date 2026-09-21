@@ -6,5 +6,5 @@ import uk.gov.justice.digital.hmpps.entity.staff.Provider
 
 
 interface ProviderRepository : JpaRepository<Provider, Long> {
-    fun findBySelectableTrue(): List<Provider>
+    fun findBySelectableTrueOrderByCode(): List<Provider>
 }

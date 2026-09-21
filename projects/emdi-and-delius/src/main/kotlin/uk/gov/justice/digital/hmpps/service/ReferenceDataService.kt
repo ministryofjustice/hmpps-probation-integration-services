@@ -12,7 +12,7 @@ class ReferenceDataService(
     private val providerRepository: ProviderRepository,
     private val pduRepository: PduRepository,
 ) {
-    fun regions(): List<CodedValue> = providerRepository.findBySelectableTrue()
+    fun regions(): List<CodedValue> = providerRepository.findBySelectableTrueOrderByCode()
         .map { it.toCodedValue() }
 
     fun pdus(regionCode: String): List<CodedValue> = pduRepository.findByProviderCodeAndSelectableTrueAndProviderSelectableTrue(regionCode)
