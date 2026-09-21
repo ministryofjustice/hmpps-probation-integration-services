@@ -28,7 +28,13 @@ class Exclusion(
 
     @Id
     @Column(name = "exclusion_id")
-    val id: Long
+    val id: Long,
+
+    @Column(name = "created_datetime")
+    val createdDateTime: ZonedDateTime,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDateTime: ZonedDateTime?
 )
 
 @Immutable
@@ -51,7 +57,13 @@ class Restriction(
 
     @Id
     @Column(name = "restriction_id")
-    val id: Long
+    val id: Long,
+
+    @Column(name = "created_datetime")
+    val createdDateTime: ZonedDateTime,
+
+    @Column(name = "last_updated_datetime")
+    val lastUpdatedDateTime: ZonedDateTime?
 )
 
 @Immutable
@@ -89,31 +101,38 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
 
     @Query(
         """
-        select offender.crn as crn,
+        select 
+               offender.crn as crn,
                user_.distinguished_name as username,
                l.type as type,
                offender.exclusion_message as exclusionMessage,
                offender.restriction_message as restrictionMessage,
                l.start_date as startDate,
                l.end_date as endDate,
-               l.start_date as createdDateTime,
-               l.end_date as lastUpdatedDateTime
-        from ( ( select offender_id,
+               l.createdDateTime as createdDateTime,
+               l.lastUpdatedDateTime as lastUpdatedDateTime
+        from ( ( select restriction_id as id,
+                        offender_id,
                         user_id,
                         'Restriction' as type,
                         cast(restriction_time as timestamp with time zone) as start_date,
-                        cast(restriction_end_time as timestamp with time zone) as end_date
+                        cast(restriction_end_time as timestamp with time zone) as end_date,
+                        cast(created_datetime as timestamp with time zone) as createdDateTime,
+                        cast(last_updated_datetime as timestamp with time zone) as lastUpdatedDateTime
                  from restriction )
                union all
-               ( select offender_id,
+               ( select exclusion_id as id,
+                        offender_id,
                         user_id,
                         'Exclusion' as type,
                         cast(exclusion_date as timestamp with time zone) as start_date,
-                        cast(exclusion_end_time as timestamp with time zone) as end_date
+                        cast(exclusion_end_time as timestamp with time zone) as end_date,
+                        cast(created_datetime as timestamp with time zone) as createdDateTime,
+                        cast(last_updated_datetime as timestamp with time zone) as lastUpdatedDateTime
                  from exclusion ) ) l
         join offender on offender.offender_id = l.offender_id
         join user_ on user_.user_id = l.user_id
-        order by offender.crn, l.type, user_.distinguished_name
+        order by offender.crn, l.type, user_.distinguished_name, l.id
     """,
         countQuery = """
         select count(1)

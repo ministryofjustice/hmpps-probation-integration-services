@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
@@ -263,6 +264,39 @@ internal class UserAccessIntegrationTest @Autowired constructor(
         assertThat(bothRestriction.username, equalTo(UserGenerator.RESTRICTED.username))
         assertThat(bothExclusion.exclusionMessage, equalTo(PersonGenerator.BOTH.exclusionMessage))
         assertThat(bothRestriction.restrictionMessage, equalTo(PersonGenerator.BOTH.restrictionMessage))
+    }
+
+    @Test
+    fun `all cases rejects negative page`() {
+        val response = mockMvc.get("/all-cases?page=-1&size=10") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.status, equalTo(400))
+        assertThat(response.message, equalTo("page must be > 0"))
+    }
+
+    @Test
+    fun `all cases rejects size outside allowed range`() {
+        val tooSmall = mockMvc.get("/all-cases?page=0&size=0") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(tooSmall.status, equalTo(400))
+        assertThat(tooSmall.message, equalTo("size must be between 1 and 1000"))
+
+        val tooLarge = mockMvc.get("/all-cases?page=0&size=1001") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(tooLarge.status, equalTo(400))
+        assertThat(tooLarge.message, equalTo("size must be between 1 and 1000"))
     }
 
     private data class AllCasesResponse(
