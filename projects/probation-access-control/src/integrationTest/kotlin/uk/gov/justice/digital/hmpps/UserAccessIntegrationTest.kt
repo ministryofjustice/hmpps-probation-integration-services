@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,7 +28,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class UserAccessIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
-    private val wireMockServer: WireMockServer
 ) {
 
     @MockitoBean
@@ -224,4 +225,63 @@ internal class UserAccessIntegrationTest @Autowired constructor(
         assertThat(response.exclusionMessage, equalTo(null))
         assertThat(response.restrictionMessage, equalTo(null))
     }
+
+    @Test
+    fun `can retrieve all case access details`() {
+        val response = mockMvc.get("/all-cases?page=0&size=10") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+            }
+            .andReturn().response.contentAsJson<AllCasesResponse>()
+
+        assertThat(response.totalElements, equalTo(4L))
+        assertThat(response.number, equalTo(0))
+        assertThat(response.size, equalTo(10))
+        assertThat(response.content, hasSize(4))
+
+        val excluded = response.content.first { it.crn == "E123456" }
+        assertThat(excluded.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(excluded.type, equalTo("Exclusion"))
+        assertThat(excluded.exclusionMessage, equalTo(PersonGenerator.EXCLUDED.exclusionMessage))
+        assertThat(excluded.restrictionMessage, equalTo(null))
+        assertThat(excluded.startDate, notNullValue())
+        assertThat(excluded.createdDateTime, notNullValue())
+
+        val restricted = response.content.first { it.crn == "R123456" }
+        assertThat(restricted.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(restricted.type, equalTo("Restriction"))
+        assertThat(restricted.exclusionMessage, equalTo(null))
+        assertThat(restricted.restrictionMessage, equalTo(PersonGenerator.RESTRICTED.restrictionMessage))
+        assertThat(restricted.startDate, notNullValue())
+        assertThat(restricted.createdDateTime, notNullValue())
+
+        val bothExclusion = response.content.first { it.crn == "B123456" && it.type == "Exclusion" }
+        val bothRestriction = response.content.first { it.crn == "B123456" && it.type == "Restriction" }
+
+        assertThat(bothExclusion.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(bothRestriction.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(bothExclusion.exclusionMessage, equalTo(PersonGenerator.BOTH.exclusionMessage))
+        assertThat(bothRestriction.restrictionMessage, equalTo(PersonGenerator.BOTH.restrictionMessage))
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private data class AllCasesResponse(
+        val content: List<LimitedAccessCase>,
+        val totalElements: Long,
+        val number: Int,
+        val size: Int,
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private data class LimitedAccessCase(
+        val crn: String,
+        val username: String,
+        val type: String,
+        val exclusionMessage: String?,
+        val restrictionMessage: String?,
+        val startDate: String,
+        val endDate: String?,
+        val createdDateTime: String,
+        val lastUpdatedDateTime: String?,
+    )
 }

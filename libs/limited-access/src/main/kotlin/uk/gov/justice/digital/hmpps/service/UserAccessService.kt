@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
 import java.time.ZonedDateTime
@@ -64,8 +66,20 @@ class UserAccessService(private val uar: UserAccessRepository) {
         }
     }
 
-    fun allCases(page: Pageable): Any {
-        return uar.getAll(page)
+    fun allCases(page: Pageable): Page<LimitedAccessDetail> {
+        return uar.getAll(page).map { row ->
+            LimitedAccessDetail(
+                crn = row.crn,
+                username = row.username,
+                type = row.type,
+                exclusionMessage = row.exclusionMessage,
+                restrictionMessage = row.restrictionMessage,
+                startDate = row.startDate.toZonedDateTime(),
+                endDate = row.endDate?.toZonedDateTime(),
+                createdDateTime = row.createdDateTime.toZonedDateTime(),
+                lastUpdatedDateTime = row.lastUpdatedDateTime?.toZonedDateTime(),
+            )
+        }
     }
 }
 

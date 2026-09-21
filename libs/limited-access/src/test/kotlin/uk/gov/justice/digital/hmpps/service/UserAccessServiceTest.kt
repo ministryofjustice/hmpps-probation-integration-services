@@ -13,10 +13,13 @@ import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.entity.ExclusionDetail
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessRow
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.RestrictionDetail
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
+import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -78,8 +81,24 @@ internal class UserAccessServiceTest {
     @Test
     fun `allCaseAccessForCrn returns exclusions and restrictions`() {
         whenever(uar.findLimitedAccessPersonByCrn("B123456")).thenReturn(null)
-        whenever(uar.getExclusionsForCrn("B123456")).thenReturn(listOf(stubExclusionDetail("excluded-user")))
-        whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
+        whenever(uar.getExclusionsForCrn("B123456")).thenReturn(
+            listOf(
+                object : ExclusionDetail {
+                    override val username = "excluded-user"
+                    override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+                    override val until: ZonedDateTime? = null
+                }
+            )
+        )
+        whenever(uar.getRestrictionsForCrn("B123456")).thenReturn(
+            listOf(
+                object : RestrictionDetail {
+                    override val username = "restricted-user"
+                    override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+                    override val until: ZonedDateTime? = null
+                }
+            )
+        )
 
         val res = userAccessService.allCaseAccessForCrn("B123456")
         val excludedFrom = checkNotNull(res.excludedFrom)
@@ -110,7 +129,15 @@ internal class UserAccessServiceTest {
     @Test
     fun `allCaseAccessForCrn returns only exclusions when no restrictions`() {
         whenever(uar.findLimitedAccessPersonByCrn("E123456")).thenReturn(null)
-        whenever(uar.getExclusionsForCrn("E123456")).thenReturn(listOf(stubExclusionDetail("excluded-user")))
+        whenever(uar.getExclusionsForCrn("E123456")).thenReturn(
+            listOf(
+                object : ExclusionDetail {
+                    override val username = "excluded-user"
+                    override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+                    override val until: ZonedDateTime? = null
+                }
+            )
+        )
         whenever(uar.getRestrictionsForCrn("E123456")).thenReturn(emptyList())
 
         val res = userAccessService.allCaseAccessForCrn("E123456")
@@ -123,7 +150,15 @@ internal class UserAccessServiceTest {
     fun `allCaseAccessForCrn returns only restrictions when no exclusions`() {
         whenever(uar.findLimitedAccessPersonByCrn("R123456")).thenReturn(null)
         whenever(uar.getExclusionsForCrn("R123456")).thenReturn(emptyList())
-        whenever(uar.getRestrictionsForCrn("R123456")).thenReturn(listOf(stubRestrictionDetail("restricted-user")))
+        whenever(uar.getRestrictionsForCrn("R123456")).thenReturn(
+            listOf(
+                object : RestrictionDetail {
+                    override val username = "restricted-user"
+                    override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
+                    override val until: ZonedDateTime? = null
+                }
+            )
+        )
 
         val res = userAccessService.allCaseAccessForCrn("R123456")
 
@@ -152,29 +187,46 @@ internal class UserAccessServiceTest {
     @Test
     fun `allCases delegates to repository`() {
         val pageable = PageRequest.of(2, 25)
-        val expected = PageImpl(listOf(LimitedAccessUser("john-smith", 1L)), pageable, 1)
+        val row = object : LimitedAccessRow {
+            override val crn = "B123456"
+            override val username = "john-smith"
+            override val type = "Restriction"
+            override val exclusionMessage: String? = null
+            override val restrictionMessage: String? = null
+            override val startDate = OffsetDateTime.parse("2026-09-21T10:15:30Z")
+            override val endDate: OffsetDateTime? = null
+            override val createdDateTime = OffsetDateTime.parse("2026-09-21T10:16:30Z")
+            override val lastUpdatedDateTime: OffsetDateTime? = null
+        }
+        val expected: PageImpl<LimitedAccessRow> = PageImpl(listOf(row), pageable, 1)
         whenever(uar.getAll(pageable)).thenReturn(expected)
 
         val res = userAccessService.allCases(pageable)
 
-        assertThat(res, equalTo(expected))
+        assertThat(
+            res,
+            equalTo(
+                PageImpl(
+                    listOf(
+                        LimitedAccessDetail(
+                            crn = "B123456",
+                            username = "john-smith",
+                            type = "Restriction",
+                            exclusionMessage = null,
+                            restrictionMessage = null,
+                            startDate = ZonedDateTime.parse("2026-09-21T10:15:30Z"),
+                            endDate = null,
+                            createdDateTime = ZonedDateTime.parse("2026-09-21T10:16:30Z"),
+                            lastUpdatedDateTime = null,
+                        )
+                    ),
+                    pageable,
+                    1
+                )
+            )
+        )
     }
 
-    private fun stubExclusionDetail(
-        username: String,
-    ) = object : ExclusionDetail {
-        override val username = username
-        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
-        override val until: ZonedDateTime? = null
-    }
-
-    private fun stubRestrictionDetail(
-        username: String,
-    ) = object : RestrictionDetail {
-        override val username = username
-        override val since: ZonedDateTime = ZonedDateTime.now().minusDays(1)
-        override val until: ZonedDateTime? = null
-    }
 
     private fun givenLimitedAccessResults() =
         listOf(
@@ -187,6 +239,20 @@ internal class UserAccessServiceTest {
             },
             object : PersonAccess {
                 override val crn = "R123456"
+
+                                                    @Test
+                                                    @Suppress("UNUSED")
+                            fun `allCases returns empty page from repository`() {
+                                val pageable = PageRequest.of(0, 10)
+                                                        val expected: PageImpl<LimitedAccessRow> = PageImpl(emptyList(), pageable, 0)
+                                whenever(uar.getAll(pageable)).thenReturn(expected)
+
+                                val res = userAccessService.allCases(pageable)
+
+                                assertThat(res, equalTo(expected))
+                                assertThat(res.totalElements, equalTo(0L))
+                                assertThat(res.content, hasSize(0))
+                            }
                 override val excluded = false
                 override val restricted = true
                 override val exclusionMessage = null
