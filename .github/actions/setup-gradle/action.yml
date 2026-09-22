@@ -18,7 +18,7 @@ runs:
         distribution: temurin
 
     - name: Assume role for access to cache bucket
-      uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+      uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
       if: inputs.cache-role != ''
       with:
         aws-region: eu-west-2
