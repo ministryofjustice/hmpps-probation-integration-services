@@ -33,6 +33,7 @@ data class AdditionalLicenceCondition(
         ATTENDANCE_AT_APPOINTMENTS("attendance at appointments"),
         CURFEW("curfew"),
         EXCLUSION_ZONE("exclusion zone"),
+        RESTRICTION_ZONE("restriction zone"),
         LOCATION_MONITORING("location monitoring")
     }
 }
