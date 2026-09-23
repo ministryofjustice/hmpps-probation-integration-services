@@ -276,7 +276,6 @@ internal class UserAccessServiceTest {
         assertThat(res.endDate, nullValue())
     }
 
-
     private fun givenLimitedAccessResults() =
         listOf(
             object : PersonAccess {
