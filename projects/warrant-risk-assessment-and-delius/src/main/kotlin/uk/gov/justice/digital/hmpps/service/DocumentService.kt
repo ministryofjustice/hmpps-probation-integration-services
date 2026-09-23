@@ -35,15 +35,6 @@ class DocumentService(
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager
 ) : AuditableService(auditedInteractionService) {
-    fun wraIdsForEvent(crn: String, eventNumber: String): WraEventDocuments {
-        personRepository.findByCrn(crn).orNotFoundBy("crn", crn)
-        val event = eventRepository.getByCrnAndNumber(crn, eventNumber)
-        val ids = documentRepository.findWraFormUrnsByEventId(event.id)
-            .map { it.removePrefix(WRA_FORM_URN_PREFIX) }
-
-        return WraEventDocuments(ids)
-    }
-
     fun uploadDocument(event: HmppsDomainEvent, file: ByteArray) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         check(file.isPdf()) { "Invalid PDF file: ${event.detailUrl}" }
 
