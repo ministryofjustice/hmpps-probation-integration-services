@@ -36,7 +36,7 @@ class UserAccessController(
         @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "1000") size: Int
     ) = run {
-        require(page >= 0) { "page must be > 0" }
+        require(page >= 0) { "page must be >= 0" }
         require(size in 1..1000) { "size must be between 1 and 1000" }
         PagedModel(userAccessService.allCases(PageRequest.of(page, size)))
     }
