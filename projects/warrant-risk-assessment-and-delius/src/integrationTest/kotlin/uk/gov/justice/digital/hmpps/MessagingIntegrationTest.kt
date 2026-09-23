@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
-import org.aspectj.lang.annotation.Before
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.BeforeEach
@@ -22,6 +21,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -140,6 +141,22 @@ internal class MessagingIntegrationTest @Autowired constructor(
         verify(telemetryService).notificationReceived(notification)
 
         verify(telemetryService, never()).trackEvent(eq("DocumentUploaded"), any(), any())
+        wireMockServer.verify(0, anyRequestedFor(urlPathMatching("/alfresco/.*")))
+    }
+
+    @Test
+    fun `unsupported wra event is ignored`() {
+        val event = prepEvent("wra-form-created", wireMockServer.port())
+        val notification = Notification(
+            message = event.message.copy(eventType = "probation-case.WRA.ignored"),
+            attributes = MessageAttributes("probation-case.WRA.ignored")
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService, never()).trackEvent(eq("DocumentUploaded"), any(), any())
+        verify(telemetryService, never()).trackEvent(eq("DocumentDeleted"), any(), any())
         wireMockServer.verify(0, anyRequestedFor(urlPathMatching("/alfresco/.*")))
     }
 
