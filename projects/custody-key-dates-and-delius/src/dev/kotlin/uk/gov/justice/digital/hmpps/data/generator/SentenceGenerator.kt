@@ -6,11 +6,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 
 object SentenceGenerator {
-    var DEFAULT_CUSTODY: Custody =
-        Custody(IdGenerator.getAndIncrement(), ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS, "38339A")
+    val DEFAULT_DISPOSAL_TYPE = generateDisposalType()
+    val PSS_DISPOSAL_TYPE = generateDisposalType(pssRequirement = true)
 
-    var DEFAULT_DISPOSAL_TYPE = generateDisposalType()
-    var PSS_DISPOSAL_TYPE = generateDisposalType(pssRequirement = true)
+    val DEFAULT_EVENT = generateEvent(PersonGenerator.DEFAULT)
+    val DEFAULT_ORDER_MANAGER = generateOrderManager(DEFAULT_EVENT)
+    val DEFAULT_DISPOSAL = generateDisposal(
+        DEFAULT_EVENT,
+        lengthInDays = 50
+    )
+    val DEFAULT_CUSTODY: Custody =
+        Custody(
+            IdGenerator.getAndIncrement(),
+            ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
+            "38339A",
+            DEFAULT_DISPOSAL
+        )
 
     fun generateEvent(
         person: Person = PersonGenerator.DEFAULT,

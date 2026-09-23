@@ -154,10 +154,10 @@ internal class IntegrationTest @Autowired constructor(
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
 
-        assertThat(custody.disposal?.sdsPlus, equalTo(true))
+        assertThat(custody.disposal.sdsPlus, equalTo(true))
         assertThat(
-            custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-08-24"))
+            custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
+            equalTo(LocalDate.parse("2022-12-04"))
         )
         assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
     }
@@ -175,15 +175,15 @@ internal class IntegrationTest @Autowired constructor(
         val custody = custodyRepository.findCustodyById(custodyId)
 
         // Check disposal.sdsPlus is updated to false from CRDS envelope
-        assertThat(custody.disposal?.sdsPlus, equalTo(false))
+        assertThat(custody.disposal.sdsPlus, equalTo(false))
 
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertNotNull(emed)
         assertNotNull(fthrd)
 
-        assertThat(emed!!.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(emed!!.date, equalTo(LocalDate.parse("2022-11-29")))
         assertThat(fthrd!!.date, equalTo(LocalDate.parse("2025-08-24")))
 
         verify(telemetryService).trackEvent(
@@ -206,15 +206,15 @@ internal class IntegrationTest @Autowired constructor(
         val custody = custodyRepository.findCustodyById(custodyId)
 
         // Check disposal.sdsPlus is updated to true from CRDS envelope
-        assertThat(custody.disposal?.sdsPlus, equalTo(true))
+        assertThat(custody.disposal.sdsPlus, equalTo(true))
 
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertNotNull(emed)
         assertNotNull(fthrd)
 
-        assertThat(emed!!.date, equalTo(LocalDate.parse("2025-05-11")))
+        assertThat(emed!!.date, equalTo(LocalDate.parse("2023-01-27")))
         assertThat(fthrd!!.date, equalTo(LocalDate.parse("2025-05-11")))
 
         verify(telemetryService).trackEvent(
@@ -227,7 +227,6 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `PSSED key date is added when disposal type has pss requirement`() {
         featureFlagEnabled(true)
-        val noms = PersonGenerator.PSS_PERSON.nomsId
         val notification = Notification(
             message = MessageGenerator.SENTENCE_DATE_CHANGED,
             attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
@@ -258,7 +257,7 @@ internal class IntegrationTest @Autowired constructor(
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
         val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
@@ -267,14 +266,14 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2022-11-29")))
         assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
 
     private fun verifyContactCreated() {
-        val event = DEFAULT_CUSTODY.disposal!!.event
+        val event = DEFAULT_CUSTODY.disposal.event
         val contact = contactRepository.findAll()
             .firstOrNull { it.personId == PersonGenerator.DEFAULT.id && it.eventId == event.id }
         assertNotNull(contact)
@@ -295,7 +294,7 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 11/08/2025
+            EMED 29/11/2022
             FTHRD 24/08/2025
                 """.trimIndent()
             )
