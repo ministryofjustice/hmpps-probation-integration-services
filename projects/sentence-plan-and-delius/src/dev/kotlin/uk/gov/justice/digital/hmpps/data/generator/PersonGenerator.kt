@@ -42,7 +42,6 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Exclusion(
         person.asLimitedAccessPerson(), user.asLimitedAccessUser(), start, endDateTime, id,
-        ZonedDateTime.now(), null
     )
 
     fun generateRestriction(
@@ -53,7 +52,6 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Restriction(
         person.asLimitedAccessPerson(), user.asLimitedAccessUser(), start, endDateTime, id,
-        ZonedDateTime.now(), null
     )
 
     fun Person.asLimitedAccessPerson() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)

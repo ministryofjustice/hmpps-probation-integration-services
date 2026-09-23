@@ -47,7 +47,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 ZonedDateTime.now(),
                 null,
                 IdGenerator.getAndIncrement(),
-                ZonedDateTime.now(), null
             ),
             Restriction(
                 PersonGenerator.RESTRICTED.asLaoPerson(),
@@ -55,7 +54,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 ZonedDateTime.now(),
                 null,
                 IdGenerator.getAndIncrement(),
-                ZonedDateTime.now(), null
             ),
         )
     }

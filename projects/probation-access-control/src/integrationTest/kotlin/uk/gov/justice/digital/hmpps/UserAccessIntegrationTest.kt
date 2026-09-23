@@ -247,7 +247,6 @@ internal class UserAccessIntegrationTest @Autowired constructor(
         assertThat(excluded.exclusionMessage, equalTo(PersonGenerator.EXCLUDED.exclusionMessage))
         assertThat(excluded.restrictionMessage, equalTo(null))
         assertThat(excluded.startDate, notNullValue())
-        assertThat(excluded.createdDateTime, notNullValue())
 
         val restricted = response.content.first { it.crn == "R123456" }
         assertThat(restricted.username, equalTo(UserGenerator.RESTRICTED.username))
@@ -255,7 +254,6 @@ internal class UserAccessIntegrationTest @Autowired constructor(
         assertThat(restricted.exclusionMessage, equalTo(null))
         assertThat(restricted.restrictionMessage, equalTo(PersonGenerator.RESTRICTED.restrictionMessage))
         assertThat(restricted.startDate, notNullValue())
-        assertThat(restricted.createdDateTime, notNullValue())
 
         val bothExclusion = response.content.first { it.crn == "B123456" && it.type == "Exclusion" }
         val bothRestriction = response.content.first { it.crn == "B123456" && it.type == "Restriction" }

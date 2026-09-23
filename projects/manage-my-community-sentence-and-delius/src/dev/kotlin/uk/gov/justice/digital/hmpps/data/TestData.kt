@@ -491,7 +491,6 @@ object TestData {
             start = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")),
             end = null, // active (no end date)
             id = id(),
-            ZonedDateTime.now(), null
         )
     }
 }
