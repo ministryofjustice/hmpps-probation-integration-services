@@ -20,9 +20,7 @@ object LaoGenerator {
         start: ZonedDateTime = ZonedDateTime.now(),
         endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(
-        person.limitedAccess(), user.limitedAccess(), start, endDateTime, id,
-    )
+    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     fun generateRestriction(
         person: Person,
@@ -30,9 +28,7 @@ object LaoGenerator {
         start: ZonedDateTime = ZonedDateTime.now(),
         endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(
-        person.limitedAccess(), user.limitedAccess(), start, endDateTime, id,
-    )
+    ) = Restriction(person.limitedAccess(), user.limitedAccess(), start, endDateTime, id)
 
     private fun Person.limitedAccess() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
     private fun AuditUser.limitedAccess() = LimitedAccessUser(username, id)

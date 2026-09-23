@@ -33,6 +33,6 @@ object LimitedAccessGenerator {
         LAO_RESTRICTED_USER,
         ZonedDateTime.now(),
         null,
-        IdGenerator.getAndIncrement(),
+        IdGenerator.getAndIncrement()
     )
 }

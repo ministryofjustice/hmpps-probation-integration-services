@@ -46,14 +46,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                 UserGenerator.JOHN_SMITH.asLaoUser(),
                 ZonedDateTime.now(),
                 null,
-                IdGenerator.getAndIncrement(),
+                IdGenerator.getAndIncrement()
             ),
             Restriction(
                 PersonGenerator.RESTRICTED.asLaoPerson(),
                 UserGenerator.JOHN_SMITH.asLaoUser(),
                 ZonedDateTime.now(),
                 null,
-                IdGenerator.getAndIncrement(),
+                IdGenerator.getAndIncrement()
             ),
         )
     }

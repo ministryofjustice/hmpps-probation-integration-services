@@ -19,9 +19,7 @@ object LimitedAccessGenerator {
         start: ZonedDateTime = ZonedDateTime.now(),
         endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(
-        person.limitedAccess(), user, start, endDateTime, id,
-    )
+    ) = Exclusion(person.limitedAccess(), user, start, endDateTime, id)
 
     fun generateRestriction(
         user: LimitedAccessUser = StaffGenerator.STAFF_WITH_USER.limitedAccess(),
@@ -29,9 +27,7 @@ object LimitedAccessGenerator {
         start: ZonedDateTime = ZonedDateTime.now(),
         endDateTime: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(
-        person.limitedAccess(), user, start, endDateTime, id,
-    )
+    ) = Restriction(person.limitedAccess(), user, start, endDateTime, id)
 
     private fun Person.limitedAccess() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
     private fun AuditUser.limitedAccess() = LimitedAccessUser(username, id)

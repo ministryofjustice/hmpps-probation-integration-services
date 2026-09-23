@@ -55,7 +55,7 @@ object LimitedAccessGenerator {
         user = EXCLUDED_LAO_USER,
         start = ZonedDateTime.now(),
         end = null,
-        id = IdGenerator.getAndIncrement(),
+        id = IdGenerator.getAndIncrement()
     )
 
     val LAO_RESTRICTION = Restriction(
@@ -63,7 +63,7 @@ object LimitedAccessGenerator {
         user = RESTRICTED_LAO_USER,
         start = ZonedDateTime.now(),
         end = null,
-        id = IdGenerator.getAndIncrement(),
+        id = IdGenerator.getAndIncrement()
     )
 
     val LAO_EXCLUDED_PERSON_DOCUMENT = DocumentEntity(
