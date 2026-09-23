@@ -199,8 +199,6 @@ internal class UserAccessServiceTest {
             override val restrictionMessage: String? = null
             override val startDate = "2026-09-21T10:15:30Z"
             override val endDate: Any? = null
-            override val createdDateTime = "2026-09-21T10:16:30Z"
-            override val lastUpdatedDateTime: Any? = null
         }
         val expected: PageImpl<LimitedAccessRow> = PageImpl(listOf(row), pageable, 1)
         whenever(uar.getAll(pageable)).thenReturn(expected)
@@ -220,8 +218,6 @@ internal class UserAccessServiceTest {
                             restrictionMessage = null,
                             startDate = ZonedDateTime.parse("2026-09-21T10:15:30Z"),
                             endDate = null,
-                            createdDateTime = ZonedDateTime.parse("2026-09-21T10:16:30Z"),
-                            lastUpdatedDateTime = null,
                         )
                     ),
                     pageable,
@@ -252,8 +248,6 @@ internal class UserAccessServiceTest {
                     limitedAccessRow(
                         startDate = ZonedDateTime.parse("2026-09-21T10:15:30Z"),
                         endDate = OffsetDateTime.parse("2026-09-21T11:15:30+01:00"),
-                        createdDateTime = Timestamp.from(java.time.Instant.parse("2026-09-21T10:16:30Z")),
-                        lastUpdatedDateTime = LocalDateTime.parse("2026-09-21T10:17:30"),
                     )
                 ),
                 pageable,
@@ -265,8 +259,6 @@ internal class UserAccessServiceTest {
 
         assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
         assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00")))
-        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
-        assertThat(res.lastUpdatedDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:17:30Z")))
     }
 
     @Test
@@ -278,8 +270,6 @@ internal class UserAccessServiceTest {
                     limitedAccessRow(
                         startDate = "2026-09-21T10:15:30Z",
                         endDate = "2026-09-21T11:15:30+01:00[Europe/London]",
-                        createdDateTime = "2026-09-21T10:16:30",
-                        lastUpdatedDateTime = null,
                     )
                 ),
                 pageable,
@@ -291,8 +281,6 @@ internal class UserAccessServiceTest {
 
         assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
         assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")))
-        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
-        assertThat(res.lastUpdatedDateTime, nullValue())
     }
 
     @Test
@@ -304,8 +292,6 @@ internal class UserAccessServiceTest {
                     limitedAccessRow(
                         startDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:15:30Z")),
                         endDate = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")),
-                        createdDateTime = oracle.sql.TIMESTAMPTZ(ZonedDateTime.parse("2026-09-21T10:16:30Z")),
-                        lastUpdatedDateTime = null,
                     )
                 ),
                 pageable,
@@ -317,7 +303,6 @@ internal class UserAccessServiceTest {
 
         assertThat(res.startDate, equalTo(ZonedDateTime.parse("2026-09-21T10:15:30Z")))
         assertThat(res.endDate, equalTo(ZonedDateTime.parse("2026-09-21T11:15:30+01:00[Europe/London]")))
-        assertThat(res.createdDateTime, equalTo(ZonedDateTime.parse("2026-09-21T10:16:30Z")))
     }
 
     @Test
@@ -328,7 +313,6 @@ internal class UserAccessServiceTest {
                 listOf(
                     limitedAccessRow(
                         startDate = 1,
-                        createdDateTime = "2026-09-21T10:16:30Z",
                     )
                 ),
                 pageable,
@@ -354,7 +338,6 @@ internal class UserAccessServiceTest {
                             ZonedDateTime.parse("2026-09-21T10:15:30Z"),
                             shouldThrow = true
                         ),
-                        createdDateTime = "2026-09-21T10:16:30Z",
                     )
                 ),
                 pageable,
@@ -431,8 +414,6 @@ internal class UserAccessServiceTest {
         restrictionMessage: String? = null,
         startDate: Any,
         endDate: Any? = null,
-        createdDateTime: Any,
-        lastUpdatedDateTime: Any? = null,
     ) = object : LimitedAccessRow {
         override val crn = crn
         override val username = username
@@ -441,7 +422,5 @@ internal class UserAccessServiceTest {
         override val restrictionMessage = restrictionMessage
         override val startDate = startDate
         override val endDate = endDate
-        override val createdDateTime = createdDateTime
-        override val lastUpdatedDateTime = lastUpdatedDateTime
     }
 }

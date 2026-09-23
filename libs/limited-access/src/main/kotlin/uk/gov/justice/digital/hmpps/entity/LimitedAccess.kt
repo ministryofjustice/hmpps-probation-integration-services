@@ -29,12 +29,6 @@ class Exclusion(
     @Id
     @Column(name = "exclusion_id")
     val id: Long,
-
-    @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
-
-    @Column(name = "last_updated_datetime")
-    val lastUpdatedDateTime: ZonedDateTime?
 )
 
 @Immutable
@@ -58,12 +52,6 @@ class Restriction(
     @Id
     @Column(name = "restriction_id")
     val id: Long,
-
-    @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
-
-    @Column(name = "last_updated_datetime")
-    val lastUpdatedDateTime: ZonedDateTime?
 )
 
 @Immutable
@@ -108,17 +96,13 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
                offender.exclusion_message as exclusionMessage,
                offender.restriction_message as restrictionMessage,
                l.start_date as startDate,
-               l.end_date as endDate,
-               l.createdDateTime as createdDateTime,
-               l.lastUpdatedDateTime as lastUpdatedDateTime
+               l.end_date as endDate
         from ( ( select restriction_id as id,
                         offender_id,
                         user_id,
                         'Restriction' as type,
                         cast(restriction_time as timestamp with time zone) as start_date,
-                        cast(restriction_end_time as timestamp with time zone) as end_date,
-                        cast(created_datetime as timestamp with time zone) as createdDateTime,
-                        cast(last_updated_datetime as timestamp with time zone) as lastUpdatedDateTime
+                        cast(restriction_end_time as timestamp with time zone) as end_date
                  from restriction )
                union all
                ( select exclusion_id as id,
@@ -126,9 +110,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
                         user_id,
                         'Exclusion' as type,
                         cast(exclusion_date as timestamp with time zone) as start_date,
-                        cast(exclusion_end_time as timestamp with time zone) as end_date,
-                        cast(created_datetime as timestamp with time zone) as createdDateTime,
-                        cast(last_updated_datetime as timestamp with time zone) as lastUpdatedDateTime
+                        cast(exclusion_end_time as timestamp with time zone) as end_date
                  from exclusion ) ) l
         join offender on offender.offender_id = l.offender_id
         join user_ on user_.user_id = l.user_id
@@ -235,8 +217,6 @@ interface LimitedAccessRow {
     val restrictionMessage: String?
     val startDate: Any
     val endDate: Any?
-    val createdDateTime: Any
-    val lastUpdatedDateTime: Any?
 }
 
 data class LimitedAccessDetail(
@@ -247,7 +227,5 @@ data class LimitedAccessDetail(
     val restrictionMessage: String?,
     val startDate: ZonedDateTime,
     val endDate: ZonedDateTime?,
-    val createdDateTime: ZonedDateTime,
-    val lastUpdatedDateTime: ZonedDateTime?,
 )
 
