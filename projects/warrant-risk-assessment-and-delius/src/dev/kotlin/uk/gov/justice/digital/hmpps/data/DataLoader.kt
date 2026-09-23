@@ -1,15 +1,22 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
+        BusinessInteractionCode.entries
+            .map { BusinessInteraction(IdGenerator.getAndIncrement(), it.code, ZonedDateTime.now()) }
+            .forEach { save(it) }
+        save(UserGenerator.OFFICER)
         save(ProbationAreaGenerator.DEFAULT_PROBATION_AREA)
         save(ProbationAreaGenerator.HOME_PROBATION_AREA)
         save(StaffGenerator.DEFAULT_STAFF)
@@ -48,5 +55,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(RegistrationGenerator.MAPPA_TYPE_M2)
         save(RegistrationGenerator.MAPPA_REGISTRATION)
         save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
+        save(DocumentGenerator.DEFAULT_WRA_FORM)
+        save(DocumentGenerator.DELETED_WRA_FORM)
     }
 }

@@ -1,0 +1,19 @@
+{
+  "eventType": "probation-case.WRA.created",
+  "version": 1,
+  "description": "WRA Form event",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/wra/pdf/00000000-0000-0000-0000-000000000001",
+  "occurredAt": "2025-08-20T16:00:00.000000000+01:00",
+  "additionalInformation": {
+    "WRAId": "00000000-0000-0000-0000-000000000001",
+    "username": "officer"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}
