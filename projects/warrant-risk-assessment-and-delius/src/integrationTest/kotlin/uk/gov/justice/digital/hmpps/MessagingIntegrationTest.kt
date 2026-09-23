@@ -119,7 +119,13 @@ internal class MessagingIntegrationTest @Autowired constructor(
     @Test
     fun `document not found`() {
         val notification = prepEvent("wra-form-created", wireMockServer.port()).run {
-            copy(message = message.copy(additionalInformation = mapOf("WRAId" to UUID.fromString("99999999-9999-9999-9999-999999999999").toString())))
+            copy(
+                message = message.copy(
+                    additionalInformation = mapOf(
+                        "WRAId" to UUID.fromString("99999999-9999-9999-9999-999999999999").toString()
+                    )
+                )
+            )
         }
 
         channelManager.getChannel(queueName).publishAndWait(notification)
