@@ -87,8 +87,8 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     @Query("select u from LimitedAccessUser u where upper(u.username) = upper(:username) ")
     fun findByUsername(username: String): LimitedAccessUser?
 
-     @Query(
-         """
+    @Query(
+        """
          select 
                 offender.crn as "crn",
                 user_.distinguished_name as "username",
@@ -116,7 +116,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
          join user_ on user_.user_id = l.user_id
          order by offender.crn, l."type", user_.distinguished_name, l."id"
      """,
-         countQuery = """
+        countQuery = """
          select count(1)
          from ( ( select offender_id,
                          user_id,
@@ -134,9 +134,9 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
          join offender on offender.offender_id = l.offender_id
          join user_ on user_.user_id = l.user_id
      """,
-         nativeQuery = true
-     )
-     fun getAll(page: Pageable): Page<LimitedAccessRow>
+        nativeQuery = true
+    )
+    fun getAll(page: Pageable): Page<LimitedAccessRow>
 
     @Query(
         """
