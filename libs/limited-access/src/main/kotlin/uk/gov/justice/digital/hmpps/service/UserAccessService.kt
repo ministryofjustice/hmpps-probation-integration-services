@@ -3,10 +3,10 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
@@ -75,8 +75,8 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 type = row.type,
                 exclusionMessage = row.exclusionMessage,
                 restrictionMessage = row.restrictionMessage,
-                startDate = row.startDate.atZone(ZoneId.of("Europe/London")),
-                endDate = row.endDate?.atZone(ZoneId.of("Europe/London")),
+                startDate = row.startDate.atZone(EuropeLondon),
+                endDate = row.endDate?.atZone(EuropeLondon),
             )
         }
     }

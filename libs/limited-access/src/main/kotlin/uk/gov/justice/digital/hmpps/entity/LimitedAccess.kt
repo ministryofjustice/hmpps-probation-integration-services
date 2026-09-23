@@ -119,21 +119,9 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
      """,
         countQuery = """
          select count(1)
-         from ( ( select offender_id,
-                         user_id,
-                         'Restriction' as "type",
-                         cast(restriction_time as timestamp) as "start_date",
-                         cast(restriction_end_time as timestamp) as "end_date"
-                  from restriction )
-                union all
-                ( select offender_id,
-                         user_id,
-                         'Exclusion' as "type",
-                         cast(exclusion_date as timestamp) as "start_date",
-                         cast(exclusion_end_time as timestamp) as "end_date"
-                  from exclusion ) ) l
-         join offender on offender.offender_id = l.offender_id
-         join user_ on user_.user_id = l.user_id
+         from ( ( select offender_id, user_id from restriction ) 
+                union all 
+                ( select offender_id, user_id from exclusion ) ) l
      """,
         nativeQuery = true
     )
