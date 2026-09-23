@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Immutable
@@ -215,8 +216,8 @@ interface LimitedAccessRow {
     val type: String
     val exclusionMessage: String?
     val restrictionMessage: String?
-    val startDate: Any
-    val endDate: Any?
+    val startDate: LocalDateTime
+    val endDate: LocalDateTime?
 }
 
 data class LimitedAccessDetail(

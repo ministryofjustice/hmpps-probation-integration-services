@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
-import java.sql.Timestamp
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
@@ -78,35 +75,9 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 type = row.type,
                 exclusionMessage = row.exclusionMessage,
                 restrictionMessage = row.restrictionMessage,
-                startDate = row.startDate.toLimitedAccessDateTime(),
-                endDate = row.endDate?.toLimitedAccessDateTime(),
+                startDate = row.startDate.atZone(ZoneId.of("Europe/London")),
+                endDate = row.endDate?.atZone(ZoneId.of("Europe/London")),
             )
-        }
-    }
-
-    private fun Any.toLimitedAccessDateTime(): ZonedDateTime = when (this) {
-        is ZonedDateTime -> this
-        is OffsetDateTime -> toZonedDateTime()
-        is Timestamp -> toInstant().atZone(ZoneOffset.UTC)
-        is LocalDateTime -> atZone(ZoneOffset.UTC)
-        is CharSequence -> toString().toLimitedAccessDateTime()
-        else -> asOracleZonedDateTime()
-            ?: throw UnsupportedOperationException("Cannot convert ${this::class.qualifiedName} to ZonedDateTime")
-    }
-
-    private fun String.toLimitedAccessDateTime(): ZonedDateTime =
-        runCatching { OffsetDateTime.parse(this).toZonedDateTime() }
-            .recoverCatching { ZonedDateTime.parse(this) }
-            .recoverCatching { LocalDateTime.parse(this).atZone(ZoneOffset.UTC) }
-            .getOrThrow()
-
-    private fun Any.asOracleZonedDateTime(): ZonedDateTime? {
-        if (javaClass.name != "oracle.sql.TIMESTAMPTZ") return null
-
-        return runCatching {
-            javaClass.getMethod("toZonedDateTime").invoke(this) as ZonedDateTime
-        }.getOrElse {
-            throw UnsupportedOperationException("Cannot convert ${this::class.qualifiedName} to ZonedDateTime", it)
         }
     }
 }
