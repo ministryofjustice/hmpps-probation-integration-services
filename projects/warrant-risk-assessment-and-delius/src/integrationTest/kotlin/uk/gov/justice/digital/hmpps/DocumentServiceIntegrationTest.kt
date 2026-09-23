@@ -179,12 +179,13 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
         )
     )
 
-    private fun createdMessage(wraId: UUID, username: String = "officer") = prepEvent("wra-form-created", wireMockServer.port()).message.copy(
-        additionalInformation = mapOf(
-            "WRAId" to wraId.toString(),
-            "username" to username,
+    private fun createdMessage(wraId: UUID, username: String = "officer") =
+        prepEvent("wra-form-created", wireMockServer.port()).message.copy(
+            additionalInformation = mapOf(
+                "WRAId" to wraId.toString(),
+                "username" to username,
+            )
         )
-    )
 
     private fun deleteMessage(wraId: UUID) = prepEvent("wra-form-deleted", wireMockServer.port()).message.copy(
         additionalInformation = mapOf(
