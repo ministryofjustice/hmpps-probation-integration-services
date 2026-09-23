@@ -12,14 +12,11 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.entity.*
-import uk.gov.justice.digital.hmpps.entity.Document.Companion.WRA_FORM_URN_PREFIX
 import uk.gov.justice.digital.hmpps.entity.Document.Companion.wraFormUrn
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.messaging.wraId
-import uk.gov.justice.digital.hmpps.model.WraEventDocuments
 
 import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
@@ -29,8 +26,6 @@ import java.util.*
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val auditUserService: AuditUserService,
-    private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository,
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager
@@ -47,8 +42,8 @@ class DocumentService(
         document.lastUpdatedUserId = auditUserService.findUser(event.username)?.id
             ?: throw NotFoundException("User", "username", event.username)
 
-        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
         document.alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file)).id
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.save(document)
     }
