@@ -80,8 +80,6 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 restrictionMessage = row.restrictionMessage,
                 startDate = row.startDate.toLimitedAccessDateTime(),
                 endDate = row.endDate?.toLimitedAccessDateTime(),
-                createdDateTime = row.createdDateTime.toLimitedAccessDateTime(),
-                lastUpdatedDateTime = row.lastUpdatedDateTime?.toLimitedAccessDateTime(),
             )
         }
     }
