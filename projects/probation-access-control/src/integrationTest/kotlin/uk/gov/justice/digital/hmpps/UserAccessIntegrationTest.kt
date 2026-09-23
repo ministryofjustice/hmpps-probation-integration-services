@@ -273,7 +273,7 @@ internal class UserAccessIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<ErrorResponse>()
 
         assertThat(response.status, equalTo(400))
-        assertThat(response.message, equalTo("page must be > 0"))
+        assertThat(response.message, equalTo("page must be >= 0"))
     }
 
     @Test
