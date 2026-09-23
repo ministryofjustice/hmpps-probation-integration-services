@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -12,8 +13,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.AllCaseAccess
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
@@ -26,7 +29,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class UserAccessIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
-    private val wireMockServer: WireMockServer
 ) {
 
     @MockitoBean
@@ -224,4 +226,86 @@ internal class UserAccessIntegrationTest @Autowired constructor(
         assertThat(response.exclusionMessage, equalTo(null))
         assertThat(response.restrictionMessage, equalTo(null))
     }
+
+    @Test
+    fun `can retrieve all case access details`() {
+        val response = mockMvc.get("/all-cases?page=0&size=10") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+            }
+            .andReturn().response.contentAsJson<AllCasesResponse>()
+
+        assertThat(response.content, hasSize(4))
+        assertThat(response.page.size, equalTo(10L))
+        assertThat(response.page.number, equalTo(0L))
+        assertThat(response.page.totalElements, equalTo(4L))
+        assertThat(response.page.totalPages, equalTo(1L))
+
+        val excluded = response.content.first { it.crn == "E123456" }
+        assertThat(excluded.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(excluded.type, equalTo("Exclusion"))
+        assertThat(excluded.exclusionMessage, equalTo(PersonGenerator.EXCLUDED.exclusionMessage))
+        assertThat(excluded.restrictionMessage, equalTo(null))
+        assertThat(excluded.startDate, notNullValue())
+
+        val restricted = response.content.first { it.crn == "R123456" }
+        assertThat(restricted.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(restricted.type, equalTo("Restriction"))
+        assertThat(restricted.exclusionMessage, equalTo(null))
+        assertThat(restricted.restrictionMessage, equalTo(PersonGenerator.RESTRICTED.restrictionMessage))
+        assertThat(restricted.startDate, notNullValue())
+
+        val bothExclusion = response.content.first { it.crn == "B123456" && it.type == "Exclusion" }
+        val bothRestriction = response.content.first { it.crn == "B123456" && it.type == "Restriction" }
+
+        assertThat(bothExclusion.username, equalTo(UserGenerator.DEFAULT.username))
+        assertThat(bothRestriction.username, equalTo(UserGenerator.RESTRICTED.username))
+        assertThat(bothExclusion.exclusionMessage, equalTo(PersonGenerator.BOTH.exclusionMessage))
+        assertThat(bothRestriction.restrictionMessage, equalTo(PersonGenerator.BOTH.restrictionMessage))
+    }
+
+    @Test
+    fun `all cases rejects negative page`() {
+        val response = mockMvc.get("/all-cases?page=-1&size=10") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(response.status, equalTo(400))
+        assertThat(response.message, equalTo("page must be >= 0"))
+    }
+
+    @Test
+    fun `all cases rejects size outside allowed range`() {
+        val tooSmall = mockMvc.get("/all-cases?page=0&size=0") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(tooSmall.status, equalTo(400))
+        assertThat(tooSmall.message, equalTo("size must be between 1 and 1000"))
+
+        val tooLarge = mockMvc.get("/all-cases?page=0&size=1001") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+            }
+            .andReturn().response.contentAsJson<ErrorResponse>()
+
+        assertThat(tooLarge.status, equalTo(400))
+        assertThat(tooLarge.message, equalTo("size must be between 1 and 1000"))
+    }
+
+    private data class AllCasesResponse(
+        val content: List<LimitedAccessDetail>,
+        val page: PageMetadata,
+    )
+
+    private data class PageMetadata(
+        val size: Long,
+        val number: Long,
+        val totalElements: Long,
+        val totalPages: Long,
+    )
 }
