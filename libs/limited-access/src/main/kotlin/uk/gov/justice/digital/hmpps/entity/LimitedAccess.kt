@@ -119,9 +119,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
      """,
         countQuery = """
          select count(1)
-         from ( ( select offender_id, user_id from restriction ) 
-                union all 
-                ( select offender_id, user_id from exclusion ) ) l
+         from (select 1 from restriction union all select 1 from exclusion ) l
      """,
         nativeQuery = true
     )
