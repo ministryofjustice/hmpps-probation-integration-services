@@ -35,6 +35,7 @@ class Handler(
                 documentService.uploadDocument(notification.message, file)
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
+
             "probation-case.WRA.deleted" -> {
                 documentService.deleteDocument(notification.message)
                 telemetryService.trackEvent("DocumentDeleted", notification.message.telemetry())

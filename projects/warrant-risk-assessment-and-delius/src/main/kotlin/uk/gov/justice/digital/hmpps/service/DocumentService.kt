@@ -71,7 +71,6 @@ class DocumentService(
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
     }
 
-
     private fun getDocument(event: HmppsDomainEvent, audit: AuditedInteraction.Parameters): Document {
         val urn = wraFormUrn(UUID.fromString(event.wraId))
         return documentRepository.findByExternalReferenceAndSoftDeletedFalse(urn)?.also {
