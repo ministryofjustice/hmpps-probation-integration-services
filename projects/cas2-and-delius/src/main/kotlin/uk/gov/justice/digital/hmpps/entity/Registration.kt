@@ -28,11 +28,11 @@ class Registration(
     @OneToOne(mappedBy = "registration", optional = true)
     val deregistration: Deregistration? = null,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "registration_category")
     val category: ReferenceData,
 
