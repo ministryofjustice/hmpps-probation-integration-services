@@ -45,7 +45,8 @@ internal class CasesIntegrationTest @Autowired constructor(
         val person = Person(id = IdGenerator.getAndIncrement(), crn = crn)
         val firstType = RegistrationGenerator.generateType(code = "RSC", description = "Registered Sex Offender")
         val firstCategory = RegistrationGenerator.generateCategory(code = "CAT1", description = "Category 1")
-        val secondType = RegistrationGenerator.generateType(code = "SOPS", description = "Sex Offender Prevention Scheme")
+        val secondType =
+            RegistrationGenerator.generateType(code = "SOPS", description = "Sex Offender Prevention Scheme")
         val secondCategory = RegistrationGenerator.generateCategory(code = "CAT2", description = "Category 2")
         val ignoredType = RegistrationGenerator.generateType(code = "MAPP", description = "MAPPA")
         val ignoredCategory = RegistrationGenerator.generateCategory(code = "CAT3", description = "Category 3")

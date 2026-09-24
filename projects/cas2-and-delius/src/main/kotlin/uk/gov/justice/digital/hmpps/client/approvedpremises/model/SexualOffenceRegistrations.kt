@@ -7,7 +7,7 @@ data class SexualOffenceRegistrations(
     val sexualOffenceRegistrations: List<SexualOffenceRegistration>?
 )
 
-data class SexualOffenceRegistration (
+data class SexualOffenceRegistration(
     val type: CodeDescription,
     val category: CodeDescription,
     val date: LocalDate,

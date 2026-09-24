@@ -33,8 +33,7 @@ class Registration(
     @JoinColumn(name = "registration_category")
     val category: ReferenceData,
 
-)
-
+    )
 
 @Entity
 @Table(name = "r_register_type")
@@ -56,5 +55,4 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         """
     )
     fun findByRegistrationCodes(crn: String, codes: List<String>): List<Registration>
-
 }
