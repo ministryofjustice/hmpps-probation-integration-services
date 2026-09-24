@@ -111,6 +111,7 @@ data class DisposalType(
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
     val isStatutoryCustody: Boolean get() = sentenceType == "SC"
+    val determinateCustody: Boolean get() = isStatutoryCustody && determinateSentence
 }
 
 @Immutable
@@ -129,7 +130,7 @@ class Custody(
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
-    val disposal: Disposal? = null,
+    val disposal: Disposal,
 
     @OneToMany(mappedBy = "custody")
     val keyDates: MutableList<KeyDate> = mutableListOf(),

@@ -5,7 +5,5 @@ import org.springframework.web.service.annotation.GetExchange
 
 interface CrdsApiClient {
     @GetExchange("/operative-sentence-envelope/{prisonerId}")
-    fun getOperativeSentenceEnvelope(
-        @PathVariable prisonerId: String
-    ): OperativeSentenceEnvelope
+    fun getOperativeSentenceEnvelope(@PathVariable prisonerId: String): OperativeSentenceEnvelope
 }

@@ -30,7 +30,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
         val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values).filterNot {
             it.code in setOf(
-                CustodyDateType.PRESUMPTIVE_EM_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
+                CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
             )
         }
 
@@ -38,22 +38,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
 
         save(PersonGenerator.DEFAULT)
-
-        val event = save(generateEvent(PersonGenerator.DEFAULT))
-        save(generateOrderManager(event))
-        val disposal = save(
-            generateDisposal(
-                event,
-                lengthInDays = 50
-            )
-        )
-        DEFAULT_CUSTODY = save(
-            generateCustodialSentence(
-                ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
-                disposal,
-                "38339A"
-            )
-        )
+        save(SentenceGenerator.DEFAULT_EVENT)
+        save(SentenceGenerator.DEFAULT_ORDER_MANAGER)
+        save(SentenceGenerator.DEFAULT_DISPOSAL)
+        save(DEFAULT_CUSTODY)
 
         saveAll(
             listOf(

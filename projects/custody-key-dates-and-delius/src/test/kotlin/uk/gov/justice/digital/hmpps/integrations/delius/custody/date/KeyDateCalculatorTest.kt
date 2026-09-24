@@ -10,12 +10,13 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.electronicMonitoringEndDate
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.finalThirdDate
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.suspensionDateIfReset
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 
 internal class KeyDateCalculatorTest {
-
-    private val calculator = KeyDateCalculator()
 
     @ParameterizedTest
     @MethodSource("suspensionDateCases")
@@ -25,21 +26,21 @@ internal class KeyDateCalculatorTest {
         val custody = generateCustodialSentence(
             disposal = generateDisposal(generateEvent()), bookingRef = "ABC"
         )
-        val result = calculator.suspensionDateIfReset(
-            SentenceDetail(
-                conditionalReleaseDate = conditionalReleaseDate, sentenceExpiryDate = sentenceExpiryDate
-            ), custody
-        )
+        val result = SentenceDetail(
+            conditionalReleaseDate = conditionalReleaseDate, sentenceExpiryDate = sentenceExpiryDate
+        ).suspensionDateIfReset(custody)
         assertThat(result, equalTo(expected))
     }
 
     @ParameterizedTest
     @MethodSource("emedCases")
-    fun `calculate presumptive em end date`(
-        sentenceExpiryDate: LocalDate?, sentenceLength: Long, sdsPlus: Boolean, expected: LocalDate?
+    fun `calculate em end date from CRD plus rounded down percentage of CRDS sentence length`(
+        conditionalReleaseDate: LocalDate?, sentenceLength: Long, sdsPlus: Boolean, expected: LocalDate?
     ) {
-        val result = calculator.presumptiveElectronicMonitoringEndDate(
-            SentenceDetail(sentenceExpiryDate = sentenceExpiryDate),
+        val result = SentenceDetail(
+            conditionalReleaseDate = conditionalReleaseDate,
+            sentenceExpiryDate = LocalDate.of(2026, 1, 1)
+        ).electronicMonitoringEndDate(
             OperativeSentenceEnvelope(
                 bookingId = 1L,
                 containsAnSDSPlusSentence = sdsPlus,
@@ -51,24 +52,34 @@ internal class KeyDateCalculatorTest {
 
     @Test
     fun `em end date falls back to regular SDS calculation when sds plus flag is null`() {
-        val result = calculator.presumptiveElectronicMonitoringEndDate(
-            SentenceDetail(sentenceExpiryDate = LocalDate.of(2025, 1, 1)),
+        val result = SentenceDetail(
+            conditionalReleaseDate = LocalDate.of(2025, 1, 1),
+            sentenceExpiryDate = LocalDate.of(2026, 1, 1)
+        ).electronicMonitoringEndDate(
             OperativeSentenceEnvelope(
                 bookingId = 1L,
                 containsAnSDSPlusSentence = null,
                 sentenceEnvelopeLengthInDays = 50L
             )
         )
-        assertThat(result, equalTo(LocalDate.of(2024, 12, 2)))
+        assertThat(result, equalTo(LocalDate.of(2025, 1, 4)))
+    }
+
+    @Test
+    fun `CRDS key dates are not calculated without a sentence envelope`() {
+        val sentenceDetail = SentenceDetail(
+            conditionalReleaseDate = LocalDate.of(2025, 1, 1),
+            sentenceExpiryDate = LocalDate.of(2026, 1, 1)
+        )
+
+        assertThat(sentenceDetail.electronicMonitoringEndDate(null), equalTo(null))
+        assertThat(sentenceDetail.finalThirdDate(null), equalTo(null))
     }
 
     @ParameterizedTest
     @MethodSource("finalThirdCases")
     fun `calculate final third date`(sentenceExpiryDate: LocalDate?, sentenceLength: Long, expected: LocalDate?) {
-        val result = calculator.finalThirdDate(
-            SentenceDetail(
-                sentenceExpiryDate = sentenceExpiryDate
-            ),
+        val result = SentenceDetail(sentenceExpiryDate = sentenceExpiryDate).finalThirdDate(
             OperativeSentenceEnvelope(
                 bookingId = 1L,
                 containsAnSDSPlusSentence = false,
@@ -80,16 +91,21 @@ internal class KeyDateCalculatorTest {
 
     @ParameterizedTest
     @MethodSource("deliusEmedCases")
-    fun `calculate presumptive em end date from delius`(
-        sentenceEndDate: LocalDate?,
+    fun `calculate em end date from CRD plus rounded down percentage of Delius sentence length`(
+        conditionalReleaseDate: LocalDate?,
         sentenceLengthInDays: Long?,
         sdsPlus: Boolean?,
         expected: LocalDate?
     ) {
-        val result = calculator.presumptiveElectronicMonitoringEndDateFromDelius(
-            sentenceEndDate,
-            sentenceLengthInDays,
-            sdsPlus
+        val result = SentenceDetail(conditionalReleaseDate = conditionalReleaseDate).electronicMonitoringEndDate(
+            generateCustodialSentence(
+                disposal = generateDisposal(
+                    generateEvent(),
+                    sdsPlus = sdsPlus,
+                    lengthInDays = sentenceLengthInDays
+                ),
+                bookingRef = "ABC"
+            )
         )
         assertThat(result, equalTo(expected))
     }
@@ -101,9 +117,14 @@ internal class KeyDateCalculatorTest {
         sentenceLengthInDays: Long?,
         expected: LocalDate?
     ) {
-        val result = calculator.finalThirdDateFromDelius(
-            sentenceEndDate,
-            sentenceLengthInDays
+        val result = SentenceDetail(sentenceExpiryDate = sentenceEndDate).finalThirdDate(
+            generateCustodialSentence(
+                disposal = generateDisposal(
+                    generateEvent(),
+                    lengthInDays = sentenceLengthInDays
+                ),
+                bookingRef = "ABC"
+            )
         )
         assertThat(result, equalTo(expected))
     }
@@ -128,20 +149,27 @@ internal class KeyDateCalculatorTest {
             // SDS
             arguments(null, 10L, false, null),
             arguments(LocalDate.of(2025, 1, 1), 0L, false, LocalDate.of(2025, 1, 1)),
-            arguments(LocalDate.of(2025, 1, 1), 1L, false, LocalDate.of(2024, 12, 31)),
-            arguments(LocalDate.of(2025, 1, 1), 2L, false, LocalDate.of(2024, 12, 30)),
-            arguments(LocalDate.of(2025, 1, 1), 10L, false, LocalDate.of(2024, 12, 26)),
-            arguments(LocalDate.of(2025, 1, 1), 12L, false, LocalDate.of(2024, 12, 24)),
-            arguments(LocalDate.of(2025, 1, 1), 365L, false, LocalDate.of(2024, 5, 27)),
-            arguments(LocalDate.of(2025, 1, 1), 730L, false, LocalDate.of(2023, 10, 21)),
+            arguments(LocalDate.of(2025, 1, 1), 1L, false, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 2L, false, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 10L, false, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 12L, false, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 14L, false, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 15L, false, LocalDate.of(2025, 1, 2)),
+            arguments(LocalDate.of(2025, 1, 1), 100L, false, LocalDate.of(2025, 1, 8)),
+            arguments(LocalDate.of(2025, 1, 1), 365L, false, LocalDate.of(2025, 1, 26)),
+            arguments(LocalDate.of(2025, 1, 1), 730L, false, LocalDate.of(2025, 2, 21)),
 
             // SDS+
             arguments(null, 10L, true, null),
-            arguments(LocalDate.of(2025, 1, 1), 1L, true, LocalDate.of(2024, 12, 31)),
-            arguments(LocalDate.of(2025, 1, 1), 2L, true, LocalDate.of(2024, 12, 31)),
-            arguments(LocalDate.of(2025, 1, 1), 50L, true, LocalDate.of(2024, 12, 15)),
-            arguments(LocalDate.of(2025, 1, 1), 365L, true, LocalDate.of(2024, 9, 1)),
-            arguments(LocalDate.of(2025, 1, 1), 1000L, true, LocalDate.of(2024, 2, 2))
+            arguments(LocalDate.of(2025, 1, 1), 0L, true, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 1L, true, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 2L, true, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 5L, true, LocalDate.of(2025, 1, 1)),
+            arguments(LocalDate.of(2025, 1, 1), 6L, true, LocalDate.of(2025, 1, 2)),
+            arguments(LocalDate.of(2025, 1, 1), 50L, true, LocalDate.of(2025, 1, 9)),
+            arguments(LocalDate.of(2025, 1, 1), 100L, true, LocalDate.of(2025, 1, 18)),
+            arguments(LocalDate.of(2025, 1, 1), 365L, true, LocalDate.of(2025, 3, 4)),
+            arguments(LocalDate.of(2025, 1, 1), 1000L, true, LocalDate.of(2025, 6, 20))
         )
 
         @JvmStatic
@@ -160,13 +188,14 @@ internal class KeyDateCalculatorTest {
         )
 
         @JvmStatic
-        fun deliusEmedCases() = listOf(
+        fun deliusEmedCases() = emedCases() + listOf(
             arguments(null, 366L, false, null),
             arguments(LocalDate.of(2025, 1, 1), null, false, null),
-            arguments(LocalDate.of(2025, 1, 1), 366L, false, LocalDate.of(2024, 5, 26)),
-            arguments(LocalDate.of(2025, 1, 1), 366L, true, LocalDate.of(2024, 9, 1)),
-            arguments(LocalDate.of(2025, 1, 1), 366L, null, LocalDate.of(2024, 5, 26)),
-            arguments(LocalDate.of(2027, 3, 12), 820L, false, LocalDate.of(2025, 11, 5))
+            arguments(LocalDate.of(2025, 1, 1), null, true, null),
+            arguments(LocalDate.of(2025, 1, 1), 366L, false, LocalDate.of(2025, 1, 26)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, true, LocalDate.of(2025, 3, 4)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, null, LocalDate.of(2025, 1, 26)),
+            arguments(LocalDate.of(2027, 3, 12), 820L, false, LocalDate.of(2027, 5, 8))
         )
 
         @JvmStatic

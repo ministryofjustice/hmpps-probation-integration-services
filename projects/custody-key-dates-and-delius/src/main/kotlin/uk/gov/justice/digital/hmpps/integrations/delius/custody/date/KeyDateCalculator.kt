@@ -6,54 +6,43 @@ import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.math.ceil
+import kotlin.math.floor
 
 @Component
-class KeyDateCalculator {
+object KeyDateCalculator {
     /**
      * EMED Calculation
-     * For SDS Sentences, EMED = SED - (60% of the total sentence length)
-     * For SDS+ Sentences, EMED = SED - (1/3rd of the total sentence length)
+     * For SDS Sentences, EMED = CRD + 7% of sentence length in days.
+     * For SDS+ Sentences, EMED = CRD + 17% of sentence length in days.
      */
-    fun presumptiveElectronicMonitoringEndDate(
-        sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope
-    ): LocalDate? = sentenceDetail.sentenceExpiryDate?.let { sed ->
-        val lengthInDays = envelope.sentenceEnvelopeLengthInDays
-        val deduction = if (envelope.containsAnSDSPlusSentence == true) {
-            ceil(lengthInDays / 3.0).toLong()
-        } else {
-            ceil((lengthInDays * 60.0) / 100.0).toLong()
-        }
-        sed.minusDays(deduction)
+    fun SentenceDetail.electronicMonitoringEndDate(envelope: OperativeSentenceEnvelope?): LocalDate? {
+        if (envelope == null) return null
+
+        val factor = if (envelope.containsAnSDSPlusSentence == true) 0.17 else 0.07
+        return conditionalReleaseDate?.plusDays(floor(envelope.sentenceEnvelopeLengthInDays * factor).toLong())
     }
 
     /**
      * FTHRD Calculation = SLED - 1/3 sentence length
      */
-    fun finalThirdDate(sentenceDetail: SentenceDetail, envelope: OperativeSentenceEnvelope): LocalDate? =
-        sentenceDetail.sentenceExpiryDate?.let { sed ->
-            val deduction = ceil(envelope.sentenceEnvelopeLengthInDays / 3.0).toLong()
-            sed.minusDays(deduction)
-        }
+    fun SentenceDetail.finalThirdDate(envelope: OperativeSentenceEnvelope?): LocalDate? {
+        if (envelope == null) return null
+
+        val deduction = ceil(envelope.sentenceEnvelopeLengthInDays / 3.0).toLong()
+        return sentenceExpiryDate?.minusDays(deduction)
+    }
 
     /**
      * Calculate EMED using Delius data
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
-     * For SDS Sentences, EMED = sentenceEndDate - (60% of disposal length in days).
-     * For SDS+ Sentences, EMED = sentenceEndDate - (1/3rd of disposal length in days).
+     * For SDS Sentences, EMED = CRD + 7% of sentence length in days.
+     * For SDS+ Sentences, EMED = CRD + 17% of sentence length in days.
      */
-    fun presumptiveElectronicMonitoringEndDateFromDelius(
-        sentenceEndDate: LocalDate?,
-        sentenceLengthInDays: Long?,
-        sdsPlus: Boolean?
-    ): LocalDate? {
-        val endDate = sentenceEndDate ?: return null
-        val lengthInDays = sentenceLengthInDays ?: return null
-        val deduction = if (sdsPlus == true) {
-            ceil(lengthInDays / 3.0).toLong()
-        } else {
-            ceil((lengthInDays * 60.0) / 100.0).toLong()
-        }
-        return endDate.minusDays(deduction)
+    fun SentenceDetail.electronicMonitoringEndDate(custody: Custody): LocalDate? {
+        if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null) return null
+
+        val factor = if (custody.disposal.sdsPlus == true) 0.17 else 0.07
+        return conditionalReleaseDate?.plusDays(floor(custody.disposal.lengthInDays * factor).toLong())
     }
 
     /**
@@ -61,28 +50,30 @@ class KeyDateCalculator {
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
      * FTHRD = sentenceEndDate - (1/3rd of disposal length in days).
      */
-    fun finalThirdDateFromDelius(
-        sentenceEndDate: LocalDate?,
-        sentenceLengthInDays: Long?
-    ): LocalDate? {
-        val endDate = sentenceEndDate ?: return null
-        val lengthInDays = sentenceLengthInDays ?: return null
-        val deduction = ceil(lengthInDays / 3.0).toLong()
-        return endDate.minusDays(deduction)
+    fun SentenceDetail.finalThirdDate(custody: Custody): LocalDate? {
+        if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null || custody.disposal.sdsPlus == true) return null
+
+        val endDate = sentenceExpiryDate ?: custody.disposal.notionalEndDate
+        val deduction = ceil(custody.disposal.lengthInDays / 3.0).toLong()
+        return endDate?.minusDays(deduction)
     }
 
     /**
      * Reset suspension date = 2/3 between start and end dates
      */
-    fun suspensionDateIfReset(sentenceDetail: SentenceDetail, custody: Custody): LocalDate? =
-        custody.disposal?.takeIf { it.type.determinateSentence }?.let {
-            val startDate = it.event.firstReleaseDate ?: sentenceDetail.conditionalReleaseDate ?: return null
-            val endDate = sentenceDetail.sentenceExpiryDate ?: return null
+    fun SentenceDetail.suspensionDateIfReset(custody: Custody): LocalDate? =
+        custody.disposal.takeIf { it.type.determinateSentence }?.let {
+            val startDate = it.event.firstReleaseDate ?: conditionalReleaseDate ?: return null
+            val endDate = sentenceExpiryDate ?: return null
             if (startDate < endDate) {
                 val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
                 startDate.plusDays(daysBetween * 2 / 3)
-            } else {
-                null
-            }
+            } else null
         }
+
+    /**
+     * Only apply PSS end date for sentences with a requirement for PSS
+     */
+    fun SentenceDetail.pssEndDateIfPss(custody: Custody): LocalDate? =
+        postSentenceSupervisionEndDate.takeIf { custody.disposal.type.pssRequirement == true }
 }
