@@ -26,6 +26,9 @@ spring:
         token-uri: http://localhost:${dev.wiremock.port}/auth/oauth/token
   threads.virtual.enabled: true
 
+oauth2.roles:
+  - PROBATION_API__CAS_2__CASE_DETAIL
+
 delius.db.username: Cas2AndDelius # Should match value in [deploy/database/access.yml].
 
 management:
