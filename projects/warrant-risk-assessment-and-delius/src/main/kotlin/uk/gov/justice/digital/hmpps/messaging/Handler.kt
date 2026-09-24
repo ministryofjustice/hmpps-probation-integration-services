@@ -23,7 +23,10 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
-            Message(title = "probation-case.warrant-risk-assessment.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(
+                title = "probation-case.warrant-risk-assessment.created",
+                payload = Schema(HmppsDomainEvent::class)
+            ),
             Message(title = "probation-case.warrant-risk-assessment.deleted", payload = Schema(HmppsDomainEvent::class))
         ]
     )
