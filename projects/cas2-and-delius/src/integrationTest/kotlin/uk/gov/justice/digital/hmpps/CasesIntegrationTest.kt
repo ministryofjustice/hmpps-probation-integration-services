@@ -208,6 +208,55 @@ internal class CasesIntegrationTest @Autowired constructor(
         assertThat(response.sexualOffenceRegistrations).containsExactly(expected)
     }
 
+    @Test
+    fun `soft-deleted deregistrations are excluded from results`() {
+        val crn = nextCrn()
+        val person = Person(id = IdGenerator.getAndIncrement(), crn = crn)
+        val type = RegistrationGenerator.generateType(code = "RSC", description = "Registered Sex Offender")
+        val category = RegistrationGenerator.generateCategory(code = "CAT1", description = "Category 1")
+        val registration = RegistrationGenerator.generate(
+            person = person,
+            type = type,
+            category = category,
+            registrationDate = LocalDate.of(2024, 1, 1),
+            nextReviewDate = LocalDate.of(2025, 1, 1),
+        )
+        val activeDeregistration = RegistrationGenerator.generateDeregistration(
+            registration = registration,
+            endDate = LocalDate.of(2024, 9, 1),
+            softDeleted = false,
+        )
+        val softDeletedDeregistration = RegistrationGenerator.generateDeregistration(
+            registration = registration,
+            endDate = LocalDate.of(2024, 12, 1), // Later date but soft-deleted
+            softDeleted = true,
+        )
+
+        val expected = SexualOffenceRegistration(
+            type = CodeDescription(code = "RSC", description = "Registered Sex Offender"),
+            category = CodeDescription(code = "CAT1", description = "Category 1"),
+            date = LocalDate.of(2024, 1, 1),
+            nextReviewDate = LocalDate.of(2025, 1, 1),
+            endDate = LocalDate.of(2024, 9, 1), // Only active deregistration's date
+        )
+
+        persist(
+            person,
+            type,
+            category,
+            registration,
+            activeDeregistration,
+            softDeletedDeregistration,
+        )
+
+        val response = mockMvc.get("/cases/$crn/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn).isEqualTo(crn)
+        assertThat(response.sexualOffenceRegistrations).containsExactly(expected)
+    }
+
     private fun persist(vararg entities: Any) {
         transactionTemplate.execute {
             entities.forEach(entityManager::persist)

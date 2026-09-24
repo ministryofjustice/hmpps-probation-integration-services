@@ -47,11 +47,13 @@ object RegistrationGenerator {
     fun generateDeregistration(
         registration: Registration,
         endDate: LocalDate = LocalDate.now(),
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement(),
     ) = Deregistration(
         id = id,
         registration = registration,
         endDate = endDate,
+        softDeleted = softDeleted,
     )
 }
 
