@@ -26,7 +26,6 @@ class Registration(
     val registrationDate: LocalDate,
     val nextReviewDate: LocalDate?,
 
-
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
@@ -37,7 +36,7 @@ class Registration(
 
     @OneToMany(mappedBy = "registration")
     val deregistrations: List<Deregistration> = emptyList(),
-    )
+)
 
 @Entity
 @Table(name = "r_register_type")
