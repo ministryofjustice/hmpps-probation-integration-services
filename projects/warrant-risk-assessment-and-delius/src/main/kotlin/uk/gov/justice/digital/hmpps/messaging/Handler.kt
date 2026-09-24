@@ -23,20 +23,20 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     @Publish(
         messages = [
-            Message(title = "probation-case.WRA.created", payload = Schema(HmppsDomainEvent::class)),
-            Message(title = "probation-case.WRA.deleted", payload = Schema(HmppsDomainEvent::class))
+            Message(title = "probation-case.warrant-risk-assessment.created", payload = Schema(HmppsDomainEvent::class)),
+            Message(title = "probation-case.warrant-risk-assessment.deleted", payload = Schema(HmppsDomainEvent::class))
         ]
     )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         when (notification.eventType) {
-            "probation-case.WRA.created" -> {
+            "probation-case.warrant-risk-assessment.created" -> {
                 val file = detailService.getDetail<ByteArray>(notification.message)
                 documentService.uploadDocument(notification.message, file)
                 telemetryService.trackEvent("DocumentUploaded", notification.message.telemetry())
             }
 
-            "probation-case.WRA.deleted" -> {
+            "probation-case.warrant-risk-assessment.deleted" -> {
                 documentService.deleteDocument(notification.message)
                 telemetryService.trackEvent("DocumentDeleted", notification.message.telemetry())
             }

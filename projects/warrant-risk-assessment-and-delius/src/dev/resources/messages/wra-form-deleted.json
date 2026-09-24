@@ -1,5 +1,5 @@
 {
-  "eventType": "probation-case.WRA.deleted",
+  "eventType": "probation-case.warrant-risk-assessment.deleted",
   "version": 1,
   "description": "WRA Form event",
   "detailUrl": "http://localhost:{dev.wiremock.port}/wra/pdf/00000000-0000-0000-0000-000000000002",
