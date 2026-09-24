@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
@@ -25,17 +26,17 @@ class Registration(
     val registrationDate: LocalDate,
     val nextReviewDate: LocalDate?,
 
-    @OneToOne(mappedBy = "registration", optional = true)
-    val deregistration: Deregistration? = null,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
 
     @ManyToOne
-    @JoinColumn(name = "registration_category")
+    @JoinColumn(name = "register_category_id")
     val category: ReferenceData,
 
+    @OneToMany(mappedBy = "registration")
+    val deregistrations: List<Deregistration> = emptyList(),
     )
 
 @Entity
@@ -56,12 +57,12 @@ class Deregistration(
     @Column(name = "deregistration_id")
     val id: Long = 0,
 
-    @OneToOne
-    @JoinColumn(name = "registration_id", referencedColumnName = "registration_id")
-    val registration: Registration,
-
     @Column(name = "deregistration_date")
     val endDate: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "registration_id")
+    val registration: Registration,
 )
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {

@@ -156,6 +156,58 @@ internal class CasesIntegrationTest @Autowired constructor(
             }
     }
 
+    @Test
+    fun `returns latest deregistration date when registration has multiple deregistrations`() {
+        val crn = nextCrn()
+        val person = Person(id = IdGenerator.getAndIncrement(), crn = crn)
+        val type = RegistrationGenerator.generateType(code = "RSC", description = "Registered Sex Offender")
+        val category = RegistrationGenerator.generateCategory(code = "CAT1", description = "Category 1")
+        val registration = RegistrationGenerator.generate(
+            person = person,
+            type = type,
+            category = category,
+            registrationDate = LocalDate.of(2024, 1, 1),
+            nextReviewDate = LocalDate.of(2025, 1, 1),
+        )
+        val firstDeregistration = RegistrationGenerator.generateDeregistration(
+            registration = registration,
+            endDate = LocalDate.of(2024, 6, 1),
+        )
+        val secondDeregistration = RegistrationGenerator.generateDeregistration(
+            registration = registration,
+            endDate = LocalDate.of(2024, 9, 1),
+        )
+        val thirdDeregistration = RegistrationGenerator.generateDeregistration(
+            registration = registration,
+            endDate = LocalDate.of(2024, 7, 15),
+        )
+
+        val expected = SexualOffenceRegistration(
+            type = CodeDescription(code = "RSC", description = "Registered Sex Offender"),
+            category = CodeDescription(code = "CAT1", description = "Category 1"),
+            date = LocalDate.of(2024, 1, 1),
+            nextReviewDate = LocalDate.of(2025, 1, 1),
+            endDate = LocalDate.of(2024, 9, 1), // Should be the latest date
+        )
+
+        persist(
+            person,
+            type,
+            category,
+            registration,
+            firstDeregistration,
+            secondDeregistration,
+            thirdDeregistration,
+        )
+
+        val response = mockMvc.get("/cases/$crn/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn).isEqualTo(crn)
+        assertThat(response.sexualOffenceRegistrations).containsExactly(expected)
+    }
+
     private fun persist(vararg entities: Any) {
         transactionTemplate.execute {
             entities.forEach(entityManager::persist)

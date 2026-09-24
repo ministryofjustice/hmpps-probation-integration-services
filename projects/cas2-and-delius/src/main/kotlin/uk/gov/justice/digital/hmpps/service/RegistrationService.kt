@@ -23,7 +23,7 @@ class RegistrationService(
                 category = CodeDescription(code = it.category.code, description = it.category.description),
                 date = it.registrationDate,
                 nextReviewDate = it.nextReviewDate,
-                endDate = it.deregistration?.endDate,
+                endDate = it.deregistrations.maxOfOrNull { dr -> dr.endDate }
             )
         }
         return SexualOffenceRegistrations(
