@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.entity.Deregistration
 import uk.gov.justice.digital.hmpps.entity.RegisterType
 import uk.gov.justice.digital.hmpps.entity.Registration
 import java.time.LocalDate
@@ -41,6 +42,16 @@ object RegistrationGenerator {
         nextReviewDate = nextReviewDate,
         registerType = type,
         category = category,
+    )
+
+    fun generateDeregistration(
+        registration: Registration,
+        endDate: LocalDate = LocalDate.now(),
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = Deregistration(
+        id = id,
+        registration = registration,
+        endDate = endDate,
     )
 }
 

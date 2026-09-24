@@ -25,6 +25,9 @@ class Registration(
     val registrationDate: LocalDate,
     val nextReviewDate: LocalDate?,
 
+    @OneToOne(mappedBy = "registration", optional = true)
+    val deregistration: Deregistration? = null,
+
     @OneToOne
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
@@ -44,6 +47,21 @@ class RegisterType(
 
     val code: String,
     val description: String,
+)
+
+@Entity
+@Table(name = "deregistration")
+class Deregistration(
+    @Id
+    @Column(name = "deregistration_id")
+    val id: Long = 0,
+
+    @OneToOne
+    @JoinColumn(name = "registration_id", referencedColumnName = "registration_id")
+    val registration: Registration,
+
+    @Column(name = "deregistration_date")
+    val endDate: LocalDate,
 )
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {

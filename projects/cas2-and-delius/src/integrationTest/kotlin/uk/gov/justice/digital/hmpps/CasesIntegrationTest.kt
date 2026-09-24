@@ -53,6 +53,36 @@ internal class CasesIntegrationTest @Autowired constructor(
         val otherPerson = Person(id = IdGenerator.getAndIncrement(), crn = nextCrn())
         val otherType = RegistrationGenerator.generateType(code = "SHPO", description = "Sexual Harm Prevention Order")
         val otherCategory = RegistrationGenerator.generateCategory(code = "CAT4", description = "Category 4")
+        val activeRegistration = RegistrationGenerator.generate(
+            person = person,
+            type = firstType,
+            category = firstCategory,
+            registrationDate = LocalDate.of(2024, 1, 1),
+            nextReviewDate = LocalDate.of(2025, 1, 1),
+        )
+        val deregisteredRegistration = RegistrationGenerator.generate(
+            person = person,
+            type = secondType,
+            category = secondCategory,
+            registrationDate = LocalDate.of(2024, 6, 1),
+            nextReviewDate = null,
+        )
+        val ignoredRegistration = RegistrationGenerator.generate(
+            person = person,
+            type = ignoredType,
+            category = ignoredCategory,
+            registrationDate = LocalDate.of(2024, 3, 1),
+        )
+        val otherPersonRegistration = RegistrationGenerator.generate(
+            person = otherPerson,
+            type = otherType,
+            category = otherCategory,
+            registrationDate = LocalDate.of(2024, 8, 1),
+        )
+        val deregistration = RegistrationGenerator.generateDeregistration(
+            registration = deregisteredRegistration,
+            endDate = LocalDate.of(2024, 9, 1),
+        )
 
         val expected = listOf(
             SexualOffenceRegistration(
@@ -60,12 +90,14 @@ internal class CasesIntegrationTest @Autowired constructor(
                 category = CodeDescription(code = "CAT1", description = "Category 1"),
                 date = LocalDate.of(2024, 1, 1),
                 nextReviewDate = LocalDate.of(2025, 1, 1),
+                endDate = null,
             ),
             SexualOffenceRegistration(
                 type = CodeDescription(code = "SOPS", description = "Sex Offender Prevention Scheme"),
                 category = CodeDescription(code = "CAT2", description = "Category 2"),
                 date = LocalDate.of(2024, 6, 1),
                 nextReviewDate = null,
+                endDate = LocalDate.of(2024, 9, 1),
             ),
         )
 
@@ -80,32 +112,11 @@ internal class CasesIntegrationTest @Autowired constructor(
             otherPerson,
             otherType,
             otherCategory,
-            RegistrationGenerator.generate(
-                person = person,
-                type = firstType,
-                category = firstCategory,
-                registrationDate = LocalDate.of(2024, 1, 1),
-                nextReviewDate = LocalDate.of(2025, 1, 1),
-            ),
-            RegistrationGenerator.generate(
-                person = person,
-                type = secondType,
-                category = secondCategory,
-                registrationDate = LocalDate.of(2024, 6, 1),
-                nextReviewDate = null,
-            ),
-            RegistrationGenerator.generate(
-                person = person,
-                type = ignoredType,
-                category = ignoredCategory,
-                registrationDate = LocalDate.of(2024, 3, 1),
-            ),
-            RegistrationGenerator.generate(
-                person = otherPerson,
-                type = otherType,
-                category = otherCategory,
-                registrationDate = LocalDate.of(2024, 8, 1),
-            ),
+            activeRegistration,
+            deregisteredRegistration,
+            ignoredRegistration,
+            otherPersonRegistration,
+            deregistration,
         )
 
         val response = mockMvc.get("/cases/$crn/sexual-offence-registrations") { withToken() }

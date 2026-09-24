@@ -22,7 +22,8 @@ class RegistrationService(
                 type = CodeDescription(code = it.registerType.code, description = it.registerType.description),
                 category = CodeDescription(code = it.category.code, description = it.category.description),
                 date = it.registrationDate,
-                nextReviewDate = it.nextReviewDate
+                nextReviewDate = it.nextReviewDate,
+                endDate = it.deregistration?.endDate,
             )
         }
         return SexualOffenceRegistrations(
