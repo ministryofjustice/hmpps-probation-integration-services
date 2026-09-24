@@ -9,6 +9,7 @@ data class Sentence(
     val licenceExpiryDate: LocalDate?,
     val postSentenceSupervisionEndDate: LocalDate?,
     val twoThirdsSupervisionDate: LocalDate?,
+    val finalThirdStartDate: LocalDate?,
     val custodial: Boolean,
     val releaseType: String?,
     val licenceConditions: List<CodedValue>,

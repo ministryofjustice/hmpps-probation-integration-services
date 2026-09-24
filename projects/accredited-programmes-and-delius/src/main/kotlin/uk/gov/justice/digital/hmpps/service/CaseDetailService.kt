@@ -50,6 +50,7 @@ class CaseDetailService(
                 licenceExpiryDate = event.disposal.custody?.licenceEndDate(),
                 postSentenceSupervisionEndDate = event.disposal.custody?.postSentenceSupervisionEndDate(),
                 twoThirdsSupervisionDate = event.disposal.custody?.probationResetDate() ?: event.twoThirdsDate(),
+                finalThirdStartDate = event.disposal.custody?.finalThirdStartDate(),
                 custodial = event.disposal.type.isCustodial(),
                 releaseType = event.disposal.custody?.mostRecentRelease()?.type?.description,
                 licenceConditions = event.disposal.licenceConditions.map {
