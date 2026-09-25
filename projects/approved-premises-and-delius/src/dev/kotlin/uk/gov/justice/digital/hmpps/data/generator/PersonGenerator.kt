@@ -44,7 +44,20 @@ object PersonGenerator {
         lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
         id: Long = IdGenerator.getAndIncrement(),
         notes: String? = null
-    ) = Registration(person, type, category, level, date, date.plusWeeks(2), false, emptyList(),  deregistered, lastUpdatedDateTime, notes, id)
+    ) = Registration(
+        person,
+        type,
+        category,
+        level,
+        date,
+        date.plusWeeks(2),
+        false,
+        emptyList(),
+        deregistered,
+        lastUpdatedDateTime,
+        notes,
+        id
+    )
 }
 
 object PersonManagerGenerator {

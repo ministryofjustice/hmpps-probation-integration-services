@@ -14,7 +14,7 @@ class RegistrationService(
     val registrationRepository: RegistrationRepository
 ) {
     fun getSexualOffenceRegistrations(crn: String): SexualOffenceRegistrations {
-        personRepository.findByCrnAndSoftDeletedIsFalse(crn).orNotFoundBy( "Person", crn)
+        personRepository.findByCrnAndSoftDeletedIsFalse(crn).orNotFoundBy("Person", crn)
 
         val sexualOffenceCodes = listOf("RSC", "ANSO", "ARSO", "RCHD", "SHPO", "CSEP", "ALT13", "ALT3", "SOPS")
         val registrations = registrationRepository.findByRegistrationCodes(crn, sexualOffenceCodes).map {

@@ -192,19 +192,24 @@ class DataLoader(
         save(ANOTHER_EVENT)
 
         save(PersonGenerator.PERSON_SO)
-        save( PersonGenerator.generateRegistration(PersonGenerator.PERSON_SO, RegisterType(RegisterType.Code.SEX_OFFENCE.value,
-            RegisterType.Code.SEX_OFFENCE.name,
-            null,
-            IdGenerator.getAndIncrement()),
-            LocalDate.now().minusDays(7),
-            ReferenceDataGenerator.REGISTER_CATEGORIES["M3"],
-            ReferenceDataGenerator.REGISTER_LEVELS["M2"],
-            false,
-            false,
-            ZonedDateTime.now(),
-            IdGenerator.getAndIncrement(),
-            "Some Notes"
-            ))
+        save(
+            PersonGenerator.generateRegistration(
+                PersonGenerator.PERSON_SO, RegisterType(
+                    RegisterType.Code.SEX_OFFENCE.value,
+                    RegisterType.Code.SEX_OFFENCE.name,
+                    null,
+                    IdGenerator.getAndIncrement()
+                ),
+                LocalDate.now().minusDays(7),
+                ReferenceDataGenerator.REGISTER_CATEGORIES["M3"],
+                ReferenceDataGenerator.REGISTER_LEVELS["M2"],
+                false,
+                false,
+                ZonedDateTime.now(),
+                IdGenerator.getAndIncrement(),
+                "Some Notes"
+            )
+        )
 
         probationCaseDataLoader.loadData()
         referralBookingDataLoader.loadData()
