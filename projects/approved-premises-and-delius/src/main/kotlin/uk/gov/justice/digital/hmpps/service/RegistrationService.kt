@@ -32,7 +32,7 @@ class RegistrationService(
                         code = it.category?.code,
                         description = it.category?.description
                     ),
-                date = it.date,
+                startDate = it.date,
                 nextReviewDate = it.nextReviewDate,
                 endDate = it.deregistrations.firstOrNull()?.endDate
             )

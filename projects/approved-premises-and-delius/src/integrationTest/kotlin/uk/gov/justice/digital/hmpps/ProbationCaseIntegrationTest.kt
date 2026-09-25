@@ -177,8 +177,8 @@ class ProbationCaseIntegrationTest(
         assertThat(registration.type.description, equalTo("SEX_OFFENCE"))
         assertThat(registration.category?.code, equalTo("M3"))
         assertThat(registration.category?.description, equalTo("MAPPA Category M3"))
-        assertThat(registration.date, equalTo(LocalDate.now().minusDays(7)))
-        assertThat(registration.nextReviewDate, equalTo(registration.date.plusWeeks(2)))
+        assertThat(registration.startDate, equalTo(LocalDate.now().minusDays(7)))
+        assertThat(registration.nextReviewDate, equalTo(registration.startDate.plusWeeks(2)))
         assertThat(registration.endDate, nullValue())
     }
 

@@ -10,7 +10,7 @@ data class SexualOffenceRegistrations(
 data class SexualOffenceRegistration(
     val type: CodeDescription,
     val category: CodeDescription? = null,
-    val date: LocalDate,
+    val startDate: LocalDate,
     val nextReviewDate: LocalDate?,
     val endDate: LocalDate?,
 )
