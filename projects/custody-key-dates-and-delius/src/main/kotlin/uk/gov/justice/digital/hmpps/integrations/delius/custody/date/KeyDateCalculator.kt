@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.SENTENCE_EXPIRY_DATE
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -42,6 +44,8 @@ object KeyDateCalculator {
         if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null) return null
 
         val factor = if (custody.disposal.sdsPlus == true) 0.17 else 0.07
+        val conditionalReleaseDate = conditionalReleaseDate
+            ?: custody.keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
         return conditionalReleaseDate?.plusDays(floor(custody.disposal.lengthInDays * factor).toLong())
     }
 
@@ -53,7 +57,9 @@ object KeyDateCalculator {
     fun SentenceDetail.finalThirdDate(custody: Custody): LocalDate? {
         if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null || custody.disposal.sdsPlus == true) return null
 
-        val endDate = sentenceExpiryDate ?: custody.disposal.notionalEndDate
+        val endDate = sentenceExpiryDate
+            ?: custody.keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
+            ?: custody.disposal.notionalEndDate
         val deduction = ceil(custody.disposal.lengthInDays / 3.0).toLong()
         return endDate?.minusDays(deduction)
     }
@@ -62,9 +68,14 @@ object KeyDateCalculator {
      * Reset suspension date = 2/3 between start and end dates
      */
     fun SentenceDetail.suspensionDateIfReset(custody: Custody): LocalDate? =
-        custody.disposal.takeIf { it.type.determinateSentence }?.let {
-            val startDate = it.event.firstReleaseDate ?: conditionalReleaseDate ?: return null
-            val endDate = sentenceExpiryDate ?: return null
+        custody.disposal.takeIf { it.type.determinateSentence }?.event?.let { event ->
+            val startDate = event.firstReleaseDate
+                ?: conditionalReleaseDate
+                ?: custody.keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
+                ?: return null
+            val endDate = sentenceExpiryDate
+                ?: custody.keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
+                ?: return null
             if (startDate < endDate) {
                 val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
                 startDate.plusDays(daysBetween * 2 / 3)
