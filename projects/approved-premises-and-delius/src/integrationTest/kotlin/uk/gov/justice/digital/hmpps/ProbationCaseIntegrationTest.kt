@@ -175,8 +175,8 @@ class ProbationCaseIntegrationTest(
         val registration = response.sexualOffenceRegistrations!!.first()
         assertThat(registration.type.code, equalTo("ARSO"))
         assertThat(registration.type.description, equalTo("SEX_OFFENCE"))
-        assertThat(registration.category.code, equalTo("M3"))
-        assertThat(registration.category.description, equalTo("MAPPA Category M3"))
+        assertThat(registration.category?.code, equalTo("M3"))
+        assertThat(registration.category?.description, equalTo("MAPPA Category M3"))
         assertThat(registration.date, equalTo(LocalDate.now().minusDays(7)))
         assertThat(registration.nextReviewDate, equalTo(registration.date.plusWeeks(2)))
         assertThat(registration.endDate, nullValue())
@@ -194,8 +194,8 @@ class ProbationCaseIntegrationTest(
 
         val registration = response.sexualOffenceRegistrations!!.first()
         assertThat(registration.type.code, equalTo("ARSO"))
-        assertThat(registration.category.code, equalTo(""))
-        assertThat(registration.category.description, equalTo(""))
+        assertThat(registration.category?.code, equalTo(null))
+        assertThat(registration.category?.description, equalTo(null))
         assertThat(registration.endDate, nullValue())
     }
 
@@ -215,7 +215,7 @@ class ProbationCaseIntegrationTest(
         mockMvc.get("/probation-cases/NOTFOUND/sexual-offence-registrations") { withToken() }
             .andExpect {
                 status { isNotFound() }
-                jsonPath("$.message") { value(equalTo("Person with Person of NOTFOUND not found")) }
+                jsonPath("$.message") { value(equalTo("Person with crn of NOTFOUND not found")) }
             }
     }
 }
