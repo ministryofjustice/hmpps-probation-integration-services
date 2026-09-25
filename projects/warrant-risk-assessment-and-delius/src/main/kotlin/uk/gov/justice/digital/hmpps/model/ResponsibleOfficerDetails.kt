@@ -6,6 +6,7 @@ data class ResponsibleOfficerDetails(
     val telephoneNumber: String?,
     val probationArea: CodeAndDescription,
     val replyAddresses: List<OfficeAddress>,
+    val userDetails: Name,
 )
 
 data class CodeAndDescription(

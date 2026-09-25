@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
+import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
@@ -17,17 +18,22 @@ class ResponsibleOfficerService(
     private val ldapTemplate: LdapTemplate,
     private val officeLocationRepository: OfficeLocationRepository,
 ) {
-    fun getResponsibleOfficerDetails(crn: String): ResponsibleOfficerDetails {
+    fun getResponsibleOfficerDetails(crn: String, username: String): ResponsibleOfficerDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn).orNotFoundBy("CRN", crn)
-        val username = responsibleOfficer.username
-        val emailAddress = username?.let { ldapTemplate.findAttributeByUsername(it, "mail") }
-        val telephoneNumber = username?.let { ldapTemplate.findAttributeByUsername(it, "telephoneNumber") }
-        val homeArea = username?.let { ldapTemplate.findAttributeByUsername(it, "userHomeArea") }
+        val submittingUsersFirstName =
+            ldapTemplate.findAttributeByUsername(username, "givenname").orNotFoundBy("Username", username)
+        val submittingUsersSurname =
+            ldapTemplate.findAttributeByUsername(username, "sn").orNotFoundBy("Username", username)
+        val usernameRO = responsibleOfficer.username
+        val emailAddress = usernameRO?.let { ldapTemplate.findAttributeByUsername(it, "mail") }
+        val telephoneNumber = usernameRO?.let { ldapTemplate.findAttributeByUsername(it, "telephoneNumber") }
+        val homeArea = usernameRO?.let { ldapTemplate.findAttributeByUsername(it, "userHomeArea") }
         val defaultReplyAddress =
-            username?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
+            usernameRO?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
         val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
         return ResponsibleOfficerDetails(
+            userDetails = Name(submittingUsersFirstName, null, submittingUsersSurname),
             name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
             emailAddress = emailAddress,
             telephoneNumber = telephoneNumber,
