@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.overview.Overview
-import uk.gov.justice.digital.hmpps.api.model.overview.PersonalDetails
+import uk.gov.justice.digital.hmpps.api.model.overview.OverviewPersonalDetails
 import uk.gov.justice.digital.hmpps.api.model.overview.PreviousOrders
 import uk.gov.justice.digital.hmpps.api.model.overview.Schedule
 import uk.gov.justice.digital.hmpps.service.OverviewService
@@ -28,7 +28,7 @@ internal class OverviewControllerTest {
     @Test
     fun `calls overview service`() {
         val crn = "X000004"
-        val personalDetails = PersonalDetails(
+        val personalDetails = OverviewPersonalDetails(
             name = Name(forename = "Joseph", middleName = "Harry", surname = "Bloggs"),
             personalCircumstances = emptyList(),
             disabilities = emptyList(),

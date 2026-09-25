@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.api.model.personalDetails
 
-import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.Contact
 import java.time.LocalDate
 
-@Schema(name = "PersonalDetailsResponse")
 data class PersonalDetails(
     val crn: String,
     val name: Name,

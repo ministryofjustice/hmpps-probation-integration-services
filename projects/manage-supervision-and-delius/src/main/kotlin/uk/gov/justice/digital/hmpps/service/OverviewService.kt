@@ -93,7 +93,7 @@ class OverviewService(
         personalCircumstances: List<PersonalCircumstance>,
         disabilities: List<Disability>,
         provisions: List<Provision>
-    ) = PersonalDetails(
+    ) = OverviewPersonalDetails(
         name = name(),
         mobileNumber = mobileNumber,
         telephoneNumber = telephoneNumber,

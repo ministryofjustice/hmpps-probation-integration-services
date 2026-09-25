@@ -7,7 +7,7 @@ data class Overview(
     val absencesWithoutEvidence: Int = 0,
     val activity: ActivityCount?,
     val compliance: Compliance?,
-    val personalDetails: PersonalDetails,
+    val personalDetails: OverviewPersonalDetails,
     val previousOrders: PreviousOrders,
     val schedule: Schedule,
     val sentences: List<OverviewSentence>,
