@@ -10,8 +10,8 @@ data class OverviewPersonalDetails(
     val preferredName: String?,
     val telephoneNumber: String?,
     val mobileNumber: String?,
-    val disabilities: List<Disability>,
-    val provisions: List<Provision>,
+    val disabilities: List<OverviewDisability>,
+    val provisions: List<OverviewProvision>,
     val personalCircumstances: List<PersonalCircumstance>,
     val allowSms: Boolean?,
 )

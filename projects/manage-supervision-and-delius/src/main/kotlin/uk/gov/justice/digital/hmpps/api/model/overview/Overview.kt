@@ -9,7 +9,7 @@ data class Overview(
     val compliance: Compliance?,
     val personalDetails: OverviewPersonalDetails,
     val previousOrders: PreviousOrders,
-    val schedule: Schedule,
+    val schedule: OverviewSchedule,
     val sentences: List<OverviewSentence>,
     val registrations: List<String>,
     val mappa: MappaDetail? = null
