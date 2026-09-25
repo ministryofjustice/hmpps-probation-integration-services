@@ -39,6 +39,9 @@ class ResponsibleOfficerController(
             )
         ]
     )
-    fun getResponsibleOfficerDetails(@PathVariable crn: String, @PathVariable username: String): ResponsibleOfficerDetails =
+    fun getResponsibleOfficerDetails(
+        @PathVariable crn: String,
+        @PathVariable username: String
+    ): ResponsibleOfficerDetails =
         responsibleOfficerService.getResponsibleOfficerDetails(crn, username)
 }

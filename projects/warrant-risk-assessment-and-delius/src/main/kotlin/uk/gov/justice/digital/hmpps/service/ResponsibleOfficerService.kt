@@ -20,8 +20,10 @@ class ResponsibleOfficerService(
 ) {
     fun getResponsibleOfficerDetails(crn: String, username: String): ResponsibleOfficerDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn).orNotFoundBy("CRN", crn)
-        val submittingUsersFirstName = ldapTemplate.findAttributeByUsername(username, "givenname").orNotFoundBy("Username", username)
-        val submittingUsersSurname = ldapTemplate.findAttributeByUsername(username, "sn").orNotFoundBy("Username", username)
+        val submittingUsersFirstName =
+            ldapTemplate.findAttributeByUsername(username, "givenname").orNotFoundBy("Username", username)
+        val submittingUsersSurname =
+            ldapTemplate.findAttributeByUsername(username, "sn").orNotFoundBy("Username", username)
         val usernameRO = responsibleOfficer.username
         val emailAddress = usernameRO?.let { ldapTemplate.findAttributeByUsername(it, "mail") }
         val telephoneNumber = usernameRO?.let { ldapTemplate.findAttributeByUsername(it, "telephoneNumber") }
