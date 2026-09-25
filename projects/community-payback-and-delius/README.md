@@ -7,7 +7,8 @@ Integration service enabling the [Community Payback service](https://github.com/
 The Community Payback service requires access to up-to-date information about Unpaid Work appointments and projects for people on probation. This integration service provides APIs to:
 
 - Retrieve Unpaid Work appointment, session and project details from NDelius
-- Update Unpaid Work appointments and project records in NDelius
+- Create, update, and delete Unpaid Work appointments and project records in NDelius
+- Upload documents (such as certificates or evidence) to Alfresco and link them to appointments in NDelius
 
 ## Interfaces
 
@@ -17,6 +18,11 @@ The service exposes RESTful API endpoints for the Community Payback service to:
 
 - Search for and retrieve Unpaid Work appointments and project details
 - Create, update, or delete Unpaid Work appointments and projects
+- Upload documents to appointments via `POST /appointments/{appointmentId}/documents`
+  - Supports the following file formats: doc, docx, rtf, txt, dot, dotm, docm, odt, xml, wpd, wri, wps, xls, xlsb, xlsx, csv, pdf, bmp, jpg, jpeg, gif, png, m4a, flac, mp3, mp4, wav, wma, aac
+  - Documents are uploaded to Alfresco and linked to the contact record in NDelius
+  - Request: multipart form data with `file` parameter
+  - Response: JSON with `documentId`, `filename`, and `alfrescoId`
 - Retrieve personal circumstances for a person by CRN via `GET /case/{crn}/personal-circumstances`
   - Use `?activeOnly=true` to return active circumstances only
   - Use `?activeOnly=false` (default) to return active and inactive circumstances
@@ -42,3 +48,4 @@ API endpoints are protected by roles supplied by the HMPPS Auth client. Only aut
 | /providers/**      | ROLE_COMMUNITY_PAYBACK_UNPAID_WORK   |
 | /supervisors/**    | ROLE_COMMUNITY_PAYBACK_UNPAID_WORK   |
 | /reference-data/** | ROLE_COMMUNITY_PAYBACK_UNPAID_WORK   |
+| /appointments/**   | ROLE_COMMUNITY_PAYBACK_UNPAID_WORK   |

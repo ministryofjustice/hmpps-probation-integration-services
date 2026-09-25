@@ -7,6 +7,7 @@ database:
       - audited_interaction
       - contact
       - contact_alert
+      - document
       - enforcement
       - event
       - upw_project
