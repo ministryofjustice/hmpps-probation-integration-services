@@ -73,6 +73,7 @@ class OverviewIntegrationTest : IntegrationTestBase() {
         assertThat(res.sentences[1].rarDescription, equalTo("2 of 12 RAR days completed"))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
         assertThat(res.personalDetails.dateOfBirth, equalTo(OVERVIEW.dateOfBirth))
+        assertThat(res.personalDetails.allowSms, equalTo(OVERVIEW.smsAllowed))
         assertThat(res.registrations, equalTo(listOf("Restraining Order", "Domestic Abuse Perpetrator", "Mappa")))
         assertThat(res.mappa!!.levelDescription, equalTo(MAPPA_REGISTRATION.level!!.description))
     }

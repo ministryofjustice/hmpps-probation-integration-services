@@ -30,7 +30,7 @@ class OverviewService(
 ) {
 
     @Transactional
-    fun getOverview(crn: String): Overview {
+    fun returnOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
         val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
@@ -103,6 +103,7 @@ class OverviewService(
         disabilities = disabilities.map { it.toDisability() },
         dateOfBirth = dateOfBirth,
         provisions = provisions.map { it.toProvision() },
+        allowSms = smsAllowed
     )
 
     fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence.toOffence() =

@@ -37,7 +37,8 @@ internal class OverviewControllerTest {
             preferredName = "Joe",
             telephoneNumber = "1234",
             dateOfBirth = LocalDate.now().minusYears(50),
-            provisions = emptyList()
+            provisions = emptyList(),
+            allowSms = true,
         )
         val overview = Overview(
             compliance = null,
@@ -48,8 +49,9 @@ internal class OverviewControllerTest {
             schedule = Schedule(null),
             registrations = emptyList()
         )
-        whenever(overviewService.getOverview(crn)).thenReturn(overview)
+        whenever(overviewService.returnOverview(crn)).thenReturn(overview)
         val res = controller.getOverview("X000004")
         MatcherAssert.assertThat(res.personalDetails.preferredName, Matchers.equalTo("Joe"))
+        MatcherAssert.assertThat(res.personalDetails.allowSms, Matchers.equalTo(true))
     }
 }

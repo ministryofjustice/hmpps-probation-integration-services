@@ -13,4 +13,5 @@ data class PersonalDetails(
     val disabilities: List<Disability>,
     val provisions: List<Provision>,
     val personalCircumstances: List<PersonalCircumstance>,
+    val allowSms: Boolean?,
 )
