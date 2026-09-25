@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.ldap.findAttributeByUsername
-import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.ldap.findPreferenceByUsername
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import uk.gov.justice.digital.hmpps.model.UserDetailsName
 
 @Service
 class ResponsibleOfficerService(
@@ -33,14 +33,16 @@ class ResponsibleOfficerService(
         val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
         return ResponsibleOfficerDetails(
-            userDetails = Name(submittingUsersFirstName, null, submittingUsersSurname),
-            name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
-            emailAddress = emailAddress,
-            telephoneNumber = telephoneNumber,
-            replyAddresses = officeLocations?.map {
-                it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
-            } ?: emptyList(),
-            probationArea = with(responsibleOfficer.probationArea) { CodeAndDescription(code, description) }
+            userDetails = UserDetailsName(submittingUsersFirstName, submittingUsersSurname),
+            responsibleOfficer = uk.gov.justice.digital.hmpps.model.ResponsibleOfficer(
+                name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
+                emailAddress = emailAddress,
+                telephoneNumber = telephoneNumber,
+                replyAddresses = officeLocations?.map {
+                    it.toAddress().copy(status = if (it.id == defaultReplyAddress) "Default" else null)
+                } ?: emptyList(),
+                probationArea = with(responsibleOfficer.probationArea) { CodeAndDescription(code, description) }
+            )
         )
     }
 
