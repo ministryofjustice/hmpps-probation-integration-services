@@ -29,6 +29,14 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `returns 404 when submitting username does not exist`() {
+        val crn = PersonGenerator.DEFAULT.crn
+
+        mockMvc.get("/sign-and-send/$crn/nonexistent") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
     fun `returns responsible officer details`() {
         val crn = PersonGenerator.DEFAULT.crn
         val username = ResponsibleOfficerGenerator.DEFAULT_USER.username
