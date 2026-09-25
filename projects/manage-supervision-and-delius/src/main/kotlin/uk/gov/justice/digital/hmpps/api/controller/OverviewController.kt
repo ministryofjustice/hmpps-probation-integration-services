@@ -18,6 +18,9 @@ import uk.gov.justice.digital.hmpps.service.OverviewService
 class OverviewController(private val overviewService: OverviewService) {
 
     @GetMapping
-    @Operation(summary = "MAS Overview containing Personal Details, Activity, Compliance, Schedule, Orders and Sentences ")
+    @Operation(
+        operationId = "getOverview",
+        summary = "MAS Overview containing Personal Details, Activity, Compliance, Schedule, Orders and Sentences "
+    )
     fun getOverview(@PathVariable crn: String) = overviewService.returnOverview(crn)
 }

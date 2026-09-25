@@ -20,7 +20,7 @@ class SentenceController(
 ) {
 
     @GetMapping
-    @Operation(summary = "Display active events")
+    @Operation(operationId = "getSentenceOverview", summary = "Display active events")
     fun getOverview(
         @PathVariable crn: String,
         @RequestParam(required = false) number: String?,

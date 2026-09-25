@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.SentenceService
 class SentencesController(private val sentenceService: SentenceService) {
 
     @GetMapping
-    @Operation(summary = "Display active events")
+    @Operation(operationId = "getSentencesOverview", summary = "Display active events")
     fun getOverview(
         @PathVariable crn: String,
         @RequestParam(required = false) number: String?,
