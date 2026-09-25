@@ -41,7 +41,7 @@ internal class ComplianceControllerTest {
     @Test
     fun `calls get get compliance function `() {
         val crn = "X000005"
-        val mainOffence = Offence(code = "CD1", description = "Main Offence")
+        val mainOffence = OverviewOffence(code = "CD1", description = "Main Offence")
         val order = Order(description = "Order", endDate = LocalDate.now(), length = 1, startDate = LocalDate.now())
         val breach = Breach(LocalDate.now(), "A Breach")
         val activeRecall = Breach(LocalDate.now(), "Recall NSI")
