@@ -5,11 +5,13 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ANOTHER_EVENT
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Component
 class DataLoader(
@@ -188,6 +190,21 @@ class DataLoader(
         )
 
         save(ANOTHER_EVENT)
+
+        save(PersonGenerator.PERSON_SO)
+        save( PersonGenerator.generateRegistration(PersonGenerator.PERSON_SO, RegisterType(RegisterType.Code.SEX_OFFENCE.value,
+            RegisterType.Code.SEX_OFFENCE.name,
+            null,
+            IdGenerator.getAndIncrement()),
+            LocalDate.now().minusDays(7),
+            ReferenceDataGenerator.REGISTER_CATEGORIES["M3"],
+            ReferenceDataGenerator.REGISTER_LEVELS["M2"],
+            false,
+            false,
+            ZonedDateTime.now(),
+            IdGenerator.getAndIncrement(),
+            "Some Notes"
+            ))
 
         probationCaseDataLoader.loadData()
         referralBookingDataLoader.loadData()

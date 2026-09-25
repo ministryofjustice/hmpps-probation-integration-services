@@ -18,6 +18,7 @@ object PersonGenerator {
     val ANOTHER_EVENT = generateEvent("8", DEFAULT)
     val INACTIVE_EVENT = generateEvent("6", PERSON_INACTIVE_EVENT, active = false)
     val PERSON_WITH_BOOKING = generate(crn = "B000001")
+    val PERSON_SO = generate(crn = "A000099")
 
     fun generate(
         crn: String,
@@ -43,7 +44,7 @@ object PersonGenerator {
         lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
         id: Long = IdGenerator.getAndIncrement(),
         notes: String? = null
-    ) = Registration(person.id, type, category, level, date, softDeleted, deregistered, lastUpdatedDateTime, notes, id)
+    ) = Registration(person, type, category, level, date, date.plusWeeks(2), false, emptyList(),  deregistered, lastUpdatedDateTime, notes, id)
 }
 
 object PersonManagerGenerator {

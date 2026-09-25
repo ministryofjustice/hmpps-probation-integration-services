@@ -11,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
@@ -159,5 +160,62 @@ class ProbationCaseIntegrationTest(
             assertThat(contact.relationshipType.category?.code, equalTo("DOC_LINKED"))
             assertThat(contact.relationshipType.category?.description, equalTo("Doctor Linked Type"))
         }
+    }
+
+    @Test
+    fun `sexual offence registrations are returned with category details when present`() {
+        val crn = PersonGenerator.PERSON_SO.crn
+        val response = mockMvc.get("/probation-cases/${crn}/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn, equalTo(crn))
+        assertThat(response.sexualOffenceRegistrations, hasSize(1))
+
+        val registration = response.sexualOffenceRegistrations!!.first()
+        assertThat(registration.type.code, equalTo("ARSO"))
+        assertThat(registration.type.description, equalTo("SEX_OFFENCE"))
+        assertThat(registration.category.code, equalTo("M3"))
+        assertThat(registration.category.description, equalTo("MAPPA Category M3"))
+        assertThat(registration.date, equalTo(LocalDate.now().minusDays(7)))
+        assertThat(registration.nextReviewDate, equalTo(registration.date.plusWeeks(2)))
+        assertThat(registration.endDate, nullValue())
+    }
+
+    @Test
+    fun `sexual offence registrations return empty category details when category is not present`() {
+        val crn = ProbationCaseGenerator.CASE_COMPLEX.crn
+        val response = mockMvc.get("/probation-cases/${crn}/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn, equalTo(crn))
+        assertThat(response.sexualOffenceRegistrations, hasSize(1))
+
+        val registration = response.sexualOffenceRegistrations!!.first()
+        assertThat(registration.type.code, equalTo("ARSO"))
+        assertThat(registration.category.code, equalTo(""))
+        assertThat(registration.category.description, equalTo(""))
+        assertThat(registration.endDate, nullValue())
+    }
+
+    @Test
+    fun `sexual offence registrations filter out non sexual offence registrations`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        val response = mockMvc.get("/probation-cases/${crn}/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn, equalTo(crn))
+        assertThat(response.sexualOffenceRegistrations, empty())
+    }
+
+    @Test
+    fun `sexual offence registrations return 404 for an unknown crn`() {
+        mockMvc.get("/probation-cases/NOTFOUND/sexual-offence-registrations") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value(equalTo("Person with Person of NOTFOUND not found")) }
+            }
     }
 }

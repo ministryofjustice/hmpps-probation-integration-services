@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.client.approvedpremises.model
+package uk.gov.justice.digital.hmpps.model
 
 import java.time.LocalDate
 
