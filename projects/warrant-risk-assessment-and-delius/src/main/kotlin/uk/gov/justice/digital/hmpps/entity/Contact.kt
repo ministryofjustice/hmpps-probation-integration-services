@@ -30,6 +30,9 @@ class Contact(
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
+
+    @Column(columnDefinition = "char(1)")
+    val documentLinked: String? = null,
 )
 
 @Entity
