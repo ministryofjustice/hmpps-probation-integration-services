@@ -27,11 +27,7 @@ class RegistrationService(
                     code = it.type.code,
                     description = it.type.description
                 ),
-                category =
-                    CodeDescription(
-                        code = it.category?.code,
-                        description = it.category?.description
-                    ),
+                category = category?.run { CodeDescription(code, description) },
                 startDate = it.date,
                 nextReviewDate = it.nextReviewDate,
                 endDate = it.deregistrations.firstOrNull()?.endDate
