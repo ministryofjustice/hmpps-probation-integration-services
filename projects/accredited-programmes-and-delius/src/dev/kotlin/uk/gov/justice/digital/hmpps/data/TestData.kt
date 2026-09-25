@@ -144,6 +144,11 @@ object TestData {
     val PSS_END_DATE = KeyDateGenerator.generate(CUSTODY, PSS_END_DATE_KEY_DATE_TYPE, LocalDate.of(2100, 1, 1))
     val LED_KEY_DATE_TYPE = ReferenceData(id(), KeyDate.LICENCE_EXPIRY_DATE, "Licence expiry date", DATASET)
     val LED_DATE = KeyDateGenerator.generate(CUSTODY, LED_KEY_DATE_TYPE, LocalDate.of(2050, 1, 1))
+    val FTHRD_KEY_DATE_TYPE =
+        ReferenceData(id(), KeyDate.FINAL_THIRD_START_DATE, "Final third start date", DATASET)
+
+    @Suppress("unused")
+    val FTHRD_DATE = KeyDateGenerator.generate(CUSTODY, FTHRD_KEY_DATE_TYPE, LocalDate.of(2075, 1, 1))
 
     val PSS_MAIN_TYPE = PssRequirementMainCategory(id(), "S09", "Drug Testing")
     val PSS_SUB_TYPE = PssRequirementSubCategory(id(), "TEST", "Pass drug tests")

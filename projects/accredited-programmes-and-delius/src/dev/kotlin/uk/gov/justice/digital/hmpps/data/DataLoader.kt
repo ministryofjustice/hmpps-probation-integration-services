@@ -95,6 +95,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.PSS_END_DATE)
         save(TestData.LED_KEY_DATE_TYPE)
         save(TestData.LED_DATE)
+        save(TestData.FTHRD_KEY_DATE_TYPE)
+        save(TestData.FTHRD_DATE)
         save(TestData.PSS_MAIN_TYPE)
         save(TestData.PSS_SUB_TYPE)
         saveAll(TestData.PSS_REQUIREMENTS)
