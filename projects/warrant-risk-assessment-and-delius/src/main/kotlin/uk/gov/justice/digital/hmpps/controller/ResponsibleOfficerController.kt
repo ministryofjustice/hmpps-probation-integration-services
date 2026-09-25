@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.service.ResponsibleOfficerService
 class ResponsibleOfficerController(
     private val responsibleOfficerService: ResponsibleOfficerService,
 ) {
-    @GetMapping("/responsible-officer/{crn}")
+    @GetMapping("/sign-and-send/{crn}/{username}")
     @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     @Operation(
         summary = "Retrieve responsible officer details for a person",
@@ -39,6 +39,6 @@ class ResponsibleOfficerController(
             )
         ]
     )
-    fun getResponsibleOfficerDetails(@PathVariable crn: String): ResponsibleOfficerDetails =
-        responsibleOfficerService.getResponsibleOfficerDetails(crn)
+    fun getResponsibleOfficerDetails(@PathVariable crn: String, @PathVariable username: String): ResponsibleOfficerDetails =
+        responsibleOfficerService.getResponsibleOfficerDetails(crn, username)
 }
