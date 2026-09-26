@@ -11,9 +11,9 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
 
 bulk-update:
-  enabled: false
+  enabled: true
   dry-run: false
-  schedule: 0 7 * * 1
+  schedule: 0 7 * * 5
 
 generic-prometheus-alerts:
   sqsOldestAlertQueueNames:
