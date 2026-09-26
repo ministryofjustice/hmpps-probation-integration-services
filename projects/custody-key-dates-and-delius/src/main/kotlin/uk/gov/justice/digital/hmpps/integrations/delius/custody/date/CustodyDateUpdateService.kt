@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalc
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
@@ -65,9 +66,12 @@ class CustodyDateUpdateService(
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         // Only fetch CRDS data when feature flag is disabled
-        val envelope = if (!calculateDatesFromDelius && custody.disposal.type.determinateCustody) {
+        val envelope = if (custody.disposal.type.determinateCustody) {
             nullIfNotFound { crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo) }
         } else null
+        // Set disposal.sdsPlus on all active custodial disposals
+        if (!dryRun) setSdsPlusFlag(envelope, person)
+
         val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope, calculateDatesFromDelius)
         if (updated.isEmpty()) {
             return noUpdate("KeyDatesUnchanged", booking.telemetry(clientSource))
@@ -75,26 +79,44 @@ class CustodyDateUpdateService(
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
-                // Only update disposal.sdsPlus when using CRDS (feature flag off)
-                if (envelope != null) {
-                    if (booking.id != envelope.bookingId) {
-                        telemetryService.trackEvent(
-                            "SentenceEnvelopeBookingIdMismatch", mapOf(
-                                "bookingId" to booking.id.toString(),
-                                "envelopeBookingId" to envelope.bookingId.toString()
-                            )
-                        )
-                    } else {
-                        custody.disposal.sdsPlus = envelope.containsAnSDSPlusSentence
-                        disposalRepository.save(custody.disposal)
-                    }
-                }
             }
             telemetryService.trackEvent(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
                 booking.telemetry(clientSource) + updated.associateBy({ it.type.code }, { it.date.toString() })
             )
             return !dryRun
+        }
+    }
+
+    private fun setSdsPlusFlag(
+        envelope: OperativeSentenceEnvelope?,
+        person: Person
+    ) {
+        custodyRepository.findAllSentencesByPersonId(person.id).forEach {
+            val previousSdsPlusValue = it.sdsPlus
+
+            if (envelope != null) {
+                it.sdsPlus = envelope.containsAnSDSPlusSentence
+                disposalRepository.save(it)
+            }
+
+            // Also remove final third date from SDS+ sentences
+            val removed = if (it.sdsPlus == true) {
+                keyDateRepository.deleteByCustodyDisposalIdAndTypeCode(it.id, FINAL_THIRD_START_DATE.code)
+            } else 0
+
+            telemetryService.trackEvent(
+                "SdsPlusFlagUpdated",
+                mapOf(
+                    "crn" to person.crn,
+                    "nomsNumber" to person.nomsId,
+                    "eventNumber" to it.event.eventNumber,
+                    "sdsPlus" to it.sdsPlus.toString(),
+                    "sdsPlusBefore" to previousSdsPlusValue.toString(),
+                    "sdsPlusChanged" to (it.sdsPlus != previousSdsPlusValue).toString(),
+                    "finalThirdRemoved" to removed.toString(),
+                )
+            )
         }
     }
 
