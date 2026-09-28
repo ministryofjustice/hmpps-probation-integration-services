@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.service.ZONED_DATE_TIME_FORMAT
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
-
 @Immutable
 @Entity
 class Exclusion(
@@ -189,16 +188,20 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
+
     @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val since: ZonedDateTime
+
     @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val until: ZonedDateTime?
 }
 
 interface ExclusionDetail {
     val username: String
+
     @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val since: ZonedDateTime
+
     @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val until: ZonedDateTime?
 }
