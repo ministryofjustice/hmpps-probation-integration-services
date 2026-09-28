@@ -109,7 +109,7 @@ internal class OverviewServiceTest {
             )
         )
 
-        val res = service.getOverview("X000004")
+        val res = service.returnOverview("X000004")
         assertThat(
             res.personalDetails.preferredName,
             equalTo(PersonGenerator.OVERVIEW.preferredName)

@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.Appointment.Companion.URN_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcome.Code.ATTENDED_COMPLIED
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
 import java.time.ZonedDateTime
@@ -21,6 +22,7 @@ class RecreateAppointment(
     private val staffRepository: AppointmentStaffRepository,
     private val teamRepository: AppointmentTeamRepository,
     private val locationRepository: AppointmentLocationRepository,
+    private val sentenceAppointmentRepository: SentenceAppointmentRepository,
     private val notifier: Notifier,
     private val mappaCategoryResolverService: MappaCategoryResolverService,
 ) {
@@ -51,6 +53,13 @@ class RecreateAppointment(
             }
         )
 
+        val externalReference = requireNotNull(newAppointment.externalReference)
+        sentenceAppointmentRepository.removeEnforcementFlag(original.id!!)
+
+        if (newAppointment.outcome == null) {
+            sentenceAppointmentRepository.setEnforcementFlagTrue(externalReference)
+        }
+
         if (original.sendToVisor == true) {
             sendVisorDomainEvent(original.id!!, original.person, EventType.UPDATED)
         }
@@ -59,7 +68,7 @@ class RecreateAppointment(
         }
 
 
-        return RecreatedAppointment(newAppointment.id!!, requireNotNull(newAppointment.externalReference))
+        return RecreatedAppointment(newAppointment.id!!, externalReference)
     }
 
     private fun sendVisorDomainEvent(apptId: Long, person: AppointmentPerson, eventType: EventType) {

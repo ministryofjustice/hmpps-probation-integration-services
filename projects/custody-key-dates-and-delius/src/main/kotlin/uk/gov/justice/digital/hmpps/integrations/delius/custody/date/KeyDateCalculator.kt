@@ -28,7 +28,7 @@ object KeyDateCalculator {
      * FTHRD Calculation = SLED - 1/3 sentence length
      */
     fun SentenceDetail.finalThirdDate(envelope: OperativeSentenceEnvelope?): LocalDate? {
-        if (envelope == null) return null
+        if (envelope == null || envelope.containsAnSDSPlusSentence == true) return null
 
         val deduction = ceil(envelope.sentenceEnvelopeLengthInDays / 3.0).toLong()
         return sentenceExpiryDate?.minusDays(deduction)

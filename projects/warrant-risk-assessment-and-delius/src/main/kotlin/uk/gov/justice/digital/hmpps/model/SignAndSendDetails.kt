@@ -1,11 +1,21 @@
 package uk.gov.justice.digital.hmpps.model
 
+data class SignAndSendDetails(
+    val userDetails: UserDetailsName,
+    val responsibleOfficer: ResponsibleOfficerDetails
+)
+
 data class ResponsibleOfficerDetails(
     val name: Name,
     val emailAddress: String?,
     val telephoneNumber: String?,
     val probationArea: CodeAndDescription,
     val replyAddresses: List<OfficeAddress>,
+)
+
+data class UserDetailsName(
+    val forenames: String,
+    val surname: String,
 )
 
 data class CodeAndDescription(

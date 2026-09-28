@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.overview.*
-import uk.gov.justice.digital.hmpps.api.model.overview.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllBreaches
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getAllRecalls
@@ -30,7 +29,7 @@ class OverviewService(
 ) {
 
     @Transactional
-    fun getOverview(crn: String): Overview {
+    fun returnOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val provisions = provisionRepository.findByPersonId(person.id)
         val personalCircumstances = personalCircumstanceRepository.findCurrentCircumstances(person.id)
@@ -41,7 +40,7 @@ class OverviewService(
         val previousAppointmentNoOutcome =
             previousAppointments.filter { it.outcome == null && it.type.contactOutcomeFlag == true }.size
         val absentWithoutEvidence = previousAppointments.filter { it.attended == false && it.outcome == null }.size
-        val schedule = Schedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
+        val schedule = OverviewSchedule(contactRepository.firstAppointment(person.id)?.toNextAppointment())
         val events = eventRepository.findByPersonId(person.id)
         val activeEvents = events.filter { !it.isInactiveEvent() }
         val sentences = activeEvents.map { it.toSentence() }
@@ -93,7 +92,7 @@ class OverviewService(
         personalCircumstances: List<PersonalCircumstance>,
         disabilities: List<Disability>,
         provisions: List<Provision>
-    ) = PersonalDetails(
+    ) = OverviewPersonalDetails(
         name = name(),
         mobileNumber = mobileNumber,
         telephoneNumber = telephoneNumber,
@@ -103,10 +102,11 @@ class OverviewService(
         disabilities = disabilities.map { it.toDisability() },
         dateOfBirth = dateOfBirth,
         provisions = provisions.map { it.toProvision() },
+        allowSms = smsAllowed
     )
 
     fun uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Offence.toOffence() =
-        Offence(code = code, description = description)
+        OverviewOffence(code = code, description = description)
 
     fun PersonalCircumstance.toPersonalCircumstance() =
         uk.gov.justice.digital.hmpps.api.model.overview.PersonalCircumstance(
@@ -115,11 +115,11 @@ class OverviewService(
         )
 
     fun Disability.toDisability() =
-        uk.gov.justice.digital.hmpps.api.model.overview.Disability(description = type.description)
+        OverviewDisability(description = type.description)
 
     fun Provision.toProvision() =
-        uk.gov.justice.digital.hmpps.api.model.overview.Provision(description = type.description)
+        OverviewProvision(description = type.description)
 
     fun Contact.toNextAppointment() =
-        NextAppointment(description = type.description, date = startDateTime())
+        OverviewNextAppointment(description = type.description, date = startDateTime())
 }

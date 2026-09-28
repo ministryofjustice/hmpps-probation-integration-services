@@ -76,7 +76,7 @@ internal class IntegrationTest @Autowired constructor(
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
-        assertThat(custody.disposal?.sdsPlus, equalTo(null))
+        assertThat(custody.disposal.sdsPlus, equalTo(null))
         verifyUpdatedKeyDates(custody)
         verifyContactCreated()
 
@@ -147,7 +147,7 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `EMED is created and FTHRD is not created when Delius disposal has SDS plus flag`() {
+    fun `EMED is created and FTHRD is deleted when Delius disposal has SDS plus flag`() {
         featureFlagEnabled(true)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -160,6 +160,22 @@ internal class IntegrationTest @Autowired constructor(
             equalTo(LocalDate.parse("2022-12-04"))
         )
         assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
+
+        verify(telemetryService).trackEvent(
+            eq("SdsPlusFlagUpdated"),
+            eq(
+                mapOf(
+                    "crn" to PersonGenerator.SDS_PLUS_PERSON.crn,
+                    "nomsNumber" to PersonGenerator.SDS_PLUS_PERSON.nomsId,
+                    "eventNumber" to custody.disposal.event.eventNumber,
+                    "sdsPlus" to "true",
+                    "sdsPlusBefore" to "true",
+                    "sdsPlusChanged" to "false",
+                    "finalThirdRemoved" to "1"
+                )
+            ),
+            anyMap()
+        )
     }
 
     @Test
@@ -194,9 +210,15 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `SDS Plus disposal updated from CRDS data when feature flag disabled`() {
-        featureFlagEnabled(false)
+    fun `SDS Plus disposal updated from CRDS data and final third date removed`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_CRDS_SDS)
+
+        // Starts with final third
+        assertNotNull(run {
+            val custodyId = custodyRepository.findCustodyId(PersonGenerator.CRDS_PERSON_SDS_PLUS.id, "98340A").first()
+            val custody = custodyRepository.findCustodyById(custodyId)
+            custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
+        })
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -212,10 +234,27 @@ internal class IntegrationTest @Autowired constructor(
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertNotNull(emed)
-        assertNotNull(fthrd)
+
+        // Final third is removed
+        assertThat(fthrd, equalTo(null))
 
         assertThat(emed!!.date, equalTo(LocalDate.parse("2023-01-27")))
-        assertThat(fthrd!!.date, equalTo(LocalDate.parse("2025-05-11")))
+
+        verify(telemetryService).trackEvent(
+            eq("SdsPlusFlagUpdated"),
+            eq(
+                mapOf(
+                    "crn" to PersonGenerator.CRDS_PERSON_SDS_PLUS.crn,
+                    "nomsNumber" to PersonGenerator.CRDS_PERSON_SDS_PLUS.nomsId,
+                    "eventNumber" to custody.disposal.event.eventNumber,
+                    "sdsPlus" to "true",
+                    "sdsPlusBefore" to "null",
+                    "sdsPlusChanged" to "true",
+                    "finalThirdRemoved" to "1"
+                )
+            ),
+            anyMap()
+        )
 
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),

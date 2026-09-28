@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.api.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.api.model.activity.Activity
 import uk.gov.justice.digital.hmpps.api.model.compliance.*
 import uk.gov.justice.digital.hmpps.api.model.overview.*
-import uk.gov.justice.digital.hmpps.api.model.overview.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.compliance.getActiveRecallNsi
@@ -65,7 +64,7 @@ class ComplianceService(
         fun Event.toSentenceCompliance() = mainOffence?.offence?.let { offence ->
             SentenceCompliance(
                 eventNumber = eventNumber,
-                mainOffence = Offence(code = offence.code, description = offence.description),
+                mainOffence = OverviewOffence(code = offence.code, description = offence.description),
                 rarCategory = getRarCategoryFromSentence(eventNumber),
                 rarDescription = disposal?.let { requirementService.getRarDescription(id, eventNumber, disposal.id) },
                 order = disposal?.let {

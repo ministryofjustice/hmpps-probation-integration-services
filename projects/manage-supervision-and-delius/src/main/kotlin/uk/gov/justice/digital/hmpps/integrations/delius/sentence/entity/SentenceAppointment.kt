@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -192,6 +193,22 @@ interface SentenceAppointmentRepository : JpaRepository<SentenceAppointment, Lon
     ): Int
 
     fun findByExternalReference(externalReference: String): SentenceAppointment?
+
+    @Modifying
+    @Query("update SentenceAppointment set enforcementFlag = null where id = :id")
+    fun removeEnforcementFlag(id: Long)
+
+    @Modifying
+    @Query(
+        """
+            update SentenceAppointment
+            set enforcementFlag = true
+            where externalReference = :externalReference
+            and outcomeId is null
+            and type.contactOutcomeFlag = true
+        """
+    )
+    fun setEnforcementFlagTrue(externalReference: String)
 }
 
 fun SentenceAppointmentRepository.appointmentClashes(
