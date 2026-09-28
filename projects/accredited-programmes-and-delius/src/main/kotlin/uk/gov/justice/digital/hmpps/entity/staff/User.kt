@@ -26,5 +26,5 @@ class User(
 )
 
 interface UserRepository : JpaRepository<User, Long> {
-    fun findByUsername(username: String): User?
+@org.springframework.data.jpa.repository.Query("select u from User u where upper(u.username) = upper(:username)") fun findByUsername(username: String): User?
 }
