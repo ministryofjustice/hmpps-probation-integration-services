@@ -14,12 +14,14 @@ import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import uk.gov.justice.digital.hmpps.model.SignAndSendDetails
+import uk.gov.justice.digital.hmpps.model.UserDetailsName
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest
-internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
+internal class SignAndSendIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
 ) {
     @Test
@@ -43,29 +45,31 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
-                name = Name("Billy", "The", "Kid"),
-                emailAddress = null,
-                telephoneNumber = "07707123456",
-                probationArea = CodeAndDescription("B01", "probationAreaDescription"),
-                replyAddresses = listOf(
-                    OfficeAddress(
-                        id = OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION_ID,
-                        status = "Default",
-                        officeDescription = "Jail Centre Plus",
-                        buildingName = null,
-                        buildingNumber = "281",
-                        streetName = "Postal Default Street",
-                        townCity = "Postinton",
-                        district = "Postrict",
-                        county = "County Post",
-                        postcode = "NE30 3ZZ",
+            SignAndSendDetails(
+                userDetails = UserDetailsName("Billy", "Kid"),
+                responsibleOfficer = ResponsibleOfficerDetails(
+                    name = Name("Billy", "The", "Kid"),
+                    emailAddress = null,
+                    telephoneNumber = "07707123456",
+                    probationArea = CodeAndDescription("B01", "probationAreaDescription"),
+                    replyAddresses = listOf(
+                        OfficeAddress(
+                            id = OfficeLocationGenerator.DEFAULT_OFFICE_LOCATION_ID,
+                            status = "Default",
+                            officeDescription = "Jail Centre Plus",
+                            buildingName = null,
+                            buildingNumber = "281",
+                            streetName = "Postal Default Street",
+                            townCity = "Postinton",
+                            district = "Postrict",
+                            county = "County Post",
+                            postcode = "NE30 3ZZ",
+                        )
                     )
-                ),
-                userDetails = Name("Billy", null, "Kid"),
+                )
             )
         )
     }
@@ -77,16 +81,18 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
-                name = Name("Prison", null, "Officer"),
-                emailAddress = null,
-                telephoneNumber = null,
-                probationArea = CodeAndDescription("N01", "N01 Probation Area"),
-                replyAddresses = emptyList(),
-                userDetails = Name("Billy", null, "Kid"),
+            SignAndSendDetails(
+                userDetails = UserDetailsName("Billy", "Kid"),
+                responsibleOfficer = ResponsibleOfficerDetails(
+                    name = Name("Prison", null, "Officer"),
+                    emailAddress = null,
+                    telephoneNumber = null,
+                    probationArea = CodeAndDescription("N01", "N01 Probation Area"),
+                    replyAddresses = emptyList(),
+                ),
             )
         )
     }
@@ -98,16 +104,18 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
-                name = Name("No", null, "Address"),
-                emailAddress = null,
-                telephoneNumber = null,
-                probationArea = CodeAndDescription("N01", "N01 Probation Area"),
-                replyAddresses = emptyList(),
-                userDetails = Name("Billy", null, "Kid"),
+            SignAndSendDetails(
+                userDetails = UserDetailsName("Billy", "Kid"),
+                responsibleOfficer = ResponsibleOfficerDetails(
+                    name = Name("No", null, "Address"),
+                    emailAddress = null,
+                    telephoneNumber = null,
+                    probationArea = CodeAndDescription("N01", "N01 Probation Area"),
+                    replyAddresses = emptyList(),
+                ),
             )
         )
     }
