@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.DocumentRepository
 import uk.gov.justice.digital.hmpps.model.ContactDocumentResponse
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -95,6 +96,43 @@ internal class TreatmentPageIntegrationTest @Autowired constructor(
         val item2 = response.content.find { it.id == contact2.id }
         assert(item1 != null && item1.documents.any { it.name == "test2.doc" })
         assert(item2 != null && item2.documents.any { it.name == "test3.doc" })
+    }
+
+    @Test
+    fun `does not retrieve soft deleted documents for a contact`() {
+        val contact = ContactGenerator.generateContact(
+            person = ContactGenerator.DEFAULT_CONTACT.person,
+            type = ContactGenerator.DEFAULT_CONTACT.type,
+            dateTime = ContactGenerator.DEFAULT_CONTACT.startTime!!,
+            id = 104L
+        )
+
+        val activeDocument = DocumentGenerator.generateDocument(
+            suicideRiskFormId = UUID.fromString("10000000-0000-0000-0000-000000000001"),
+            primaryKeyId = contact.id,
+            name = "active.doc"
+        )
+        val softDeletedDocument = DocumentGenerator.generateDocument(
+            suicideRiskFormId = UUID.fromString("10000000-0000-0000-0000-000000000002"),
+            primaryKeyId = contact.id,
+            name = "soft-deleted.doc",
+            softDeleted = true
+        )
+        documentRepository.save(activeDocument)
+        documentRepository.save(softDeletedDocument)
+
+        val response = mockMvc.post("/treatment") {
+            withToken()
+            contentType = MediaType.APPLICATION_JSON
+            content = "[${contact.id}]"
+        }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<ContactDocumentResponse>()
+
+        assert(response.content.size == 1)
+        assert(response.content[0].id == contact.id)
+        assert(response.content[0].documents.size == 1)
+        assert(response.content[0].documents[0].name == "active.doc")
     }
 
     @Test

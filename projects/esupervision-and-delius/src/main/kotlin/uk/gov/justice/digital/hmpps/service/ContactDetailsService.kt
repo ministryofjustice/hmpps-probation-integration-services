@@ -21,6 +21,10 @@ class ContactDetailsService(
     val contactRepository: ContactRepository,
     auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
+    private val expectedEndDateComparator =
+        compareBy<EventEntity> { it.disposal?.expectedEndDate() == null }
+            .thenByDescending { it.disposal?.expectedEndDate() }
+
     fun getContactDetailsForCrn(crn: String) =
         comRepository.findByPersonCrn(crn)?.let { com ->
             val email = com.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
@@ -33,7 +37,7 @@ class ContactDetailsService(
                 dateOfBirth = com.person.dateOfBirth,
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
-                events = com.person.activeEvents.map { it.asEvent() },
+                events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
                 practitioner = com.asPractitioner { email },
                 contactSuspended = registrationRepository.existsByPersonIdAndTypeCode(
                     com.person.id,
@@ -68,7 +72,7 @@ class ContactDetailsService(
                     dateOfBirth = com.person.dateOfBirth,
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
-                    events = com.person.activeEvents.map { it.asEvent() },
+                    events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
                     practitioner = com.asPractitioner { emails[it] },
                     contactSuspended = com.person.id in casesWithContactSuspended,
                 )
@@ -93,7 +97,10 @@ class ContactDetailsService(
         sentence = disposal?.let {
             Event.Sentence(
                 date = it.date,
-                description = it.type.description
+                description = it.type.description,
+                expectedEndDate = it.expectedEndDate(),
+                length = it.length,
+                lengthUnit = it.lengthUnit?.description,
             )
         }
     )

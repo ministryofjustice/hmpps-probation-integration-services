@@ -72,6 +72,12 @@ class Disposal(
     @Convert(converter = YesNoConverter::class)
     var sdsPlus: Boolean? = null,
 
+    @Column(name = "notional_end_date")
+    val notionalEndDate: LocalDate? = null,
+
+    @Column(name = "length_in_days")
+    val lengthInDays: Long? = null,
+
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0,
@@ -104,7 +110,8 @@ data class DisposalType(
     val pssRequirement: Boolean? = null,
 ) {
     val determinateSentence: Boolean get() = requiredInformation == "L1"
-    val sdsSentence: Boolean get() = sentenceType == "SC" && requiredInformation == "L1"
+    val isStatutoryCustody: Boolean get() = sentenceType == "SC"
+    val determinateCustody: Boolean get() = isStatutoryCustody && determinateSentence
 }
 
 @Immutable
@@ -123,7 +130,7 @@ class Custody(
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
-    val disposal: Disposal? = null,
+    val disposal: Disposal,
 
     @OneToMany(mappedBy = "custody")
     val keyDates: MutableList<KeyDate> = mutableListOf(),

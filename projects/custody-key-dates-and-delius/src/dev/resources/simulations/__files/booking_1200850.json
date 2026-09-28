@@ -1,0 +1,10 @@
+{
+  "bookingId": 1200850,
+  "bookingNo": "88340A",
+  "offenderNo": "A0005DY",
+  "firstName": "John",
+  "lastName": "Crds",
+  "agencyId": "MDI",
+  "activeFlag": true,
+  "dateOfBirth": "1970-01-01"
+}

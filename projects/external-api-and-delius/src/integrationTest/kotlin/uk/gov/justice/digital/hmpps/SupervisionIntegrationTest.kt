@@ -26,7 +26,22 @@ internal class SupervisionIntegrationTest : BaseIntegrationTest() {
         Assertions.assertEquals("Months", response.supervisions[0].sentence?.lengthUnits?.name)
         Assertions.assertEquals(null, response.supervisions[1].sentence?.lengthUnits)
         Assertions.assertTrue(response.dynamicRisks.any {
-            it.code == "ALSH" && it.description.isNotEmpty() && it.startDate != null
+            it.code == "ALSH" && it.description.isNotEmpty()
+        })
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "RCHD" && it.description.isNotEmpty()
+        })
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "REG15" && it.description.isNotEmpty()
+        })
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "REG16" && it.description.isNotEmpty()
+        })
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "REG17" && it.description.isNotEmpty()
+        })
+        Assertions.assertTrue(response.dynamicRisks.any {
+            it.code == "AV2S" && it.description.isNotEmpty()
         })
     }
 

@@ -12,6 +12,8 @@ object CaseNoteMessageGenerator {
     val NOT_FOUND: Notification<HmppsDomainEvent> = ResourceLoader.notification<HmppsDomainEvent>("case-note-not-found")
     val RESETTLEMENT_PASSPORT: Notification<HmppsDomainEvent> =
         ResourceLoader.notification<HmppsDomainEvent>("resettlement-passport-casenote")
+    val GUIDED_INTERVIEW: Notification<HmppsDomainEvent> =
+        ResourceLoader.notification<HmppsDomainEvent>("guided-interview-casenote")
     val NOMS_NUMBER_ADDED: Notification<HmppsDomainEvent> =
         ResourceLoader.notification<HmppsDomainEvent>("noms-number-added")
 }

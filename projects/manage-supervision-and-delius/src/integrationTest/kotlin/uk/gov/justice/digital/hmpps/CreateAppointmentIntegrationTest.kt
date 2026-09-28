@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.DEFAULT_PROV
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.DEFAULT_LOCATION
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.PI_USER
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_1
+import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_4
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -129,6 +130,32 @@ class CreateAppointmentIntegrationTest : IntegrationTestBase() {
         }
 
         sentenceAppointmentRepository.deleteById(appointment.id!!)
+    }
+
+    @Test
+    fun `create a new appointment for an unallocated user`() {
+        val request = CreateAppointment(
+            User(STAFF_4.forename, TEAM.code, DEFAULT_LOCATION.code),
+            type = CreateAppointment.Type.PlannedOfficeVisitNS.code,
+            start = ZonedDateTime.now().plusDays(1),
+            end = ZonedDateTime.now().plusDays(1).plusHours(1),
+            eventId = PersonGenerator.EVENT_1.id,
+            uuid = UUID.randomUUID(),
+            visorReport = true,
+        )
+
+        val user = PI_USER
+
+        val response = mockMvc.post("/appointment/${PersonGenerator.PERSON_1.crn}") {
+            withUserToken(user.username)
+            json = request
+        }
+            .andExpect { status { isCreated() } }
+            .andReturn().response.contentAsJson<AppointmentDetail>()
+
+        val appointment = sentenceAppointmentRepository.findById(response.appointments[0].id).get()
+        assertThat(response.appointments.all { it.externalReference != null }, equalTo(true))
+        assertThat(appointment.staffId, equalTo(STAFF_4.id))
     }
 
     @Test

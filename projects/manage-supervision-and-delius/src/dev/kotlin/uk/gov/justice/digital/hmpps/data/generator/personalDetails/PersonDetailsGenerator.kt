@@ -33,7 +33,8 @@ object PersonDetailsGenerator {
         "Smith",
         GENDER_IDENTITY_RD,
         "Some gender description",
-        requiresInterpreter = true
+        requiresInterpreter = true,
+        smsAllowed = false,
     )
 
     val EXCLUSION = generatePersonDetails(
@@ -424,7 +425,8 @@ object PersonDetailsGenerator {
         genderIdentityDescription: String = "genderIdentityDescription",
         requiresInterpreter: Boolean = false,
         exclusionMessage: String? = null,
-        restrictionMessage: String? = null
+        restrictionMessage: String? = null,
+        smsAllowed: Boolean = true,
     ) = Person(
         id = id(),
         crn = crn,
@@ -448,7 +450,8 @@ object PersonDetailsGenerator {
         genderIdentityDescription = genderIdentityDescription,
         requiresInterpreter = requiresInterpreter,
         exclusionMessage = exclusionMessage,
-        restrictionMessage = restrictionMessage
+        restrictionMessage = restrictionMessage,
+        smsAllowed = smsAllowed,
     )
 
     fun generateDocument(

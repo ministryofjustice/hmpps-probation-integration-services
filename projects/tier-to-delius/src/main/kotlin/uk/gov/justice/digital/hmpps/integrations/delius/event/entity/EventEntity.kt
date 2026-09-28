@@ -25,12 +25,18 @@ class EventEntity(
     @OneToOne(mappedBy = "eventEntity")
     val disposal: Disposal? = null,
 
-    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    @Convert(converter = NumericBooleanConverter::class)
-    val active: Boolean = true,
+    @OneToOne(mappedBy = "event")
+    val mainOffence: MainOffence,
+
+    @OneToMany(mappedBy = "event")
+    val additionalOffences: List<AdditionalOffence>,
 
     @Column(name = "in_breach")
     val inBreach: Boolean = false,
+
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    @Convert(converter = NumericBooleanConverter::class)
+    val active: Boolean = true,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

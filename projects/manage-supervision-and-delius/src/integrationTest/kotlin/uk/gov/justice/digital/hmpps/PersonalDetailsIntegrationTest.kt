@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.PersonSummary
 import uk.gov.justice.digital.hmpps.api.model.personalDetails.*
+import uk.gov.justice.digital.hmpps.api.model.user.UserUpdated
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.audit.repository.getByCode
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.USER
@@ -135,10 +136,13 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
         assertThat(res.documents[1].name, equalTo("other.doc"))
         assertThat(res.documents[0].id, equalTo("00000000-0000-0000-0000-000000000001"))
         assertThat(res.documents[1].id, equalTo("00000000-0000-0000-0000-000000000002"))
+        assertThat(res.documents[0].status, equalTo(null))
+        assertThat(res.documents[1].status, equalTo(null))
         assertThat(res.aliases[0].forename, equalTo(ALIAS_1.forename))
         assertThat(res.genderIdentity, equalTo("Test Gender Identity"))
         assertThat(res.selfDescribedGender, equalTo("Some gender description"))
         assertThat(res.requiresInterpreter, equalTo(true))
+        assertThat(res.allowSms, equalTo(false))
     }
 
     @Test
@@ -231,6 +235,42 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `person updated details are returned`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.get("/personal-details/${person.crn}/updated") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserUpdated>()
+
+        assertThat(res.username, equalTo(AUDIT_USER.username))
+        assertThat(res.name, equalTo(Name(forename = AUDIT_USER.forename, surname = AUDIT_USER.surname)))
+        assertThat(res.updatedDateTime).isNotNull()
+    }
+
+    @Test
+    fun `person updated details not found`() {
+        mockMvc.get("/personal-details/X999999/updated") {
+            withToken()
+        }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `update sms allowed for person`() {
+        val person = PERSONAL_DETAILS
+        val res = mockMvc.post("/personal-details/${person.crn}/contact/allow-sms?smsAllowed=true") {
+            withToken()
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Boolean>()
+        assertThat(res, equalTo(true))
+        mockMvc.post("/personal-details/${person.crn}/contact/allow-sms?smsAllowed=false") {
+            withToken()
+        }
+    }
+
+    @Test
     fun `personal contact is returned`() {
         val person = PERSONAL_DETAILS
         val contact = PERSONAL_CONTACT_1
@@ -304,9 +344,10 @@ class PersonalDetailsIntegrationTest : IntegrationTestBase() {
     @Test
     fun `previous address with single note is returned`() {
         val person = PERSONAL_DETAILS
-        val res = mockMvc.get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<AddressOverviewSummary>()
+        val res =
+            mockMvc.get("/personal-details/${person.crn}/addresses/${PREVIOUS_ADDRESS.id}/note/1") { withToken() }
+                .andExpect { status { isOk() } }
+                .andReturn().response.contentAsJson<AddressOverviewSummary>()
         assertThat(res.personSummary, equalTo(person.toSummary()))
         assertThat(res.address!!.postcode, equalTo("NE4 END"))
         assertThat(res.address!!.to, equalTo(PREVIOUS_ADDRESS.endDate))

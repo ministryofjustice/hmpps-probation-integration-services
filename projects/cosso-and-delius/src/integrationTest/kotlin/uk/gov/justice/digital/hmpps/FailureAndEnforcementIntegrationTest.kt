@@ -58,4 +58,12 @@ class FailureAndEnforcementIntegrationTest @Autowired constructor(
         mockMvc.get("/failures-enforcements/$crn/$cossoId") { withToken() }
             .andExpect { status { isNotFound() } }
     }
+
+    @Test
+    fun `soft deleted cosso id throws 404 not found`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        val cossoId = DocumentGenerator.SOFT_DELETED_DOCUMENT_UUID.toString()
+        mockMvc.get("/failures-enforcements/$crn/$cossoId") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
 }

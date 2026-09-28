@@ -519,7 +519,8 @@ object PersonGenerator {
         genderIdentityDescription = null,
         exclusionMessage = exclusionMessage,
         restrictionMessage = restrictionMessage,
-        softDeleted = softDeleted
+        softDeleted = softDeleted,
+        smsAllowed = null
     )
 
     fun generateRequirement(

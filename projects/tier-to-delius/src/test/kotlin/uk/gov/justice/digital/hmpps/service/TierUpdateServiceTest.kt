@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.*
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.TIER
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -25,8 +24,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTie
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3Tier
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonWithV3TierRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
@@ -40,9 +37,6 @@ import java.time.ZonedDateTime.now
 internal class TierUpdateServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
-
-    @Mock
-    lateinit var personWithV3TierRepository: PersonWithV3TierRepository
 
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
@@ -248,8 +242,7 @@ internal class TierUpdateServiceTest {
     fun `should update v3 tier hidden column`() {
         val updatedTierScore = ReferenceDataGenerator.generate("SPBI", TIER)
         whenever(referenceDataRepository.getV3Tier("B", true)).thenReturn(updatedTierScore)
-        whenever(personWithV3TierRepository.findByCrnAndSoftDeletedFalse(person.crn))
-            .thenReturn(PersonWithV3Tier(id(), person.crn))
+        whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
 
         tierUpdateService.updateV3TierColumn(
             person.crn,
@@ -261,7 +254,7 @@ internal class TierUpdateServiceTest {
             )
         )
 
-        verify(personWithV3TierRepository).save(check {
+        verify(personRepository).save(check {
             assertThat(it.v3TierId, equalTo(updatedTierScore.id))
         })
         verify(telemetryService).trackEvent(
@@ -280,8 +273,8 @@ internal class TierUpdateServiceTest {
     fun `should report unchanged v3 tier and continue`() {
         val existingTier = ReferenceDataGenerator.generate("SPB", TIER)
         whenever(referenceDataRepository.getV3Tier("B", false)).thenReturn(existingTier)
-        whenever(personWithV3TierRepository.findByCrnAndSoftDeletedFalse(person.crn))
-            .thenReturn(PersonWithV3Tier(id(), person.crn, existingTier.id))
+        whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn))
+            .thenReturn(person.apply { v3TierId = existingTier.id })
 
         tierUpdateService.updateV3TierColumn(
             person.crn,
@@ -293,7 +286,7 @@ internal class TierUpdateServiceTest {
             )
         )
 
-        verify(personWithV3TierRepository, never()).save(any())
+        verify(personRepository, never()).save(any())
         verify(telemetryService).trackEvent(
             eq("UnchangedV3TierIgnored"),
             check {

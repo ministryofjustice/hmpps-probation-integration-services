@@ -47,6 +47,8 @@ object ReferenceDataGenerator {
     val AUTO_TRANSFER = generate("AUT", AUTO_TRANSFER_REASON)
 
     val LC_TERMINATED_DOMAIN_EVENT = generate("probation-case.licence-condition.terminated", DOMAIN_EVENT_TYPE)
+    val RELEASE_ADDED_DOMAIN_EVENT = generate("probation-case.release.added", DOMAIN_EVENT_TYPE)
+    val RECALL_ADDED_DOMAIN_EVENT = generate("probation-case.recall.added", DOMAIN_EVENT_TYPE)
 
     fun generate(
         code: String,

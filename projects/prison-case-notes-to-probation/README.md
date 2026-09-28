@@ -53,17 +53,26 @@ events raised when there are changes to the NOMIS database tables. As a result
 of this the case notes do not necessarily map to a single business activity.
 The events we respond to are roughly raised in the following circumstances:
 
-| Business Event                      | Message Class      | Message Event Type / Filter              | Case note type filter   |
-|-------------------------------------|--------------------|------------------------------------------|-------------------------|
-| NOMIS ID linked to a probation case | HMPPS Domain Event | "probation-case.prison-identifier.added" | All below types         |
-| Person Released from Institution    | HMPPS Domain Event | "person.case-note.created"/"updated"     | "PRISON-RELEASE"        |
-| Person Transferred                  | HMPPS Domain Event | "person.case-note.created"/"updated"     | "TRANSFER-FROMTOL"      |
-| General Observations                | HMPPS Domain Event | "person.case-note.created"/"updated"     | "GEN-OSE"               |
-| Alerts Active                       | HMPPS Domain Event | "person.alert.created"/"updated"         | "ALERT-ACTIVE"          |
-| Alerts Inactive                     | HMPPS Domain Event | "person.alert.inactive"                  | "ALERT-INACTIVE"        |
-| All OMiC Events                     | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC" }     |
-| All OMiC OPD Events                 | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC_OPD" } |
-| Keyworking Events                   | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "KA" }       |
+| Business Event                              | Message Class      | Message Event Type / Filter              | Case note type filter   |
+|---------------------------------------------|--------------------|------------------------------------------|-------------------------|
+| NOMIS ID linked to a probation case         | HMPPS Domain Event | "probation-case.prison-identifier.added" | All below types         |
+| Person Released from Institution            | HMPPS Domain Event | "person.case-note.created"/"updated"     | "PRISON-RELEASE"        |
+| Person Transferred                          | HMPPS Domain Event | "person.case-note.created"/"updated"     | "TRANSFER-FROMTOL"      |
+| General Observations                        | HMPPS Domain Event | "person.case-note.created"/"updated"     | "GEN-OSE"               |
+| Resettlement - Basic Custody Screening Tool | HMPPS Domain Event | "person.case-note.created"/"updated" | "RESET-BCST"            |
+| Resettlement - Guided Interview             | HMPPS Domain Event | "person.case-note.created"/"updated"     | "RESET-GUIDINT"         |
+| Alerts Active                               | HMPPS Domain Event | "person.alert.created"/"updated"         | "ALERT-ACTIVE"          |
+| Alerts Inactive                             | HMPPS Domain Event | "person.alert.inactive"                  | "ALERT-INACTIVE"        |
+| All OMiC Events                             | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC" }     |
+| All OMiC OPD Events                         | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "OMIC_OPD" } |
+| Keyworking Events                           | HMPPS Domain Event | "person.case-note.created"/"updated"     | { prefix = "KA" }       |
+
+Both `RESET-BCST` and `RESET-GUIDINT` case notes are mapped, via the NDelius `r_case_note_type`
+reference data (maintained by NDST), to a Delius contact type. The Guided Interview subtype
+(`RESET GUIDINT`) is mapped to contact type `NOMIS033` ("NOMIS Case Notes - OMIC Guided
+Interview"), added alongside the pre-existing Basic Custody Screening Tool (`RESET BCST`) mapping,
+and is otherwise processed identically.
+
 
 ## HMPPS Technical Environment
 

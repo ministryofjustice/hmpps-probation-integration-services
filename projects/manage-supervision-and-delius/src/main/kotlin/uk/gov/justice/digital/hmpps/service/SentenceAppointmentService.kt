@@ -40,6 +40,7 @@ class SentenceAppointmentService(
     private val outcomeService: AppointmentOutcomeService,
     private val notifier: Notifier,
     private val mappaCategoryResolverService: MappaCategoryResolverService,
+    private val staffPersonRepository: StaffPersonRepository,
 ) : AuditableService(auditedInteractionService) {
 
     private fun getOverlaps(
@@ -105,10 +106,16 @@ class SentenceAppointmentService(
                 require(createAppointment.outcomeRecorded) { "An outcome must be provided for an appointment in the past." }
             }
 
-            val userAndTeam = staffUserRepository.getUserAndTeamAssociation(
-                createAppointment.user.username,
-                createAppointment.user.teamCode
-            )
+            val userAndTeam = if (createAppointment.user.username.equals("Unallocated", ignoreCase = true)) {
+                staffPersonRepository.getUnallocatedUserAndTeamAssociation(
+                    createAppointment.user.teamCode + "U"
+                )
+            } else {
+                staffUserRepository.getUserAndTeamAssociation(
+                    createAppointment.user.username,
+                    createAppointment.user.teamCode
+                )
+            }
 
             val location = createAppointment.user.locationCode?.let {
                 locationRepository.getTeamAndLocation(

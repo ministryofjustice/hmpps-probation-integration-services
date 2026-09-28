@@ -33,6 +33,10 @@ class Custody(
     @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = '${KeyDate.Companion.LICENCE_EXPIRY_DATE}')")
     val licenceEndDate: List<KeyDate>,
 
+    @OneToMany(mappedBy = "custody")
+    @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = '${KeyDate.Companion.FINAL_THIRD_START_DATE}')")
+    val finalThirdStartDate: List<KeyDate>,
+
     @OneToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
@@ -45,4 +49,5 @@ class Custody(
     fun postSentenceSupervisionEndDate() = postSentenceSupervisionEndDate.firstOrNull()?.date
     fun probationResetDate() = probationResetDate.firstOrNull()?.date
     fun licenceEndDate() = licenceEndDate.firstOrNull()?.date
+    fun finalThirdStartDate() = finalThirdStartDate.firstOrNull()?.date
 }

@@ -33,5 +33,6 @@ class KeyDate(
         const val POST_SENTENCE_SUPERVISION_END_DATE = "PSSED"
         const val LICENCE_EXPIRY_DATE = "LED"
         const val PROBATION_RESET_DATE = "PR1"
+        const val FINAL_THIRD_START_DATE = "FTHRD"
     }
 }

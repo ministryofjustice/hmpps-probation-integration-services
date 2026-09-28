@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.*
@@ -39,6 +40,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertFalse(custody.isInCustody())
 
         verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE, booking.movementReason!!)
+        assertThat(domainEventRepository.findAllForCrn(custody.disposal.event.person.crn), hasSize(1))
 
         verifyCustodyHistory(
             custody,
@@ -114,7 +116,14 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         }
 
         val domainEvents = domainEventRepository.findAllForCrn(custody.disposal.event.person.crn)
-        assertThat(domainEvents, hasSize(2))
+        assertThat(
+            domainEvents.map { it.eventType },
+            containsInAnyOrder(
+                "probation-case.licence-condition.terminated",
+                "probation-case.licence-condition.terminated",
+                "probation-case.recall.added"
+            )
+        )
 
         verifyTelemetry("Recalled", "LocationUpdated", "StatusUpdated") {
             mapOf(
@@ -252,6 +261,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(custody.statusChangeDate, equalTo(notification.message.occurredAt.toLocalDate()))
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
         assertThat(custody.locationChangeDate!!, equalTo(notification.message.occurredAt.toLocalDate()))
+        assertThat(domainEventRepository.findAllForCrn(custody.disposal.event.person.crn), hasSize(0))
 
         verifyCustodyHistory(
             custody,

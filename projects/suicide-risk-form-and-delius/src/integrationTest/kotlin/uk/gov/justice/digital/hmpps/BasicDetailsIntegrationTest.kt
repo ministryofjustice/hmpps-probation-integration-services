@@ -159,6 +159,16 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `can retrieve crn from soft deleted suicide risk form id successfully`() {
+        val srfId = DocumentGenerator.SOFT_DELETED_SUICIDE_RISK_FORM_ID
+        val response = mockMvc.get("/case/$srfId") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(DEFAULT_PERSON.crn)
+    }
+
+    @Test
     fun `returns srf document ids when passing valid crn + event number`() {
         val person = DEFAULT_PERSON
         val response =

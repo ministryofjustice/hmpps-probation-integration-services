@@ -1,0 +1,14 @@
+{
+  "caseNoteId": "9f0a2112-acde-4501-b1f9-3f2f5f04e427",
+  "eventId": 576778,
+  "offenderIdentifier": "AA0001A",
+  "type": "RESET",
+  "subType": "GUIDINT",
+  "creationDateTime": "2021-04-16T11:22:33+01:00",
+  "occurrenceDateTime": "2021-03-23T11:22:00+01:00",
+  "authorName": "Some Name",
+  "text": "note content",
+  "locationId": "LEI",
+  "amendments": []
+}
+

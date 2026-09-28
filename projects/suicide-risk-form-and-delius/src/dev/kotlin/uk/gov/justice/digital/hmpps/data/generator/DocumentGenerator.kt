@@ -40,6 +40,10 @@ object DocumentGenerator {
     val DELETED_SUICIDE_RISK_FORM =
         generateDocument(suicideRiskFormId = DELETED_SUICIDE_RISK_FORM_ID, primaryKeyId = 2L)
 
+    val SOFT_DELETED_SUICIDE_RISK_FORM_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000008")
+    val SOFT_DELETED_SUICIDE_RISK_FORM =
+        generateDocument(suicideRiskFormId = SOFT_DELETED_SUICIDE_RISK_FORM_ID, softDeleted = true)
+
     fun generateDocument(
         suicideRiskFormId: UUID,
         id: Long = IdGenerator.getAndIncrement(),

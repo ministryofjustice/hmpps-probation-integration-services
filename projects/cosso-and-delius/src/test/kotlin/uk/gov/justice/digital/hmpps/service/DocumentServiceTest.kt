@@ -54,7 +54,13 @@ class DocumentServiceTest {
             lastUpdatedUserId = null,
             softDeleted = false
         )
-        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot(tableName, 123L, 1L)).thenReturn(true)
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                tableName,
+                123L,
+                1L
+            )
+        ).thenReturn(true)
         whenever(entityManager.createNativeQuery(any())).thenReturn(query)
         whenever(query.setParameter("documentLinked", "Y")).thenReturn(query)
         whenever(query.setParameter("primaryKeyId", 123L)).thenReturn(query)
@@ -85,7 +91,13 @@ class DocumentServiceTest {
             lastUpdatedUserId = null,
             softDeleted = false
         )
-        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", 123L, 1L)).thenReturn(false)
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                "CONTACT",
+                123L,
+                1L
+            )
+        ).thenReturn(false)
         whenever(entityManager.createNativeQuery(any())).thenReturn(query)
         whenever(query.setParameter("documentLinked", "N")).thenReturn(query)
         whenever(query.setParameter("primaryKeyId", 123L)).thenReturn(query)

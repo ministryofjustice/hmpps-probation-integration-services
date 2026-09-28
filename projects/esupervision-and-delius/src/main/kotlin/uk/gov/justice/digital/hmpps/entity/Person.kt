@@ -109,10 +109,10 @@ class PersonManager(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.mainOffence.offence"])
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.disposal.lengthUnit", "person.activeEvents.mainOffence.offence"])
     fun findByPersonCrn(crn: String): PersonManager?
 
-    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.mainOffence.offence"])
+    @EntityGraph(attributePaths = ["provider", "team.ldu.pdu", "staff.user", "person.activeEvents.disposal.type", "person.activeEvents.disposal.lengthUnit", "person.activeEvents.mainOffence.offence"])
     fun findByPersonCrnIn(crns: List<String>): List<PersonManager>
     fun getByCrn(crn: String) = findByPersonCrn(crn).orIgnore { "CRN not found" }
 }

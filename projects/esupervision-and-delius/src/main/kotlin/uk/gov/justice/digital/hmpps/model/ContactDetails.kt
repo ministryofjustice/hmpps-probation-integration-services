@@ -25,6 +25,9 @@ data class Event(
     data class Sentence(
         val date: LocalDate,
         val description: String,
+        val expectedEndDate: LocalDate?,
+        val length: Long?,
+        val lengthUnit: String?,
     )
 }
 

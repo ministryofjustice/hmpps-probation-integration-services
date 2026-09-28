@@ -2,8 +2,11 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Immutable
@@ -26,7 +29,7 @@ class Exclusion(
 
     @Id
     @Column(name = "exclusion_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -49,7 +52,7 @@ class Restriction(
 
     @Id
     @Column(name = "restriction_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -84,6 +87,43 @@ class LimitedAccessUser(
 interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     @Query("select u from LimitedAccessUser u where upper(u.username) = upper(:username) ")
     fun findByUsername(username: String): LimitedAccessUser?
+
+    @Query(
+        """
+         select 
+                offender.crn as "crn",
+                user_.distinguished_name as "username",
+                l."type" as "type",
+                offender.exclusion_message as "exclusionMessage",
+                offender.restriction_message as "restrictionMessage",
+                l."start_date" as "startDate",
+                l."end_date" as "endDate"
+         from ( ( select restriction_id as "id",
+                         offender_id,
+                         user_id,
+                         'Restriction' as "type",
+                         cast(restriction_time as timestamp) as "start_date",
+                         cast(restriction_end_time as timestamp) as "end_date"
+                  from restriction )
+                union all
+                ( select exclusion_id as "id",
+                         offender_id,
+                         user_id,
+                         'Exclusion' as "type",
+                         cast(exclusion_date as timestamp) as "start_date",
+                         cast(exclusion_end_time as timestamp) as "end_date"
+                  from exclusion ) ) l
+         join offender on offender.offender_id = l.offender_id
+         join user_ on user_.user_id = l.user_id
+         order by offender.crn, l."type", user_.distinguished_name, l."id"
+     """,
+        countQuery = """
+         select count(1)
+         from (select 1 from restriction union all select 1 from exclusion ) l
+     """,
+        nativeQuery = true
+    )
+    fun getAll(page: Pageable): Page<LimitedAccessRow>
 
     @Query(
         """
@@ -155,3 +195,24 @@ interface ExclusionDetail {
     val since: ZonedDateTime
     val until: ZonedDateTime?
 }
+
+interface LimitedAccessRow {
+    val crn: String
+    val username: String
+    val type: String
+    val exclusionMessage: String?
+    val restrictionMessage: String?
+    val startDate: LocalDateTime
+    val endDate: LocalDateTime?
+}
+
+data class LimitedAccessDetail(
+    val crn: String,
+    val username: String,
+    val type: String,
+    val exclusionMessage: String?,
+    val restrictionMessage: String?,
+    val startDate: ZonedDateTime,
+    val endDate: ZonedDateTime?,
+)
+

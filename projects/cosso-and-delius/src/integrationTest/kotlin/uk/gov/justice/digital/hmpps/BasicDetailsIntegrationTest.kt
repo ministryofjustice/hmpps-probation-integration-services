@@ -63,6 +63,15 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `case endpoint returns crn for soft deleted cosso id`() {
+        val response = mockMvc.get("/case/${DocumentGenerator.SOFT_DELETED_DOCUMENT_UUID}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
+    }
+
+    @Test
     fun `case endpoint returns not found for unknown cosso id`() {
         mockMvc.get("/case/${UUID.randomUUID()}") { withToken() }
             .andExpect { status { isNotFound() } }

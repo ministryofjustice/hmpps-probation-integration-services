@@ -3,12 +3,10 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
-import org.mockito.kotlin.check
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,13 +14,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.messaging.CustodyDateChanged
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
@@ -37,18 +35,32 @@ import java.util.concurrent.CompletableFuture
 internal class IntegrationTest @Autowired constructor(
     @Value("\${messaging.consumer.queue}")
     private val queueName: String,
+    @Value("\${messaging.producer.topic}")
+    private val topicName: String,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
     private val custodyRepository: CustodyRepository
 ) {
 
     @MockitoBean
+    lateinit var featureFlags: FeatureFlags
+
+    @MockitoBean
     lateinit var telemetryService: TelemetryService
 
     private val sedDate = "2025-09-10"
 
+    @BeforeEach
+    fun clearTopic() {
+        val topic = channelManager.getChannel(topicName)
+        do {
+            val message = topic.receive()?.also { topic.done(it.id) }
+        } while (message != null)
+    }
+
     @Test
     fun `Custody Key Dates updated as expected`() {
+        featureFlagEnabled(true)
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
@@ -81,10 +93,13 @@ internal class IntegrationTest @Autowired constructor(
             anyMap(),
             anyMap()
         )
+
+        verifyDomainEventPublished(PersonGenerator.DEFAULT)
     }
 
     @Test
     fun `Custody Key Dates updated from SENTENCE_CHANGED event`() {
+        featureFlagEnabled(true)
         val notification = Notification(
             message = MessageGenerator.SENTENCE_CHANGED,
             attributes = MessageAttributes(eventType = "SENTENCE_CHANGED")
@@ -127,6 +142,112 @@ internal class IntegrationTest @Autowired constructor(
             anyMap(),
             anyMap()
         )
+
+        verifyDomainEventPublished(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN)
+    }
+
+    @Test
+    fun `EMED is created and FTHRD is not created when Delius disposal has SDS plus flag`() {
+        featureFlagEnabled(true)
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+
+        assertThat(custody.disposal.sdsPlus, equalTo(true))
+        assertThat(
+            custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
+            equalTo(LocalDate.parse("2022-12-04"))
+        )
+        assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
+    }
+
+    @Test
+    fun `Custody Key Dates calculated from CRDS data when feature flag disabled`() {
+        featureFlagEnabled(false)
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_CRDS)
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.CRDS_PERSON.id, "88340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+
+        // Check disposal.sdsPlus is updated to false from CRDS envelope
+        assertThat(custody.disposal.sdsPlus, equalTo(false))
+
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
+        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
+
+        assertNotNull(emed)
+        assertNotNull(fthrd)
+
+        assertThat(emed!!.date, equalTo(LocalDate.parse("2022-11-29")))
+        assertThat(fthrd!!.date, equalTo(LocalDate.parse("2025-08-24")))
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUpdated"),
+            anyMap(),
+            anyMap()
+        )
+    }
+
+    @Test
+    fun `SDS Plus disposal updated from CRDS data when feature flag disabled`() {
+        featureFlagEnabled(false)
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_CRDS_SDS)
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.CRDS_PERSON_SDS_PLUS.id, "98340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+
+        // Check disposal.sdsPlus is updated to true from CRDS envelope
+        assertThat(custody.disposal.sdsPlus, equalTo(true))
+
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
+        val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
+
+        assertNotNull(emed)
+        assertNotNull(fthrd)
+
+        assertThat(emed!!.date, equalTo(LocalDate.parse("2023-01-27")))
+        assertThat(fthrd!!.date, equalTo(LocalDate.parse("2025-05-11")))
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUpdated"),
+            anyMap(),
+            anyMap()
+        )
+    }
+
+    @Test
+    fun `PSSED key date is added when disposal type has pss requirement`() {
+        featureFlagEnabled(true)
+        val notification = Notification(
+            message = MessageGenerator.SENTENCE_DATE_CHANGED,
+            attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
+        )
+        // Override to use PSS person's booking
+        val pssNotification = notification.copy(
+            message = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
+        )
+        channelManager.getChannel(queueName).publishAndWait(pssNotification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.PSS_PERSON.id, "68340A").first()
+        val custody = custodyRepository.findCustodyById(custodyId)
+        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
+        assertNotNull(pssed)
+        assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
+    }
+
+    private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
+
+    private fun featureFlagEnabled(enabled: Boolean) {
+        whenever(featureFlags.enabled("calculate-key-dates-from-delius")).thenReturn(enabled)
     }
 
     private fun verifyUpdatedKeyDates(custody: Custody) {
@@ -136,7 +257,7 @@ internal class IntegrationTest @Autowired constructor(
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
         val pr1 = custody.keyDate(CustodyDateType.SUSPENSION_DATE_IF_RESET.code)
-        val emed = custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)
+        val emed = custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
@@ -145,14 +266,14 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2022-11-29")))
         assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
 
     private fun verifyContactCreated() {
-        val event = DEFAULT_CUSTODY.disposal!!.event
+        val event = DEFAULT_CUSTODY.disposal.event
         val contact = contactRepository.findAll()
             .firstOrNull { it.personId == PersonGenerator.DEFAULT.id && it.eventId == event.id }
         assertNotNull(contact)
@@ -173,52 +294,32 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 11/08/2025
+            EMED 29/11/2022
             FTHRD 24/08/2025
                 """.trimIndent()
             )
         )
     }
 
-    private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
+    private fun verifyDomainEventPublished(person: Person) {
+        val topic = channelManager.getChannel(topicName)
 
-    @Test
-    fun `PSSED key date is added when disposal type has pss requirement`() {
-        val noms = PersonGenerator.PSS_PERSON.nomsId
-        val notification = Notification(
-            message = MessageGenerator.SENTENCE_DATE_CHANGED,
-            attributes = MessageAttributes(eventType = "SENTENCE_DATES-CHANGED")
-        )
-        // Override to use PSS person's booking
-        val pssNotification = notification.copy(
-            message = ResourceLoader.message<CustodyDateChanged>("sentence-date-changed-pss")
-        )
-        channelManager.getChannel(queueName).publishAndWait(pssNotification)
-
-        val custodyId = custodyRepository.findCustodyId(PersonGenerator.PSS_PERSON.id, "68340A").first()
-        val custody = custodyRepository.findCustodyById(custodyId)
-        val pssed = custody.keyDates.firstOrNull { it.type.code == "PSSED" }
-        assertNotNull(pssed)
-        assertThat(pssed!!.date, equalTo(LocalDate.parse("2026-06-15")))
-    }
-
-    @Test
-    fun `EMED and FTHRD dates created and disposal updated for eligible SDS case`() {
-        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED_SDS)
-        channelManager.getChannel(queueName).publishAndWait(notification)
-        val custodyId = custodyRepository.findCustodyId(PersonGenerator.SDS_PLUS_PERSON.id, "78340A").first()
-        val custody = custodyRepository.findCustodyById(custodyId)
-        assertThat(custody.disposal?.sdsPlus, equalTo(true))
-        assertThat(custody.disposal?.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
-        assertThat(custody.disposal?.version, equalTo(1L))
-        assertNotNull(custody.disposal?.lastModifiedDate)
+        val notification = topic.pollFor(1).single().also { topic.done(it.id) }
+        val event = notification.message as HmppsDomainEvent
+        assertThat(notification.eventType, equalTo("probation-case.custody-key-dates.updated"))
+        assertThat(event.eventType, equalTo("probation-case.custody-key-dates.updated"))
+        assertThat(event.version, equalTo(1))
+        assertThat(event.description, equalTo("Probation case updated with custody key dates"))
         assertThat(
-            custody.keyDate(CustodyDateType.PRESUMPTIVE_EM_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-05-11"))
-        )
-        assertThat(
-            custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-05-11"))
+            event.personReference,
+            equalTo(
+                PersonReference(
+                    listOf(
+                        PersonIdentifier("NOMS", person.nomsId!!),
+                        PersonIdentifier("CRN", person.crn)
+                    )
+                )
+            )
         )
     }
 }

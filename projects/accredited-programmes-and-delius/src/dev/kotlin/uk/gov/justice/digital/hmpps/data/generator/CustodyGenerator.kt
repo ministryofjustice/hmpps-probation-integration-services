@@ -12,6 +12,7 @@ object CustodyGenerator {
         postSentenceSupervisionEndDate = listOf(),
         probationResetDate = listOf(),
         licenceEndDate = listOf(),
+        finalThirdStartDate = listOf(),
         disposal = disposal,
         softDeleted = false,
     )

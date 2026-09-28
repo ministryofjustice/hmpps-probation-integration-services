@@ -100,6 +100,7 @@ internal class CaseControllerIntegrationTest(
                           "licenceExpiryDate": "2050-01-01",
                           "postSentenceSupervisionEndDate": "2100-01-01",
                           "twoThirdsSupervisionDate": "2067-01-01",
+                          "finalThirdStartDate": "2075-01-01",
                           "custodial": true,
                           "releaseType": "Released on Adult Licence",
                           "licenceConditions": [

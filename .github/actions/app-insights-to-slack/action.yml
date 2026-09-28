@@ -104,7 +104,7 @@ runs:
           | order by EventCount desc
 
     - name: Azure CLI Login
-      uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c
+      uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906
       with:
         client-id: ${{ inputs.azure_client_id }}
         tenant-id: ${{ inputs.azure_tenant_id }}

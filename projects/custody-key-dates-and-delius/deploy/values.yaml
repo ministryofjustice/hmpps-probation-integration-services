@@ -23,6 +23,8 @@ generic-service:
     custody-key-dates-and-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
       MESSAGING_PRODUCER_QUEUE: QUEUE_NAME
+    hmpps-domain-events-topic:
+      MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:
   targetApplication: custody-key-dates-and-delius

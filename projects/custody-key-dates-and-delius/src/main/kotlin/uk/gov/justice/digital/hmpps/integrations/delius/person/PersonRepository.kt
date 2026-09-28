@@ -10,6 +10,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @Query("select p.nomsId from Person p where p.crn = :crn and p.softDeleted = false")
     fun findNomsIdByCrn(crn: String): String?
 
+    @Query("select p.crn from Person p where p.nomsId = :nomisId and p.softDeleted = false")
+    fun findCrnByNomisId(nomisId: String): String?
+
     @Query(
         """
             select p.noms_number 

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.messaging.actions
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.instanceOf
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
@@ -12,22 +11,12 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.doAnswer
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.springframework.data.repository.findByIdOrNull
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RecallReasonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.withManager
+import org.mockito.kotlin.*
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.domainevent.DomainEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -39,7 +28,6 @@ import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class RecallActionTest {
@@ -55,6 +43,9 @@ internal class RecallActionTest {
 
     @Mock
     internal lateinit var contactService: ContactService
+
+    @Mock
+    internal lateinit var domainEventService: DomainEventService
 
     @InjectMocks
     internal lateinit var action: RecallAction
@@ -120,6 +111,7 @@ internal class RecallActionTest {
         verify(recallRepository).save(recall.capture())
         assertThat(recall.firstValue.reason.code, equalTo(rrc.value))
         verify(contactService).createContact(any(), any(), any(), any(), anyOrNull())
+        verify(domainEventService).publishRecall(recall.firstValue)
     }
 
     companion object {

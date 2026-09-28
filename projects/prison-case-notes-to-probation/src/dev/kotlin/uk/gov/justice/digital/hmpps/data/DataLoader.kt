@@ -19,6 +19,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(CaseNoteNomisTypeGenerator.NEG)
         save(CaseNoteNomisTypeGenerator.RESETTLEMENT.type)
         save(CaseNoteNomisTypeGenerator.RESETTLEMENT)
+        save(CaseNoteNomisTypeGenerator.GUIDED.type)
+        save(CaseNoteNomisTypeGenerator.GUIDED)
 
         save(ProbationAreaGenerator.DEFAULT.institution!!)
         save(ProbationAreaGenerator.DEFAULT)

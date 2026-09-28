@@ -74,7 +74,9 @@ class DataLoader(
                     ReferenceDataGenerator.LC_REJECTED_DECISION,
                     ReferenceDataGenerator.LC_REJECTED_REASON,
                     ReferenceDataGenerator.AUTO_TRANSFER,
-                    ReferenceDataGenerator.LC_TERMINATED_DOMAIN_EVENT
+                    ReferenceDataGenerator.LC_TERMINATED_DOMAIN_EVENT,
+                    ReferenceDataGenerator.RELEASE_ADDED_DOMAIN_EVENT,
+                    ReferenceDataGenerator.RECALL_ADDED_DOMAIN_EVENT
                 )
         )
         saveAll(ReferenceDataGenerator.RECALL_REASON.values)

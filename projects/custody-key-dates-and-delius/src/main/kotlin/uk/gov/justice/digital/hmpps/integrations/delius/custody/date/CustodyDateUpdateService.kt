@@ -4,9 +4,15 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientResponseException
+import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.crds.CrdsApiClient
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.*
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.electronicMonitoringEndDate
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.finalThirdDate
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.pssEndDateIfPss
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.suspensionDateIfReset
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
@@ -29,48 +35,48 @@ class CustodyDateUpdateService(
     private val contactService: ContactService,
     private val telemetryService: TelemetryService,
     private val crdsApiClient: CrdsApiClient,
-    private val keyDateCalculator: KeyDateCalculator,
+    private val featureFlags: FeatureFlags,
 ) {
-    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
-        try {
-            val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
-            updateCustodyKeyDates(booking, dryRun, clientSource)
-        } catch (e: RestClientResponseException) {
-            if (e.statusCode != HttpStatus.NOT_FOUND) throw e
-        }
+    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") = try {
+        val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
+        updateCustodyKeyDates(booking, dryRun, clientSource)
+    } catch (e: RestClientResponseException) {
+        if (e.statusCode != HttpStatus.NOT_FOUND) throw e else false
     }
 
-    fun updateCustodyKeyDates(bookingId: Long) {
+    fun updateCustodyKeyDates(bookingId: Long): Boolean {
         val booking = prisonApi.getBooking(bookingId)
-        updateCustodyKeyDates(booking)
+        return updateCustodyKeyDates(booking)
     }
 
-    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false, clientSource: String = "messaging") {
-        if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry(clientSource))
+    private fun updateCustodyKeyDates(
+        booking: Booking,
+        dryRun: Boolean = false,
+        clientSource: String = "messaging"
+    ): Boolean {
+        if (!booking.active) return noUpdate("BookingNotActive", booking.telemetry(clientSource))
+        val calculateDatesFromDelius = featureFlags.enabled("calculate-key-dates-from-delius")
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
-            ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry(clientSource))
+            ?: return noUpdate("MissingNomsNumber", booking.telemetry(clientSource))
         val custodyId = custodyRepository.findCustodyId(person.id, booking.bookingNo).run {
-            if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry(clientSource))
-            singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
+            if (size > 1) return noUpdate("DuplicateBookingRef", booking.telemetry(clientSource))
+            singleOrNull() ?: return noUpdate("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        val sdsEligible = custody.disposal?.isDeliusSdsCase() == true
-        val envelope = if (sdsEligible) {
-            try {
-                crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
-            } catch (e: RestClientResponseException) {
-                if (e.statusCode == HttpStatus.NOT_FOUND) null else throw e
-            }
+        // Only fetch CRDS data when feature flag is disabled
+        val envelope = if (!calculateDatesFromDelius && custody.disposal.type.determinateCustody) {
+            nullIfNotFound { crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo) }
         } else null
-        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope)
+        val updated = calculateKeyDateChanges(sentenceDetail, custody, envelope, calculateDatesFromDelius)
         if (updated.isEmpty()) {
-            telemetryService.trackEvent("KeyDatesUnchanged", booking.telemetry(clientSource))
+            return noUpdate("KeyDatesUnchanged", booking.telemetry(clientSource))
         } else {
             if (!dryRun) {
                 keyDateRepository.saveAll(updated)
                 contactService.createForKeyDateChanges(custody, updated)
-                if (sdsEligible && envelope != null) {
+                // Only update disposal.sdsPlus when using CRDS (feature flag off)
+                if (envelope != null) {
                     if (booking.id != envelope.bookingId) {
                         telemetryService.trackEvent(
                             "SentenceEnvelopeBookingIdMismatch", mapOf(
@@ -79,10 +85,8 @@ class CustodyDateUpdateService(
                             )
                         )
                     } else {
-                        custody.disposal.let { disposal ->
-                            disposal.sdsPlus = envelope.containsAnSDSPlusSentence
-                            disposalRepository.save(disposal)
-                        }
+                        custody.disposal.sdsPlus = envelope.containsAnSDSPlusSentence
+                        disposalRepository.save(custody.disposal)
                     }
                 }
             }
@@ -90,38 +94,31 @@ class CustodyDateUpdateService(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
                 booking.telemetry(clientSource) + updated.associateBy({ it.type.code }, { it.date.toString() })
             )
+            return !dryRun
         }
     }
 
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody,
-        envelope: OperativeSentenceEnvelope?
-    ) =
-        listOfNotNull(
-            custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
-            custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
-            custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
-            custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
-            custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
-            custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
-            custody.keyDate(
-                POST_SENTENCE_SUPERVISION_END_DATE.code,
-                sentenceDetail.postSentenceSupervisionEndDate.takeIf { custody.disposal?.type?.pssRequirement == true }),
-            custody.keyDate(
-                SUSPENSION_DATE_IF_RESET.code,
-                keyDateCalculator.suspensionDateIfReset(sentenceDetail, custody)
-            ),
-            envelope?.let { envelope ->
-                custody.keyDate(
-                    PRESUMPTIVE_EM_END_DATE.code,
-                    keyDateCalculator.presumptiveElectronicMonitoringEndDate(sentenceDetail, envelope)
-                )
-            },
-            envelope?.let { envelope ->
-                custody.keyDate(FINAL_THIRD_START_DATE.code, keyDateCalculator.finalThirdDate(sentenceDetail, envelope))
-            }
-        )
+        envelope: OperativeSentenceEnvelope?,
+        calculateDatesFromDelius: Boolean
+    ) = listOfNotNull(
+        custody.keyDate(LICENCE_EXPIRY_DATE.code, sentenceDetail.licenceExpiryDate),
+        custody.keyDate(AUTOMATIC_CONDITIONAL_RELEASE_DATE.code, sentenceDetail.conditionalReleaseDate),
+        custody.keyDate(PAROLE_ELIGIBILITY_DATE.code, sentenceDetail.paroleEligibilityDate),
+        custody.keyDate(SENTENCE_EXPIRY_DATE.code, sentenceDetail.sentenceExpiryDate),
+        custody.keyDate(EXPECTED_RELEASE_DATE.code, sentenceDetail.confirmedReleaseDate),
+        custody.keyDate(HDC_EXPECTED_DATE.code, sentenceDetail.homeDetentionCurfewEligibilityDate),
+        custody.keyDate(POST_SENTENCE_SUPERVISION_END_DATE.code, sentenceDetail.pssEndDateIfPss(custody)),
+        custody.keyDate(SUSPENSION_DATE_IF_RESET.code, sentenceDetail.suspensionDateIfReset(custody))
+    ) + if (calculateDatesFromDelius) listOfNotNull(
+        custody.keyDate(ELECTRONIC_MONITORING_END_DATE.code, sentenceDetail.electronicMonitoringEndDate(custody)),
+        custody.keyDate(FINAL_THIRD_START_DATE.code, sentenceDetail.finalThirdDate(custody))
+    ) else listOfNotNull(
+        custody.keyDate(ELECTRONIC_MONITORING_END_DATE.code, sentenceDetail.electronicMonitoringEndDate(envelope)),
+        custody.keyDate(FINAL_THIRD_START_DATE.code, sentenceDetail.finalThirdDate(envelope)),
+    )
 
     private fun Custody.keyDate(code: String, date: LocalDate?): KeyDate? = date?.let {
         val existing = keyDates.filter { it.type.code == code }.removeDuplicates()
@@ -141,11 +138,14 @@ class CustodyDateUpdateService(
         return firstOrNull()
     }
 
-    private fun Disposal.isDeliusSdsCase(): Boolean = type.sdsSentence
-
     private fun Booking.telemetry(clientSource: String) = mapOf(
         "nomsNumber" to offenderNo,
         "bookingRef" to bookingNo,
         "clientSource" to clientSource
     )
+
+    private fun noUpdate(message: String, telemetry: Map<String, String>): Boolean {
+        telemetryService.trackEvent(message, telemetry)
+        return false
+    }
 }
