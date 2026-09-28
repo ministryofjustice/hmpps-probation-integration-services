@@ -31,7 +31,7 @@ class CaseService(
     fun getCaseDetail(id: String): CaseDetail {
         val person = probationCaseRepository.findByCrnOrNomsId(id)
             ?: throw NotFoundException("ProbationCase", "CRN or NOMIS id", id)
-        val registrations = registrationRepository.findByPersonId(person.id)
+        val registrations = registrationRepository.findByPersonId(person.id).filter { !it.deregistered }
         val offences = offenceRepository.findOffencesFor(person.id)
         val circumstances = personalCircumstanceRepository.findByPersonId(person.id)
         val sentences = disposalRepository.findSentences(person.id).map { disposal ->
