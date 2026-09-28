@@ -3,11 +3,9 @@ package uk.gov.justice.digital.hmpps.repository
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.service.reportMissing
 
-@Repository
 interface StaffRepository : JpaRepository<Staff, Long> {
     @EntityGraph(attributePaths = ["user"])
     fun findAllByCodeIn(code: Set<String>): List<Staff>
