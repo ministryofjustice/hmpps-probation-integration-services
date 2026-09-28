@@ -136,9 +136,9 @@ internal class DocumentServiceTest {
 
     @Test
     fun `validateFile accepts allowed extensions and rejects others`() {
-        DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it", ByteArray(0)) }
+        DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it") }
 
-        assertThrows<IllegalArgumentException> { documentService.validateFile("document.exe", ByteArray(0)) }
+        assertThrows<IllegalArgumentException> { documentService.validateFile("document.exe") }
     }
 }
 

@@ -5,7 +5,6 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
@@ -51,19 +50,10 @@ class AppointmentsController(
     fun uploadAppointmentDocument(
         @PathVariable appointmentId: Long,
         @RequestParam file: MultipartFile
-    ): DocumentUploadResponse {
-        val appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId)
-        val filename = file.originalFilename ?: "document"
-        val document = documentService.uploadAppointmentDocument(
-            appointment = appointment,
-            filename = filename,
+    )  = documentService.uploadAppointmentDocument(
+            appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId),
+            filename = file.originalFilename ?: "document",
             file = file.bytes,
             userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
-        )
-        return DocumentUploadResponse(
-            documentId = document.id,
-            filename = document.name,
-            alfrescoId = document.alfrescoId
-        )
-    }
+    )
 }

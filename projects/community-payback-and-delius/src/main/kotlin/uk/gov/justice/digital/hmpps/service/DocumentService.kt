@@ -28,7 +28,7 @@ class DocumentService(
         file: ByteArray,
         userId: Long
     ): Document {
-        validateFile(filename, file)
+        validateFile(filename)
 
         val document = Document(
             person = appointment.person,
@@ -77,7 +77,7 @@ class DocumentService(
             .executeUpdate()
     }
 
-    fun validateFile(filename: String, file: ByteArray) {
+    fun validateFile(filename: String) {
         val extension = filename.substringAfterLast(".").lowercase()
         require(ALLOWED_EXTENSIONS.contains(extension)) {
             "File extension '$extension' is not allowed. Allowed extensions: ${ALLOWED_EXTENSIONS.joinToString(", ")}"

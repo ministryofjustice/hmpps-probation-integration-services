@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.multipart
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
+import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -27,9 +27,9 @@ class DocumentUploadIntegrationTest @Autowired constructor(
 ) {
     @Test
     fun `documentService is wired into the Spring context and validateFile is reachable`() {
-        documentService.validateFile("smoke-test.pdf", "content".toByteArray())
+        documentService.validateFile("smoke-test.pdf")
         assertThrows<IllegalArgumentException> {
-            documentService.validateFile("smoke-test.exe", "content".toByteArray())
+            documentService.validateFile("smoke-test.exe")
         }
     }
 
@@ -45,12 +45,12 @@ class DocumentUploadIntegrationTest @Autowired constructor(
             file(multipartFile)
         }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<DocumentUploadResponse>()
+            .andReturn().response.contentAsJson<Document>()
 
-        assertThat(response.filename).isEqualTo("evidence.pdf")
+        assertThat(response.name).isEqualTo("evidence.pdf")
         assertThat(response.alfrescoId).isEqualTo("00000000-0000-0000-0000-000000000001")
 
-        val document = documentRepository.findById(response.documentId).orElseThrow()
+        val document = documentRepository.findById(response.id).orElseThrow()
         assertThat(document.alfrescoId).isEqualTo("00000000-0000-0000-0000-000000000001")
         assertThat(document.name).isEqualTo("evidence.pdf")
         assertThat(document.tableName).isEqualTo("CONTACT")
