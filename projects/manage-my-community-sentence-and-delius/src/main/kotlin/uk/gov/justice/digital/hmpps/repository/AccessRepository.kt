@@ -17,8 +17,8 @@ interface AccessRepository : JpaRepository<Person, Long> {
                   and not exists ( select 1 from Exclusion e where e.person.id = p.id and (e.end is null or e.end > current_date) )
                 /* no suspended cases */
                   and not exists ( select 1 from Registration r where r.personId = p.id and r.type.code = 'PRC' )
-                /* only cases with a noncustodial sentence */
-                  and exists ( select 1 from Event e where e.personId = p.id and e.disposal.type.sentenceType not in ('SC', 'NC') )
+                /* only cases with a disposal */
+                  and exists ( select 1 from Event e where e.personId = p.id and e.disposal is not null )
             )
         """
     )
