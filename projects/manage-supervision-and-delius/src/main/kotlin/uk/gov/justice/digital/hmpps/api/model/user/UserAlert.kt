@@ -27,3 +27,5 @@ data class UserAlerts(
     val page: Int,
     val size: Int,
 )
+
+data class UserAlertCount(val count: Long)

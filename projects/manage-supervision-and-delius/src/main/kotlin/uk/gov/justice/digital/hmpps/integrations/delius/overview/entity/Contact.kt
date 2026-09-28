@@ -920,10 +920,22 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join ca.contact c
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
             where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
-            and ca.staff.user.username = :username and com.staff.id = ca.staff.id
+            and upper(ca.staff.user.username) = upper(:username) and com.staff.id = ca.staff.id
         """
     )
     fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
+
+    @Query(
+        """
+            select count(c)
+            from ContactAlert ca
+            join ca.contact c
+            join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
+            where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
+            and upper(ca.staff.user.username) = upper(:username) and com.staff.id = ca.staff.id
+        """
+    )
+    fun countUserAlerts(username: String): Long
 
     @Query(
         """

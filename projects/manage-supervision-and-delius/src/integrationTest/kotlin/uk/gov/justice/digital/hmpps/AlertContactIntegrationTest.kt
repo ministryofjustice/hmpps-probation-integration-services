@@ -8,20 +8,16 @@ import org.springframework.test.web.servlet.put
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.sentence.NoteDetail
 import uk.gov.justice.digital.hmpps.api.model.user.*
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.generateContactAlert
-import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_1
 import uk.gov.justice.digital.hmpps.data.generator.OffenderManagerGenerator.STAFF_USER_2
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
-import uk.gov.justice.digital.hmpps.data.generator.UnallocatedAlertGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff as StaffEntity
 
 class AlertContactIntegrationTest : IntegrationTestBase() {
@@ -36,6 +32,27 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
     fun `no alerts`() {
         mockMvc.get("/alerts") { withUserToken("no-alerts") }
             .andExpect { status { isOk() } }
+
+        mockMvc.get("/alerts/count") { withUserToken("no-alerts") }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.count") { value(0) }
+            }
+    }
+
+    @Test
+    fun `401 unauthorized returned for alert count`() {
+        mockMvc.get("/alerts/count")
+            .andExpect { status { isUnauthorized() } }
+    }
+
+    @Test
+    fun `return alert count for username`() {
+        mockMvc.get("/alerts/count") { withUserToken(UnallocatedAlertGenerator.STAFF_USER.username) }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.count") { value(1) }
+            }
     }
 
     @Test
@@ -74,6 +91,10 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
 
+        val count = mockMvc.get("/alerts/count") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAlertCount>()
+
         val expected = UserAlerts(
             listOf(
                 UserAlert(
@@ -103,6 +124,9 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             ), 2, 1, 0, 10
         )
         assertEquals(expected, response)
+        assertThat(count.count).isEqualTo(response.totalResults.toLong())
+        assertThat(contactRepository.countUserAlerts(user.username.uppercase()))
+            .isEqualTo(response.totalResults.toLong())
 
         val noteResponse = mockMvc.get("/alerts/${alertContacts[0].id}/notes/0") { withUserToken(user.username) }
             .andExpect { status { isOk() } }
@@ -164,8 +188,12 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.get("/alerts") { withUserToken(user.username) }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
+        val count = mockMvc.get("/alerts/count") { withUserToken(user.username) }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAlertCount>()
 
         assertThat(response.content.none { it.id == contactId }).isTrue()
+        assertThat(count.count).isEqualTo(response.totalResults.toLong())
     }
 
     @Test
@@ -173,9 +201,13 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
         val response = mockMvc.get("/alerts") { withUserToken(UnallocatedAlertGenerator.STAFF_USER.username) }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<UserAlerts>()
+        val count = mockMvc.get("/alerts/count") { withUserToken(UnallocatedAlertGenerator.STAFF_USER.username) }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAlertCount>()
 
         val alert = response.content.single { it.id == UnallocatedAlertGenerator.ALERT_CONTACT.id }
         assertThat(alert.officer).isNull()
+        assertThat(count.count).isEqualTo(response.totalResults.toLong())
     }
 
     @Test
