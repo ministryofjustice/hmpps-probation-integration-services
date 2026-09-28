@@ -43,7 +43,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll().lastOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.BREACH.contactTypeCode
+                it.type.code == StatusInfo.Status.BREACH.contactTypeCode
         }
         assertThat(contact).isNotNull
         assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
@@ -66,7 +66,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
 
         val contact = contactRepository.findAll().lastOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
+                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
         }
         assertThat(contact).isNotNull
         assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
