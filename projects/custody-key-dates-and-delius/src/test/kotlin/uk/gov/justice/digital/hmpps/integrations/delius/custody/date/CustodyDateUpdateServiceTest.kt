@@ -277,7 +277,7 @@ internal class CustodyDateUpdateServiceTest {
 
     @ParameterizedTest
     @CsvSource("false, 2024-01-04", "true, 2024-01-09")
-    fun `eligible SDS disposal updates disposal and creates EMED and FTHRD key dates`(
+    fun `eligible SDS disposal updates flag and key dates according to SDS+ status`(
         sdsPlus: Boolean,
         expectedEmed: LocalDate
     ) {
@@ -288,7 +288,7 @@ internal class CustodyDateUpdateServiceTest {
             CustodyDateType.SUSPENSION_DATE_IF_RESET,
             CustodyDateType.ELECTRONIC_MONITORING_END_DATE,
             CustodyDateType.FINAL_THIRD_START_DATE
-        ).forEach { type ->
+        ).filterNot { sdsPlus && it == CustodyDateType.FINAL_THIRD_START_DATE }.forEach { type ->
             whenever(
                 referenceDataRepository.findByDatasetAndCode(
                     DatasetCode.KEY_DATE_TYPE,
@@ -324,7 +324,7 @@ internal class CustodyDateUpdateServiceTest {
                 bookingId = booking.id
             )
         )
-        whenever(disposalRepository.save(any<Disposal>())).thenReturn(disposal)
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
         assertThat(custody.disposal.sdsPlus, equalTo(sdsPlus))
         verify(disposalRepository).save(
@@ -339,10 +339,13 @@ internal class CustodyDateUpdateServiceTest {
                 )
 
                 assertThat(
-                    saved.single { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }.date,
-                    equalTo(LocalDate.of(2024, 12, 15))
+                    saved.filter { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }.map { it.date },
+                    equalTo(if (sdsPlus) emptyList() else listOf(LocalDate.of(2024, 12, 15)))
                 )
             })
+        verify(keyDateRepository, times(if (sdsPlus) 1 else 0)).deleteByCustodyDisposalIdAndTypeCode(
+            disposal.id, CustodyDateType.FINAL_THIRD_START_DATE.code
+        )
     }
 
     @ParameterizedTest
@@ -451,65 +454,6 @@ internal class CustodyDateUpdateServiceTest {
     }
 
     @Test
-    fun `SDS+ flag not updated when sentence envelope and custody booking ids are mismatched`() {
-        featureFlagEnabled(false)
-        val booking = Booking(1234567, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
-        val custody =
-            generateCustodialSentence(disposal = generateDisposal(generateEvent()), bookingRef = booking.bookingNo)
-        listOf(
-            CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
-            CustodyDateType.SENTENCE_EXPIRY_DATE,
-            CustodyDateType.SUSPENSION_DATE_IF_RESET,
-            CustodyDateType.ELECTRONIC_MONITORING_END_DATE,
-            CustodyDateType.FINAL_THIRD_START_DATE
-        ).forEach { type ->
-            whenever(
-                referenceDataRepository.findByDatasetAndCode(
-                    DatasetCode.KEY_DATE_TYPE, type.code
-                )
-            ).thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[type.code]!!)
-        }
-        whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
-            SentenceDetail(
-                conditionalReleaseDate = LocalDate.of(2024, 1, 1), sentenceExpiryDate = LocalDate.of(2025, 1, 1)
-            )
-        )
-        whenever(
-            prisonApi.getBooking(
-                booking.id, basicInfo = false, extraInfo = true
-            )
-        ).thenReturn(booking)
-        whenever(
-            personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(
-                booking.offenderNo
-            )
-        ).thenReturn(PersonGenerator.DEFAULT)
-        whenever(
-            custodyRepository.findCustodyId(
-                PersonGenerator.DEFAULT.id, booking.bookingNo
-            )
-        ).thenReturn(listOf(custody.id))
-        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
-        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
-        whenever(
-            crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)
-        ).thenReturn(
-            OperativeSentenceEnvelope(
-                sentenceEnvelopeLengthInDays = 50L, containsAnSDSPlusSentence = true, bookingId = 999999L
-            )
-        )
-        custodyDateUpdateService.updateCustodyKeyDates(booking.id)
-
-        verify(disposalRepository, never()).save(any<Disposal>())
-        verify(telemetryService).trackEvent(
-            eq("SentenceEnvelopeBookingIdMismatch"), check {
-                assertThat(it["bookingId"], equalTo("1234567"))
-                assertThat(it["envelopeBookingId"], equalTo("999999"))
-            }, any()
-        )
-    }
-
-    @Test
     fun `SDS+ flag null defaults to regular SDS calculation for EM end date`() {
         featureFlagEnabled(false)
         listOf(
@@ -553,7 +497,7 @@ internal class CustodyDateUpdateServiceTest {
                 bookingId = booking.id
             )
         )
-        whenever(disposalRepository.save(any<Disposal>())).thenReturn(disposal)
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
@@ -571,11 +515,14 @@ internal class CustodyDateUpdateServiceTest {
         )
     }
 
-    @Test
-    fun `SDS+ dates and flag are not set when CRDS API returns 404`() {
-        featureFlagEnabled(false)
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `SDS+ flag is preserved and final third date removed when CRDS API returns 404`(
+        calculateDatesFromDelius: Boolean
+    ) {
+        featureFlagEnabled(calculateDatesFromDelius)
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId!!)
-        val disposal = generateDisposal(generateEvent())
+        val disposal = generateDisposal(generateEvent(), sdsPlus = true)
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
@@ -606,11 +553,37 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
         whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo))
             .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "not found", HttpHeaders(), null, null))
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
+        whenever(
+            keyDateRepository.deleteByCustodyDisposalIdAndTypeCode(
+                disposal.id,
+                CustodyDateType.FINAL_THIRD_START_DATE.code
+            )
+        ).thenReturn(1L)
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        assertNull(custody.disposal.sdsPlus)
-        verify(disposalRepository, never()).save(any<Disposal>())
+        assertThat(custody.disposal.sdsPlus, equalTo(true))
+        verify(custodyRepository).findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)
+        verifyNoInteractions(disposalRepository)
+        verify(keyDateRepository).deleteByCustodyDisposalIdAndTypeCode(
+            disposal.id, CustodyDateType.FINAL_THIRD_START_DATE.code
+        )
+        verify(telemetryService).trackEvent(
+            eq("SdsPlusFlagUpdated"),
+            eq(
+                mapOf(
+                    "crn" to PersonGenerator.DEFAULT.crn,
+                    "nomsNumber" to PersonGenerator.DEFAULT.nomsId,
+                    "eventNumber" to disposal.event.eventNumber,
+                    "sdsPlus" to "true",
+                    "sdsPlusBefore" to "true",
+                    "sdsPlusChanged" to "false",
+                    "finalThirdRemoved" to "1"
+                )
+            ),
+            any()
+        )
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
                 assertThat(
@@ -647,11 +620,21 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenReturn(
+            OperativeSentenceEnvelope(
+                bookingId = booking.id,
+                containsAnSDSPlusSentence = false,
+                sentenceEnvelopeLengthInDays = 50L
+            )
+        )
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
-        verify(disposalRepository, never()).save(any<Disposal>())
+        verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
+        assertThat(disposal.sdsPlus, equalTo(false))
+        verify(disposalRepository).save(disposal)
+        verify(keyDateRepository, never()).deleteByCustodyDisposalIdAndTypeCode(any(), any())
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
                 assertThat(
@@ -697,12 +680,23 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenReturn(
+            OperativeSentenceEnvelope(
+                bookingId = booking.id,
+                containsAnSDSPlusSentence = true,
+                sentenceEnvelopeLengthInDays = 50L
+            )
+        )
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
-        verify(disposalRepository, never()).save(any<Disposal>())
-        verify(keyDateRepository, never()).delete(any<KeyDate>())
+        verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
+        assertThat(disposal.sdsPlus, equalTo(true))
+        verify(disposalRepository).save(disposal)
+        verify(keyDateRepository).deleteByCustodyDisposalIdAndTypeCode(
+            disposal.id, CustodyDateType.FINAL_THIRD_START_DATE.code
+        )
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
                 assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
@@ -753,6 +747,14 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
+        whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
+        whenever(crdsApiClient.getOperativeSentenceEnvelope(booking.offenderNo)).thenReturn(
+            OperativeSentenceEnvelope(
+                bookingId = booking.id,
+                containsAnSDSPlusSentence = false,
+                sentenceEnvelopeLengthInDays = 50L
+            )
+        )
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 DatasetCode.KEY_DATE_TYPE,
@@ -763,6 +765,9 @@ internal class CustodyDateUpdateServiceTest {
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
+        verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
+        assertThat(disposal.sdsPlus, equalTo(false))
+        verify(disposalRepository).save(disposal)
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
                 assertThat(

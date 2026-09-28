@@ -23,6 +23,20 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     )
     fun findCustodyId(personId: Long, bookingRef: String): List<Long>
 
+    @Query(
+        """
+        select d from Custody c
+        join c.disposal d
+        join d.event e
+        where e.person.id = :personId
+        and c.softDeleted = false and c.status.code <> 'P'
+        and d.type.requiredInformation = 'L1' and d.type.sentenceType = 'SC'
+        and d.active = true and d.softDeleted = false
+        and e.active = true and e.softDeleted = false
+    """
+    )
+    fun findAllSentencesByPersonId(personId: Long): List<Disposal>
+
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select c.id from Custody c where c.id = :id")
     fun findForUpdate(id: Long): Long

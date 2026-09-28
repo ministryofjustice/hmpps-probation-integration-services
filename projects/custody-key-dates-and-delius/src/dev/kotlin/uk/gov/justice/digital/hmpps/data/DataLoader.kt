@@ -28,11 +28,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             )
         )
         save(ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS)
-        val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values).filterNot {
-            it.code in setOf(
-                CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
-            )
-        }
+        val keyDateTypes = saveAll(ReferenceDataGenerator.KEY_DATE_TYPES.values)
 
         save(ContactTypeGenerator.EDSS)
         save(SentenceGenerator.DEFAULT_DISPOSAL_TYPE)
@@ -96,8 +92,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             )
         )
 
-        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON, "88340A", keyDateTypes)
-        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON_SDS_PLUS, "98340A", keyDateTypes)
+        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON, "88340A", keyDateTypes.filterNot {
+            it.code in setOf(
+                CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code, CustodyDateType.FINAL_THIRD_START_DATE.code
+            )
+        })
+        createPersonWithKeyDates(PersonGenerator.CRDS_PERSON_SDS_PLUS, "98340A", keyDateTypes.filterNot {
+            it.code in setOf(
+                CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code
+            )
+        })
     }
 
     private fun createPersonWithKeyDates(
