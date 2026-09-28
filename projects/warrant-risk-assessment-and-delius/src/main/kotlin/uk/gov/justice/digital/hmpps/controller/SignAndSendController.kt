@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
-import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
-import uk.gov.justice.digital.hmpps.service.ResponsibleOfficerService
+import uk.gov.justice.digital.hmpps.model.SignAndSendDetails
+import uk.gov.justice.digital.hmpps.service.SignAndSendService
 
 @RestController
-class ResponsibleOfficerController(
-    private val responsibleOfficerService: ResponsibleOfficerService,
+class SignAndSendController(
+    private val signAndSendService: SignAndSendService,
 ) {
     @GetMapping("/sign-and-send/{crn}/{username}")
     @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
@@ -26,7 +26,7 @@ class ResponsibleOfficerController(
                 description = "Responsible officer details retrieved",
                 content = [Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = ResponsibleOfficerDetails::class)
+                    schema = Schema(implementation = SignAndSendDetails::class)
                 )]
             ),
             ApiResponse(
@@ -42,6 +42,6 @@ class ResponsibleOfficerController(
     fun getResponsibleOfficerDetails(
         @PathVariable crn: String,
         @PathVariable username: String
-    ): ResponsibleOfficerDetails =
-        responsibleOfficerService.getResponsibleOfficerDetails(crn, username)
+    ): SignAndSendDetails =
+        signAndSendService.getResponsibleOfficerDetails(crn, username)
 }

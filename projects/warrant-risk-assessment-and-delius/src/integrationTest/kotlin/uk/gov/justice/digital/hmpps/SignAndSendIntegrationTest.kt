@@ -13,15 +13,15 @@ import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.OfficeAddress
-import uk.gov.justice.digital.hmpps.model.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import uk.gov.justice.digital.hmpps.model.SignAndSendDetails
 import uk.gov.justice.digital.hmpps.model.UserDetailsName
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest
-internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
+internal class SignAndSendIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
 ) {
     @Test
@@ -45,12 +45,12 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
+            SignAndSendDetails(
                 userDetails = UserDetailsName("Billy", "Kid"),
-                responsibleOfficer = ResponsibleOfficer(
+                responsibleOfficer = ResponsibleOfficerDetails(
                     name = Name("Billy", "The", "Kid"),
                     emailAddress = null,
                     telephoneNumber = "07707123456",
@@ -81,12 +81,12 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
+            SignAndSendDetails(
                 userDetails = UserDetailsName("Billy", "Kid"),
-                responsibleOfficer = ResponsibleOfficer(
+                responsibleOfficer = ResponsibleOfficerDetails(
                     name = Name("Prison", null, "Officer"),
                     emailAddress = null,
                     telephoneNumber = null,
@@ -104,12 +104,12 @@ internal class ResponsibleOfficerIntegrationTest @Autowired constructor(
 
         val response = mockMvc.get("/sign-and-send/$crn/$username") { withToken() }
             .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<ResponsibleOfficerDetails>()
+            .andReturn().response.contentAsJson<SignAndSendDetails>()
 
         assertThat(response).isEqualTo(
-            ResponsibleOfficerDetails(
+            SignAndSendDetails(
                 userDetails = UserDetailsName("Billy", "Kid"),
-                responsibleOfficer = ResponsibleOfficer(
+                responsibleOfficer = ResponsibleOfficerDetails(
                     name = Name("No", null, "Address"),
                     emailAddress = null,
                     telephoneNumber = null,

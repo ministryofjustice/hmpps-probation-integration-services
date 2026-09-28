@@ -10,15 +10,16 @@ import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.OfficeAddress
 import uk.gov.justice.digital.hmpps.model.ResponsibleOfficerDetails
+import uk.gov.justice.digital.hmpps.model.SignAndSendDetails
 import uk.gov.justice.digital.hmpps.model.UserDetailsName
 
 @Service
-class ResponsibleOfficerService(
+class SignAndSendService(
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val ldapTemplate: LdapTemplate,
     private val officeLocationRepository: OfficeLocationRepository,
 ) {
-    fun getResponsibleOfficerDetails(crn: String, username: String): ResponsibleOfficerDetails {
+    fun getResponsibleOfficerDetails(crn: String, username: String): SignAndSendDetails {
         val responsibleOfficer = responsibleOfficerRepository.findByPersonCrn(crn).orNotFoundBy("CRN", crn)
         val submittingUsersFirstName =
             ldapTemplate.findAttributeByUsername(username, "givenname").orNotFoundBy("Username", username)
@@ -32,9 +33,9 @@ class ResponsibleOfficerService(
             usernameRO?.let { ldapTemplate.findPreferenceByUsername(it, "replyAddress")?.toLongOrNull() }
         val officeLocations = homeArea?.let { officeLocationRepository.findAllByProbationAreaCode(it) }
 
-        return ResponsibleOfficerDetails(
+        return SignAndSendDetails(
             userDetails = UserDetailsName(submittingUsersFirstName, submittingUsersSurname),
-            responsibleOfficer = uk.gov.justice.digital.hmpps.model.ResponsibleOfficer(
+            responsibleOfficer = ResponsibleOfficerDetails(
                 name = with(responsibleOfficer.staff) { Name(forename, middleName, surname) },
                 emailAddress = emailAddress,
                 telephoneNumber = telephoneNumber,
