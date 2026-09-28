@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.entity.staff
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Immutable
@@ -23,3 +24,7 @@ class User(
     @Convert(converter = NumericBooleanConverter::class)
     val systemUser: Boolean = false,
 )
+
+interface UserRepository : JpaRepository<User, Long> {
+    fun findByUsername(username: String): User?
+}

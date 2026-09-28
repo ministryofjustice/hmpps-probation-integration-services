@@ -86,6 +86,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
                     sourcedFromEntityId = TestData.REQUIREMENTS.first().id,
                     notes = "Some notes",
                     description = "Some description",
+                    username = "testuser"
                 ),
             )
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessage("CRN and component do not match")

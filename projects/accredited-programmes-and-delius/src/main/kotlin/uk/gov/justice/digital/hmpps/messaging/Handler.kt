@@ -39,6 +39,7 @@ class Handler(
                         "crn" to crn,
                         "componentId" to detail.sourcedFromEntityId.toString(),
                         "status" to detail.newStatus.toString(),
+                        "username" to detail.username,
                     )
                 )
             }
