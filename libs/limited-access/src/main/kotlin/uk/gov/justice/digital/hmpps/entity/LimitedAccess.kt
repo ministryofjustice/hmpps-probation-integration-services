@@ -187,16 +187,20 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
+
     @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val since: ZonedDateTime
+
     @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val until: ZonedDateTime?
 }
 
 interface ExclusionDetail {
     val username: String
+
     @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val since: ZonedDateTime
+
     @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val until: ZonedDateTime?
 }
