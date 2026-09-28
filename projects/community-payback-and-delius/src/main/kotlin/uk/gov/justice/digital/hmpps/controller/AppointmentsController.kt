@@ -50,10 +50,10 @@ class AppointmentsController(
     fun uploadAppointmentDocument(
         @PathVariable appointmentId: Long,
         @RequestParam file: MultipartFile
-    )  = documentService.uploadAppointmentDocument(
-            appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId),
-            filename = file.originalFilename ?: "document",
-            file = file.bytes,
-            userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
+    ) = documentService.uploadAppointmentDocument(
+        appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId),
+        filename = file.originalFilename ?: "document",
+        file = file.bytes,
+        userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
     )
 }
