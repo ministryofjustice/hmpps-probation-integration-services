@@ -10,6 +10,8 @@ import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
 import java.time.ZonedDateTime
 
+const val ZONED_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX"
+
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
     fun caseAccessFor(username: String, crn: String) =
@@ -103,8 +105,8 @@ data class AllCaseAccess(
 
 data class LaoDetail(
     val username: String,
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val since: ZonedDateTime,
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val until: ZonedDateTime? = null,
 )

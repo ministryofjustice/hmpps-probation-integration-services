@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.service.ZONED_DATE_TIME_FORMAT
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+
 
 @Immutable
 @Entity
@@ -187,21 +189,17 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
-
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val since: ZonedDateTime
-
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val until: ZonedDateTime?
 }
 
 interface ExclusionDetail {
     val username: String
-
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val since: ZonedDateTime
-
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val until: ZonedDateTime?
 }
 
@@ -221,9 +219,9 @@ data class LimitedAccessDetail(
     val type: String,
     val exclusionMessage: String?,
     val restrictionMessage: String?,
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val startDate: ZonedDateTime,
-    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+    @get:JsonFormat(pattern = ZONED_DATE_TIME_FORMAT)
     val endDate: ZonedDateTime?,
 )
 
