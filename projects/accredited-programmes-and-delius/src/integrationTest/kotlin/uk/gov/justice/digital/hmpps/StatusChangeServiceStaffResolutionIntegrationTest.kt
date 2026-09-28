@@ -49,8 +49,8 @@ class StatusChangeServiceStaffResolutionIntegrationTest @Autowired constructor(
         // Then: Contact is created with user's staff, not manager's staff
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.BREACH.contactTypeCode &&
-            it.externalReference?.contains(messageId.toString()) == true
+                it.type.code == StatusInfo.Status.BREACH.contactTypeCode &&
+                it.externalReference?.contains(messageId.toString()) == true
         }
         assertThat(contact).isNotNull
         assertThat(contact?.staff?.id).isEqualTo(TestData.USER.staff?.id)
@@ -80,8 +80,8 @@ class StatusChangeServiceStaffResolutionIntegrationTest @Autowired constructor(
         // Then: Contact is created with manager's staff as fallback
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode &&
-            it.externalReference?.contains(messageId.toString()) == true
+                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode &&
+                it.externalReference?.contains(messageId.toString()) == true
         }
         assertThat(contact).isNotNull
         assertThat(contact?.staff?.id).isEqualTo(TestData.MANAGER.staff.id)
@@ -111,8 +111,8 @@ class StatusChangeServiceStaffResolutionIntegrationTest @Autowired constructor(
         // Then: Contact is created with manager's staff as fallback
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.PROGRAMME_COMPLETE.contactTypeCode &&
-            it.externalReference?.contains(messageId.toString()) == true
+                it.type.code == StatusInfo.Status.PROGRAMME_COMPLETE.contactTypeCode &&
+                it.externalReference?.contains(messageId.toString()) == true
         }
         assertThat(contact).isNotNull
         assertThat(contact?.staff?.id).isEqualTo(TestData.MANAGER.staff.id)
@@ -142,8 +142,8 @@ class StatusChangeServiceStaffResolutionIntegrationTest @Autowired constructor(
         // Then: Contact has correct properties
         val contact = contactRepository.findAll().firstOrNull {
             it.person.id == TestData.PERSON.id &&
-            it.type.code == StatusInfo.Status.BREACH.contactTypeCode &&
-            it.externalReference?.contains(messageId.toString()) == true
+                it.type.code == StatusInfo.Status.BREACH.contactTypeCode &&
+                it.externalReference?.contains(messageId.toString()) == true
         }
         assertThat(contact).isNotNull
         assertThat(contact?.externalReference).isEqualTo("urn:uk:gov:hmpps:accredited-programmes-service:$messageId")
