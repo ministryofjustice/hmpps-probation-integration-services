@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.domain.Page
@@ -186,13 +187,17 @@ interface PersonAccess {
 
 interface RestrictionDetail {
     val username: String
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val since: ZonedDateTime
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val until: ZonedDateTime?
 }
 
 interface ExclusionDetail {
     val username: String
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val since: ZonedDateTime
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val until: ZonedDateTime?
 }
 
@@ -212,7 +217,9 @@ data class LimitedAccessDetail(
     val type: String,
     val exclusionMessage: String?,
     val restrictionMessage: String?,
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val startDate: ZonedDateTime,
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val endDate: ZonedDateTime?,
 )
 

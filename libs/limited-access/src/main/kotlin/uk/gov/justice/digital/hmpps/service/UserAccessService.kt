@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -102,6 +103,8 @@ data class AllCaseAccess(
 
 data class LaoDetail(
     val username: String,
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val since: ZonedDateTime,
+    @get:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
     val until: ZonedDateTime? = null,
 )
