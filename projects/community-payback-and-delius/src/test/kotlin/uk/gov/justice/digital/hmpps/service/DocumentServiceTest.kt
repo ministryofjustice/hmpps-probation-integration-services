@@ -12,7 +12,9 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -27,6 +29,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.util.*
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -43,6 +46,9 @@ internal class DocumentServiceTest {
 
     @Mock
     lateinit var query: Query
+
+    @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
 
     @InjectMocks
     lateinit var documentService: DocumentService

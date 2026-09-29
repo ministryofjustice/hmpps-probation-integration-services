@@ -13,21 +13,26 @@ import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.time.ZonedDateTime
 import java.util.*
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 
 @Service
 @Transactional
 class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
+    auditedInteractionService: AuditedInteractionService,
     private val entityManager: EntityManager,
-) {
+) : AuditableService(auditedInteractionService) {
 
     fun uploadAppointmentDocument(
         appointment: UnpaidWorkAppointment,
         filename: String,
         file: ByteArray,
         userId: Long
-    ): Document {
+    ): Document = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         validateFile(filename)
 
         val document = Document(
@@ -50,13 +55,17 @@ class DocumentService(
         val alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file, appointment.person)).id
         document.alfrescoId = alfrescoId
 
+        populateAudit(document, it)
+
         val savedDocument = documentRepository.save(document)
         updateContactDocumentLinked(appointment.contact.id, true)
 
-        return savedDocument
+        savedDocument
     }
 
-    fun deleteDocument(document: Document) {
+    fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
+        populateAudit(document, it)
+
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)
@@ -95,6 +104,14 @@ class DocumentService(
             part("entityId", primaryKeyId.toString(), MediaType.TEXT_PLAIN)
             part("locked", "true", MediaType.TEXT_PLAIN)
         }.build()
+
+    private fun populateAudit(document: Document, audit: AuditedInteraction.Parameters) {
+        audit["documentId"] = document.id
+        audit["alfrescoDocumentId"] = document.alfrescoId
+        audit["entityId"] = document.primaryKeyId
+        audit["tableName"] = document.tableName
+        audit["externalReference"] = document.externalReference
+    }
 
     companion object {
         val ALLOWED_EXTENSIONS = setOf(
