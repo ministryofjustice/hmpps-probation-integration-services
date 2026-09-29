@@ -112,7 +112,6 @@ internal class DocumentServiceTest {
         verify(documentRepository, never()).save(any<Document>())
     }
 
-
     @Test
     fun `validateFile accepts allowed extensions and rejects others`() {
         DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it") }
