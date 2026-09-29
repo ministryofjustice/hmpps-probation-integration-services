@@ -55,5 +55,11 @@ class AppointmentsController(
         filename = file.originalFilename ?: "document",
         file = file.bytes,
         userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
-    )
+    ).let { document ->
+        uk.gov.justice.digital.hmpps.model.DocumentUploadResponse(
+            documentId = document.id,
+            filename = document.name,
+            alfrescoId = document.alfrescoId,
+        )
+    }
 }

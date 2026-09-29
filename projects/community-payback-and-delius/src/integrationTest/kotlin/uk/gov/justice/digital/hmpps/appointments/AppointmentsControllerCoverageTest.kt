@@ -265,13 +265,9 @@ class AppointmentsControllerCoverageTest @Autowired constructor(
 
     @Test
     fun `get appointments requires username parameter`() {
-        val response = mockMvc.get("/appointments?username=${UserGenerator.DEFAULT_USER.username}") {
+        mockMvc.get("/appointments") {
             withToken()
-        }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
-
-        assertThat(response.page.totalElements).isGreaterThan(0)
+        }.andExpect { status { isBadRequest() } }
     }
 
     @Test
