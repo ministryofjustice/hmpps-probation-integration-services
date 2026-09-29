@@ -31,6 +31,11 @@ class UserAlertService(
         )
     }
 
+    @Transactional(readOnly = true)
+    fun getUserAlertCount(): Long = UserContext.get()?.let {
+        contactRepository.countUserAlerts(it.username)
+    } ?: 0
+
     @Transactional
     fun clearAlerts(toClear: ClearAlerts) {
         val username = requireNotNull(UserContext.get()?.username) { "username required in token" }

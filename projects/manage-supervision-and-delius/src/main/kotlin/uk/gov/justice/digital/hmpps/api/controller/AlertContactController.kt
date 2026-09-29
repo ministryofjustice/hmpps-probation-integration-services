@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.api.model.user.ClearAlerts
+import uk.gov.justice.digital.hmpps.api.model.user.UserAlertCount
 import uk.gov.justice.digital.hmpps.api.model.user.UserAlerts
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.UserAlertService
@@ -40,6 +41,11 @@ class AlertContactController(private val userAlertService: UserAlertService) {
             )
         )
     }
+
+    @GetMapping("/count")
+    @WithDeliusUser
+    @Operation(summary = "Get the number of alerts for the current user")
+    fun getUserAlertCount(): UserAlertCount = UserAlertCount(userAlertService.getUserAlertCount())
 
     @PutMapping
     @WithDeliusUser
