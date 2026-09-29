@@ -24,14 +24,14 @@ plugins {
 buildscript {
     repositories { gradlePluginPortal() }
     dependencies {
-        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.8")
+        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.9")
     }
 }
 
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.9")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.7.10")
 }
 
 project.tasks.register<Copy>("copyAgent") {
