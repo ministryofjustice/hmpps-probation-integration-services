@@ -112,33 +112,6 @@ internal class DocumentServiceTest {
         verify(documentRepository, never()).save(any<Document>())
     }
 
-    @Test
-    fun `deletes document, removes it from alfresco and unlinks contact when no documents remain`() {
-        val document = document()
-        whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
-        ).thenReturn(false)
-
-        documentService.deleteDocument(document)
-
-        verify(alfrescoUploadClient).delete("alfresco-id-1")
-        verify(documentRepository).delete(document)
-        verify(query).setParameter("documentLinked", "N")
-    }
-
-    @Test
-    fun `deletes document even when alfresco copy is already missing, keeping contact linked`() {
-        val document = document(alfrescoId = "missing-id")
-        whenever(alfrescoUploadClient.delete("missing-id")).thenThrow(mock<HttpClientErrorException.NotFound>())
-        whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
-        ).thenReturn(true)
-
-        documentService.deleteDocument(document)
-
-        verify(documentRepository).delete(document)
-        verify(query).setParameter("documentLinked", "Y")
-    }
 
     @Test
     fun `validateFile accepts allowed extensions and rejects others`() {

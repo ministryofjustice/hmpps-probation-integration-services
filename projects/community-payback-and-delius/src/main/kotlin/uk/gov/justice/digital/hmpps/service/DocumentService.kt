@@ -63,20 +63,6 @@ class DocumentService(
         savedDocument
     }
 
-    fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
-        populateAudit(document, it)
-
-        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
-
-        documentRepository.delete(document)
-        val hasDocuments = documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
-            document.tableName,
-            document.primaryKeyId,
-            document.id
-        )
-        updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
-    }
-
     private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
         entityManager.createNativeQuery(
             "update contact set document_linked = :documentLinked where contact_id = :contactId"
