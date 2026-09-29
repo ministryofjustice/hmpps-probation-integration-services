@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.entity.staff
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 @Immutable
@@ -23,3 +25,8 @@ class User(
     @Convert(converter = NumericBooleanConverter::class)
     val systemUser: Boolean = false,
 )
+
+interface UserRepository : JpaRepository<User, Long> {
+    @Query("select u from User u where upper(u.username) = upper(:username)")
+    fun findByUsername(username: String): User?
+}

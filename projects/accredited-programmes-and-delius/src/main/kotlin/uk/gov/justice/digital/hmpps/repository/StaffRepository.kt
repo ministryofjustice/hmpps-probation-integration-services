@@ -10,6 +10,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     @EntityGraph(attributePaths = ["user"])
     fun findAllByCodeIn(code: Set<String>): List<Staff>
 
+    @EntityGraph(attributePaths = ["user"])
+    fun findByCode(code: String): Staff?
+
     @Query(
         """
             select 

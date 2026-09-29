@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
@@ -7,7 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
 import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.repository.*
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -18,7 +19,8 @@ class StatusChangeService(
     private val requirementRepository: RequirementRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val telemetryService: TelemetryService
+    private val staffRepository: StaffRepository,
+    private val userRepository: UserRepository
 ) {
     fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
         val component = info.getComponent(crn)
@@ -37,6 +39,8 @@ class StatusChangeService(
     ): Contact {
         val event = component.disposal.event
         val manager = requireNotNull(event.person.manager) { "Person manager not found" }
+        val user = userRepository.findByUsername(username)
+        val staff = user?.staff?.let { staffRepository.findByIdOrNull(it.id) } ?: manager.staff
         return Contact(
             person = event.person.asPersonCrn(),
             event = event,
@@ -48,7 +52,7 @@ class StatusChangeService(
             sensitive = false,
             provider = manager.team.provider,
             team = manager.team,
-            staff = manager.staff,
+            staff = staff,
             type = contactTypeRepository.getByCode(newStatus.contactTypeCode),
             externalReference = "urn:uk:gov:hmpps:accredited-programmes-service:$messageId"
         )

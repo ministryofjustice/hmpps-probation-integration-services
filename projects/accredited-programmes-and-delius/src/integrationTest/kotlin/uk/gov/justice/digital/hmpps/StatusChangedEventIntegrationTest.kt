@@ -41,8 +41,9 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().firstOrNull {
-            it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.BREACH.contactTypeCode
+        val contact = contactRepository.findAll().lastOrNull {
+            it.person.id == TestData.PERSON.id &&
+                it.type.code == StatusInfo.Status.BREACH.contactTypeCode
         }
         assertThat(contact).isNotNull
         assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
@@ -63,8 +64,9 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().firstOrNull {
-            it.person.id == TestData.PERSON.id && it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
+        val contact = contactRepository.findAll().lastOrNull {
+            it.person.id == TestData.PERSON.id &&
+                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
         }
         assertThat(contact).isNotNull
         assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
@@ -86,6 +88,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
                     sourcedFromEntityId = TestData.REQUIREMENTS.first().id,
                     notes = "Some notes",
                     description = "Some description",
+                    username = "testuser"
                 ),
             )
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessage("CRN and component do not match")
