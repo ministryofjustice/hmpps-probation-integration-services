@@ -34,7 +34,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                         {
                           "teams": [
                             {
-                              "code": "T001",
+                              "code": "T00001",
                               "description": "Default Team",
                               "pdu": {
                                 "code": "PDU001",
@@ -46,7 +46,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                               }
                             },
                             {
-                              "code": "T002",
+                              "code": "T00002",
                               "description": "Second Team",
                               "pdu": {
                                 "code": "PDU001",
@@ -78,7 +78,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                         {
                           "teams": [
                             {
-                              "code": "T_LON",
+                              "code": "T_LON1",
                               "description": "London Team",
                               "pdu": {
                                 "code": "LPDU001",
@@ -110,7 +110,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                         {
                           "teams": [
                             {
-                              "code": "T001",
+                              "code": "T00001",
                               "description": "Default Team",
                               "pdu": {
                                 "code": "PDU001",
@@ -122,7 +122,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                               }
                             },
                             {
-                              "code": "T003",
+                              "code": "T00003",
                               "description": "Third Team",
                               "pdu": {
                                 "code": "PDU002",
@@ -134,7 +134,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
                               }
                             },
                             {
-                              "code": "T_LON",
+                              "code": "T_LON1",
                               "description": "London Team",
                               "pdu": {
                                 "code": "LPDU001",
@@ -178,9 +178,9 @@ internal class UserControllerIntegrationTest @Autowired constructor(
             .andExpect {
                 status { isOk() }
                 content {
-                    jsonPath("$.teams[0].code") { value("T001") }
-                    jsonPath("$.teams[1].code") { value("T003") }
-                    jsonPath("$.teams[2].code") { value("T_LON") }
+                    jsonPath("$.teams[0].code") { value("T00001") }
+                    jsonPath("$.teams[1].code") { value("T00003") }
+                    jsonPath("$.teams[2].code") { value("T_LON1") }
                 }
             }
     }
@@ -192,7 +192,7 @@ internal class UserControllerIntegrationTest @Autowired constructor(
             .andExpect {
                 status { isOk() }
                 content {
-                    jsonPath("$.teams[0].code") { value("T001") }
+                    jsonPath("$.teams[0].code") { value("T00001") }
                     jsonPath("$.teams[0].description") { value("Default Team") }
                     jsonPath("$.teams[0].pdu.code") { value("PDU001") }
                     jsonPath("$.teams[0].pdu.description") { value("Central Borough") }
