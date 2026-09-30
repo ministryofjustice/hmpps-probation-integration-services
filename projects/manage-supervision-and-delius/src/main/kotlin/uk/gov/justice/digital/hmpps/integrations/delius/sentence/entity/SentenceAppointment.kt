@@ -196,7 +196,7 @@ interface SentenceAppointmentRepository : JpaRepository<SentenceAppointment, Lon
     fun findByExternalReference(externalReference: String): SentenceAppointment?
 
     @Modifying
-    @Query("update SentenceAppointment set enforcementFlag = null where id = :id")
+    @NativeQuery("update Contact set enforcement = null where contact_id = :id")
     fun removeEnforcementFlag(id: Long)
 
     @Modifying
