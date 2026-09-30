@@ -16,6 +16,7 @@ class Team(
     @Id
     @Column(name = "team_id")
     val id: Long,
+    @Column(columnDefinition = "char(6)")
     val code: String,
     val description: String,
     @ManyToOne
