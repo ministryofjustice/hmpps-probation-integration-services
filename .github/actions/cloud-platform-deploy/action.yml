@@ -97,7 +97,7 @@ runs:
             --set "version=${VERSION}" \
             --set "generic-service.image.tag=${VERSION}" \
             --set "generic-service.env.VERSION=${VERSION}" \
-            --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
+            --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || printf 'build.version=%s' "$VERSION" | base64 -w0)" \
             --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
             --timeout 10m \
             --values <(echo "$IP_ALLOWLISTS" | base64 -d) \
