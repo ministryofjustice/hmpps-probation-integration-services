@@ -32,6 +32,7 @@ class DocumentService(
     fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         populateAudit(document, it)
 
+        nullIfNotFound { alfrescoUploadClient.release(document.alfrescoId) }
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)
