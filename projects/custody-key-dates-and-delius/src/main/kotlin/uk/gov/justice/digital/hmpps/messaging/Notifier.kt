@@ -32,7 +32,7 @@ class Notifier(
     fun requestBulkUpdate(nomsIds: List<String>, dryRun: Boolean) {
         var count = 0
         nomsIds.asSequence()
-            .ifEmpty { personRepository.findNomsSingleCustodial().asSequence() }
+            .ifEmpty { personRepository.findActivePrisoners().asSequence() }
             .map { notification(PersonIdentifier("NOMS", it), dryRun) }
             .forEach {
                 queuePublisher.publish(it)

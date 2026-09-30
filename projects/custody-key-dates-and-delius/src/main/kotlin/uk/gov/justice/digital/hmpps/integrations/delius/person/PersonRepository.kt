@@ -23,9 +23,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
             join r_standard_reference_list cs on cs.standard_reference_list_id = c.custodial_status_id and cs.code_value <> 'P'
             where p.noms_number is not null and p.soft_deleted = 0
             group by p.noms_number
-            having count(p.noms_number) = 1
-    """, nativeQuery = true
+            having count(p.noms_number) > 0
+        """, nativeQuery = true
     )
-    fun findNomsSingleCustodial(): Stream<String>
+    fun findActivePrisoners(): Stream<String>
 }
 
