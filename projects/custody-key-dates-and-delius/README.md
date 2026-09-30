@@ -32,7 +32,10 @@ Example [messages](./src/dev/resources/messages/) are in the development source 
 
 ## Custody Key Dates Recorded in Delius
 
-Prison API provides a set of dates recorded in NOMIS that are recorded in the Throughcare section of Delius when the key dates updates are triggered. The dates are displayed in the 'Throughcare Dates' and 'Additional Throughcare Dates' section of the 'Throughcare Details' screen, which is accessed via the Delius Event. All dates that do not match the existing Delius values will be updated on receiving an event trigger. The custody dates obtained via Prison API are:
+Prison API provides a set of dates recorded in NOMIS that are recorded in the Throughcare section of Delius when the key
+dates updates are triggered. The dates are displayed in the 'Throughcare Dates' and 'Additional Throughcare Dates'
+section of the 'Throughcare Details' screen, which is accessed via the Delius Event. All dates that do not match the
+existing Delius values will be updated on receiving an event trigger. The custody dates updated by this service are:
 
 - Sentence Expiry Date
 - Licence Expiry Date
@@ -40,4 +43,14 @@ Prison API provides a set of dates recorded in NOMIS that are recorded in the Th
 - Expected Release Date
 - Home Detention Curfew Eligibility Date
 - Post Sentence Supervision End Date
-- Probation Reset Suspension Date (derived as two-thirds of community supervision length for determinate sentences)
+
+### Derived key dates:
+
+- Probation Reset Suspension Date (two-thirds of community supervision length)
+- Final Third Start Date (two-thirds of custodial sentence length, working back from sentence expiry date)
+- Electronic Monitoring End Date (7%, or 17% if SDS+, of custodial sentence length from conditional release date)
+
+Electronic Monitoring End Date and Final Third Start Date are derived for all eligible active custodial sentences using
+Delius sentence information and the latest key dates, including changes received in the same update. These calculations
+continue when the prison booking is inactive or its reference is missing or duplicated in Delius. Other key dates still
+require an active booking with a unique matching custody record.

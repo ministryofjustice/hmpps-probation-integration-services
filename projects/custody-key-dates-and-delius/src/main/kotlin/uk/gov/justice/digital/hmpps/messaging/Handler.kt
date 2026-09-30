@@ -45,18 +45,18 @@ class Handler(
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
             is HmppsDomainEvent -> message.personReference.findNomsNumber()?.let {
-                val changed = cduService.updateCustodyKeyDates(it, message.dryRun)
+                val changed = cduService.updateKeyDates(it, message.dryRun)
                 if (changed) notifier.publishChange(it)
             }
 
             is CustodyDateChanged -> {
-                val changed = cduService.updateCustodyKeyDates(message.bookingId)
+                val changed = cduService.updateKeyDates(message.bookingId)
                 if (changed) notifier.publishChange(message.offenderIdDisplay)
             }
 
             is ProbationOffenderEvent if notification.eventType == "SENTENCE_CHANGED" ->
                 personRepository.findNomsIdByCrn(message.crn)?.let {
-                    val changed = cduService.updateCustodyKeyDates(it)
+                    val changed = cduService.updateKeyDates(it)
                     if (changed) notifier.publishChange(it)
                 }
 

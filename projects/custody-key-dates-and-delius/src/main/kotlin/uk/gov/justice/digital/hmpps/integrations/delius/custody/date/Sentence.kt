@@ -60,6 +60,9 @@ class Disposal(
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
 
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
+
     @Column(name = "active_flag", updatable = false, columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean = true,
