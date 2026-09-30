@@ -1,0 +1,124 @@
+name: Deployment drift report
+
+on:
+  push:
+    branches:
+      - 'PI-4518\+PI-4553'
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get deployment versions
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 \
+            --get "$SERVICE_CATALOGUE_URL" \
+            --data-urlencode 'filters[github_repo][$eq]=hmpps-probation-integration-services' \
+            --data-urlencode 'populate=envs' \
+            --data-urlencode 'pagination[pageSize]=200' \
+            --output "$RUNNER_TEMP/components.json"
+        env:
+          SERVICE_CATALOGUE_URL: https://service-catalogue.hmpps.service.justice.gov.uk/v1/components
+
+      - name: Build report
+        id: report
+        shell: bash
+        run: |
+          jq '
+            [
+              .data[]
+              | INDEX(.envs[]; .name) as $envs
+              | {
+                  name,
+                  dev: $envs.dev.build_image_tag,
+                  preprod: $envs.preprod.build_image_tag,
+                  prod: $envs.prod.build_image_tag
+                }
+              | select(.preprod and .prod)
+              | select(.preprod != .prod)
+            ]
+          ' "$RUNNER_TEMP/components.json" > "$RUNNER_TEMP/drift.json"
+
+          drift_count=$(jq 'length' "$RUNNER_TEMP/drift.json")
+          echo "drift_count=$drift_count" | tee -a "$GITHUB_OUTPUT"
+
+          {
+            echo "# Deployment drift report"
+            echo
+            echo "$drift_count services have different pre-production and production versions."
+            echo
+            echo "| Service | Dev | Preprod | Prod |"
+            echo "|---|---|---|---|"
+            jq -r '
+              .[]
+              | "| \(.name) | \(.dev) | \(.preprod) | \(.prod) |"
+            ' "$RUNNER_TEMP/drift.json"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build Slack message
+        id: slack
+        if: steps.report.outputs.drift_count != '0'
+        shell: bash
+        run: |
+          payload=$(
+            jq --compact-output \
+              --arg channel "probation-integration-notifications" '
+                def service:
+                  "*\(.name)*\n"
+                  + ">dev: `\(.dev)`\n"
+                  + ">preprod: `\(.preprod)`\n"
+                  + ">prod: `\(.prod)`";
+                {
+                    channel: $channel,
+                    unfurl_links: false,
+                    unfurl_media: false,
+                    text: "\(length) services have deployment drift",
+                    blocks: (
+                      [
+                        {
+                          type: "header",
+                          text: {
+                            type: "plain_text",
+                            text: "Deployment drift report"
+                          }
+                        },
+                        {
+                          type: "divider"
+                        },
+                        {
+                          type: "section",
+                          text: {
+                            type: "mrkdwn",
+                            text: "\(length) services have different pre-production and production versions."
+                          }
+                        }
+                      ]
+                      + [
+                          range(0; length; 5) as $start
+                          | {
+                              type: "section",
+                              text: {
+                                type: "mrkdwn",
+                                text: (.[$start:$start + 5] | map(service) | join("\n\n"))
+                              }
+                            }
+                        ]
+                    )
+                  }
+              ' "$RUNNER_TEMP/drift.json"
+          )
+          echo "result=$payload" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Send message to Slack
+        if: steps.report.outputs.drift_count != '0'
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: ${{ steps.slack.outputs.result }}
