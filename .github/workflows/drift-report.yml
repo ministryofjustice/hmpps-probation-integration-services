@@ -14,17 +14,38 @@ permissions:
 jobs:
   report:
     runs-on: ubuntu-latest
+    env:
+      NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      POD_NAME: drift-report-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Authenticate with Cloud Platform
+        id: auth
+        uses: ./.github/actions/cloud-platform-auth
+        with:
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
       - name: Get deployment versions
         run: |
-          curl --fail-with-body --silent --show-error --retry 3 \
+          ./script/start-service-pod.sh
+          kubectl --namespace="$NAMESPACE" exec "$POD_NAME" -- \
+            curl --fail-with-body --silent --show-error --retry 3 \
+            --connect-timeout 10 --max-time 60 \
             --get "$SERVICE_CATALOGUE_URL" \
             --data-urlencode 'filters[github_repo][$eq]=hmpps-probation-integration-services' \
             --data-urlencode 'populate=envs' \
             --data-urlencode 'pagination[pageSize]=200' \
-            --output "$RUNNER_TEMP/components.json"
+            > "$RUNNER_TEMP/components.json"
         env:
           SERVICE_CATALOGUE_URL: https://service-catalogue.hmpps.service.justice.gov.uk/v1/components
+
+      - name: Delete temporary pod
+        if: always()
+        run: kubectl --namespace="$NAMESPACE" delete pod "$POD_NAME" --ignore-not-found
 
       - name: Build report
         id: report
