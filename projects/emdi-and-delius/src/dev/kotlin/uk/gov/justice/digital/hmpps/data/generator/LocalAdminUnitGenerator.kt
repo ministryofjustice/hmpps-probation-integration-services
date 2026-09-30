@@ -8,7 +8,12 @@ object LocalAdminUnitGenerator {
     val SECOND = generate(code = "LAU002", description = "East LAU", pdu = ProbationDeliveryUnitGenerator.SECOND)
     val THIRD = generate(code = "LAU003", description = "North LAU", pdu = ProbationDeliveryUnitGenerator.THIRD)
     val LONDON = generate(code = "LAU_LON", description = "London LAU", pdu = ProbationDeliveryUnitGenerator.LONDON_PDU)
-    val INACTIVE = generate(code = "LAU050", description = "Inactive LAU", pdu = ProbationDeliveryUnitGenerator.DEFAULT, selectable = false)
+    val INACTIVE = generate(
+        code = "LAU050",
+        description = "Inactive LAU",
+        pdu = ProbationDeliveryUnitGenerator.DEFAULT,
+        selectable = false
+    )
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),

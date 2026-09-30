@@ -12,7 +12,7 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Immutable
 @Table(name = "team")
-class Team (
+class Team(
     @Id
     @Column(name = "team_id")
     val id: Long,
