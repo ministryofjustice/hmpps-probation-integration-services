@@ -52,7 +52,7 @@ class Document(
     val id: Long,
 ) {
     companion object {
-        const val WRA_FORM_URN_PREFIX: String = "urn:hmpps:warrant-risk-assessment:"
+        const val WRA_FORM_URN_PREFIX: String = "urn:uk:gov:hmpps:warrant-risk-assessment:"
 
         fun wraFormUrn(uuid: UUID): String =
             "$WRA_FORM_URN_PREFIX$uuid"
@@ -99,7 +99,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         left join disposal upw_appointment_disposal on upw_appointment_disposal.disposal_id = upw_details.disposal_id
         left join contact on document.table_name = 'CONTACT' and document.primary_key_id = contact.contact_id
         left join nsi on document.table_name = 'NSI' and document.primary_key_id = nsi.nsi_id
-        where document.external_reference like 'urn:hmpps:warrant-risk-assessment:%' and document.soft_deleted = 0
+        where document.external_reference like 'urn:uk:gov:hmpps:warrant-risk-assessment:%' and document.soft_deleted = 0
           and coalesce(event.event_id,
                        court_appearance.event_id,
                        institutional_report_disposal.event_id,
