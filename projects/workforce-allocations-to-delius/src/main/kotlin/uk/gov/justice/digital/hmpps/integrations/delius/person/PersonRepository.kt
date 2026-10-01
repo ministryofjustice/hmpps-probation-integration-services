@@ -107,6 +107,44 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
+        select crn, type
+        from (
+            select o.crn as crn,
+                   case
+                       when dt.sentence_type in ('SC', 'NC') and cs.code_value in :custodialStatusCodes then 'CUSTODY'
+                       when dt.sentence_type = 'SC' then 'LICENSE'
+                       when dt.sentence_type = 'SP' then 'COMMUNITY'
+                       else 'UNKNOWN' end as type,
+                   row_number() over (
+                       partition by o.crn
+                       order by greatest(nvl(d.notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
+                                         nvl(d.entered_notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
+                                         nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) desc,
+                                d.disposal_date desc
+                   ) as row_num
+            from offender o
+                join event e on e.offender_id = o.offender_id and e.soft_deleted = 0 and e.active_flag = 1
+                join disposal d on d.event_id = e.event_id and d.soft_deleted = 0 and d.active_flag = 1
+                join r_disposal_type dt on dt.disposal_type_id = d.disposal_type_id
+                left join custody c on d.disposal_id = c.disposal_id and c.soft_deleted = 0
+                left join r_standard_reference_list cs on c.custodial_status_id = cs.standard_reference_list_id
+                left join key_date kd on c.custody_id = kd.custody_id and kd.soft_deleted = 0
+                left join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id and
+                                                        kdt.code_value = :sentenceEndDateKeyDateTypeCode
+            where o.crn in (:crns)
+        )
+        where row_num = 1
+        """,
+        nativeQuery = true
+    )
+    fun findCaseTypes(
+        crns: Set<String>,
+        sentenceEndDateKeyDateTypeCode: String = "SED",
+        custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT")
+    ): List<CaseTypeByCrn>
+
+    @Query(
+        """
         select count(r) 
         from Requirement r
         left join r.mainCategory mc
@@ -155,6 +193,11 @@ interface PersonRepository : JpaRepository<Person, Long> {
 interface MostRecentInitialAllocation {
     val crn: String
     val allocatedAt: LocalDateTime?
+}
+
+interface CaseTypeByCrn {
+    val crn: String
+    val type: String
 }
 
 fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN

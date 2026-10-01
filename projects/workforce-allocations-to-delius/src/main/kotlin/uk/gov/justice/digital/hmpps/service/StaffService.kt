@@ -7,12 +7,9 @@ import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate
 
@@ -48,14 +45,26 @@ class StaffService(
 
     private fun getAllActiveCasesForStaff(code: String, crns: List<String>): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
+        if (crns.isEmpty()) {
+            return ActiveCasesResponse(
+                staff.code,
+                staff.name(),
+                staff.grade(),
+                ldapService.findEmailForStaff(staff),
+                emptyList()
+            )
+        }
+
+        val crnSet = crns.toSet()
         val initialAllocationDates =
-            personRepository.findMostRecentInitialAllocations(crns.toSet(), dbUsername)
+            personRepository.findMostRecentInitialAllocations(crnSet, dbUsername)
                 .associate { it.crn to it.allocatedAt?.toLocalDate() }
+        val caseTypes = personRepository.findCaseTypes(crnSet).associate { it.crn to it.type }
         val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
             Case(
                 it.crn,
                 it.name(),
-                personRepository.getCaseType(it.crn).name,
+                caseTypes[it.crn] ?: CaseType.UNKNOWN.name,
                 initialAllocationDates[it.crn]
             )
         }
