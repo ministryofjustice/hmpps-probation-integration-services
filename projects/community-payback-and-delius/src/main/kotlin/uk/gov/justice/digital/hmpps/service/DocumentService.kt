@@ -77,6 +77,19 @@ class DocumentService(
         updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
+    fun deleteDocumentById(appointmentId: Long, documentId: Long) {
+        val document = documentRepository.findById(documentId)
+            .orElseThrow {
+                NoSuchElementException("Document not found with id: $documentId")
+            }
+
+        require(document.primaryKeyId == appointmentId) {
+            "Document $documentId does not belong to appointment $appointmentId"
+        }
+
+        deleteDocument(document)
+    }
+
     private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
         entityManager.createNativeQuery(
             "update contact set document_linked = :documentLinked where contact_id = :contactId"

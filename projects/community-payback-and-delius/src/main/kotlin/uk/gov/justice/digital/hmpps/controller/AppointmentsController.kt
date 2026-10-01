@@ -62,4 +62,10 @@ class AppointmentsController(
             alfrescoId = document.alfrescoId,
         )
     }
+
+    @DeleteMapping("/{appointmentId}/documents/{documentId}")
+    fun deleteAppointmentDocument(
+        @PathVariable appointmentId: Long,
+        @PathVariable documentId: Long
+    ) = documentService.deleteDocumentById(appointmentId, documentId)
 }
