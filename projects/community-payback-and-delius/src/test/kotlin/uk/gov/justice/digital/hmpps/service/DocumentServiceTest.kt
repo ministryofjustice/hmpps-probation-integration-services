@@ -12,14 +12,16 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.quality.Strictness
 import org.springframework.web.client.HttpClientErrorException
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.AlfrescoDocument
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
@@ -27,6 +29,7 @@ import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.util.*
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -77,6 +80,37 @@ internal class DocumentServiceTest {
         whenever(documentRepository.save(any<Document>())).thenAnswer { it.arguments[0] as Document }
     }
 
+    @Test
+    fun `uploads appointment document successfully`() {
+        whenever(alfrescoUploadClient.upload(any())).thenReturn(AlfrescoDocument("alfresco-id-1"))
+
+        val result = documentService.uploadAppointmentDocument(
+            appointment, "evidence.pdf", "file-content".toByteArray(), userId = 42L
+        )
+
+        assertThat(result.alfrescoId).isEqualTo("alfresco-id-1")
+        assertThat(result.name).isEqualTo("evidence.pdf")
+        assertThat(result.primaryKeyId).isEqualTo(99L)
+        assertThat(result.lastUpdatedUserId).isEqualTo(42L)
+        verify(query).setParameter("documentLinked", "Y")
+        verify(query).setParameter("contactId", 99L)
+    }
+
+    @Test
+    fun `throws exception for disallowed file extension and never uploads or saves`() {
+        val exception = assertThrows<IllegalArgumentException> {
+            documentService.uploadAppointmentDocument(
+                appointment, "malware.exe", "file-content".toByteArray(), userId = 42L
+            )
+        }
+
+        assertThat(exception.message).isEqualTo(
+            "File extension 'exe' is not allowed. Allowed extensions: " +
+                DocumentService.ALLOWED_EXTENSIONS.joinToString(", ")
+        )
+        verify(alfrescoUploadClient, never()).upload(any())
+        verify(documentRepository, never()).save(any<Document>())
+    }
 
     @Test
     fun `deletes document, removes it from alfresco and unlinks contact when no documents remain`() {
@@ -105,4 +139,13 @@ internal class DocumentServiceTest {
         verify(documentRepository).delete(document)
         verify(query).setParameter("documentLinked", "Y")
     }
+
+    @Test
+    fun `validateFile accepts allowed extensions and rejects others`() {
+        DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it") }
+
+        assertThrows<IllegalArgumentException> { documentService.validateFile("document.exe") }
+    }
 }
+
+

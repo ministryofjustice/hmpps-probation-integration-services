@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.NativeQuery
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -195,17 +196,21 @@ interface SentenceAppointmentRepository : JpaRepository<SentenceAppointment, Lon
     fun findByExternalReference(externalReference: String): SentenceAppointment?
 
     @Modifying
-    @Query("update SentenceAppointment set enforcementFlag = null where id = :id")
+    @NativeQuery(
+        """update contact 
+                           set enforcement = null 
+                           where contact_id = :id"""
+    )
     fun removeEnforcementFlag(id: Long)
 
     @Modifying
-    @Query(
+    @NativeQuery(
         """
-            update SentenceAppointment
-            set enforcementFlag = true
-            where externalReference = :externalReference
-            and outcomeId is null
-            and type.contactOutcomeFlag = true
+            update contact set enforcement = 1 
+            where external_reference = :externalReference
+            and contact_outcome_type_id is null
+            and (select contact_outcome_flag from r_contact_type where r_contact_type.contact_type_id = contact.contact_type_id) = 'Y'
+            and soft_deleted = 0
         """
     )
     fun setEnforcementFlagTrue(externalReference: String)

@@ -20,6 +20,9 @@ import java.time.ZonedDateTime
 
 class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
 
+    private fun futureDateTime(daysFromNow: Long, hour: Int = 12, minute: Int = 0): ZonedDateTime =
+        ZonedDateTime.now().plusDays(daysFromNow).withHour(hour).withMinute(minute).withSecond(0).withNano(0)
+
     @Test
     fun `end time must be after start time`() {
         val request =
@@ -34,11 +37,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `rescheduled appointment must be in the future`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
+        val start = futureDateTime(1)
         val appointment = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(1),
-                ZonedDateTime.now().plusDays(1).plusMinutes(30)
+                start,
+                start.plusMinutes(30)
             )
         )
         val now = ZonedDateTime.now()
@@ -77,8 +81,8 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `date or time must change to reschedule appointment`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
-        val start = ZonedDateTime.now().plusDays(2)
-        val end = ZonedDateTime.now().plusDays(2).plusMinutes(30)
+        val start = futureDateTime(2)
+        val end = start.plusMinutes(30)
         val appointment =
             sentenceAppointmentRepository.save(AppointmentGenerator.generateAppointment(person, start, end))
         val request = rescheduleRequest(
@@ -98,11 +102,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     fun `cannot reschedule if appointment would clash`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
         val clashDate = LocalDate.now().plusDays(4)
+        val start = futureDateTime(3)
         val appointment = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(3),
-                ZonedDateTime.now().plusDays(3).plusMinutes(30)
+                start,
+                start.plusMinutes(30)
             )
         )
         val clashing = sentenceAppointmentRepository.save(
@@ -128,11 +133,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `set a location where one was not set as part of rescheduling`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
+        val start = futureDateTime(5)
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(5),
-                ZonedDateTime.now().plusDays(5).plusMinutes(30),
+                start,
+                start.plusMinutes(30),
                 notes = "Notes on the original appointment"
             )
         )
@@ -162,11 +168,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `update team staff and location`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_2
+        val start = futureDateTime(6)
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(6),
-                ZonedDateTime.now().plusDays(6).plusMinutes(30),
+                start,
+                start.plusMinutes(30),
                 locationId = DEFAULT_LOCATION.id,
                 notes = "Notes on the original appointment"
             )
@@ -204,11 +211,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `amend sensitive notes to an appointment`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_1
+        val start = futureDateTime(7)
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(7),
-                ZonedDateTime.now().plusDays(7).plusMinutes(30),
+                start,
+                start.plusMinutes(30),
                 notes = "Notes on the original appointment"
             )
         )
@@ -240,11 +248,12 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
     @Test
     fun `amend non sensitive notes to a sensitive appointment`() {
         val person = PersonGenerator.RESCHEDULED_PERSON_2
+        val start = futureDateTime(8)
         val original = sentenceAppointmentRepository.save(
             AppointmentGenerator.generateAppointment(
                 person,
-                ZonedDateTime.now().plusDays(8),
-                ZonedDateTime.now().plusDays(8).plusMinutes(30),
+                start,
+                start.plusMinutes(30),
                 notes = "Notes on the original appointment",
                 sensitive = true
             )

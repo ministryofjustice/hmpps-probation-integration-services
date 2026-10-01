@@ -27,12 +27,45 @@ class DocumentService(
     private val entityManager: EntityManager,
 ) : AuditableService(auditedInteractionService) {
 
+    fun uploadAppointmentDocument(
+        appointment: UnpaidWorkAppointment,
+        filename: String,
+        file: ByteArray,
+        userId: Long
+    ): Document = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
+        validateFile(filename)
 
+        val document = Document(
+            person = appointment.person,
+            alfrescoId = "",
+            name = filename,
+            primaryKeyId = appointment.contact.id,
+            tableName = "CONTACT",
+            externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
+            lastSaved = ZonedDateTime.now(),
+            createdDatetime = ZonedDateTime.now(),
+            createdByUserId = userId,
+            lastUpdatedUserId = userId,
+            workInProgress = "N",
+            status = "Y",
+            softDeleted = false,
+            id = 0,
+        )
+
+        val alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file, appointment.person)).id
+        document.alfrescoId = alfrescoId
+
+        populateAudit(document, it)
+
+        val savedDocument = documentRepository.save(document)
+        updateContactDocumentLinked(appointment.contact.id, true)
+
+        savedDocument
+    }
 
     fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         populateAudit(document, it)
 
-        nullIfNotFound { alfrescoUploadClient.release(document.alfrescoId) }
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)
@@ -44,7 +77,6 @@ class DocumentService(
         updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
-
     private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
         entityManager.createNativeQuery(
             "update contact set document_linked = :documentLinked where contact_id = :contactId"
@@ -54,6 +86,25 @@ class DocumentService(
             .executeUpdate()
     }
 
+    fun validateFile(filename: String) {
+        val extension = filename.substringAfterLast(".").lowercase()
+        require(ALLOWED_EXTENSIONS.contains(extension)) {
+            "File extension '$extension' is not allowed. Allowed extensions: ${ALLOWED_EXTENSIONS.joinToString(", ")}"
+        }
+    }
+
+    private fun Document.toMultipart(file: ByteArray, person: Person) =
+        MultipartBodyBuilder().apply {
+            part("CRN", person.crn, MediaType.TEXT_PLAIN)
+            part("fileName", name, MediaType.TEXT_PLAIN)
+            part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
+            part("author", "Service,Community Payback", MediaType.TEXT_PLAIN)
+            part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
+            part("entityType", "CONTACT", MediaType.TEXT_PLAIN)
+            part("entityId", primaryKeyId.toString(), MediaType.TEXT_PLAIN)
+            part("locked", "true", MediaType.TEXT_PLAIN)
+        }.build()
+
     private fun populateAudit(document: Document, audit: AuditedInteraction.Parameters) {
         audit["documentId"] = document.id
         audit["alfrescoDocumentId"] = document.alfrescoId
@@ -62,6 +113,11 @@ class DocumentService(
         audit["externalReference"] = document.externalReference
     }
 
-
+    companion object {
+        val ALLOWED_EXTENSIONS = setOf(
+            "doc", "docx", "rtf", "txt", "dot", "dotm", "docm", "odt", "xml", "wpd", "wri", "wps",
+            "xls", "xlsb", "xlsx", "csv", "pdf", "bmp", "jpg", "jpeg", "gif", "png",
+            "m4a", "flac", "mp3", "mp4", "wav", "wma", "aac"
+        )
+    }
 }
-
