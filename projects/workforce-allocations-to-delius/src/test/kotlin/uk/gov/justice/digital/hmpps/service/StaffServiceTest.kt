@@ -108,7 +108,14 @@ class StaffServiceTest {
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(listOf(person.crn))).thenReturn(listOf(person))
-        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(listOf(caseTypeByCrn(person.crn, CaseType.CUSTODY.name)))
+        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(
+            listOf(
+                caseTypeByCrn(
+                    person.crn,
+                    CaseType.CUSTODY.name
+                )
+            )
+        )
 
         val response = staffService.getActiveCases(staff.code, listOf(person.crn))
 
@@ -145,7 +152,14 @@ class StaffServiceTest {
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(caseloadRepository.findAllByStaffCode(staff.code)).thenReturn(listOf(caseload))
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(listOf(person.crn))).thenReturn(listOf(person))
-        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(listOf(caseTypeByCrn(person.crn, CaseType.CUSTODY.name)))
+        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(
+            listOf(
+                caseTypeByCrn(
+                    person.crn,
+                    CaseType.CUSTODY.name
+                )
+            )
+        )
 
         val response = staffService.getActiveCases(staff.code)
 
