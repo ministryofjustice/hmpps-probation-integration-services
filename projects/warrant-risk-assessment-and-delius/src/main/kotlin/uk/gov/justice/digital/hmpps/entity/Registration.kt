@@ -71,7 +71,7 @@ class RegisterType(
     }
 }
 
-enum class Mappa(val code: String, val description: String, ) {
+enum class Mappa(val code: String, val description: String) {
     M1("M1", "MAPPA Level 1"),
     M2("M2", "MAPPA Level 2"),
     M3("M3", "MAPPA Level 3"),

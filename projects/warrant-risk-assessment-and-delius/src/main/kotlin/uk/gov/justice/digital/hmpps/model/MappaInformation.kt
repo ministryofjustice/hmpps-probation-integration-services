@@ -19,7 +19,7 @@ data class MappaRegistration(
     val type: MappaType,
 
     @Schema(description = "Mappa Level")
-    val level: CodeAndDescription?=null,
+    val level: CodeAndDescription? = null,
 
     @Schema(description = "Mappa Category")
     val category: CodeAndDescription? = null,
