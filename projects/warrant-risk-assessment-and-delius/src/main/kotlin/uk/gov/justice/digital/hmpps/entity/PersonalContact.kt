@@ -44,7 +44,7 @@ class PersonalContact(
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    val address: ContactAddress? = null,
+    val address: Address? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
