@@ -1,4 +1,4 @@
-enabled: false # TODO set this to true when you're ready to deploy your service
+enabled: true
 
 generic-service:
   ingress:
