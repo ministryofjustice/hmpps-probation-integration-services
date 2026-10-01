@@ -1,9 +1,6 @@
 name: Deployment drift report
 
 on:
-  push:
-    branches:
-      - 'PI-4518\+PI-4553'
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
