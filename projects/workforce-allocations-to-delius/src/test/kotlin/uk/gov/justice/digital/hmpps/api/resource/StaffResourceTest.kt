@@ -28,4 +28,10 @@ class StaffResourceTest {
         staffResource.activeCases("ABC", listOf(PersonGenerator.DEFAULT.crn))
         verify(staffService).getActiveCases("ABC", listOf(PersonGenerator.DEFAULT.crn))
     }
+
+    @Test
+    fun `get active cases calls service`() {
+        staffResource.getActiveCases("ABC")
+        verify(staffService).getActiveCases("ABC")
+    }
 }

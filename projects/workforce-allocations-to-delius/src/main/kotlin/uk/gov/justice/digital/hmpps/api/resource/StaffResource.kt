@@ -44,6 +44,11 @@ class StaffResource(private val service: StaffService) {
         @RequestBody crns: List<String>
     ) = service.getActiveCases(code, crns)
 
+    @GetMapping("{code}/active-cases")
+    fun getActiveCases(
+        @PathVariable code: String
+    ) = service.getActiveCases(code)
+
     @Operation(
         summary = """Team, LAU, PDU and Provider hierarchy associated with a staff code""",
         description = """A list of teams for a staff code, along with the LAU (Local Admin Unit), PDU (Probation Delivery Unit) and Provider for each."""

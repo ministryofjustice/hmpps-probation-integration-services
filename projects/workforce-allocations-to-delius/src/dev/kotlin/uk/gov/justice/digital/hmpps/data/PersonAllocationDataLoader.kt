@@ -38,6 +38,7 @@ class PersonAllocationDataLoader(private val dataManager: DataManager) {
         OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
             createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
+        dataManager.save(CaseloadGenerator.DEFAULT)
 
         dataManager.save(DisposalGenerator.DEFAULT.type)
         dataManager.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))

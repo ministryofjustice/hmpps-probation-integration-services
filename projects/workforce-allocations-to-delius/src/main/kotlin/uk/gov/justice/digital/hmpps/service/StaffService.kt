@@ -5,11 +5,14 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate
 
@@ -20,6 +23,7 @@ class StaffService(
     private val ldapService: LdapService,
     private val personRepository: PersonRepository,
     @Value($$"${delius.db.username}") private val dbUsername: String,
+    private val caseloadRepository: CaseloadRepository,
 ) {
     fun getOfficerView(code: String): OfficerView {
         val staff = staffRepository.getWithUserByCode(code)
@@ -34,7 +38,15 @@ class StaffService(
         )
     }
 
-    fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse {
+    fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse =
+        getAllActiveCasesForStaff(code, crns)
+
+    fun getActiveCases(code: String): ActiveCasesResponse {
+        val caseload = caseloadRepository.findAllByStaffCode(code).map { it.person.crn }.toSet()
+        return getAllActiveCasesForStaff(code, caseload.toList())
+    }
+
+    private fun getAllActiveCasesForStaff(code: String, crns: List<String>): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
         val initialAllocationDates =
             personRepository.findMostRecentInitialAllocations(crns.toSet(), dbUsername)
@@ -48,7 +60,7 @@ class StaffService(
             )
         }
         return ActiveCasesResponse(
-            code,
+            staff.code,
             staff.name(),
             staff.grade(),
             ldapService.findEmailForStaff(staff),
