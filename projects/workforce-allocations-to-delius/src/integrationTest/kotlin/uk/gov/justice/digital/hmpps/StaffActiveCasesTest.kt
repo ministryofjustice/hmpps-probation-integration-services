@@ -37,7 +37,6 @@ class StaffActiveCasesTest @Autowired constructor(
 ) {
     private val transactionTemplate = TransactionTemplate(transactionManager)
 
-
     @Test
     fun `successful post response`() {
         val staff = StaffGenerator.DEFAULT
