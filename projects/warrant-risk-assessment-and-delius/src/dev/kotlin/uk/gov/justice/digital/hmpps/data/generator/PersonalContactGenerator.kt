@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.ContactAddress
+import uk.gov.justice.digital.hmpps.entity.Address
 import uk.gov.justice.digital.hmpps.entity.PersonalContact
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import java.time.LocalDate
@@ -9,8 +9,6 @@ object PersonalContactGenerator {
     val CURRENT_EMPLOYER_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "CE", "Current Employer")
 
     val EMPLOYER_ADDRESS = generateAddress(
-        personId = IdGenerator.getAndIncrement(),
-        status = AddressGenerator.MAIN_STATUS,
         buildingName = "Employer Building",
         buildingNumber = "1",
         streetName = "Employer Street",
@@ -45,7 +43,7 @@ object PersonalContactGenerator {
         surname: String,
         relationshipType: ReferenceData,
         mobileNumber: String? = null,
-        address: ContactAddress? = null,
+        address: Address? = null,
         startDate: LocalDate = LocalDate.now().minusMonths(3),
         endDate: LocalDate? = null,
         id: Long = IdGenerator.getAndIncrement(),
@@ -63,8 +61,6 @@ object PersonalContactGenerator {
     )
 
     fun generateAddress(
-        personId: Long = PersonGenerator.DEFAULT.id,
-        status: ReferenceData = AddressGenerator.MAIN_STATUS,
         buildingName: String? = null,
         buildingNumber: String? = null,
         streetName: String? = null,
@@ -74,10 +70,8 @@ object PersonalContactGenerator {
         postcode: String? = null,
         telephoneNumber: String? = null,
         id: Long = IdGenerator.getAndIncrement(),
-    ) = ContactAddress(
+    ) = Address(
         id = id,
-        personId = personId,
-        status = status,
         buildingName = buildingName,
         buildingNumber = buildingNumber,
         streetName = streetName,

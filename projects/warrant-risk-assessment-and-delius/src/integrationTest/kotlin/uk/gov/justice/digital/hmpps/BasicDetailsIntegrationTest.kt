@@ -73,7 +73,6 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
                 employerName = Name(forename = "Billy", middleName = "The", surname = "Kid"),
                 employerAddress = EmployerAddress(
                     id = PersonalContactGenerator.EMPLOYER_ADDRESS.id,
-                    status = "Main",
                     buildingName = "Employer Building",
                     buildingNumber = "1",
                     streetName = "Employer Street",

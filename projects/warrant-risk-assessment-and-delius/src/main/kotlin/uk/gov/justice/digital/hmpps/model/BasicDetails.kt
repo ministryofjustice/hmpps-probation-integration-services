@@ -42,7 +42,6 @@ data class Employer(
 
 data class EmployerAddress(
     val id: Long,
-    val status: String?,
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
