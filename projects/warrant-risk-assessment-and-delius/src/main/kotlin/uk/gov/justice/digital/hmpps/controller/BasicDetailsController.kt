@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.model.BasicDetails
+import uk.gov.justice.digital.hmpps.model.DocumentCrn
 import uk.gov.justice.digital.hmpps.service.BasicDetailsService
+import java.util.*
 
 @RestController
 class BasicDetailsController(private val basicDetailsService: BasicDetailsService) {
@@ -40,4 +42,9 @@ class BasicDetailsController(private val basicDetailsService: BasicDetailsServic
     )
     fun getBasicDetails(@PathVariable crn: String): BasicDetails =
         basicDetailsService.getBasicDetails(crn)
+
+    @GetMapping("/case/{warrantRiskAssessmentId}")
+    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
+    fun findCrnForWarrantRiskAssessment(@PathVariable warrantRiskAssessmentId: UUID): DocumentCrn =
+        basicDetailsService.crnFor(warrantRiskAssessmentId)
 }

@@ -7,14 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
-import kotlin.text.get
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -133,5 +129,29 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         assertThat(response.addresses).isEmpty()
         assertThat(response.employers).isEmpty()
         assertThat(response.name.middleName).isNull()
+    }
+
+    @Test
+    fun `can retrieve crn from wra id`() {
+        val response = mockMvc.get("/case/${DocumentGenerator.WRA_ID}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(PersonGenerator.DEFAULT.crn)
+    }
+
+    @Test
+    fun `can retrieve crn from soft deleted wra id`() {
+        val response = mockMvc.get("/case/${DocumentGenerator.SOFT_DELETED_WRA_ID}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<DocumentCrn>()
+
+        assertThat(response.crn).isEqualTo(PersonGenerator.DEFAULT.crn)
+    }
+
+    @Test
+    fun `returns 404 when wra id does not exist`() {
+        mockMvc.get("/case/99999999-9999-9999-9999-999999999999") { withToken() }
+            .andExpect { status { isNotFound() } }
     }
 }

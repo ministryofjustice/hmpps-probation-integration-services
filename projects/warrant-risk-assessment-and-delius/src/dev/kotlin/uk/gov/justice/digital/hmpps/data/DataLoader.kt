@@ -57,5 +57,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(RegistrationGenerator.OLDER_MAPPA_REGISTRATION)
         save(DocumentGenerator.DEFAULT_WRA_FORM)
         save(DocumentGenerator.DELETED_WRA_FORM)
+        save(DocumentGenerator.SOFT_DELETED_WRA_FORM)
     }
 }
