@@ -30,6 +30,15 @@ private fun Registration.toModel() = MappaRegistration(
         code = type.code,
         description = type.description,
     ),
+    level = CodeAndDescription(
+        code = level?.code,
+        description = level?.description,
+    ),
+    category = CodeAndDescription(
+        code = category?.code,
+        description = category?.description
+    ),
+    documentLinked = documentLinked,
     startDate = date,
     notes = notes,
 )

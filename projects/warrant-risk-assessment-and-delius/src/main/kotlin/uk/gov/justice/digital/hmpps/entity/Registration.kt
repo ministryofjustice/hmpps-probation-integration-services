@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -32,6 +33,18 @@ class Registration(
     @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "registration_category_id")
+    val category: ReferenceData? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "registration_level_id")
+    val level: ReferenceData? = null,
+
+    @Column(name = "document_linked", columnDefinition = "char")
+    @Convert(converter = YesNoConverter::class)
+    val documentLinked: Boolean = false,
+
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val deregistered: Boolean = false,
@@ -54,8 +67,17 @@ class RegisterType(
     val description: String,
 ) {
     companion object {
-        val MAPPA_CODES = listOf("M1", "M2", "M3", "M3L2", "M3L3", "MAPP")
+        val MAPPA_CODES = Mappa.entries.map { it.code }
     }
+}
+
+enum class Mappa(val code: String, val description: String, ) {
+    M1("M1", "MAPPA Level 1"),
+    M2("M2", "MAPPA Level 2"),
+    M3("M3", "MAPPA Level 3"),
+    M3L2("M3L2", "MAPPA Level 3 - Level 2"),
+    M3L3("M3L3", "MAPPA Level 3 - Level 3"),
+    MAPP("MAPP", "MAPPA - Other"),
 }
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
