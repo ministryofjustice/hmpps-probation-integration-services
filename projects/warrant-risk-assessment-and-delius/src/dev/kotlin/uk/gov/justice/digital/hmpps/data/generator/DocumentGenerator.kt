@@ -12,6 +12,10 @@ object DocumentGenerator {
     val DELETED_WRA_FORM =
         generateDocument(wraId = DELETED_WRA_ID, primaryKeyId = 2L)
 
+    val SOFT_DELETED_WRA_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000003")
+    val SOFT_DELETED_WRA_FORM =
+        generateDocument(wraId = SOFT_DELETED_WRA_ID, primaryKeyId = 3L, softDeleted = true)
+
     fun generateDocument(
         wraId: UUID,
         id: Long = IdGenerator.getAndIncrement(),

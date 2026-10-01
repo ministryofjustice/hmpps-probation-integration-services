@@ -50,3 +50,5 @@ data class EmployerAddress(
     val county: String?,
     val postcode: String?,
 )
+
+data class DocumentCrn(val crn: String)

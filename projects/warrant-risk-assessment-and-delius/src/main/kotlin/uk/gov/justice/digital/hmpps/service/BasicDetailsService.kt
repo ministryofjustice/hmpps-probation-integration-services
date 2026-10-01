@@ -2,7 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.*
+import uk.gov.justice.digital.hmpps.entity.Document.Companion.wraFormUrn
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.*
+import java.util.*
 
 @Service
 class BasicDetailsService(
@@ -10,6 +13,7 @@ class BasicDetailsService(
     private val contactAddressRepository: ContactAddressRepository,
     private val personalContactRepository: PersonalContactRepository,
     private val contactRepository: ContactRepository,
+    private val documentRepository: DocumentRepository,
 ) {
     fun getBasicDetails(crn: String): BasicDetails {
         val person = personRepository.getPerson(crn)
@@ -34,6 +38,11 @@ class BasicDetailsService(
             employers = employers.map { it.toModel() },
         )
     }
+
+    fun crnFor(warrantRiskAssessmentId: UUID): DocumentCrn =
+        documentRepository.findByExternalReference(wraFormUrn(warrantRiskAssessmentId))
+            ?.let { DocumentCrn(it.person.crn) }
+            ?: throw NotFoundException("WarrantRiskAssessment", "id", warrantRiskAssessmentId)
 }
 
 private fun ContactAddress.toAddressDetail() = AddressDetail(
