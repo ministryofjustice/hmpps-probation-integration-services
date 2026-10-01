@@ -202,8 +202,6 @@ internal class DocumentServiceTest {
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }
-
-
 }
 
 
