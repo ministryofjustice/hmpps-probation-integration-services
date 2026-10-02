@@ -101,4 +101,5 @@ jobs:
       projects: '["${{ inputs.project }}"]'
       environment: ${{ inputs.environment }}
       version: ${{ inputs.version }}
+      get-info-artifact: false
     secrets: inherit
