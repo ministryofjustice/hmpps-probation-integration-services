@@ -34,7 +34,7 @@ class Registration(
     val notes: String? = null,
 
     @ManyToOne
-    @JoinColumn(name = "registration_category_id")
+    @JoinColumn(name = "register_category_id")
     val category: ReferenceData? = null,
 
     @ManyToOne
