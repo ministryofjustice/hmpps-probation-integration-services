@@ -49,6 +49,7 @@ class DocumentService(
             workInProgress = "N",
             status = "Y",
             softDeleted = false,
+            partitionAreaId = 0,
             id = 0,
         )
 

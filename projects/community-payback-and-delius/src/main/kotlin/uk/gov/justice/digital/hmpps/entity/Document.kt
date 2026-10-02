@@ -50,6 +50,9 @@ class Document(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
+    @Column(name = "partition_area_id")
+    val partitionAreaId: Long = 0,
+
     @Id
     @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
     @uk.gov.justice.digital.hmpps.jpa.GeneratedId(generator = "document_id_generator")
