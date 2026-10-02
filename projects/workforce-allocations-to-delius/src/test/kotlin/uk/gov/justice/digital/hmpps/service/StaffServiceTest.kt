@@ -8,13 +8,16 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.CaseType
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.AUDIT_USER
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.CaseTypeByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
@@ -24,6 +27,9 @@ import java.time.LocalDate
 class StaffServiceTest {
     @Mock
     lateinit var staffRepository: StaffRepository
+
+    @Mock
+    lateinit var caseloadRepository: CaseloadRepository
 
     @Mock
     lateinit var staffWithTeamsRepository: StaffWithTeamsRepository
@@ -39,7 +45,14 @@ class StaffServiceTest {
     @BeforeEach
     fun setUp() {
         staffService =
-            StaffService(staffRepository, staffWithTeamsRepository, ldapService, personRepository, AUDIT_USER.username)
+            StaffService(
+                staffRepository,
+                staffWithTeamsRepository,
+                ldapService,
+                personRepository,
+                AUDIT_USER.username,
+                caseloadRepository
+            )
     }
 
     @Test
@@ -95,7 +108,14 @@ class StaffServiceTest {
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(listOf(person.crn))).thenReturn(listOf(person))
-        whenever(personRepository.findCaseType(person.crn)).thenReturn(CaseType.CUSTODY)
+        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(
+            listOf(
+                caseTypeByCrn(
+                    person.crn,
+                    CaseType.CUSTODY.name
+                )
+            )
+        )
 
         val response = staffService.getActiveCases(staff.code, listOf(person.crn))
 
@@ -110,5 +130,67 @@ class StaffServiceTest {
         assertThat(response.cases[0].name.forename, equalTo(person.forename))
         assertThat(response.cases[0].name.surname, equalTo(person.surname))
         assertThat(response.cases[0].type, equalTo(CaseType.CUSTODY.name))
+        verify(personRepository).findCaseTypes(setOf(person.crn))
+    }
+
+    @Test
+    fun `get active cases response is mapped and returned from caseload`() {
+        val staff = StaffGenerator.STAFF_WITH_USER
+        val person = PersonGenerator.DEFAULT
+        val caseload = CaseloadGenerator.generate(
+            person = person,
+            staff = StaffGenerator.generateStaff(
+                code = staff.code,
+                forename = staff.forename,
+                surname = staff.surname,
+                teams = staff.teams,
+                grade = staff.grade!!,
+                id = staff.id
+            )
+        )
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
+        whenever(caseloadRepository.findAllByStaffCode(staff.code)).thenReturn(listOf(caseload))
+        whenever(personRepository.findAllByCrnAndSoftDeletedFalse(listOf(person.crn))).thenReturn(listOf(person))
+        whenever(personRepository.findCaseTypes(setOf(person.crn))).thenReturn(
+            listOf(
+                caseTypeByCrn(
+                    person.crn,
+                    CaseType.CUSTODY.name
+                )
+            )
+        )
+
+        val response = staffService.getActiveCases(staff.code)
+
+        assertThat(response.code, equalTo(staff.code))
+        assertThat(response.name.forename, equalTo(staff.forename))
+        assertThat(response.name.middleName, equalTo(staff.middleName))
+        assertThat(response.name.surname, equalTo(staff.surname))
+        assertThat(response.grade, equalTo("PSO"))
+        assertThat(response.email, equalTo("test@test.com"))
+        assertThat(response.cases.size, equalTo(1))
+        assertThat(response.cases[0].crn, equalTo(person.crn))
+        assertThat(response.cases[0].name.forename, equalTo(person.forename))
+        assertThat(response.cases[0].name.surname, equalTo(person.surname))
+        assertThat(response.cases[0].type, equalTo(CaseType.CUSTODY.name))
+        verify(personRepository).findCaseTypes(setOf(person.crn))
+    }
+
+    @Test
+    fun `active cases with no crns returns empty response`() {
+        val staff = StaffGenerator.STAFF_WITH_USER
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
+
+        val response = staffService.getActiveCases(staff.code, emptyList())
+
+        assertThat(response.code, equalTo(staff.code))
+        assertThat(response.cases.size, equalTo(0))
+    }
+
+    private fun caseTypeByCrn(caseCrn: String, caseType: String) = object : CaseTypeByCrn {
+        override val crn = caseCrn
+        override val type = caseType
     }
 }
