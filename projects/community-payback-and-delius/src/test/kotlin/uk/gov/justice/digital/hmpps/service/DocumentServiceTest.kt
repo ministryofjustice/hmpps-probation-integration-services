@@ -18,6 +18,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import org.mockito.quality.Strictness
 import org.springframework.web.client.HttpClientErrorException
@@ -97,6 +98,13 @@ internal class DocumentServiceTest {
     }
 
     @Test
+    fun `validateFile accepts allowed extensions and rejects others`() {
+        DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it") }
+
+        assertThrows<IllegalArgumentException> { documentService.validateFile("document.exe") }
+    }
+
+    @Test
     fun `throws exception for disallowed file extension and never uploads or saves`() {
         val exception = assertThrows<IllegalArgumentException> {
             documentService.uploadAppointmentDocument(
@@ -113,10 +121,86 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    fun `validateFile accepts allowed extensions and rejects others`() {
-        DocumentService.ALLOWED_EXTENSIONS.forEach { documentService.validateFile("document.$it") }
+    fun `deletes document, removes it from alfresco and unlinks contact when no documents remain`() {
+        val document = document()
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
+        ).thenReturn(false)
 
-        assertThrows<IllegalArgumentException> { documentService.validateFile("document.exe") }
+        documentService.deleteDocument(document)
+
+        verify(alfrescoUploadClient).delete("alfresco-id-1")
+        verify(documentRepository).delete(document)
+        verify(query).setParameter("documentLinked", "N")
+    }
+
+    @Test
+    fun `deletes document even when alfresco copy is already missing, keeping contact linked`() {
+        val document = document(alfrescoId = "missing-id")
+        whenever(alfrescoUploadClient.delete("missing-id")).thenThrow(mock<HttpClientErrorException.NotFound>())
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
+        ).thenReturn(true)
+
+        documentService.deleteDocument(document)
+
+        verify(documentRepository).delete(document)
+        verify(query).setParameter("documentLinked", "Y")
+    }
+
+    @Test
+    fun `deleteDocumentById deletes document when appointment id matches`() {
+        val appointmentId = 123L
+        val documentId = 456L
+
+        val document = mock<Document> {
+            on { id } doReturn documentId
+            on { primaryKeyId } doReturn appointmentId
+            on { alfrescoId } doReturn "alfresco-123"
+            on { tableName } doReturn "CONTACT"
+            on { externalReference } doReturn "urn:test"
+        }
+
+        whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+                "CONTACT",
+                appointmentId,
+                documentId
+            )
+        ).thenReturn(false)
+
+        documentService.deleteDocumentById(appointmentId, documentId)
+
+        verify(documentRepository).findById(documentId)
+        verify(documentRepository).delete(document)
+        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+            "CONTACT",
+            appointmentId,
+            documentId
+        )
+    }
+
+    @Test
+    fun `deleteDocumentById throws when document does not belong to appointment`() {
+        val appointmentId = 123L
+        val otherAppointmentId = 999L
+        val documentId = 456L
+
+        val document = mock<Document> {
+            on { id } doReturn documentId
+            on { primaryKeyId } doReturn otherAppointmentId
+        }
+
+        whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
+
+        val exception = assertThrows<IllegalArgumentException> {
+            documentService.deleteDocumentById(appointmentId, documentId)
+        }
+
+        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $appointmentId")
+        verify(documentRepository).findById(documentId)
+        verify(documentRepository, never()).delete(any())
     }
 }
 

@@ -63,6 +63,34 @@ class DocumentService(
         savedDocument
     }
 
+    fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
+        populateAudit(document, it)
+
+        alfrescoUploadClient.release(document.alfrescoId)
+        nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
+
+        documentRepository.delete(document)
+        val hasDocuments = documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+            document.tableName,
+            document.primaryKeyId,
+            document.id
+        )
+        updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
+    }
+
+    fun deleteDocumentById(appointmentId: Long, documentId: Long) {
+        val document = documentRepository.findById(documentId)
+            .orElseThrow {
+                NoSuchElementException("Document not found with id: $documentId")
+            }
+
+        require(document.primaryKeyId == appointmentId) {
+            "Document $documentId does not belong to appointment $appointmentId"
+        }
+
+        deleteDocument(document)
+    }
+
     private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
         entityManager.createNativeQuery(
             "update contact set document_linked = :documentLinked where contact_id = :contactId"
