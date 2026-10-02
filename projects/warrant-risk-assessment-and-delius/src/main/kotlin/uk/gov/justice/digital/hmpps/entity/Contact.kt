@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -32,7 +33,8 @@ class Contact(
     val softDeleted: Boolean = false,
 
     @Column(columnDefinition = "char(1)")
-    val documentLinked: String? = null,
+    @Convert(converter = YesNoConverter::class)
+    val documentLinked: Boolean? = null,
 )
 
 @Entity
