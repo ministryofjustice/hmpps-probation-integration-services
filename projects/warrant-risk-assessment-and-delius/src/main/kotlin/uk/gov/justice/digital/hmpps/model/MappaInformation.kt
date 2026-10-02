@@ -18,6 +18,14 @@ data class MappaRegistration(
     @Schema(description = "Registration type details")
     val type: MappaType,
 
+    @Schema(description = "Mappa Level")
+    val level: CodeAndDescription? = null,
+
+    @Schema(description = "Mappa Category")
+    val category: CodeAndDescription? = null,
+
+    val documentLinked: Boolean? = null,
+
     @Schema(description = "Start date of the registration", example = "2025-01-01")
     val startDate: LocalDate,
 

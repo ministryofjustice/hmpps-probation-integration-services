@@ -19,8 +19,8 @@ data class UserDetailsName(
 )
 
 data class CodeAndDescription(
-    val code: String,
-    val description: String,
+    val code: String?,
+    val description: String?,
 )
 
 data class OfficeAddress(

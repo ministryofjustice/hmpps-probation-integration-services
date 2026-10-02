@@ -10,8 +10,6 @@ import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.model.MappaInformation
-import uk.gov.justice.digital.hmpps.model.MappaRegistration
-import uk.gov.justice.digital.hmpps.model.MappaType
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
@@ -39,6 +37,13 @@ internal class MappaInformationIntegrationTest @Autowired constructor(
         assertThat(response.mappaRegistration?.id).isEqualTo(RegistrationGenerator.MAPPA_REGISTRATION.id)
         assertThat(response.mappaRegistration?.type?.code).isEqualTo("M1")
         assertThat(response.mappaRegistration?.type?.description).isEqualTo("MAPPA Level 1")
+        assertThat(response.mappaRegistration?.level).isNotNull()
+        assertThat(response.mappaRegistration?.level?.code).isNull()
+        assertThat(response.mappaRegistration?.level?.description).isNull()
+        assertThat(response.mappaRegistration?.category).isNotNull()
+        assertThat(response.mappaRegistration?.category?.code).isNull()
+        assertThat(response.mappaRegistration?.category?.description).isNull()
+        assertThat(response.mappaRegistration?.documentLinked).isEqualTo(false)
         assertThat(response.mappaRegistration?.startDate).isEqualTo(LocalDate.of(2025, 1, 1))
         assertThat(response.mappaRegistration?.notes).isEqualTo("some notes in here")
     }
@@ -53,6 +58,13 @@ internal class MappaInformationIntegrationTest @Autowired constructor(
         // Should return the latest (2025-01-01), not the older one (2024-06-01)
         assertThat(response.mappaRegistration?.startDate).isEqualTo(LocalDate.of(2025, 1, 1))
         assertThat(response.mappaRegistration?.type?.code).isEqualTo("M1")
+        assertThat(response.mappaRegistration?.level).isNotNull()
+        assertThat(response.mappaRegistration?.level?.code).isNull()
+        assertThat(response.mappaRegistration?.level?.description).isNull()
+        assertThat(response.mappaRegistration?.category).isNotNull()
+        assertThat(response.mappaRegistration?.category?.code).isNull()
+        assertThat(response.mappaRegistration?.category?.description).isNull()
+        assertThat(response.mappaRegistration?.documentLinked).isEqualTo(false)
     }
 
     @Test
