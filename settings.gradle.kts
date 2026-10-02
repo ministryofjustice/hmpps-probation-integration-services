@@ -94,7 +94,7 @@ dependencyResolutionManagement {
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.70.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.3.0")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.2.1-RELEASE")
             library("opensearch", "org.opensearch.client:opensearch-java:3.10.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
@@ -102,7 +102,7 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.31.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.57.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.58.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -114,7 +114,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.develocity") version "4.5.1"
+    id("com.gradle.develocity") version "4.6.0"
     id("com.github.burrunan.s3-build-cache") version "1.9.9"
 }
 
