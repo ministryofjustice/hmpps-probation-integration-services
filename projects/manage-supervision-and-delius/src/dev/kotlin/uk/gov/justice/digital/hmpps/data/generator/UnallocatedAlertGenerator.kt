@@ -5,11 +5,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.ContactAlert
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.OffenderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff as OffenderManagerStaff
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team as OffenderManagerTeam
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff as OffenderManagerStaff
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Team as OffenderManagerTeam
 
 object UnallocatedAlertGenerator {
 
@@ -88,7 +88,6 @@ object UnallocatedAlertGenerator {
         personId = PERSON.id,
         teamId = TEAM.id,
         personManagerId = OFFENDER_MANAGER.id,
-        trustProviderFlag = true,
         staff = STAFF,
         id = IdGenerator.getAndIncrement()
     )
