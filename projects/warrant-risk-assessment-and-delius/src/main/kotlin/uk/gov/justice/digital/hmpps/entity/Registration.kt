@@ -41,9 +41,9 @@ class Registration(
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData? = null,
 
-    @Column(name = "document_linked", columnDefinition = "char")
+    @Column(name = "document_linked", columnDefinition = "char(1)")
     @Convert(converter = YesNoConverter::class)
-    val documentLinked: Boolean = false,
+    val documentLinked: Boolean? = null,
 
     @Column(name = "deregistered", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

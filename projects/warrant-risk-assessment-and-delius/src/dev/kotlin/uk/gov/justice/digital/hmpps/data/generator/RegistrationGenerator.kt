@@ -22,7 +22,8 @@ object RegistrationGenerator {
         personId = PersonGenerator.DEFAULT.id,
         type = MAPPA_TYPE,
         date = LocalDate.of(2025, 1, 1),
-        notes = "some notes in here"
+        notes = "some notes in here",
+        documentLinked = false,
     )
 
     val OLDER_MAPPA_REGISTRATION = Registration(
@@ -30,6 +31,7 @@ object RegistrationGenerator {
         personId = PersonGenerator.DEFAULT.id,
         type = MAPPA_TYPE_M2,
         date = LocalDate.of(2024, 6, 1),
-        notes = "older registration notes"
+        notes = "older registration notes",
+        documentLinked = false,
     )
 }

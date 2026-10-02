@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest
 internal class DocumentServiceIntegrationTest @Autowired constructor(
@@ -57,7 +57,7 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
 
     @Test
     fun `deleting the last contact document clears document linked flag`() {
-        val contact = saveContact(documentLinked = "Y")
+        val contact = saveContact(documentLinked = true)
         val wraId = UUID.randomUUID()
         val document = documentRepository.saveAndFlush(
             DocumentGenerator.generateDocument(
@@ -73,12 +73,12 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
         entityManager.clear()
 
         assertThat(documentRepository.findById(document.id)).isEmpty
-        assertThat(contactRepository.findById(contact.id).get().documentLinked).isEqualTo("N")
+        assertThat(contactRepository.findById(contact.id).get().documentLinked).isEqualTo(false)
     }
 
     @Test
     fun `deleting one of multiple contact documents keeps document linked flag set`() {
-        val contact = saveContact(documentLinked = "Y")
+        val contact = saveContact(documentLinked = true)
         val deletedWraId = UUID.randomUUID()
         val remainingWraId = UUID.randomUUID()
         val deletedDocument = documentRepository.saveAndFlush(
@@ -105,7 +105,7 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
 
         assertThat(documentRepository.findById(deletedDocument.id)).isEmpty
         assertThat(documentRepository.findById(remainingDocument.id)).isPresent
-        assertThat(contactRepository.findById(contact.id).get().documentLinked).isEqualTo("Y")
+        assertThat(contactRepository.findById(contact.id).get().documentLinked).isEqualTo(true)
     }
 
     @Test
@@ -168,7 +168,7 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
         wireMockServer.verify(0, anyRequestedFor(urlPathMatching("/alfresco/.*")))
     }
 
-    private fun saveContact(documentLinked: String) = contactRepository.saveAndFlush(
+    private fun saveContact(documentLinked: Boolean?) = contactRepository.saveAndFlush(
         Contact(
             id = IdGenerator.id(),
             personId = PersonGenerator.DEFAULT.id,
@@ -194,4 +194,3 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
         )
     )
 }
-
