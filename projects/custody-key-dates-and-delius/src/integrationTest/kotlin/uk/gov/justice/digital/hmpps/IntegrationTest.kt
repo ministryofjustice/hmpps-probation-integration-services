@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.message.*
@@ -39,7 +40,8 @@ internal class IntegrationTest @Autowired constructor(
     private val topicName: String,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
-    private val custodyRepository: CustodyRepository
+    private val custodyRepository: CustodyRepository,
+    private val keyDateRepository: KeyDateRepository,
 ) {
 
     @MockitoBean
@@ -260,6 +262,38 @@ internal class IntegrationTest @Autowired constructor(
             eq("KeyDatesUpdated"),
             anyMap(),
             anyMap()
+        )
+    }
+
+    @Test
+    fun `derived dates use newly added ACR and SED`() {
+        featureFlagEnabled(true)
+        val person = PersonGenerator.PERSON_WITH_KEYDATES
+        val custodyId = custodyRepository.findCustodyId(person.id, "38340A").single()
+        keyDateRepository.deleteAll(custodyRepository.findCustodyById(custodyId).keyDates)
+        assertThat(custodyRepository.findCustodyById(custodyId).keyDates.isEmpty(), equalTo(true))
+
+        val notification = Notification(
+            message = CustodyDateChanged(bookingId = 1200836, offenderIdDisplay = person.nomsId!!)
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = custodyRepository.findCustodyById(custodyId)
+        assertThat(
+            custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)?.date,
+            equalTo(LocalDate.parse("2024-01-17"))
+        )
+        assertThat(
+            custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)?.date,
+            equalTo(LocalDate.parse("2024-01-16"))
+        )
+        assertThat(
+            custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
+            equalTo(LocalDate.parse("2024-01-20"))
+        )
+        assertThat(
+            custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)?.date,
+            equalTo(LocalDate.parse("2023-12-30"))
         )
     }
 

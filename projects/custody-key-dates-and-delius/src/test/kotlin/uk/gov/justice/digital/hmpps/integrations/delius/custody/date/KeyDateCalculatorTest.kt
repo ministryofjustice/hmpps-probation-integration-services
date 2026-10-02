@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.KEY_DATE_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateKeyDateType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCustodialSentence
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.crds.OperativeSentenceEnvelope
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType.SENTENCE_EXPIRY_DATE
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.electronicMonitoringEndDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.finalThirdDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.suspensionDateIfReset
@@ -113,16 +116,18 @@ internal class KeyDateCalculatorTest {
         sdsPlus: Boolean?,
         expected: LocalDate?
     ) {
-        val result = SentenceDetail(conditionalReleaseDate = conditionalReleaseDate).electronicMonitoringEndDate(
-            generateCustodialSentence(
-                disposal = generateDisposal(
-                    generateEvent(),
-                    sdsPlus = sdsPlus,
-                    lengthInDays = sentenceLengthInDays
-                ),
-                bookingRef = "ABC"
-            )
-        )
+        val result = generateCustodialSentence(
+            disposal = generateDisposal(
+                generateEvent(),
+                sdsPlus = sdsPlus,
+                lengthInDays = sentenceLengthInDays
+            ),
+            bookingRef = "ABC"
+        ).also {
+            conditionalReleaseDate?.let { date ->
+                it.keyDates += KeyDate(it, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, date)
+            }
+        }.electronicMonitoringEndDate()
         assertThat(result, equalTo(expected))
     }
 
@@ -133,50 +138,33 @@ internal class KeyDateCalculatorTest {
         sentenceLengthInDays: Long?,
         expected: LocalDate?
     ) {
-        val result = SentenceDetail(sentenceExpiryDate = sentenceEndDate).finalThirdDate(
-            generateCustodialSentence(
-                disposal = generateDisposal(
-                    generateEvent(),
-                    lengthInDays = sentenceLengthInDays
-                ),
-                bookingRef = "ABC"
-            )
-        )
+        val result = generateCustodialSentence(
+            disposal = generateDisposal(
+                generateEvent(),
+                lengthInDays = sentenceLengthInDays
+            ),
+            bookingRef = "ABC"
+        ).also {
+            sentenceEndDate?.let { date ->
+                it.keyDates += KeyDate(it, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, date)
+            }
+        }.finalThirdDate()
         assertThat(result, equalTo(expected))
     }
 
     @Test
-    fun `em end date falls back to existing ACR when conditional release date is missing`() {
-        val custody = generateCustodialSentence(
-            disposal = generateDisposal(generateEvent(), lengthInDays = 50L),
-            bookingRef = "ABC"
-        )
-        custody.keyDates += KeyDate(custody, generateKeyDateType("ACR"), LocalDate.of(2025, 1, 1))
-
-        assertThat(SentenceDetail().electronicMonitoringEndDate(custody), equalTo(LocalDate.of(2025, 1, 4)))
-        assertThat(
-            SentenceDetail(conditionalReleaseDate = LocalDate.of(2025, 2, 1)).electronicMonitoringEndDate(custody),
-            equalTo(LocalDate.of(2025, 2, 4))
-        )
-    }
-
-    @Test
-    fun `final third date prefers falls back to existing SED then notional end date`() {
+    fun `final third date prefers falls back to notional end date if no SED`() {
         val custody = generateCustodialSentence(
             disposal = generateDisposal(
                 generateEvent(), lengthInDays = 50L, notionalEndDate = LocalDate.of(2026, 1, 1)
             ),
             bookingRef = "ABC"
         )
-        assertThat(SentenceDetail().finalThirdDate(custody), equalTo(LocalDate.of(2025, 12, 15)))
+        assertThat(custody.finalThirdDate(), equalTo(LocalDate.of(2025, 12, 15)))
 
-        custody.keyDates += KeyDate(custody, generateKeyDateType("SED"), LocalDate.of(2025, 1, 1))
+        custody.keyDates += KeyDate(custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2025, 1, 1))
 
-        assertThat(SentenceDetail().finalThirdDate(custody), equalTo(LocalDate.of(2024, 12, 15)))
-        assertThat(
-            SentenceDetail(sentenceExpiryDate = LocalDate.of(2025, 2, 1)).finalThirdDate(custody),
-            equalTo(LocalDate.of(2025, 1, 15))
-        )
+        assertThat(custody.finalThirdDate(), equalTo(LocalDate.of(2024, 12, 15)))
     }
 
     companion object {

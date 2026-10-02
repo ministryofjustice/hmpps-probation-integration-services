@@ -36,17 +36,16 @@ object KeyDateCalculator {
 
     /**
      * Calculate EMED using Delius data
-     * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
      * For SDS Sentences, EMED = CRD + 7% of sentence length in days.
      * For SDS+ Sentences, EMED = CRD + 17% of sentence length in days.
      */
-    fun SentenceDetail.electronicMonitoringEndDate(custody: Custody): LocalDate? {
-        if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null) return null
+    fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? {
+        if (!disposal.type.determinateCustody || disposal.lengthInDays == null) return null
 
-        val factor = if (custody.disposal.sdsPlus == true) 0.17 else 0.07
-        val conditionalReleaseDate = conditionalReleaseDate
-            ?: custody.keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
-        return conditionalReleaseDate?.plusDays(floor(custody.disposal.lengthInDays * factor).toLong())
+        val factor = if (disposal.sdsPlus == true) 0.17 else 0.07
+        val conditionalReleaseDate =
+            keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
+        return conditionalReleaseDate?.plusDays(floor(disposal.lengthInDays * factor).toLong())
     }
 
     /**
@@ -54,13 +53,13 @@ object KeyDateCalculator {
      * sentenceEndDate should be the sentence expiry date (SED), or the disposal's notional end date when SED is missing.
      * FTHRD = sentenceEndDate - (1/3rd of disposal length in days).
      */
-    fun SentenceDetail.finalThirdDate(custody: Custody): LocalDate? {
-        if (!custody.disposal.type.determinateCustody || custody.disposal.lengthInDays == null || custody.disposal.sdsPlus == true) return null
+    fun Custody.finalThirdDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? {
+        if (!disposal.type.determinateCustody || disposal.lengthInDays == null || disposal.sdsPlus == true) return null
 
-        val endDate = sentenceExpiryDate
-            ?: custody.keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
-            ?: custody.disposal.notionalEndDate
-        val deduction = ceil(custody.disposal.lengthInDays / 3.0).toLong()
+        val deduction = ceil(disposal.lengthInDays / 3.0).toLong()
+        val endDate =
+            keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
+                ?: disposal.notionalEndDate
         return endDate?.minusDays(deduction)
     }
 

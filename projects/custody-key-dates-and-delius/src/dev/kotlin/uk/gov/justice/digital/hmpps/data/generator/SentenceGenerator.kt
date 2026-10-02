@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
 object SentenceGenerator {
@@ -60,5 +61,7 @@ object SentenceGenerator {
         custodyStatus: ReferenceData = ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
         disposal: Disposal,
         bookingRef: String
-    ) = Custody(IdGenerator.getAndIncrement(), custodyStatus, bookingRef, disposal)
+    ) = Custody(IdGenerator.getAndIncrement(), custodyStatus, bookingRef, disposal).also {
+        disposal.set(Disposal::custody, it)
+    }
 }

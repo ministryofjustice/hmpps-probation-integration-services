@@ -98,23 +98,23 @@ internal class CustodyDateUpdateServiceTest {
 
         whenever(prisonApi.getBooking(inactive.id, basicInfo = false, extraInfo = true)).thenReturn(inactive)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = inactive.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = inactive.id)
 
-        verify(personRepository, never()).findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(any())
+        verify(prisonApi, never()).getSentenceDetail(any())
+        verifyNoInteractions(custodyRepository, keyDateRepository)
         verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("BookingNotActive"), any(), any())
     }
 
     @Test
     fun `messages for people without a noms number are ignored`() {
-        featureFlagEnabled(false)
         val booking = Booking(127, "FG37K", true, "AB356Z")
 
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail(conditionalReleaseDate = LocalDate.now()))
         whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(null)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("MissingNomsNumber"), any(), any())
@@ -132,7 +132,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
             .thenReturn(listOf(42342562452L, 34345249134L))
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
@@ -151,7 +151,7 @@ internal class CustodyDateUpdateServiceTest {
             .thenReturn(PersonGenerator.DEFAULT)
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf())
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
@@ -177,7 +177,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(anyList())
@@ -210,7 +210,7 @@ internal class CustodyDateUpdateServiceTest {
         )
             .thenReturn(pssedRef)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository).saveAll(
             check<List<KeyDate>> { saved ->
@@ -241,7 +241,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(telemetryService).trackEvent(eq("KeyDatesUnchanged"), any(), any())
@@ -325,7 +325,7 @@ internal class CustodyDateUpdateServiceTest {
             )
         )
         whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
         assertThat(custody.disposal.sdsPlus, equalTo(sdsPlus))
         verify(disposalRepository).save(
             check<Disposal> {
@@ -387,7 +387,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
         verify(disposalRepository, never()).save(any<Disposal>())
@@ -439,7 +439,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
         whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(crdsApiClient, never()).getOperativeSentenceEnvelope(any())
         verify(disposalRepository, never()).save(any<Disposal>())
@@ -499,7 +499,7 @@ internal class CustodyDateUpdateServiceTest {
         )
         whenever(custodyRepository.findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)).thenReturn(listOf(disposal))
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         assertNull(custody.disposal.sdsPlus)
         verify(disposalRepository).save(
@@ -561,10 +561,11 @@ internal class CustodyDateUpdateServiceTest {
             )
         ).thenReturn(1L)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         assertThat(custody.disposal.sdsPlus, equalTo(true))
-        verify(custodyRepository).findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)
+        verify(custodyRepository, times(if (calculateDatesFromDelius) 2 else 1))
+            .findAllSentencesByPersonId(PersonGenerator.DEFAULT.id)
         verifyNoInteractions(disposalRepository)
         verify(keyDateRepository).deleteByCustodyDisposalIdAndTypeCode(
             disposal.id, CustodyDateType.FINAL_THIRD_START_DATE.code
@@ -629,7 +630,7 @@ internal class CustodyDateUpdateServiceTest {
             )
         )
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
         assertThat(disposal.sdsPlus, equalTo(false))
@@ -689,7 +690,7 @@ internal class CustodyDateUpdateServiceTest {
             )
         )
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
         assertThat(disposal.sdsPlus, equalTo(true))
@@ -763,7 +764,7 @@ internal class CustodyDateUpdateServiceTest {
         )
             .thenReturn(ReferenceDataGenerator.KEY_DATE_TYPES[CustodyDateType.SENTENCE_EXPIRY_DATE.code]!!)
 
-        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
+        custodyDateUpdateService.updateKeyDates(bookingId = booking.id)
 
         verify(crdsApiClient).getOperativeSentenceEnvelope(booking.offenderNo)
         assertThat(disposal.sdsPlus, equalTo(false))

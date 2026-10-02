@@ -13,7 +13,7 @@ class ContactService(
 ) {
     fun createForKeyDateChanges(custody: Custody, updates: List<KeyDate>) {
         if (updates.isEmpty()) return
-        val event = custody.disposal?.event!!
+        val event = custody.disposal.event
         val om = event.manager!!
         val contact = Contact(
             personId = event.person.id,
