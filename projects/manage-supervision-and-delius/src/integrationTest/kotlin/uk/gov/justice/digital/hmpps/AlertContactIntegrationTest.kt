@@ -171,10 +171,11 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
             entityManager.createNativeQuery(
                 """
                 INSERT INTO contact_alert (contact_alert_id, contact_id, contact_type_id, offender_id,
-                    trust_provider_team_id, offender_manager_id, staff_employee_id)
-                VALUES (:alertId, :contactId, :typeId, :personId, :teamId, :omId, :staffId)
+                    trust_provider_team_id, offender_manager_id, trust_provider_flag, staff_employee_id)
+                VALUES (:alertId, :contactId, :typeId, :personId, :teamId, :omId, :trustProviderFlag, :staffId)
                 """.trimIndent()
             )
+                .setParameter("trustProviderFlag", 1)  // or 0 depending on test scenario
                 .setParameter("alertId", IdGenerator.getAndIncrement())
                 .setParameter("contactId", contactId)
                 .setParameter("typeId", ContactGenerator.BREACH_CONTACT_TYPE.id)

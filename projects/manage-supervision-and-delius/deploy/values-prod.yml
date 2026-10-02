@@ -4,6 +4,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: prod
+    SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 40
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     INTEGRATIONS_ALFRESCO_URL: https://hmpps-delius-alfresco-prod.apps.live.cloud-platform.service.justice.gov.uk/alfresco/service/noms-spg

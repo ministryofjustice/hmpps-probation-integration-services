@@ -88,6 +88,7 @@ object UnallocatedAlertGenerator {
         personId = PERSON.id,
         teamId = TEAM.id,
         personManagerId = OFFENDER_MANAGER.id,
+        trustProviderFlag = true,
         staff = STAFF,
         id = IdGenerator.getAndIncrement()
     )

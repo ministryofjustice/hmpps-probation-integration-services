@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.overview.entity
 
 import jakarta.persistence.*
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Staff
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
@@ -25,6 +26,10 @@ class ContactAlert(
 
     @Column(name = "offender_manager_id")
     val personManagerId: Long?,
+
+    @Column(name = "trust_provider_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val trustProviderFlag: Boolean = false,
 
     @ManyToOne
     @JoinColumn(name = "staff_employee_id", nullable = false)

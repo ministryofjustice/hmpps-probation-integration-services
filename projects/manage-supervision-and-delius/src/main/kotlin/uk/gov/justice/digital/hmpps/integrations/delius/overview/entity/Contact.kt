@@ -921,6 +921,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
             where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and upper(ca.staff.user.username) = upper(:username) and com.staff.id = ca.staff.id
+            and (ca.trustProviderFlag is null or ca.trustProviderFlag in (true, false)) /* forces use of index XIF7CONTACT_ALERT */
         """
     )
     fun findAllUserAlerts(username: String, pageable: Pageable): Page<Contact>
@@ -933,6 +934,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join OffenderManager com on com.person.id = c.person.id and com.active = true and com.softDeleted = false
             where c.alert = true and c.softDeleted = false and c.person.softDeleted = false
             and upper(ca.staff.user.username) = upper(:username) and com.staff.id = ca.staff.id
+            and (ca.trustProviderFlag is null or ca.trustProviderFlag in (true, false)) /* forces use of index XIF7CONTACT_ALERT */
         """
     )
     fun countUserAlerts(username: String): Long
