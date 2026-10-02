@@ -58,8 +58,8 @@ jobs:
                   preprod: $envs.preprod.build_image_tag,
                   prod: $envs.prod.build_image_tag
                 }
-              | select(.preprod and .prod)
-              | select(.preprod != .prod)
+              | select(.dev and .preprod and .prod)
+              | select(.dev != .preprod or .preprod != .prod)
             ]
           ' "$RUNNER_TEMP/components.json" > "$RUNNER_TEMP/drift.json"
 
@@ -69,7 +69,7 @@ jobs:
           {
             echo "# Deployment drift report"
             echo
-            echo "$drift_count services have different pre-production and production versions."
+            echo "$drift_count services have different versions across dev, preprod and prod."
             echo
             echo "| Service | Dev | Preprod | Prod |"
             echo "|---|---|---|---|"
@@ -113,7 +113,7 @@ jobs:
                           type: "section",
                           text: {
                             type: "mrkdwn",
-                            text: "\(length) services have different pre-production and production versions."
+                            text: "\(length) services have different versions across dev, preprod and prod."
                           }
                         }
                       ]
