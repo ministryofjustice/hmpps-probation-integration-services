@@ -27,13 +27,13 @@ class ContactAlert(
     @Column(name = "offender_manager_id")
     val personManagerId: Long?,
 
-    @Column(name = "trust_provider_flag", columnDefinition = "number")
-    @Convert(converter = NumericBooleanConverter::class)
-    val trustProviderFlag: Boolean = false,
-
     @ManyToOne
     @JoinColumn(name = "staff_employee_id", nullable = false)
     val staff: Staff,
+
+    @Column(name = "trust_provider_flag", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val trustProviderFlag: Boolean? = false,
 
     @Id
     @GeneratedId(generator = "contact_alert_id_generator")

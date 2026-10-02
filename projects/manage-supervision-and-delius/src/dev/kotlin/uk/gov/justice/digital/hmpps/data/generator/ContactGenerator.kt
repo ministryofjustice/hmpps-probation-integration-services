@@ -476,8 +476,7 @@ object ContactGenerator {
 
     fun generateContactAlert(
         contact: Contact,
-        id: Long = IdGenerator.getAndIncrement(),
-        trustProviderFlag: Boolean = true
+        id: Long = IdGenerator.getAndIncrement()
     ): ContactAlert =
         ContactAlert(
             contact,
@@ -485,9 +484,8 @@ object ContactGenerator {
             contact.person.id,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.team.id,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.id,
-            trustProviderFlag,
             OffenderManagerGenerator.OFFENDER_MANAGER_ACTIVE.staff,
-            id
+            id = id
         )
 
     fun generateOutcome(code: String, description: String, attendance: Boolean, acceptable: Boolean) =
