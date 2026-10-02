@@ -38,7 +38,7 @@ class Registration(
     val category: ReferenceData? = null,
 
     @ManyToOne
-    @JoinColumn(name = "registration_level_id")
+    @JoinColumn(name = "register_level_id")
     val level: ReferenceData? = null,
 
     @Column(name = "document_linked", columnDefinition = "char")
