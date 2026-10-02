@@ -474,7 +474,11 @@ object ContactGenerator {
         sparks = sparks,
     )
 
-    fun generateContactAlert(contact: Contact, id: Long = IdGenerator.getAndIncrement(), trustProviderFlag: Boolean = true): ContactAlert =
+    fun generateContactAlert(
+        contact: Contact,
+        id: Long = IdGenerator.getAndIncrement(),
+        trustProviderFlag: Boolean = true
+    ): ContactAlert =
         ContactAlert(
             contact,
             contact.type.id,
