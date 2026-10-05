@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
 @Transactional
@@ -90,7 +91,7 @@ class DocumentService(
     fun deleteDocumentByAppointmentAndDocumentId(appointmentId: Long, documentId: Long, appointment: UnpaidWorkAppointment) {
         val document = documentRepository.findById(documentId)
             .orElseThrow {
-                NoSuchElementException("Document not found with id: $documentId")
+                NotFoundException("Document", "id", documentId)
             }
 
         require(document.primaryKeyId == appointment.contact.id) {
