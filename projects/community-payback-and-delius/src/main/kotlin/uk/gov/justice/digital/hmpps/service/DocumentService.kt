@@ -71,12 +71,7 @@ class DocumentService(
     fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         populateAudit(document, it)
 
-        try {
-            alfrescoUploadClient.release(document.alfrescoId)
-        } catch (e: Exception) {
-            Span.current().recordException(e).setStatus(StatusCode.ERROR)
-            Sentry.captureException(e)
-        }
+        alfrescoUploadClient.release(document.alfrescoId)
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)

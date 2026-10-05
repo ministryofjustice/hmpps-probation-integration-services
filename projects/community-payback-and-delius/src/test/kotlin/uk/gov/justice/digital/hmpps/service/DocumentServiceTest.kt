@@ -154,22 +154,6 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    fun `deletes document when alfresco release fails`() {
-        val document = document()
-        whenever(alfrescoUploadClient.release("alfresco-id-1")).thenThrow(RuntimeException("release failed"))
-        whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
-        ).thenReturn(false)
-
-        documentService.deleteDocument(document)
-
-        verify(alfrescoUploadClient).release("alfresco-id-1")
-        verify(alfrescoUploadClient).delete("alfresco-id-1")
-        verify(documentRepository).delete(document)
-        verify(query).setParameter("documentLinked", "N")
-    }
-
-    @Test
     fun `deleteDocumentByAppointmentAndDocumentId deletes document when it belongs to appointment`() {
         val appointmentId = 123L
         val documentId = 456L
