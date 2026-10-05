@@ -31,6 +31,7 @@ import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.util.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -221,11 +222,14 @@ internal class DocumentServiceTest {
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.empty())
 
-        val exception = assertThrows<NoSuchElementException> {
+        val exception = assertThrows<NotFoundException> {
             documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
         }
 
-        assertThat(exception).hasMessage("Document not found with id: $documentId")
+        assertThat(exception)
+            .isInstanceOf(NotFoundException::class.java)
+            .hasMessageContaining("Document")
+            .hasMessageContaining(documentId.toString())
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }

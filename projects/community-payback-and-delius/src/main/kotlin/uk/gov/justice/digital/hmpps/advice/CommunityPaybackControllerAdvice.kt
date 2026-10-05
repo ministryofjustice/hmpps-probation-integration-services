@@ -13,15 +13,15 @@ class CommunityPaybackControllerAdvice {
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFound(e: NotFoundException) = ResponseEntity
         .status(HttpStatus.NOT_FOUND)
-        .body(ErrorResponse(status = HttpStatus.NOT_FOUND.value(), developerMessage = e.message))
+        .body(ErrorResponse(status = HttpStatus.NOT_FOUND.value(), message = e.message))
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNoSuchElement(e: NoSuchElementException) = ResponseEntity
         .status(HttpStatus.NOT_FOUND)
-        .body(ErrorResponse(status = HttpStatus.NOT_FOUND.value(), developerMessage = e.message))
+        .body(ErrorResponse(status = HttpStatus.NOT_FOUND.value(), message = e.message))
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgument(e: IllegalArgumentException) = ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
-        .body(ErrorResponse(status = HttpStatus.BAD_REQUEST.value(), developerMessage = e.message))
+        .body(ErrorResponse(status = HttpStatus.BAD_REQUEST.value(), message = e.message))
 }
