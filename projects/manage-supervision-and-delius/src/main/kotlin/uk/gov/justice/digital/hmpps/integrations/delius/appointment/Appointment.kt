@@ -42,13 +42,24 @@ class Appointment(
     @Column(name = "contact_end_time")
     var endTime: ZonedDateTime?,
 
+    team: AppointmentTeam,
+    staff: AppointmentStaff,
+
     @ManyToOne
     @JoinColumn(name = "team_id")
-    var team: AppointmentTeam,
+    var teamStandard: AppointmentTeam? = team,
+
+    @ManyToOne
+    @JoinColumn(name = "provider_team_id")
+    var providerTeam: AppointmentTeam? = null,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
-    var staff: AppointmentStaff,
+    var staffStandard: AppointmentStaff? = staff,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_employee_id")
+    var staffEmployee: AppointmentStaff? = null,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
@@ -151,6 +162,17 @@ class Appointment(
     @Convert(converter = YesNoConverter::class)
     var visorExported: Boolean? = null
         private set
+
+    var team
+        get() = checkNotNull(teamStandard ?: providerTeam) { "Missing team (contact_id=$id)" }
+        set(value) {
+            teamStandard = value
+        }
+    var staff
+        get() = checkNotNull(staffStandard ?: staffEmployee) { "Missing staff (contact_id=$id)" }
+        set(value) {
+            staffStandard = value
+        }
 
     fun appendNotes(parts: List<String>) =
         appendNotes(*parts.toTypedArray())
