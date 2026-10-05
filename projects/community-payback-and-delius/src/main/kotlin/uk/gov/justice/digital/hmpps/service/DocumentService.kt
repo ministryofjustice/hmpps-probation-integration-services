@@ -88,7 +88,11 @@ class DocumentService(
         updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
-    fun deleteDocumentByAppointmentAndDocumentId(appointmentId: Long, documentId: Long, appointment: UnpaidWorkAppointment) {
+    fun deleteDocumentByAppointmentAndDocumentId(
+        appointmentId: Long,
+        documentId: Long,
+        appointment: UnpaidWorkAppointment
+    ) {
         val document = documentRepository.findById(documentId)
             .orElseThrow {
                 NotFoundException("Document", "id", documentId)
