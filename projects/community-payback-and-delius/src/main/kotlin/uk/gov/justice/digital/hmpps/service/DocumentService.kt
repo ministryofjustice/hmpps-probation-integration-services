@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.sentry.Sentry
 import jakarta.persistence.EntityManager
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
@@ -67,7 +70,12 @@ class DocumentService(
     fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
         populateAudit(document, it)
 
-        alfrescoUploadClient.release(document.alfrescoId)
+        try {
+            alfrescoUploadClient.release(document.alfrescoId)
+        } catch (e: Exception) {
+            Span.current().recordException(e).setStatus(StatusCode.ERROR)
+            Sentry.captureException(e)
+        }
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)
@@ -79,13 +87,13 @@ class DocumentService(
         updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
-    fun deleteDocumentById(appointmentId: Long, documentId: Long) {
+    fun deleteDocumentByAppointmentAndDocumentId(appointmentId: Long, documentId: Long, appointment: UnpaidWorkAppointment) {
         val document = documentRepository.findById(documentId)
             .orElseThrow {
                 NoSuchElementException("Document not found with id: $documentId")
             }
 
-        require(document.primaryKeyId == appointmentId) {
+        require(document.primaryKeyId == appointment.contact.id) {
             "Document $documentId does not belong to appointment $appointmentId"
         }
 

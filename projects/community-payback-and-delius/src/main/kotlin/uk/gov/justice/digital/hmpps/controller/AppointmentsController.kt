@@ -67,5 +67,9 @@ class AppointmentsController(
     fun deleteAppointmentDocument(
         @PathVariable appointmentId: Long,
         @PathVariable documentId: Long
-    ) = documentService.deleteDocumentById(appointmentId, documentId)
+    ) = documentService.deleteDocumentByAppointmentAndDocumentId(
+        appointmentId,
+        documentId,
+        communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId)
+    )
 }
