@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import uk.gov.justice.digital.hmpps.controller.AppointmentsController
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
-@RestControllerAdvice(basePackageClasses = [AppointmentsController::class])
+@RestControllerAdvice(assignableTypes = [AppointmentsController::class])
 class CommunityPaybackControllerAdvice {
 
     @ExceptionHandler(NotFoundException::class)
