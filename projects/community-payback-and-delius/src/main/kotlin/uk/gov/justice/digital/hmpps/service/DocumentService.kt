@@ -44,7 +44,7 @@ class DocumentService(
             alfrescoId = "",
             name = filename,
             primaryKeyId = appointment.contact.id,
-            tableName = "CONTACT",
+            tableName = CONTACT_TABLE_NAME,
             externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
             lastSaved = ZonedDateTime.now(),
             createdDatetime = ZonedDateTime.now(),
@@ -98,7 +98,7 @@ class DocumentService(
                 NotFoundException("Document", "id", documentId)
             }
 
-        require(document.primaryKeyId == appointment.contact.id) {
+        require(document.tableName == CONTACT_TABLE_NAME && document.primaryKeyId == appointment.contact.id) {
             "Document $documentId does not belong to appointment $appointmentId"
         }
 
@@ -142,6 +142,8 @@ class DocumentService(
     }
 
     companion object {
+        private const val CONTACT_TABLE_NAME = "CONTACT"
+
         val ALLOWED_EXTENSIONS = setOf(
             "doc", "docx", "rtf", "txt", "dot", "dotm", "docm", "odt", "xml", "wpd", "wri", "wps",
             "xls", "xlsb", "xlsx", "csv", "pdf", "bmp", "jpg", "jpeg", "gif", "png",

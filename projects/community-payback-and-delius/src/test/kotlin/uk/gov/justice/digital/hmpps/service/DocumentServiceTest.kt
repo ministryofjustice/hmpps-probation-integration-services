@@ -62,12 +62,16 @@ internal class DocumentServiceTest {
         on { it.contact } doReturn contact
     }
 
-    private fun document(alfrescoId: String = "alfresco-id-1") = Document(
+    private fun document(
+        alfrescoId: String = "alfresco-id-1",
+        primaryKeyId: Long = 99L,
+        tableName: String = "CONTACT",
+    ) = Document(
         person = person,
         alfrescoId = alfrescoId,
         name = "evidence.pdf",
-        primaryKeyId = 99L,
-        tableName = "CONTACT",
+        primaryKeyId = primaryKeyId,
+        tableName = tableName,
         externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
         workInProgress = "N",
         status = "Y",
@@ -199,6 +203,34 @@ internal class DocumentServiceTest {
         val document = mock<Document>()
         whenever(document.id).thenReturn(documentId)
         whenever(document.primaryKeyId).thenReturn(otherContactId)
+
+        whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
+
+        val exception = assertThrows<IllegalArgumentException> {
+            documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
+        }
+
+        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $appointmentId")
+        verify(documentRepository).findById(documentId)
+        verify(documentRepository, never()).delete(any())
+    }
+
+    @Test
+    fun `deleteDocumentByAppointmentAndDocumentId throws when document belongs to another table with matching id`() {
+        val appointmentId = 123L
+        val documentId = 456L
+        val contactId = 789L
+
+        val contact = mock<Contact>()
+        whenever(contact.id).thenReturn(contactId)
+
+        val appointment = mock<UnpaidWorkAppointment>()
+        whenever(appointment.contact).thenReturn(contact)
+
+        val document = mock<Document>()
+        whenever(document.id).thenReturn(documentId)
+        whenever(document.primaryKeyId).thenReturn(contactId)
+        whenever(document.tableName).thenReturn("EVENT")
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
 
