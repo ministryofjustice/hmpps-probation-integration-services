@@ -27,7 +27,9 @@ class AppointmentsControllerTest {
         val appointment = mock<UnpaidWorkAppointment>()
         val controller = AppointmentsController(communityPaybackAppointmentsService, documentService)
 
-        whenever(communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId)).thenReturn(appointment)
+        whenever(communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId)).thenReturn(
+            appointment
+        )
 
         controller.deleteAppointmentDocument(appointmentId, documentId)
 
