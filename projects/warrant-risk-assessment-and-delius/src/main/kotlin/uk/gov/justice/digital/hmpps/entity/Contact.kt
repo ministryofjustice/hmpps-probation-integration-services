@@ -8,7 +8,6 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -28,9 +27,6 @@ class Contact(
 
     @Column(name = "contact_date")
     val date: LocalDate,
-
-    @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = null,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
@@ -63,8 +59,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         from Contact c
         where c.personId = :personId
         and c.type.homeVisit = true
-        and (c.date < current_date or
-             (c.date = current_date and to_char(c.startTime, 'HH24:MI:SS') <= to_char(local_time, 'HH24:MI:SS')))
+        and c.date <= current_date
         """
     )
     fun findLastHomeVisitDate(personId: Long): LocalDate?
