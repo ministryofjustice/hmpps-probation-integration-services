@@ -2,10 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
-import uk.gov.justice.digital.hmpps.enum.RiskFlagColour
-import uk.gov.justice.digital.hmpps.enum.RiskLevel
-import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
-import uk.gov.justice.digital.hmpps.enum.RiskType
+import uk.gov.justice.digital.hmpps.enum.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.DEREGISTRATION
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
@@ -15,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Ref
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.registerLevel
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.OrdsClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.RiskAssessment
 import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.DEREGISTERED
 import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.REGISTERED
 import uk.gov.justice.digital.hmpps.service.TelemetryAggregator.Companion.REVIEW_COMPLETED
@@ -40,15 +38,17 @@ class RiskService(
     fun recordRisk(person: Person, summary: AssessmentSummary, telemetryRecording: (String, String) -> Unit) {
         recordRiskOfSeriousHarm(person, summary, telemetryRecording)
         recordOtherRisks(person, summary, telemetryRecording)
+        person.updateHighestRiskColour()
+    }
 
-        // Set the RoSH flag on the person
-        person.highestRiskColour = registrationRepository
-            .findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
+    private fun Person.updateHighestRiskColour() {
+        highestRiskColour = registrationRepository
+            .findByPersonIdAndTypeFlagCode(id, OASYS_RISK_FLAG.value)
             .filter { !it.deregistered && it.type.colour != null }
             .maxByOrNull { it.type.colour!!.uppercase().let(RiskFlagColour::valueOf).ordinal }?.type?.colour
     }
 
-    private fun recordRiskOfSeriousHarm(
+    fun recordRiskOfSeriousHarm(
         person: Person,
         summary: AssessmentSummary,
         addToTelemetry: (String, String) -> Unit
@@ -71,6 +71,30 @@ class RiskService(
             val roshNote = NO_RISK_IDENTIFIED_NOTE.takeIf { allRiskToValuesNull }
             person.addRegistration(type, riskNotes = roshNote, addToTelemetry = addToTelemetry)
         }
+    }
+
+    fun recordRiskOfSeriousHarm(
+        person: Person,
+        summary: RiskAssessment,
+        addToTelemetry: (String, String) -> Unit
+    ) {
+        val roshType = summary.riskLevel.riskScoreLevel ?: RiskOfSeriousHarmTypeName.L
+        val roshRegistrations = registrationRepository.findByPersonIdAndTypeFlagCode(person.id, OASYS_RISK_FLAG.value)
+
+        val (matchingRegistrations, registrationsToRemove) = roshRegistrations.partition { it.type.code == roshType.code }
+
+        // Remove any existing RoSH registrations of a different type
+        registrationsToRemove.forEach {
+            person.removeRegistration(it, it.notes(), addToTelemetry)
+        }
+
+        // If no matching RoSH registration of the correct type, create one
+        if (matchingRegistrations.isEmpty()) {
+            val type = registerTypeRepository.getByCode(roshType.code)
+            val roshNote = INCOMPLETE_ROSH_NOTE.takeIf { summary.assessmentStatus != "COMPLETE" }
+            person.addRegistration(type, riskNotes = roshNote, addToTelemetry = addToTelemetry)
+        }
+        person.updateHighestRiskColour()
     }
 
     private fun recordOtherRisks(
@@ -278,7 +302,9 @@ class RiskService(
 
 // Added to a newly created LOW ROSH registration when every OASys risk-to register is null.
 private const val NO_RISK_IDENTIFIED_NOTE =
-    "An OASys assessment has been completed and no specific risks have been identified"
+    "An OASys assessment has been completed and no specific risks have been identified."
+private const val INCOMPLETE_ROSH_NOTE =
+    "Risk of Serious Harm level has been added based on an incomplete assessment."
 
 private val AssessmentSummary.allRiskToValuesNull: Boolean
     get() = listOf(

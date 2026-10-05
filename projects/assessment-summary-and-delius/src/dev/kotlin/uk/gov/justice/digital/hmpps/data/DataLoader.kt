@@ -93,6 +93,11 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         PersonGenerator.SAME_DAY_DIFFERENT_TIMES.withEvent()
         PersonGenerator.NULL_RISK_TO_VALUES.withEvent()
         PersonGenerator.ONE_MEDIUM_RISK_TO_VALUE.withEvent()
+        PersonGenerator.RISK_CHANGE_MEDIUM_ROSH.withEvent().withRiskOfSeriousHarm(L)
+        PersonGenerator.RISK_CHANGE_EXISTING_ROSH.withEvent().withRiskOfSeriousHarm(H, M)
+            .withRisks(RegistrationGenerator.TYPES[RiskType.CHILDREN.code]!! to RiskLevel.H, notes = "existing notes")
+        PersonGenerator.RISK_CHANGE_NULL_ROSH.withEvent().withRiskOfSeriousHarm(H, M)
+        PersonGenerator.RISK_CHANGE_NO_ROSH.withEvent()
     }
 
     private fun Person.withEvent(softDeleted: Boolean = false, custodial: Boolean = false): Person {
@@ -135,7 +140,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         return this
     }
 
-    private fun Person.withRisks(vararg risks: Pair<RegisterType, RiskLevel?>): Person {
+    private fun Person.withRisks(vararg risks: Pair<RegisterType, RiskLevel?>, notes: String? = null): Person {
         risks.forEach { risk ->
             val type = risk.first
             val level = ReferenceDataGenerator.LEVELS.singleOrNull { it.code == risk.second?.code }
@@ -147,7 +152,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
                     ContactGenerator.generateContact(this, type.reviewContactType!!).withNotes("existing notes")
                 ),
                 type = type,
-                level = level
+                level = level,
+                notes = notes
             )
             saveAll(this, registration)
         }

@@ -1,0 +1,15 @@
+{
+  "probNumber": "Z999999",
+  "assessments": [
+    {
+      "assessmentPk": 100,
+      "assessmentType": "LAYER_3",
+      "dateCompleted": null,
+      "initiationDate": "2023-12-05T15:32:32",
+      "assessmentStatus": "OPEN",
+      "riskLevel": {
+        "riskScoreLevel": "High"
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.service.annotation.GetExchange
+import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmTypeName
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -146,6 +147,25 @@ data class AssessmentSummaries(
     @JsonAlias("probNumber")
     val crn: String,
     val assessments: List<AssessmentSummary>
+)
+
+data class RiskChange(
+    @JsonAlias("probNumber")
+    val crn: String,
+    val assessments: List<RiskAssessment>
+)
+
+data class RiskAssessment(
+    val assessmentPk: Long,
+    val assessmentType: String,
+    val dateCompleted: LocalDateTime?,
+    val initiationDate: LocalDateTime,
+    val assessmentStatus: String,
+    val riskLevel: RiskLevelWrapper
+)
+
+data class RiskLevelWrapper(
+    val riskScoreLevel: RiskOfSeriousHarmTypeName?
 )
 
 data class BasicSentencePlanArea(

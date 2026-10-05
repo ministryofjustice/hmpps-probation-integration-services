@@ -24,6 +24,10 @@ object PersonGenerator {
     val SAME_DAY_DIFFERENT_TIMES = generate("A000018")
     val NULL_RISK_TO_VALUES = generate("A000019")
     val ONE_MEDIUM_RISK_TO_VALUE = generate("A000020")
+    val RISK_CHANGE_MEDIUM_ROSH = generate("A000021")
+    val RISK_CHANGE_EXISTING_ROSH = generate("A000022")
+    val RISK_CHANGE_NULL_ROSH = generate("A000023")
+    val RISK_CHANGE_NO_ROSH = generate("A000024")
 
     fun generate(
         crn: String,

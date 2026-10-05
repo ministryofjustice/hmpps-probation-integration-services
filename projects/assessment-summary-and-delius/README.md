@@ -52,6 +52,19 @@ The registrations for risk of serious harm (RoSH) and other risks will be checke
 
 ![](../../doc/tech-docs/source/images/assessment-summary-record-other-risks.svg)
 
+### Risk flag changed workflow
+
+The service also responds to `risk.flag.tier.change` events for incomplete assessments. It updates the RoSH registration
+and the person's highest-risk colour without recording an assessment summary or changing the other "Risk to"
+registrations.
+
+New registrations include a note that the risk level is based on an incomplete assessment. Risk flag changes for
+completed assessments are ignored - they are processed by the `assessment.summary.produced` workflow.
+
+#### Risk of serious harm
+
+![](../../doc/tech-docs/source/images/assessment-summary-record-rosh.svg)
+
 ## Interfaces
 
 ### Message formats

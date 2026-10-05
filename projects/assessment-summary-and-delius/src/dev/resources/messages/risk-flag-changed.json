@@ -1,0 +1,12 @@
+{
+  "Type": "Notification",
+  "MessageId": "7435482a-107a-4b24-8eb5-dbf072ae3d18",
+  "Message": "{\"eventType\":\"risk.flag.tier.change\",\"version\":1,\"description\":\"Risk Flag for tiering has changed\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/eor/oasys/ass/tierriskflag/A000021/ALLOW\",\"occurredAt\":\"2026-10-05T14:37:49+01:00\",\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000021\"}]}}",
+  "Timestamp": "2023-12-05T15:32:33.823Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "risk.flag.tier.change"
+    }
+  }
+}
