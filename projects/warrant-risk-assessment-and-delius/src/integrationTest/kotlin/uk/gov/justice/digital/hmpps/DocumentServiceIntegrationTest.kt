@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -172,7 +172,7 @@ internal class DocumentServiceIntegrationTest @Autowired constructor(
         Contact(
             id = IdGenerator.id(),
             personId = PersonGenerator.DEFAULT.id,
-            type = ContactGenerator.HOME_VISIT_TYPE,
+            type = ContactTypeGenerator.HOME_VISIT_TO_CASE_NS,
             date = LocalDate.now(),
             softDeleted = false,
             documentLinked = documentLinked,
