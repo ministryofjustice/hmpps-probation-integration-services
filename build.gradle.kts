@@ -24,7 +24,7 @@ plugins {
 buildscript {
     repositories { gradlePluginPortal() }
     dependencies {
-        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.10")
+        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.11")
     }
 }
 
