@@ -53,6 +53,17 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(ContactGenerator.ENFORCEMENT_USER)
 
         saveAll(
+            UserControllerV2Generator.PROVIDER,
+            UserControllerV2Generator.BOROUGH,
+            UserControllerV2Generator.DISTRICT,
+            UserControllerV2Generator.STAFF,
+            UserControllerV2Generator.TEAM,
+            UserControllerV2Generator.OFFICE_LOCATION,
+        )
+
+        save(UserControllerV2Generator.USER)
+
+        saveAll(
             PersonGenerator.GENDER_MALE,
             PersonGenerator.MAPPA_TYPE,
             PersonGenerator.MAPPA_CATEGORY,
@@ -81,10 +92,12 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(PersonGenerator.CUSTODY_PERSON)
         save(PersonGenerator.PRE_SENTENCE_PERSON)
         save(PersonGenerator.UPDATE_PERSON)
+        save(UserControllerV2Generator.PERSON)
         save(CourtGenerator.BHAM)
         save(PersonGenerator.EVENT_1)
         save(PersonGenerator.EVENT_2)
         save(PersonGenerator.UPDATE_CONTACT_EVENT)
+        save(UserControllerV2Generator.EVENT)
         save(PersonGenerator.INACTIVE_EVENT_1)
         save(PersonGenerator.INACTIVE_EVENT_2)
         save(PersonGenerator.INACTIVE_EVENT_3)
@@ -92,6 +105,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(PersonGenerator.CUSTODY_EVENT)
         save(PersonGenerator.CUSTODY_DISPOSAL)
         save(PersonGenerator.PRE_SENTENCE_EVENT)
+        save(UserControllerV2Generator.DISPOSAL_TYPE)
+        save(UserControllerV2Generator.DISPOSAL)
 
         save(AdditionalSentenceGenerator.REF_DISQ)
         save(AdditionalSentenceGenerator.REF_FINE)
@@ -195,6 +210,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             ContactGenerator.EVENT_LEVEL_CT,
             ContactGenerator.RQMNT_LEVEL_CT,
             ContactGenerator.E_SUPERVISION_TYPE,
+            UserControllerV2Generator.CONTACT_TYPE,
             ContactGenerator.E_SUPERVISION_CONTACT,
             ContactGenerator.PREVIOUS_APPT_CONTACT,
             ContactGenerator.FIRST_NON_APPT_CONTACT,
@@ -203,12 +219,20 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             ContactGenerator.ACCEPTABLE_ABSENCE,
             ContactGenerator.FAILED_TO_COMPLY,
             ContactGenerator.ATTENDED_NOT_COMPLY_OUTCOME,
+            UserControllerV2Generator.SELECTABLE_OUTCOME,
             ContactGenerator.POSSIBLE_OUTCOME_1,
             ContactGenerator.POSSIBLE_OUTCOME_2,
             ContactGenerator.POSSIBLE_OUTCOME_3,
             ContactGenerator.POSSIBLE_OUTCOME_4,
+            UserControllerV2Generator.CONTACT_TYPE_OUTCOME,
             ContactGenerator.PREVIOUS_APPT_CONTACT_ABSENT,
             ContactGenerator.PREVIOUS_COMMUNICATION_CONTACT,
+            UserControllerV2Generator.BEFORE_REFERENCE_CONTACT,
+            UserControllerV2Generator.EXACT_REFERENCE_CONTACT,
+            UserControllerV2Generator.AFTER_REFERENCE_CONTACT,
+            UserControllerV2Generator.NEXT_DAY_CONTACT,
+            UserControllerV2Generator.FUTURE_CONTACT_WITH_OUTCOME,
+            UserControllerV2Generator.HISTORIC_CONTACT,
             PersonGenerator.ENFORCEMENT_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD_PERSON,
             PersonGenerator.ENFORCEMENT_CASELOAD,
