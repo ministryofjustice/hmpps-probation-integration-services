@@ -22,6 +22,10 @@ class StaffService(
     @Value($$"${delius.db.username}") private val dbUsername: String,
     private val caseloadRepository: CaseloadRepository,
 ) {
+    companion object {
+        private const val ORACLE_IN_CLAUSE_BATCH_SIZE = 999
+    }
+
     fun getOfficerView(code: String): OfficerView {
         val staff = staffRepository.getWithUserByCode(code)
         return OfficerView(
@@ -57,17 +61,23 @@ class StaffService(
 
         val crnSet = crns.toSet()
         val initialAllocationDates =
-            personRepository.findMostRecentInitialAllocations(crnSet, dbUsername)
+            crnSet.chunkedForOracleInClause().flatMap {
+                personRepository.findMostRecentInitialAllocations(it, dbUsername)
+            }
                 .associate { it.crn to it.allocatedAt?.toLocalDate() }
-        val caseTypes = personRepository.findCaseTypes(crnSet).associate { it.crn to it.type }
-        val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
+        val caseTypes = crnSet.chunkedForOracleInClause()
+            .flatMap { personRepository.findCaseTypes(it) }
+            .associate { it.crn to it.type }
+        val cases = crns.distinct().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE)
+            .flatMap { personRepository.findAllByCrnAndSoftDeletedFalse(it) }
+            .map {
             Case(
                 it.crn,
                 it.name(),
                 caseTypes[it.crn] ?: CaseType.UNKNOWN.name,
                 initialAllocationDates[it.crn]
             )
-        }
+            }
         return ActiveCasesResponse(
             staff.code,
             staff.name(),
@@ -109,4 +119,7 @@ class StaffService(
             }
         )
     }
+
+    private fun Set<String>.chunkedForOracleInClause() =
+        toList().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE).map { it.toSet() }
 }
