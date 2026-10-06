@@ -27,9 +27,10 @@ class UserControllerV2(
                                         else
                                             (select rdt.description
                                               from disposal d
+                                              join event sentence_event on sentence_event.event_id = d.event_id
                                               join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
                                               where d.offender_id = o.offender_id
-                                              order by e.created_datetime desc fetch first 1 row only)
+                                              order by sentence_event.created_datetime desc fetch first 1 row only)
                                         end"""
 
     @GetMapping("/schedule/upcoming")
@@ -52,7 +53,7 @@ class UserControllerV2(
     )
 
     @GetMapping("/schedule/no-outcome")
-    @Operation(summary = "Gets passed appointments without an outcome for a user")
+    @Operation(summary = "Gets past appointments without an outcome for a user")
     fun getUserAppointmentsWithoutOutcomes(
         @PathVariable username: String,
         @RequestParam(required = false, defaultValue = "0") page: Int,
@@ -69,7 +70,7 @@ class UserControllerV2(
     )
 
     @GetMapping("/appointments")
-    @Operation(summary = "Gets passed appointments without an outcome for a user")
+    @Operation(summary = "Gets upcoming and past appointments without outcomes for a user")
     fun getUserAppointments(
         @PathVariable username: String,
         @RequestParam(required = false) fromDate: LocalDate?,

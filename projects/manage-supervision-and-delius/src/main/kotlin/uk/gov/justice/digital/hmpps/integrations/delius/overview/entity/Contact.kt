@@ -938,9 +938,10 @@ where (c.soft_deleted = 0)
                     else
                         (select rdt.description
                           from disposal d
+                          join event sentence_event on sentence_event.event_id = d.event_id
                           join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
                           where d.offender_id = o.offender_id
-                          order by e.created_datetime desc fetch first 1 row only)
+                          order by sentence_event.created_datetime desc fetch first 1 row only)
                     end as sentencedescription      
             from offender o
             join contact c on o.offender_id = c.offender_id
@@ -1143,7 +1144,7 @@ where (c.soft_deleted = 0)
                 appt.description        as contactdescription,
                 appt.code               as typecode,
                 appt.complied           as complied,
-                appt.code               as rqmntmaincatcode
+                rq.code                 as rqmntmaincatcode
          from appt
          left join rq on appt.rqmnt_id = rq.rqmnt_id   
      """,

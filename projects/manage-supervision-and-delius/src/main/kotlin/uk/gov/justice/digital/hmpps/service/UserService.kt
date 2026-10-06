@@ -180,7 +180,7 @@ class UserService(
         val londonDateTime = dateTime.withZoneSameInstant(EuropeLondon)
 
         if (fromDate != null && toDate != null) {
-            require(!fromDate.isAfter(toDate))
+            require(!fromDate.isAfter(toDate)) { "fromDate must be on or before toDate" }
         }
 
         return user.staff?.let {
@@ -297,7 +297,7 @@ class UserService(
                 username,
                 pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
             )
-            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomesV2(
+            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(
                 username,
                 pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
             )
