@@ -11,33 +11,52 @@ import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException.Companion.orIgnore
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummaries
+import uk.gov.justice.digital.hmpps.integrations.oasys.RiskChange
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted
+import uk.gov.justice.digital.hmpps.service.AssessmentSubmittedHandler
+import uk.gov.justice.digital.hmpps.service.RiskChangeHandler
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 const val AssessmentSummaryProduced = "assessment.summary.produced"
+const val RiskFlagChanged = "risk.flag.tier.change"
 
 @Component
 @Channel("assessment-summary-and-delius-queue")
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val detailService: DomainEventDetailService,
-    private val assessmentSubmitted: AssessmentSubmitted,
-    private val telemetryService: TelemetryService
+    private val assessmentSubmittedHandler: AssessmentSubmittedHandler,
+    private val riskChangeHandler: RiskChangeHandler,
+    private val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(title = AssessmentSummaryProduced, payload = Schema(HmppsDomainEvent::class))])
+    @Publish(
+        messages = [
+            Message(title = AssessmentSummaryProduced, payload = Schema(HmppsDomainEvent::class)),
+            Message(title = RiskFlagChanged, payload = Schema(HmppsDomainEvent::class))
+        ]
+    )
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         try {
-            if (notification.message.eventType == AssessmentSummaryProduced) {
-                telemetryService.notificationReceived(notification)
-                if (notification.message.detailUrl?.startsWith("https://t2-b.oasys.service.justice.gov.uk") == true) {
-                    throw IgnorableMessageException("Not processing assessments from T2-B test environment")
+            if (notification.message.detailUrl?.startsWith("https://t2-b.oasys.service.justice.gov.uk") == true) {
+                throw IgnorableMessageException("Not processing assessments from T2-B test environment")
+            }
+
+            when (notification.message.eventType) {
+                AssessmentSummaryProduced -> {
+                    telemetryService.notificationReceived(notification)
+                    val summary = nullIfNotFound { detailService.getDetail<AssessmentSummaries>(notification.message) }
+                        .orIgnore { "No assessment in OASys" }
+                    assessmentSubmittedHandler.assessmentSubmitted(summary.crn, summary.assessments.first())
                 }
-                val summary = nullIfNotFound { detailService.getDetail<AssessmentSummaries>(notification.message) }
-                    .orIgnore { "No assessment in OASys" }
-                assessmentSubmitted.assessmentSubmitted(summary.crn, summary.assessments.first())
+
+                RiskFlagChanged -> {
+                    telemetryService.notificationReceived(notification)
+                    val summary = nullIfNotFound { detailService.getDetail<RiskChange>(notification.message) }
+                        .orIgnore { "No assessment in OASys" }
+                    riskChangeHandler.riskChange(summary.crn, summary.assessments.first())
+                }
             }
         } catch (ime: IgnorableMessageException) {
             telemetryService.trackEvent(

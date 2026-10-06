@@ -31,7 +31,6 @@ import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.enum.RiskLevel
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -46,7 +45,6 @@ import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
-import uk.gov.justice.digital.hmpps.service.AssessmentSubmitted.Companion.UPDATE_RISK_REGISTRATIONS_IN_PLACE
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -73,15 +71,11 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    @MockitoBean
-    lateinit var featureFlags: FeatureFlags
-
     lateinit var transactionTemplate: TransactionTemplate
 
     @BeforeEach
     fun setUp() {
         transactionTemplate = TransactionTemplate(transactionManager)
-        whenever(featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)).thenReturn(true)
     }
 
     @Test
@@ -176,7 +170,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
+        assertThat(contact.date, equalTo(assessment.date.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -285,7 +279,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(assessment.status?.code, equalTo("C"))
 
         val contact = assessment.contact
-        assertThat(contact.date, equalTo(assessment?.date?.toLocalDate()))
+        assertThat(contact.date, equalTo(assessment.date.toLocalDate()))
         assertThat(contact.type.code, equalTo(ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value))
         assertThat(contact.externalReference, equalTo("urn:uk:gov:hmpps:oasys:assessment:${assessment.oasysId}"))
         assertThat(contact.copyToVisor, equalTo(true))
@@ -335,7 +329,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(roshRegistration.type.code, equalTo(RiskOfSeriousHarmType.L.code))
         assertThat(
             roshRegistration.notes,
-            equalTo("An OASys assessment has been completed and no specific risks have been identified")
+            equalTo("An OASys assessment has been completed and no specific risks have been identified.")
         )
         RiskType.entries.forEach { riskType ->
             assertThat(registrationRepository.findByPersonIdAndTypeCode(person.id, riskType.code), empty())
@@ -760,7 +754,7 @@ internal class IntegrationTest @Autowired constructor(
         val assessments = transactionTemplate.execute {
             entityManager.clear()
             oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id)
-        }!!
+        }
 
         assertThat(assessments.size, equalTo(2))
         assertThat(assessments.map { it.oasysId }, equalTo(listOf("181", "18")))
@@ -777,6 +771,187 @@ internal class IntegrationTest @Autowired constructor(
             )
         )
         assertThat(assessments[0].date.isAfter(assessments[1].date), equalTo(true))
+    }
+
+    @Test
+    fun `an incomplete risk change replaces ROSH registrations without recording an assessment`() {
+        val person = personRepository.getByCrn(PersonGenerator.RISK_CHANGE_MEDIUM_ROSH.crn)
+        val expectedType = RiskOfSeriousHarmType.M.code
+        val previousTypes = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).map { it.type.code }
+        assertThat(previousTypes, not(hasItem(expectedType)))
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val registration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).single()
+        assertThat(registration.type.code, equalTo(expectedType))
+        assertThat(
+            registration.notes,
+            equalTo("This RoSH level was calculated when OASys Risk Sections were updated and may be subject to change when any assessment is next marked as complete.")
+        )
+        assertThat(registration.date, equalTo(LocalDate.now()))
+        assertThat(registration.contact.type.code, equalTo(ContactType.Code.REGISTRATION.value))
+        assertThat(registration.reviews, hasSize(1))
+        assertThat(registration.nextReviewDate, equalTo(LocalDate.now().plusMonths(6)))
+        assertThat(
+            registrationHistoryRepository.findAll().filter { it.registration.id == registration.id },
+            hasSize(1)
+        )
+        assertThat(personRepository.getByCrn(person.crn).highestRiskColour, equalTo("Amber"))
+
+        assertThat(oasysAssessmentRepository.findByPersonIdOrderByDateDesc(person.id), empty())
+        assertThat(
+            contactRepository.findAll().filter {
+                it.person.id == person.id && it.type.code in listOf(
+                    ContactType.Code.OASYS_ASSESSMENT_COMPLETE.value,
+                    ContactType.Code.OASYS_ASSESSMENT_LOCKED_INCOMPLETE.value
+                )
+            },
+            empty()
+        )
+
+        val domainEvents = domainEventRepository.findAllForCrn(person.crn)
+        assertThat(domainEvents.count { it.eventType == "probation-case.registration.added" }, equalTo(1))
+        assertThat(
+            domainEvents.count { it.eventType == "probation-case.registration.deregistered" },
+            equalTo(previousTypes.size)
+        )
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("RiskChangeSuccess"),
+            check {
+                assertThat(it["crn"], equalTo(person.crn))
+                assertThat(it["assessmentId"], equalTo("100"))
+                assertThat(it["assessmentStatus"], equalTo("OPEN"))
+                assertThat(it["Registered"], equalTo("[$expectedType]"))
+                assertThat(
+                    it["Deregistered"],
+                    equalTo(previousTypes.sorted().joinToString(",", "[", "]"))
+                )
+            },
+            anyMap()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val unchanged = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).single()
+        assertThat(unchanged.id, equalTo(registration.id))
+        assertThat(unchanged.reviews.map { it.id }, equalTo(registration.reviews.map { it.id }))
+        assertThat(domainEventRepository.findAllForCrn(person.crn), hasSize(domainEvents.size))
+    }
+
+    @Test
+    fun `a risk change creates a ROSH registration when none exists`() {
+        val person = personRepository.getByCrn(PersonGenerator.RISK_CHANGE_NO_ROSH.crn)
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn(person.crn)
+        assertThat(
+            registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code),
+            empty()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val registration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).single()
+        assertThat(registration.type.code, equalTo(RiskOfSeriousHarmType.M.code))
+        assertThat(registration.reviews, hasSize(1))
+        assertThat(personRepository.getByCrn(person.crn).highestRiskColour, equalTo("Amber"))
+        assertThat(
+            domainEventRepository.findAllForCrn(person.crn).single().eventType,
+            equalTo("probation-case.registration.added")
+        )
+    }
+
+    @Test
+    fun `a risk change retains the matching ROSH registration and deregisters other ROSH registrations`() {
+        val person = personRepository.getByCrn(PersonGenerator.RISK_CHANGE_EXISTING_ROSH.crn)
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn(person.crn)
+        val previous =
+            registrationRepository.findByPersonIdAndTypeCode(person.id, RiskOfSeriousHarmType.H.code).single()
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val registration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).single()
+        assertThat(registration.id, equalTo(previous.id))
+        assertThat(registration.notes, equalTo(previous.notes))
+        assertThat(registration.reviews.map { it.id }, equalTo(previous.reviews.map { it.id }))
+        assertThat(personRepository.getByCrn(person.crn).highestRiskColour, equalTo("Orange"))
+        val domainEvent = domainEventRepository.findAllForCrn(person.crn).single()
+        assertThat(domainEvent.eventType, equalTo("probation-case.registration.deregistered"))
+        assertThat(domainEvent.additionalInformation["registerTypeCode"], equalTo(RiskOfSeriousHarmType.M.code))
+    }
+
+    @Test
+    fun `a risk change with no risk level creates a low ROSH registration`() {
+        val person = personRepository.getByCrn(PersonGenerator.RISK_CHANGE_NULL_ROSH.crn)
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn(person.crn)
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        val registration = registrationRepository
+            .findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.ROSH_FLAG.code).single()
+        assertThat(registration.type.code, equalTo(RiskOfSeriousHarmType.L.code))
+        assertThat(personRepository.getByCrn(person.crn).highestRiskColour, equalTo("Green"))
+    }
+
+    @Test
+    fun `a risk change for a person not found in Delius is logged and ignored`() {
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn("Z999999")
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            check { assertThat(it["reason"], equalTo("Person with crn of Z999999 not found")) },
+            anyMap()
+        )
+        verify(telemetryService, never()).trackEvent(eq("RiskChangeSuccess"), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `a risk change with no assessment in OASys is logged and ignored`() {
+        val message = notification<HmppsDomainEvent>("risk-flag-changed").withRiskChangeCrn("Y999999")
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            check { assertThat(it["reason"], equalTo("No assessment in OASys")) },
+            anyMap()
+        )
+        verify(telemetryService, never()).trackEvent(eq("RiskChangeSuccess"), anyMap(), anyMap())
+    }
+
+    @Test
+    fun `events from the T2B environment are logged and ignored`() {
+        val notification = notification<HmppsDomainEvent>("risk-flag-changed")
+        val message = notification.copy(
+            message = notification.message.copy(
+                detailUrl = "https://t2-b.oasys.service.justice.gov.uk/eor/oasys/ass/tierriskflag/A000001/ALLOW"
+            )
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("AssessmentSummaryFailureReport"),
+            check { assertThat(it["reason"], equalTo("Not processing assessments from T2-B test environment")) },
+            anyMap()
+        )
+        verify(telemetryService, never()).trackEvent(eq("RiskChangeSuccess"), anyMap(), anyMap())
+        verify(telemetryService, never()).trackEvent(eq("AssessmentSummarySuccess"), anyMap(), anyMap())
+    }
+
+    private fun Notification<HmppsDomainEvent>.withRiskChangeCrn(crn: String): Notification<HmppsDomainEvent> {
+        return this.copy(
+            message = this.message.copy(
+                detailUrl = "http://localhost:${wireMockServer.port()}/eor/oasys/ass/tierriskflag/$crn/ALLOW",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
+            )
+        )
     }
 
     private fun Notification<HmppsDomainEvent>.withCrn(crn: String): Notification<HmppsDomainEvent> {

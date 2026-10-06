@@ -276,6 +276,71 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/tierriskflag/A000021/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000021-risk-change-medium-rosh.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/tierriskflag/A000022/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000022-risk-change-existing-rosh.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/tierriskflag/A000023/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000023-risk-change-null-rosh.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/tierriskflag/A000024/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "A000024-risk-change-no-rosh.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/tierriskflag/Z999999/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "Z999999-risk-change-no-delius-record.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPattern": "/eor/oasys/ass/sectionroshsumm/ALLOW/.+"
       },
       "response": {

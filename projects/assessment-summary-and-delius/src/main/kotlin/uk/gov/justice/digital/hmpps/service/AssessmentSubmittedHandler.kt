@@ -7,24 +7,20 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.enum.RiskOfSeriousHarmType
 import uk.gov.justice.digital.hmpps.enum.RiskType
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.SUBMIT_ASSESSMENT_SUMMARY
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_RISK_DATA
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.flagged.RiskService as FlaggedRiskService
 
 @Service
 @Transactional
-class AssessmentSubmitted(
+class AssessmentSubmittedHandler(
     auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val assessmentService: AssessmentService,
     private val riskService: RiskService,
-    private val flaggedRiskService: FlaggedRiskService,
-    private val featureFlags: FeatureFlags,
     private val telemetryService: TelemetryService,
     private val optimisationTables: OptimisationTables,
     private val domainEventService: DomainEventService,
@@ -55,13 +51,8 @@ class AssessmentSubmitted(
 
         if (summary.assessmentStatus == "COMPLETE") audit(UPDATE_RISK_DATA) {
             it["CRN"] = person.crn
-
             val ta = TelemetryAggregator()
-            if (featureFlags.enabled(UPDATE_RISK_REGISTRATIONS_IN_PLACE)) {
-                riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
-            } else {
-                flaggedRiskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
-            }
+            riskService.recordRisk(person, summary) { key, value -> ta.add(key, value) }
             telemetryParams.putAll(ta.params())
         }
 
@@ -78,24 +69,5 @@ class AssessmentSubmitted(
         optimisationTables.rebuild(person.id)
 
         telemetryService.trackEvent("AssessmentSummarySuccess", telemetryParams)
-    }
-}
-
-class TelemetryAggregator() {
-    private val data = mutableMapOf<String, MutableList<String>>()
-
-    fun add(key: String, value: String) {
-        if (!data.containsKey(key)) {
-            data[key] = mutableListOf()
-        }
-        data[key]?.apply { add(value) }
-    }
-
-    fun params() = data.map { it.key to it.value.sorted().joinToString(",", "[", "]") }.toMap()
-
-    companion object {
-        const val REGISTERED = "Registered"
-        const val DEREGISTERED = "Deregistered"
-        const val REVIEW_COMPLETED = "ReviewCompleted"
     }
 }
