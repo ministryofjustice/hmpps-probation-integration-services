@@ -35,6 +35,21 @@ class AppointmentTeam(
     val id: Long,
 )
 
+@Entity
+@Immutable
+@Table(name = "all_team", comment = "Legacy team table")
+class ProviderTeam(
+    @Id
+    @Column(name = "trust_provider_team_id")
+    val id: Long,
+    val description: String,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: AppointmentProvider,
+) {
+    fun toTeam(): AppointmentTeam = AppointmentTeam(provider, code = id.toString(), description, id)
+}
+
 @Immutable
 @Entity
 @Table(name = "office_location")
@@ -79,6 +94,26 @@ class AppointmentStaff(
     @Column(name = "staff_id")
     val id: Long,
 )
+
+@Entity
+@Immutable
+@Table(name = "provider_employee", comment = "Legacy staff table")
+class ProviderStaff(
+    @Column(name = "code", columnDefinition = "char(7)")
+    val code: String,
+
+    @Column
+    val forename: String,
+
+    @Column
+    val surname: String,
+
+    @Id
+    @Column(name = "provider_employee_id")
+    val id: Long,
+) {
+    fun toStaff(): AppointmentStaff = AppointmentStaff(code, forename, surname, id)
+}
 
 interface AppointmentTeamRepository : JpaRepository<AppointmentTeam, Long> {
     fun findByCode(code: String): AppointmentTeam?

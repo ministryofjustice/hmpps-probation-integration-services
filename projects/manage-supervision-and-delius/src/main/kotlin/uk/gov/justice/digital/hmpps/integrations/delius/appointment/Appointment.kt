@@ -51,7 +51,7 @@ class Appointment(
 
     @ManyToOne
     @JoinColumn(name = "provider_team_id")
-    var providerTeam: AppointmentTeam? = null,
+    var providerTeam: ProviderTeam? = null,
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
@@ -59,7 +59,7 @@ class Appointment(
 
     @ManyToOne
     @JoinColumn(name = "staff_employee_id")
-    var staffEmployee: AppointmentStaff? = null,
+    var providerStaff: ProviderStaff? = null,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
@@ -164,12 +164,12 @@ class Appointment(
         private set
 
     var team
-        get() = checkNotNull(teamStandard ?: providerTeam) { "Missing team (contact_id=$id)" }
+        get() = checkNotNull(teamStandard ?: providerTeam?.toTeam()) { "Missing team (contact_id=$id)" }
         set(value) {
             teamStandard = value
         }
     var staff
-        get() = checkNotNull(staffStandard ?: staffEmployee) { "Missing staff (contact_id=$id)" }
+        get() = checkNotNull(staffStandard ?: providerStaff?.toStaff()) { "Missing staff (contact_id=$id)" }
         set(value) {
             staffStandard = value
         }
