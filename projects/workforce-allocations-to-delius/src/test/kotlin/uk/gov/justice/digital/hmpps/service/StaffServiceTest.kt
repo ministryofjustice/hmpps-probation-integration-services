@@ -189,6 +189,41 @@ class StaffServiceTest {
         assertThat(response.cases.size, equalTo(0))
     }
 
+    @Test
+    fun `active cases batches repository queries when crns exceed oracle in clause limit`() {
+        val staff = StaffGenerator.STAFF_WITH_USER
+        val crns = (1..1001).map { "CRN${it.toString().padStart(4, '0')}" }
+        val firstChunk = crns.take(999)
+        val secondChunk = crns.drop(999)
+
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
+        whenever(personRepository.findMostRecentInitialAllocations(firstChunk.toSet(), AUDIT_USER.username)).thenReturn(
+            emptyList()
+        )
+        whenever(
+            personRepository.findMostRecentInitialAllocations(
+                secondChunk.toSet(),
+                AUDIT_USER.username
+            )
+        ).thenReturn(emptyList())
+        whenever(personRepository.findCaseTypes(firstChunk.toSet())).thenReturn(emptyList())
+        whenever(personRepository.findCaseTypes(secondChunk.toSet())).thenReturn(emptyList())
+        whenever(personRepository.findAllByCrnAndSoftDeletedFalse(firstChunk)).thenReturn(emptyList())
+        whenever(personRepository.findAllByCrnAndSoftDeletedFalse(secondChunk)).thenReturn(emptyList())
+
+        val response = staffService.getActiveCases(staff.code, crns)
+
+        assertThat(response.code, equalTo(staff.code))
+        assertThat(response.cases.size, equalTo(0))
+        verify(personRepository).findMostRecentInitialAllocations(firstChunk.toSet(), AUDIT_USER.username)
+        verify(personRepository).findMostRecentInitialAllocations(secondChunk.toSet(), AUDIT_USER.username)
+        verify(personRepository).findCaseTypes(firstChunk.toSet())
+        verify(personRepository).findCaseTypes(secondChunk.toSet())
+        verify(personRepository).findAllByCrnAndSoftDeletedFalse(firstChunk)
+        verify(personRepository).findAllByCrnAndSoftDeletedFalse(secondChunk)
+    }
+
     private fun caseTypeByCrn(caseCrn: String, caseType: String) = object : CaseTypeByCrn {
         override val crn = caseCrn
         override val type = caseType
