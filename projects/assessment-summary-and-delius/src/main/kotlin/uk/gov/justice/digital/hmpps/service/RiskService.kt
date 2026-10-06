@@ -304,7 +304,7 @@ class RiskService(
 private const val NO_RISK_IDENTIFIED_NOTE =
     "An OASys assessment has been completed and no specific risks have been identified."
 private const val INCOMPLETE_ROSH_NOTE =
-    "Risk of Serious Harm level has been added based on an incomplete assessment."
+    "This RoSH level was calculated when OASys Risk Sections were updated and may be subject to change when any assessment is next marked as complete."
 
 private val AssessmentSummary.allRiskToValuesNull: Boolean
     get() = listOf(

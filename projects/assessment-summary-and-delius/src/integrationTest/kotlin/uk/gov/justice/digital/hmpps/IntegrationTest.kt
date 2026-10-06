@@ -789,7 +789,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(registration.type.code, equalTo(expectedType))
         assertThat(
             registration.notes,
-            equalTo("Risk of Serious Harm level has been added based on an incomplete assessment.")
+            equalTo("This RoSH level was calculated when OASys Risk Sections were updated and may be subject to change when any assessment is next marked as complete.")
         )
         assertThat(registration.date, equalTo(LocalDate.now()))
         assertThat(registration.contact.type.code, equalTo(ContactType.Code.REGISTRATION.value))
