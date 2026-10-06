@@ -16,7 +16,6 @@ include(
     "approved-premises-and-delius",
     "approved-premises-and-oasys",
     "arns-and-delius",
-    "assess-for-early-release-and-delius",
     "assessment-summary-and-delius",
     "breach-notice-and-delius",
     "cas2-and-delius",
