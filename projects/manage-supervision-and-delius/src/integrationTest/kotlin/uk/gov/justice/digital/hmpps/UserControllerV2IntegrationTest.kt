@@ -35,7 +35,10 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
             )
         )
         assertThat(res.appointments.first().caseName, equalTo(Name("Vera", "Integration", "Future")))
-        assertThat(res.appointments.first().latestSentence, equalTo(UserControllerV2Generator.DISPOSAL_TYPE.description))
+        assertThat(
+            res.appointments.first().latestSentence,
+            equalTo(UserControllerV2Generator.DISPOSAL_TYPE.description)
+        )
         assertThat(res.appointments.first().location, equalTo(UserControllerV2Generator.OFFICE_LOCATION.description))
     }
 
@@ -77,7 +80,10 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
             .andReturn().response.contentAsJson<UserDiary>()
 
         assertThat(res.totalResults, equalTo(1))
-        assertThat(res.appointments.map { it.id }, equalTo(listOf(UserControllerV2Generator.AFTER_REFERENCE_CONTACT.id)))
+        assertThat(
+            res.appointments.map { it.id },
+            equalTo(listOf(UserControllerV2Generator.AFTER_REFERENCE_CONTACT.id))
+        )
     }
 
     @Test
@@ -97,7 +103,10 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
                 )
             )
         )
-        assertThat(res.appointments.map { it.type }.distinct(), equalTo(listOf(UserControllerV2Generator.CONTACT_TYPE.description)))
+        assertThat(
+            res.appointments.map { it.type }.distinct(),
+            equalTo(listOf(UserControllerV2Generator.CONTACT_TYPE.description))
+        )
     }
 
     @Test

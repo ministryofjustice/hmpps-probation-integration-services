@@ -88,5 +88,4 @@ class UserControllerV2(
             else -> Sort.by(direction, "contact_date", "contact_start_time")
         }
     }
-
 }

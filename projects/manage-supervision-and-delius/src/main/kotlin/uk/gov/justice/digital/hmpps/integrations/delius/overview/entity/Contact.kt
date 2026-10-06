@@ -792,7 +792,7 @@ where (c.soft_deleted = 0)
    and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
    and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
          """,
-         countQuery = """
+        countQuery = """
                  select count(1) 
                  from contact c 
                  join r_contact_type rct on rct.contact_type_id = c.contact_type_id 
@@ -808,9 +808,9 @@ where (c.soft_deleted = 0)
                  and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
                  and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
          """,
-         nativeQuery = true
-     )
-     fun findUpComingAppointmentsByUserV2(
+        nativeQuery = true
+    )
+    fun findUpComingAppointmentsByUserV2(
         staffId: Long,
         dateNow: String,
         timeNow: String,
@@ -970,8 +970,8 @@ where (c.soft_deleted = 0)
              and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
              and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
          """,
-         nativeQuery = true,
-         countQuery = """
+        nativeQuery = true,
+        countQuery = """
              select  count(1)
              from offender o
              join contact c on o.offender_id = c.offender_id
@@ -995,8 +995,8 @@ where (c.soft_deleted = 0)
              and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
              and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
          """
-     )
-     fun findAppointmentsWithoutOutcomesByUserV2(
+    )
+    fun findAppointmentsWithoutOutcomesByUserV2(
         staffId: Long,
         dateNow: String,
         timeNow: String,
@@ -1147,7 +1147,7 @@ where (c.soft_deleted = 0)
          from appt
          left join rq on appt.rqmnt_id = rq.rqmnt_id   
      """,
-         countQuery = """
+        countQuery = """
          select count(1)
          from offender o
          join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
@@ -1169,9 +1169,9 @@ where (c.soft_deleted = 0)
          and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
          and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))            
          """,
-         nativeQuery = true
-     )
-     fun findSummaryOfAppointmentsWithoutOutcomesByUserV2(
+        nativeQuery = true
+    )
+    fun findSummaryOfAppointmentsWithoutOutcomesByUserV2(
         staffId: Long,
         dateNow: String,
         timeNow: String,
