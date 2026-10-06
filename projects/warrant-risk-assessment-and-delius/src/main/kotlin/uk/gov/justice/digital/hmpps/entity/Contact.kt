@@ -46,14 +46,20 @@ class ContactType(
     val id: Long,
 
     val code: String,
+
+    @Column(columnDefinition = "char(1)")
+    @Convert(converter = YesNoConverter::class)
+    val homeVisit: Boolean? = null,
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
-        select max(c.date) from Contact c
+        select max(c.date)
+        from Contact c
         where c.personId = :personId
-        and c.type.code in ('CHVS', 'COHV')
+        and c.type.homeVisit = true
+        and c.date <= current_date
         """
     )
     fun findLastHomeVisitDate(personId: Long): LocalDate?

@@ -22,6 +22,13 @@ object PersonGenerator {
 
     val NO_OPTIONAL_FIELDS = generate(crn = "A000002")
 
+    val HOME_VISIT = generate(
+        crn = "A000003",
+        forename = "Home",
+        surname = "Visit",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
+    )
+
     val PRISON_MANAGED = generate(crn = "P000001")
 
     val NO_PREFERRED_ADDRESS = generate(crn = "N000001")

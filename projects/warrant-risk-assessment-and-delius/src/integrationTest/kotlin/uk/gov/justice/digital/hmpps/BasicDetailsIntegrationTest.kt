@@ -105,12 +105,14 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
 
     @Test
     fun `returns most recent home visit date only`() {
-        val response = mockMvc.get("/basic-details/${PersonGenerator.DEFAULT.crn}") { withToken() }
+        val response = mockMvc.get("/basic-details/${PersonGenerator.HOME_VISIT.crn}") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<BasicDetails>()
 
-        assertThat(response.lastHomeVisitDate).isEqualTo(ContactGenerator.LAST_HOME_VISIT.date)
-        assertThat(response.lastHomeVisitDate).isNotEqualTo(ContactGenerator.OLDER_HOME_VISIT.date)
+        assertThat(response.lastHomeVisitDate).isEqualTo(ContactGenerator.HOME_VISIT_PERSON_LATEST.date)
+        assertThat(response.lastHomeVisitDate).isNotEqualTo(ContactGenerator.HOME_VISIT_PERSON_OLDER.date)
+        assertThat(response.lastHomeVisitDate).isNotEqualTo(ContactGenerator.HOME_VISIT_PERSON_SOFT_DELETED.date)
+        assertThat(response.lastHomeVisitDate).isNotEqualTo(ContactGenerator.HOME_VISIT_PERSON_FUTURE.date)
     }
 
     @Test
