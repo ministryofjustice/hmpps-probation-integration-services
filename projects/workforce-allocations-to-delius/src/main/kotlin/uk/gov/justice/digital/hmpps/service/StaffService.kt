@@ -71,12 +71,12 @@ class StaffService(
         val cases = crns.distinct().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE)
             .flatMap { personRepository.findAllByCrnAndSoftDeletedFalse(it) }
             .map {
-            Case(
-                it.crn,
-                it.name(),
-                caseTypes[it.crn] ?: CaseType.UNKNOWN.name,
-                initialAllocationDates[it.crn]
-            )
+                Case(
+                    it.crn,
+                    it.name(),
+                    caseTypes[it.crn] ?: CaseType.UNKNOWN.name,
+                    initialAllocationDates[it.crn]
+                )
             }
         return ActiveCasesResponse(
             staff.code,

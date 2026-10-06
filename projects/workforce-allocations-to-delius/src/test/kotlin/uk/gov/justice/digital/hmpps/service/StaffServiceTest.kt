@@ -198,8 +198,15 @@ class StaffServiceTest {
 
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
-        whenever(personRepository.findMostRecentInitialAllocations(firstChunk.toSet(), AUDIT_USER.username)).thenReturn(emptyList())
-        whenever(personRepository.findMostRecentInitialAllocations(secondChunk.toSet(), AUDIT_USER.username)).thenReturn(emptyList())
+        whenever(personRepository.findMostRecentInitialAllocations(firstChunk.toSet(), AUDIT_USER.username)).thenReturn(
+            emptyList()
+        )
+        whenever(
+            personRepository.findMostRecentInitialAllocations(
+                secondChunk.toSet(),
+                AUDIT_USER.username
+            )
+        ).thenReturn(emptyList())
         whenever(personRepository.findCaseTypes(firstChunk.toSet())).thenReturn(emptyList())
         whenever(personRepository.findCaseTypes(secondChunk.toSet())).thenReturn(emptyList())
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(firstChunk)).thenReturn(emptyList())
