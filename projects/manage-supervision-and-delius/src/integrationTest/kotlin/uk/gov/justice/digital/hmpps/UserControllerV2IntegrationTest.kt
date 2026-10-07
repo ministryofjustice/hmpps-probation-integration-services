@@ -87,6 +87,40 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `v2 upcoming appointments apply from date without requiring a to date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/upcoming") {
+            withToken()
+            param("dateTime", UserControllerV2Generator.UPCOMING_FILTER_DATE_TIME.toOffsetDateTime().toString())
+            param("fromDate", "2035-01-16")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(1))
+        assertThat(
+            res.appointments.map { it.id },
+            equalTo(listOf(UserControllerV2Generator.NEXT_DAY_CONTACT.id))
+        )
+    }
+
+    @Test
+    fun `v2 upcoming appointments apply to date without requiring a from date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/upcoming") {
+            withToken()
+            param("dateTime", UserControllerV2Generator.UPCOMING_FILTER_DATE_TIME.toOffsetDateTime().toString())
+            param("toDate", "2035-01-15")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(1))
+        assertThat(
+            res.appointments.map { it.id },
+            equalTo(listOf(UserControllerV2Generator.AFTER_REFERENCE_CONTACT.id))
+        )
+    }
+
+    @Test
     fun `v2 no outcome appointments use dedicated isolated data only`() {
         val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/no-outcome") {
             withToken()
@@ -121,6 +155,32 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
 
         assertThat(res.totalResults, equalTo(1))
         assertThat(res.appointments.map { it.id }, equalTo(listOf(UserControllerV2Generator.HISTORIC_CONTACT.id)))
+    }
+
+    @Test
+    fun `v2 no outcome appointments apply from date without requiring a to date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/no-outcome") {
+            withToken()
+            param("fromDate", "2025-01-10")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(1))
+        assertThat(res.appointments.map { it.id }, equalTo(listOf(UserControllerV2Generator.HISTORIC_CONTACT.id)))
+    }
+
+    @Test
+    fun `v2 no outcome appointments apply to date without requiring a from date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/no-outcome") {
+            withToken()
+            param("toDate", "2025-01-09")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(0))
+        assertThat(res.appointments, equalTo(emptyList()))
     }
 
     @Test
@@ -168,6 +228,36 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
             )
         )
         assertThat(res.outcomes, equalTo(emptyList()))
+    }
+
+    @Test
+    fun `v2 appointments summary applies from date without requiring a to date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/appointments") {
+            withToken()
+            param("fromDate", "2035-01-16")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAppointments>()
+
+        assertThat(res.totalAppointments, equalTo(1))
+        assertThat(res.totalOutcomes, equalTo(0))
+        assertThat(res.appointments.map { it.id }, equalTo(listOf(UserControllerV2Generator.NEXT_DAY_CONTACT.id)))
+        assertThat(res.outcomes, equalTo(emptyList()))
+    }
+
+    @Test
+    fun `v2 appointments summary applies to date without requiring a from date`() {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/appointments") {
+            withToken()
+            param("toDate", "2025-12-31")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserAppointments>()
+
+        assertThat(res.totalAppointments, equalTo(0))
+        assertThat(res.totalOutcomes, equalTo(1))
+        assertThat(res.appointments, equalTo(emptyList()))
+        assertThat(res.outcomes.map { it.id }, equalTo(listOf(UserControllerV2Generator.HISTORIC_CONTACT.id)))
     }
 
     @Test
