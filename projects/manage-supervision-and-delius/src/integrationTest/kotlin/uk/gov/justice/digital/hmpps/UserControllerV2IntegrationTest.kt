@@ -130,7 +130,10 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
         "appointment, true",
         "sentence, false"
     )
-    fun `v2 upcoming appointments support every sort option alongside date filters`(sortBy: String, ascending: Boolean) {
+    fun `v2 upcoming appointments support every sort option alongside date filters`(
+        sortBy: String,
+        ascending: Boolean
+    ) {
         val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/upcoming") {
             withToken()
             param("dateTime", UserControllerV2Generator.UPCOMING_FILTER_DATE_TIME.toOffsetDateTime().toString())
