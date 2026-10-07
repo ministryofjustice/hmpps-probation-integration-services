@@ -62,6 +62,11 @@ class UserService(
     private val deliusUserAspect: DeliusUserAspect,
     private val providerRepository: ProviderRepository
 ) {
+    private val localDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+
+    private fun LocalDate?.formatOrNull(): String? = this?.format(localDateFormatter)
+
     fun getUserDetails(username: String): UserDetails {
         val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
             ?: throw NotFoundException("User", "username", username)
@@ -164,6 +169,34 @@ class UserService(
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
 
+    fun getUpcomingAppointmentsV2(
+        username: String,
+        pageable: Pageable,
+        dateTime: ZonedDateTime,
+        fromDate: LocalDate? = null,
+        toDate: LocalDate? = null
+    ): UserDiary {
+        val user = getUser(username)
+        val londonDateTime = dateTime.withZoneSameInstant(EuropeLondon)
+
+        if (fromDate != null && toDate != null) {
+            require(!fromDate.isAfter(toDate)) { "fromDate must be on or before toDate" }
+        }
+
+        return user.staff?.let {
+            val contacts = contactRepository.findUpComingAppointmentsByUserV2(
+                user.staff.id,
+                londonDateTime.toLocalDate().format(localDateFormatter),
+                londonDateTime.toLocalTime().format(localTimeFormatter),
+                fromDate.formatOrNull(),
+                toDate.formatOrNull(),
+                pageable
+            )
+
+            return populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
+    }
+
     fun getAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
@@ -190,6 +223,33 @@ class UserService(
         } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
     }
 
+    fun getAppointmentsWithoutOutcomesV2(
+        username: String,
+        pageable: Pageable,
+        fromDate: LocalDate? = null,
+        toDate: LocalDate? = null
+    ): UserDiary {
+        val user = getUser(username)
+        val londonNow = ZonedDateTime.now(EuropeLondon)
+
+        if (fromDate != null && toDate != null) {
+            require(!fromDate.isAfter(toDate))
+        }
+
+        return user.staff?.let {
+            val contacts = contactRepository.findAppointmentsWithoutOutcomesByUserV2(
+                user.staff.id,
+                londonNow.toLocalDate().format(localDateFormatter),
+                londonNow.toLocalTime().format(localTimeFormatter),
+                fromDate.formatOrNull(),
+                toDate.formatOrNull(),
+                pageable
+            )
+
+            populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
+    }
+
     fun getSummaryOfAppointmentsWithoutOutcomes(username: String, pageable: Pageable): UserDiary {
         val user = getUser(username)
 
@@ -198,6 +258,29 @@ class UserService(
                 user.staff.id,
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
                 ZonedDateTime.now(EuropeLondon).format(DateTimeFormatter.ISO_LOCAL_TIME.withZone(EuropeLondon)),
+                pageable
+            )
+
+            populateUserDiary(pageable, contacts)
+        } ?: UserDiary(pageable.pageSize, pageable.pageNumber, 0, 0, listOf())
+    }
+
+    fun getSummaryOfAppointmentsWithoutOutcomesV2(
+        username: String,
+        pageable: Pageable,
+        fromDate: LocalDate? = null,
+        toDate: LocalDate? = null
+    ): UserDiary {
+        val user = getUser(username)
+        val londonNow = ZonedDateTime.now(EuropeLondon)
+
+        return user.staff?.let {
+            val contacts = contactRepository.findSummaryOfAppointmentsWithoutOutcomesByUserV2(
+                user.staff.id,
+                londonNow.toLocalDate().format(localDateFormatter),
+                londonNow.toLocalTime().format(localTimeFormatter),
+                fromDate.formatOrNull(),
+                toDate.formatOrNull(),
                 pageable
             )
 
@@ -217,6 +300,39 @@ class UserService(
             val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomes(
                 username,
                 pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time"))
+            )
+
+            UserAppointments(
+                Name(user.forename, surname = user.surname),
+                totalAppointments = appointmentsForToday.totalResults,
+                appointments = appointmentsForToday.appointments,
+                totalOutcomes = appointmentsWithoutOutcomes.totalResults,
+                outcomes = appointmentsWithoutOutcomes.appointments
+            )
+        } ?: UserAppointments(Name(user.forename, surname = user.surname), totalAppointments = 0, totalOutcomes = 0)
+    }
+
+    fun getAppointmentsForUserV2(
+        username: String,
+        fromDate: LocalDate? = null,
+        toDate: LocalDate? = null
+    ): UserAppointments {
+        val user = getUser(username)
+
+        val pageRequest = PageRequest.of(0, 5)
+        return user.staff?.let {
+            val appointmentsForToday = getUpcomingAppointmentsV2(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")),
+                ZonedDateTime.now(EuropeLondon),
+                fromDate,
+                toDate
+            )
+            val appointmentsWithoutOutcomes = getSummaryOfAppointmentsWithoutOutcomesV2(
+                username,
+                pageRequest.withSort(Sort.by(Sort.Direction.ASC, "contact_date", "contact_start_time")),
+                fromDate,
+                toDate
             )
 
             UserAppointments(

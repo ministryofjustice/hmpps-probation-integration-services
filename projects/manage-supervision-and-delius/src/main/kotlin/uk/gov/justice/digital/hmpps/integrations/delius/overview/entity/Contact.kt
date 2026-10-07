@@ -740,6 +740,87 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
+                select  o.first_name as forename,
+        o.second_name as second_name,
+        o.third_name as third_name,
+        o.surname as surname,
+        o.date_of_birth_date as dob,
+        c.contact_id as id,
+        o.crn as crn,
+        ol.description as location,
+        c.contact_date as contact_date,
+        c.contact_start_time as contact_start_time,
+        c.contact_end_time as contact_end_time,
+        total_sentences,
+        rct.description as contactdescription,
+        rct.code as typecode,
+        case when c.complied = 'N' then 0 else 1 end as complied,
+        rtmc.code as rqmntmaincatcode,
+        nvl(rdt.description, latest_sentence_description)  as sentencedescription
+from contact c
+join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+join offender o on o.offender_id = c.offender_id
+join staff s on s.staff_id = c.staff_id
+left join office_location ol on ol.office_location_id = c.office_location_id
+left join event e on e.event_id = c.event_id and (e.soft_deleted = 0)
+left join disposal d on e.event_id = d.event_id
+left join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
+left join (
+    select sub.*
+    from
+        (select e.*,
+                rdt.description as latest_sentence_description,
+                count(e.event_id) over (partition by e.offender_id) as total_sentences,
+                row_number() over (partition by e.offender_id order by cast(e.event_number as NUMBER) desc) as row_num
+         from event e
+         join disposal d on d.event_id = e.event_id
+         join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+         where e.soft_deleted = 0
+           and e.active_flag = 1
+        ) sub
+    where sub.row_num = 1
+) ls on ls.offender_id =c.offender_id
+where (c.soft_deleted = 0)
+   and c.contact_outcome_type_id is null
+   and s.staff_id = :staffId
+   and rct.attendance_contact = 'Y'
+   and (c.contact_date > TO_DATE(:dateNow, 'YYYY-MM-DD')
+     or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+     and c.contact_start_time > TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+   and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+   and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
+         """,
+        countQuery = """
+                 select count(1) 
+                 from contact c 
+                 join r_contact_type rct on rct.contact_type_id = c.contact_type_id 
+                 join offender o on o.offender_id = c.offender_id
+                 join staff s on s.staff_id = c.staff_id 
+                 where (c.soft_deleted = 0)
+                 and c.contact_outcome_type_id is null
+                 and s.staff_id = :staffId
+                 and rct.attendance_contact = 'Y' 
+                 and (c.contact_date > TO_DATE(:dateNow, 'YYYY-MM-DD')
+                     or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+                     and c.contact_start_time > TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+                 and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+                 and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
+         """,
+        nativeQuery = true
+    )
+    fun findUpComingAppointmentsByUserV2(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        fromDate: String?,
+        toDate: String?,
+        pageable: Pageable
+    ): Page<Appointment>
+
+    @Query(
+        """
             select  o.first_name as forename, 
                     o.second_name as second_name, 
                     o.third_name as third_name, 
@@ -830,6 +911,103 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
+            select  o.first_name as forename, 
+                    o.second_name as second_name, 
+                    o.third_name as third_name, 
+                    o.surname as surname, 
+                    o.date_of_birth_date as dob, 
+                    c.contact_id as id, 
+                    o.crn as crn, 
+                    ol.description as location, 
+                    c.contact_date as contact_date, 
+                    c.contact_start_time as contact_start_time, 
+                    c.contact_end_time as contact_end_time, 
+                    (select count(1)
+                         from event e 
+                         join disposal d on d.event_id = e.event_id
+                         where e.offender_id = o.offender_id
+                         and e.active_flag = 1
+                         and e.soft_deleted = 0) as totalsentences,
+                    rct.description as contactdescription,
+                    rct.code as typecode,
+                    case when c.complied = 'N' then 0 else 1 end as complied,
+                    rtmc.code as rqmntmaincatcode,
+                    case when d.disposal_id is not null 
+                    then 
+                        rdt.description
+                    else
+                        (select rdt.description
+                          from disposal d
+                          join event sentence_event on sentence_event.event_id = d.event_id
+                          join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+                          where d.offender_id = o.offender_id
+                          order by sentence_event.created_datetime desc fetch first 1 row only)
+                    end as sentencedescription      
+            from offender o
+            join contact c on o.offender_id = c.offender_id
+            join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+            join staff s on s.staff_id = c.staff_id
+            left join office_location ol on ol.office_location_id = c.office_location_id
+            left join event e on e.event_id = c.event_id and e.active_flag = 1 and e.soft_deleted = 0
+            left join disposal d on d.event_id = e.event_id
+            left join r_disposal_type rdt on rdt.disposal_type_id = d.disposal_type_id
+            left join rqmnt r on r.rqmnt_id = c.rqmnt_id
+            left join r_rqmnt_type_main_category rtmc on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id
+            where (c.soft_deleted = 0) 
+            and s.staff_id = :staffId 
+            and rct.attendance_contact = 'Y'  
+            and rct.contact_outcome_flag = 'Y' 
+            and c.contact_outcome_type_id is null 
+            and exists (
+                select 1
+                from r_contact_type_outcome cto
+                join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                where cto.contact_type_id = c.contact_type_id
+                and cot.selectable = 'Y'
+            )
+            and (c.contact_date < TO_DATE(:dateNow, 'YYYY-MM-DD')
+                or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+                and c.contact_start_time < TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+             and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+             and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
+         """,
+        nativeQuery = true,
+        countQuery = """
+             select  count(1)
+             from offender o
+             join contact c on o.offender_id = c.offender_id
+             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+             join staff s on s.staff_id = c.staff_id
+             where (c.soft_deleted = 0) 
+             and s.staff_id = :staffId
+             and rct.attendance_contact = 'Y' 
+             and rct.contact_outcome_flag = 'Y'
+             and c.contact_outcome_type_id is null
+             and exists (
+                 select 1
+                 from r_contact_type_outcome cto
+                 join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                 where cto.contact_type_id = c.contact_type_id
+                 and cot.selectable = 'Y'
+             )
+             and (c.contact_date < TO_DATE(:dateNow, 'YYYY-MM-DD')
+                 or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+                 and c.contact_start_time < TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+             and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+             and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))
+         """
+    )
+    fun findAppointmentsWithoutOutcomesByUserV2(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        fromDate: String?,
+        toDate: String?,
+        pageable: Pageable
+    ): Page<Appointment>
+
+    @Query(
+        """
         with appt as ( select o.first_name,
                     o.second_name,
                     o.third_name,
@@ -911,6 +1089,95 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         staffId: Long,
         dateNow: String,
         timeNow: String,
+        pageable: Pageable
+    ): Page<Appointment>
+
+    @Query(
+        """
+        with appt as ( select o.first_name,
+                    o.second_name,
+                    o.third_name,
+                    o.surname,
+                    o.date_of_birth_date,
+                    c.contact_id,
+                    o.crn,
+                    c.contact_date,
+                    c.contact_start_time,
+                    c.contact_end_time,
+                    rct.description,
+                    rct.code,
+                    c.rqmnt_id,
+                    case when c.complied = 'N' then 0 else 1 end as complied
+             from offender o
+             join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
+             join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+             where rct.attendance_contact = 'Y'
+               and rct.contact_outcome_flag = 'Y'
+               and c.contact_outcome_type_id is null
+               and exists (
+                   select 1
+                   from r_contact_type_outcome cto
+                   join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+                   where cto.contact_type_id = c.contact_type_id
+                     and cot.selectable = 'Y'
+               )
+               and c.soft_deleted = 0
+                 and (c.contact_date < TO_DATE(:dateNow, 'YYYY-MM-DD')
+                      or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+                       and c.contact_start_time < TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+                and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+                and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD')) ),
+          rq as ( select r.rqmnt_id, rtmc.code
+                  from rqmnt r
+                  left join r_rqmnt_type_main_category rtmc
+                            on rtmc.rqmnt_type_main_category_id = r.rqmnt_type_main_category_id )
+         select appt.first_name         as forename,
+                appt.second_name        as secondname,
+                appt.third_name         as thirdname,
+                appt.surname            as surname,
+                appt.date_of_birth_date as dob,
+                appt.contact_id         as id,
+                appt.crn                as crn,
+                appt.contact_date       as contact_date,
+                appt.contact_start_time as contact_start_time,
+                appt.contact_end_time   as contact_end_time,
+                appt.description        as contactdescription,
+                appt.code               as typecode,
+                appt.complied           as complied,
+                rq.code                 as rqmntmaincatcode
+         from appt
+         left join rq on appt.rqmnt_id = rq.rqmnt_id   
+     """,
+        countQuery = """
+         select count(1)
+         from offender o
+         join contact c on c.offender_id = o.offender_id and c.staff_id = :staffId
+         join r_contact_type rct on rct.contact_type_id = c.contact_type_id
+         where rct.attendance_contact = 'Y'  
+         and rct.contact_outcome_flag = 'Y'
+         and c.contact_outcome_type_id is null 
+         and exists (
+             select 1
+             from r_contact_type_outcome cto
+             join r_contact_outcome_type cot on cot.contact_outcome_type_id = cto.contact_outcome_type_id
+             where cto.contact_type_id = c.contact_type_id
+               and cot.selectable = 'Y'
+         )
+         and c.soft_deleted = 0
+         and (c.contact_date < TO_DATE(:dateNow, 'YYYY-MM-DD')
+              or (c.contact_date = TO_DATE(:dateNow, 'YYYY-MM-DD')
+               and c.contact_start_time < TO_TIMESTAMP('1970-01-01 ' || :timeNow, 'YYYY-MM-DD HH24:MI:SS')))
+         and (:fromDate is null or c.contact_date >= TO_DATE(:fromDate, 'YYYY-MM-DD'))
+         and (:toDate is null or c.contact_date <= TO_DATE(:toDate, 'YYYY-MM-DD'))            
+         """,
+        nativeQuery = true
+    )
+    fun findSummaryOfAppointmentsWithoutOutcomesByUserV2(
+        staffId: Long,
+        dateNow: String,
+        timeNow: String,
+        fromDate: String?,
+        toDate: String?,
         pageable: Pageable
     ): Page<Appointment>
 
