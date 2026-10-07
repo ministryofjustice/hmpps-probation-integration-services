@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.appointment.UserAppointments
@@ -120,6 +123,37 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
         )
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "name, true",
+        "dob, true",
+        "appointment, true",
+        "sentence, false"
+    )
+    fun `v2 upcoming appointments support every sort option alongside date filters`(sortBy: String, ascending: Boolean) {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/upcoming") {
+            withToken()
+            param("dateTime", UserControllerV2Generator.UPCOMING_FILTER_DATE_TIME.toOffsetDateTime().toString())
+            param("fromDate", "2035-01-15")
+            param("toDate", "2035-01-16")
+            param("sortBy", sortBy)
+            param("ascending", ascending.toString())
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(2))
+        assertThat(
+            res.appointments.map { it.id }.toSet(),
+            equalTo(
+                setOf(
+                    UserControllerV2Generator.AFTER_REFERENCE_CONTACT.id,
+                    UserControllerV2Generator.NEXT_DAY_CONTACT.id,
+                )
+            )
+        )
+    }
+
     @Test
     fun `v2 no outcome appointments use dedicated isolated data only`() {
         val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/no-outcome") {
@@ -181,6 +215,22 @@ class UserControllerV2IntegrationTest : IntegrationTestBase() {
 
         assertThat(res.totalResults, equalTo(0))
         assertThat(res.appointments, equalTo(emptyList()))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["name", "dob", "appointment", "sentence"])
+    fun `v2 no outcome appointments support every sort option alongside date filters`(sortBy: String) {
+        val res = mockMvc.get("/v2/user/${UserControllerV2Generator.USER.username}/schedule/no-outcome") {
+            withToken()
+            param("fromDate", "2025-01-01")
+            param("toDate", "2025-12-31")
+            param("sortBy", sortBy)
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<UserDiary>()
+
+        assertThat(res.totalResults, equalTo(1))
+        assertThat(res.appointments.map { it.id }, equalTo(listOf(UserControllerV2Generator.HISTORIC_CONTACT.id)))
     }
 
     @Test
