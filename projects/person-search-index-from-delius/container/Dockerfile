@@ -41,3 +41,5 @@ RUN sed -i "s@\${INCREMENTAL_STATEMENT_SQL}@$(tr '\n' ' ' < /pipelines/person/st
 RUN sed -i -E 's/\B:\w+/?/g' /pipelines/person/statement.sql \
  && sed -i -E 's/\B:\w+/?/g' /pipelines/contact-keyword/statement.sql \
  && sed -i -E 's/\B:\w+/?/g' /pipelines/contact-semantic/statement.sql
+
+ENTRYPOINT ["/scripts/startup.sh"]
