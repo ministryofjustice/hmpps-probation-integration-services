@@ -44,6 +44,18 @@ jobs:
           CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.SNYK_CLIENT_SECRET }}
 
+      - name: Consolidate Snyk SARIF runs
+        # language=bash
+        run: |
+          jq '
+            if (.runs | length) > 20 then
+              .runs as $runs | .runs = [$runs[0]
+                | .tool.driver.rules = ([$runs[].tool.driver.rules[]] | unique_by(.id))
+                | .results = [$runs[].results[] | del(.ruleIndex)]]
+            else . end
+          ' snyk-results.sarif > snyk-results.sarif.tmp
+          mv snyk-results.sarif.tmp snyk-results.sarif
+
       - name: Upload scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
