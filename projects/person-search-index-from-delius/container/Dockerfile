@@ -7,13 +7,10 @@ RUN find /pipelines -type f -name "*.yml" -exec sh -c 'for f; do yq -o=json "$f"
 FROM elastic/logstash:9.5.4
 
 USER root
-# hadolint ignore=DL3008
-RUN apt-get update && apt-get upgrade -y
 
-RUN apt-get install --no-install-recommends -y bash curl jq gettext \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && apt-get install -y --no-install-recommends bash curl jq gettext && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sL https://sentry.io/get-cli/ | bash || true
+RUN bash -c "curl -sL https://sentry.io/get-cli/ | bash" || true
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER 1000
