@@ -1,14 +1,17 @@
-FROM mikefarah/yq:4 as yml
+FROM mikefarah/yq:4 AS yml
 # Convert yml files to json
 COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name "*.yml" -exec sh -c 'for f; do yq -o=json "$f" > "${f%.yml}.json"; done' sh {} +
 
 
-FROM elastic/logstash:9.5.4
+FROM elastic/logstash:9.5.5
 
 USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN microdnf install -y jq gettext \
+ && microdnf clean all
 
 RUN curl -sL https://sentry.io/get-cli/ | bash
 
