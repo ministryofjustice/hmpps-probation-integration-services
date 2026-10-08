@@ -8,7 +8,6 @@ FROM elastic/logstash:9.5.4
 
 USER root
 
-RUN apk add --no-cache bash curl jq gettext
 
 RUN curl -sL https://sentry.io/get-cli/ | bash
 
