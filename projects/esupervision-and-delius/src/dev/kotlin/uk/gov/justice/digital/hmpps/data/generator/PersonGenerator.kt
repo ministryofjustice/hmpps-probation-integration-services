@@ -26,7 +26,7 @@ object PersonGenerator {
         firstName: String = "John",
         lastName: String = "Doe",
         id: Long = id()
-    ) = Person(id, crn, LocalDate.of(1985, 10, 1), firstName, lastName, "07123456789", "john@example.com")
+    ) = Person(id, crn, LocalDate.of(1985, 10, 1), null, firstName, lastName, "07123456789", "john@example.com")
 
     fun generatePersonManager(
         person: Person,

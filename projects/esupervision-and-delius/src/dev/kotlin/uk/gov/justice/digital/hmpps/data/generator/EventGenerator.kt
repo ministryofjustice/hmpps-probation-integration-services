@@ -11,8 +11,9 @@ import uk.gov.justice.digital.hmpps.entity.event.sentence.DisposalType
 import java.time.LocalDate
 
 object EventGenerator {
-    val COMMUNITY_ORDER = DisposalType(id(), "ORA Community Order (24 Months)")
-    val CUSTODY = DisposalType(id(), "ORA Adult Custody (inc PSS)")
+    val COMMUNITY_ORDER = DisposalType(id(), "ORA Community Order (24 Months)", youthSentence = false)
+    val CUSTODY = DisposalType(id(), "ORA Adult Custody (inc PSS)", youthSentence = false)
+    val YOUTH_ORDER = DisposalType(id(), "Youth Sentence", youthSentence = true)
 
     val EVENT_1 = generateEvent(
         number = 1,

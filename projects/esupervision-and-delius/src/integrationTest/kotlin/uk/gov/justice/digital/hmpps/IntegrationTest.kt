@@ -454,14 +454,18 @@ internal class IntegrationTest @Autowired constructor(
                                 "expectedEndDate": "2028-06-01",
                                 "length": 24,
                                 "lengthUnit": "Months"
-                              }
+                              },
+                              "youthSentence": false,
+                              "licenceConditions": []
                             },
                             {
                               "number": 3,
                               "mainOffence": {
                                 "code": "03100",
                                 "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
-                              }
+                              },
+                              "youthSentence": false,
+                              "licenceConditions": []
                             }
                           ],
                           "practitioner": {
@@ -486,7 +490,8 @@ internal class IntegrationTest @Autowired constructor(
                               "description": "${ProviderGenerator.DEFAULT_PROVIDER.description}"
                             }
                           },
-                          "contactSuspended": false
+                          "contactSuspended": false,
+                          "activeShpoOrSopo": false
                         }
                         """.trimIndent(),
                         JsonCompareMode.STRICT,

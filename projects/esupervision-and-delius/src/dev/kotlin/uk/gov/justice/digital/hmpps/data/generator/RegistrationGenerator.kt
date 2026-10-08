@@ -27,4 +27,12 @@ object RegistrationGenerator {
         deregistered = deregistered,
         softDeleted = softDeleted,
     )
+
+    val SHPO_TYPE = RegisterType(id = IdGenerator.getAndIncrement(), code = "SHPO")
+    val SOPS_TYPE = RegisterType(id = IdGenerator.getAndIncrement(), code = "SOPS")
+
+    val ACTIVE_SHPO_REGISTRATION = generateRegistration(
+        person = PersonGenerator.DEFAULT_PERSON,
+        type = SHPO_TYPE
+    )
 }

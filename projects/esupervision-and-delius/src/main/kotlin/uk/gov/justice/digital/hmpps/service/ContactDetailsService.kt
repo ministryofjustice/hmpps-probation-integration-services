@@ -35,6 +35,7 @@ class ContactDetailsService(
                     surname = com.person.lastName
                 ),
                 dateOfBirth = com.person.dateOfBirth,
+                dateOfDeath = com.person.dateOfDeath,
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
                 events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
@@ -42,6 +43,10 @@ class ContactDetailsService(
                 contactSuspended = registrationRepository.existsByPersonIdAndTypeCode(
                     com.person.id,
                     RegisterType.CONTACT_SUSPENDED_TYPE_CODE
+                ),
+                activeShpoOrSopo = registrationRepository.existsByPersonIdAndTypeCodeIn(
+                    com.person.id,
+                    RegisterType.SHPO_OR_SOPO_TYPE_CODES
                 ),
             )
         }
@@ -56,8 +61,15 @@ class ContactDetailsService(
             }
 
             val personIds = coms.map { it.person.id }
+
             val casesWithContactSuspended = if (personIds.isNotEmpty()) {
                 registrationRepository.findPersonIdsWithActiveType(personIds, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
+            } else {
+                emptySet()
+            }
+
+            val casesWithActiveShpoOrSopo = if (personIds.isNotEmpty()) {
+                registrationRepository.findPersonIdsWithActiveTypeIn(personIds, RegisterType.SHPO_OR_SOPO_TYPE_CODES)
             } else {
                 emptySet()
             }
@@ -70,11 +82,13 @@ class ContactDetailsService(
                         surname = com.person.lastName,
                     ),
                     dateOfBirth = com.person.dateOfBirth,
+                    dateOfDeath = com.person.dateOfDeath,
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
                     events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
                     practitioner = com.asPractitioner { emails[it] },
                     contactSuspended = com.person.id in casesWithContactSuspended,
+                    activeShpoOrSopo = com.person.id in casesWithActiveShpoOrSopo,
                 )
             }
         }
@@ -102,7 +116,21 @@ class ContactDetailsService(
                 length = it.length,
                 lengthUnit = it.lengthUnit?.description,
             )
-        }
+        },
+        youthSentence = disposal?.type?.youthSentence ?: false,
+        licenceConditions = disposal?.licenceConditions?.map { condition ->
+            LicenceCondition(
+                startDate = condition.startDate,
+                mainCategory = CodedDescription(
+                    condition.mainCategory.code,
+                    condition.mainCategory.description
+                ),
+                subCategory = condition.subCategory?.let {
+                    CodedDescription(it.code, it.description)
+                },
+                notes = condition.notes,
+            )
+        } ?: emptyList()
     )
 
     fun Team.ldu() = with(ldu) { CodedDescription(code, description) }
