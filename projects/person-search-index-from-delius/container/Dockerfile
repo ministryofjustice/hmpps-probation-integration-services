@@ -8,10 +8,12 @@ FROM elastic/logstash:9.5.4
 
 USER root
 # hadolint ignore=DL3008
-RUN apt-get update && apt-get upgrade -y \
-    && apt-get install --no-install-recommends -y bash curl jq gettext \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -sL https://sentry.io/get-cli/ | bash
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install --no-install-recommends -y bash curl jq gettext \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sL https://sentry.io/get-cli/ | bash || true
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER 1000
