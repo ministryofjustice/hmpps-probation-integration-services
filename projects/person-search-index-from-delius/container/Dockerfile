@@ -33,6 +33,11 @@ RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/person-incremental \
 
 # Workaround for the jdbc_streaming plugin not supporting statement_filepath.
 # See https://github.com/logstash-plugins/logstash-integration-jdbc/issues/51
-RUN bash /scripts/prepare-pipelines.sh
+RUN sed -i "s@\${INCREMENTAL_STATEMENT_SQL}@$(tr '\n' ' ' < /pipelines/person/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g;s/:offender_id/?/g')@" /pipelines/person/logstash-incremental.conf \
+ && sed -i "s@\${INCREMENTAL_STATEMENT_SQL}@$(tr '\n' ' ' < /pipelines/contact-keyword/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g;s/:full_load_contact_threshold/-1/g;s/:contact_id/?/g')@" /pipelines/contact-keyword/logstash-incremental.conf \
+ && sed -i "s@\${INCREMENTAL_STATEMENT_SQL}@$(tr '\n' ' ' < /pipelines/contact-semantic/statement.sql | sed 's/"/\\\\"/g;s/:batch_size/0/g;s/:sql_last_value/0/g;s/:full_load_contact_threshold/-1/g;s/:contact_id/?/g')@" /pipelines/contact-semantic/logstash-incremental.conf
 
-ENTRYPOINT ["/scripts/startup.sh"]
+# Replace literals with bind parameters
+RUN sed -i -E 's/\B:\w+/?/g' /pipelines/person/statement.sql \
+ && sed -i -E 's/\B:\w+/?/g' /pipelines/contact-keyword/statement.sql \
+ && sed -i -E 's/\B:\w+/?/g' /pipelines/contact-semantic/statement.sql
