@@ -7,12 +7,13 @@ RUN find /pipelines -type f -name "*.yml" -exec sh -c 'for f; do yq -o=json "$f"
 FROM elastic/logstash:9.5.4
 
 USER root
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3008
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install --no-install-recommends -y bash curl jq gettext \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sL https://sentry.io/get-cli/ | bash
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER 1000
 
 RUN LS_JAVA_OPTS='-Xmx2G' bin/logstash-plugin install logstash-input-opensearch && \
