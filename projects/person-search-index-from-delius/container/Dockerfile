@@ -8,9 +8,9 @@ FROM elastic/logstash:9.5.4
 
 USER root
 
-RUN apt-get update -qq && apt-get install -y --no-install-recommends bash curl jq gettext && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache bash curl jq gettext
 
-RUN bash -c "curl -sL https://sentry.io/get-cli/ | bash" || true
+RUN curl -sL https://sentry.io/get-cli/ | bash
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER 1000
