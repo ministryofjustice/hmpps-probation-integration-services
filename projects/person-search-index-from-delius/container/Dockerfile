@@ -8,10 +8,10 @@ FROM elastic/logstash:9.5.4
 
 USER root
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN curl -sL https://sentry.io/get-cli/ | bash
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER 1000
 
 RUN LS_JAVA_OPTS='-Xmx2G' bin/logstash-plugin install logstash-input-opensearch && \
