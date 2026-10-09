@@ -98,4 +98,31 @@ internal class TeamIntegrationTest @Autowired constructor(private val mockMvc: M
                 jsonPath("$.page.totalPages") { value(1) }
             }
     }
+
+    @Test
+    fun `returns 404 when requesting staff for an unknown team`() {
+        mockMvc.get("/team/staff?teamCodes=NOTFOUND") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Team with code of NOTFOUND not found") }
+            }
+    }
+
+    @Test
+    fun `returns 404 when any requested team for staff lookup is unknown`() {
+        mockMvc.get("/team/staff?teamCodes=${TeamGenerator.DEFAULT.code}&teamCodes=NOTFOUND") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Team with code of NOTFOUND not found") }
+            }
+    }
+
+    @Test
+    fun `returns 400 when requesting staff with a blank team code`() {
+        mockMvc.get("/team/staff?teamCodes=&teamCodes=${TeamGenerator.DEFAULT.code}") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+                jsonPath("$.message") { value("teamCodes must not contain blank values") }
+            }
+    }
 }

@@ -5,4 +5,6 @@ import uk.gov.justice.digital.hmpps.entity.staff.Team
 
 interface TeamRepository : JpaRepository<Team, Long> {
     fun existsByCode(teamCode: String): Boolean
+
+    fun findAllByCodeIn(teamCodes: Collection<String>): List<Team>
 }
