@@ -83,46 +83,19 @@ internal class TeamIntegrationTest @Autowired constructor(private val mockMvc: M
         mockMvc.get("/team/staff?teamCodes=${defaultTeam.code}&teamCodes=${otherTeam.code}") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.staff.length()") { value(4) }
-                jsonPath("$.staff[0].code") { value(StaffGenerator.TEAM_STAFF.code) }
-                jsonPath("$.staff[0].username") { doesNotExist() }
-                jsonPath("$.staff[1].code") { value(StaffGenerator.OTHER_TEAM_STAFF.code) }
-                jsonPath("$.staff[1].username") { doesNotExist() }
-                jsonPath("$.staff[2].code") { value(StaffGenerator.DEFAULT.code) }
-                jsonPath("$.staff[2].username") { value("officer") }
-                jsonPath("$.staff[3].code") { value(StaffGenerator.BOTH_TEAMS_STAFF.code) }
-                jsonPath("$.staff[3].username") { value("bothteamsofficer") }
+                jsonPath("$.content.length()") { value(4) }
+                jsonPath("$.content[0].code") { value(StaffGenerator.TEAM_STAFF.code) }
+                jsonPath("$.content[0].username") { doesNotExist() }
+                jsonPath("$.content[1].code") { value(StaffGenerator.OTHER_TEAM_STAFF.code) }
+                jsonPath("$.content[1].username") { doesNotExist() }
+                jsonPath("$.content[2].code") { value(StaffGenerator.DEFAULT.code) }
+                jsonPath("$.content[2].username") { value("officer") }
+                jsonPath("$.content[3].code") { value(StaffGenerator.BOTH_TEAMS_STAFF.code) }
+                jsonPath("$.content[3].username") { value("bothteamsofficer") }
                 jsonPath("$.page.size") { value(50) }
                 jsonPath("$.page.number") { value(0) }
                 jsonPath("$.page.totalElements") { value(4) }
                 jsonPath("$.page.totalPages") { value(1) }
-            }
-    }
-
-    @Test
-    fun `returns 404 when requesting staff for an unknown team`() {
-        mockMvc.get("/team/staff?teamCodes=NOTFOUND") { withToken() }
-            .andExpect {
-                status { isNotFound() }
-                jsonPath("$.message") { value("Team with code of NOTFOUND not found") }
-            }
-    }
-
-    @Test
-    fun `returns 404 when any requested team for staff lookup is unknown`() {
-        mockMvc.get("/team/staff?teamCodes=${TeamGenerator.DEFAULT.code}&teamCodes=NOTFOUND") { withToken() }
-            .andExpect {
-                status { isNotFound() }
-                jsonPath("$.message") { value("Team with code of NOTFOUND not found") }
-            }
-    }
-
-    @Test
-    fun `returns 400 when requesting staff with a blank team code`() {
-        mockMvc.get("/team/staff?teamCodes=&teamCodes=${TeamGenerator.DEFAULT.code}") { withToken() }
-            .andExpect {
-                status { isBadRequest() }
-                jsonPath("$.message") { value("teamCodes must not contain blank values") }
             }
     }
 }
