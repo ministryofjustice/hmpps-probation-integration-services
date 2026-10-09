@@ -31,37 +31,17 @@ if [ -z "$REINDEXING_TIMEOUT" ]; then help 'Missing -t'; fi
 
 function stop_logstash() {
   exit_code=$?
-  logstash_pid=''
-
-  if [ -n "$LOGSTASH_PID_FILE" ]; then
-    echo 'Waiting for Logstash process...'
-    if timeout 30 sh -c 'until [ -s "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; do sleep 1; done' _ "$LOGSTASH_PID_FILE"; then
-      logstash_pid=$(cat "$LOGSTASH_PID_FILE")
-    fi
-  fi
-
-  if [ -z "$logstash_pid" ]; then
-    echo 'Falling back to locating the Logstash JVM by process name...'
-    if timeout 30 sh -c 'until pgrep java >/dev/null; do sleep 1; done'; then
-      logstash_pid=$(pgrep java | head -n1)
-    fi
-  fi
-
+  echo 'Waiting for Logstash process...'
+  timeout 30 sh -c 'until pgrep java; do sleep 1; done'
   echo 'Printing final stats...'
   curl --silent --show-error localhost:9600/_node/stats || echo 'Unable to print stats, is Logstash running?'
-  if [ -z "$logstash_pid" ]; then
-    echo 'Unable to locate the Logstash process to stop.'
-  elif [ "$exit_code" = '0' ] && kill -0 "$logstash_pid" 2>/dev/null; then
+  if [ "$exit_code" = '0' ] && pgrep java; then
     echo 'Completed successfully. Gracefully stopping Logstash process...'
-    kill -TERM "$logstash_pid"
+    pgrep java | xargs -n1 pkill -TERM
   else
     echo "Failed with exit code $exit_code. Killing Logstash process..."
     _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
-    if kill -0 "$logstash_pid" 2>/dev/null; then
-      kill -KILL "$logstash_pid"
-    else
-      echo 'Logstash process is no longer running.'
-    fi
+    pgrep java | xargs -n1 pkill -KILL
   fi
   exit "$exit_code"
 }
