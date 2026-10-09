@@ -24,6 +24,7 @@ class StaffService(
 ) {
     companion object {
         private const val ORACLE_IN_CLAUSE_BATCH_SIZE = 999
+        private const val CASE_TYPE_BATCH_SIZE = 50
     }
 
     fun getOfficerView(code: String): OfficerView {
@@ -65,7 +66,7 @@ class StaffService(
                 personRepository.findMostRecentInitialAllocations(it, dbUsername)
             }
                 .associate { it.crn to it.allocatedAt?.toLocalDate() }
-        val caseTypes = crnSet.chunkedForOracleInClause()
+        val caseTypes = crnSet.chunkedForCaseTypeInClause()
             .flatMap { personRepository.findCaseTypes(it) }
             .associate { it.crn to it.type }
         val cases = crns.distinct().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE)
@@ -122,4 +123,7 @@ class StaffService(
 
     private fun Set<String>.chunkedForOracleInClause() =
         toList().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE).map { it.toSet() }
+
+    private fun Set<String>.chunkedForCaseTypeInClause() =
+        toList().chunked(CASE_TYPE_BATCH_SIZE).map { it.toSet() }
 }
