@@ -78,13 +78,23 @@ jobs:
           tenant-id: ${{ secrets.APP_INSIGHTS_TENANT_ID }}
           subscription-id: ${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}
 
-      - name: Authenticate with MOJ Cloud Platform
+      - name: Authenticate with MOJ Cloud Platform (preprod)
+        if: ${{ inputs.target == 'preprod' }}
         uses: ./.github/actions/cloud-platform-auth
         with:
-          cert: ${{ secrets[format('{0}_KUBE_CERT', inputs.target)] }}
-          cluster: ${{ secrets[format('{0}_KUBE_CLUSTER', inputs.target)] }}
-          namespace: ${{ secrets[format('{0}_KUBE_NAMESPACE', inputs.target)] }}
-          token: ${{ secrets[format('{0}_KUBE_TOKEN', inputs.target)] }}
+          cert: ${{ secrets.PREPROD_KUBE_CERT }}
+          cluster: ${{ secrets.PREPROD_KUBE_CLUSTER }}
+          namespace: ${{ secrets.PREPROD_KUBE_NAMESPACE }}
+          token: ${{ secrets.PREPROD_KUBE_TOKEN }}
+
+      - name: Authenticate with MOJ Cloud Platform (prod)
+        if: ${{ inputs.target == 'prod' }}
+        uses: ./.github/actions/cloud-platform-auth
+        with:
+          cert: ${{ secrets.PROD_KUBE_CERT }}
+          cluster: ${{ secrets.PROD_KUBE_CLUSTER }}
+          namespace: ${{ secrets.PROD_KUBE_NAMESPACE }}
+          token: ${{ secrets.PROD_KUBE_TOKEN }}
 
       - name: Install Terraform for parsing HCL files
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
