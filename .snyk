@@ -1,89 +1,64 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
 version: v1.25.1
 ignore:
-  SNYK-ALPINE323-P11KIT-17486696:
+  SNYK-JAVA-ATYAWKLZ4-18313068:
     - '*':
-        reason: The services do not use remote PKCS#11 tokens or the IBM Kyber/BTC C_DeriveKey mechanisms required to exploit this issue.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-GOLANG-GOLANGORGXNETHTTP2-16535157:
+        reason: LZ4 is bundled with Logstash's Kafka plugin, which is not used.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-ATYAWKLZ4-20570516:
     - '*':
-        reason: The vulnerable code is embedded in kubectl, which communicates only with the trusted Kubernetes API server.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-GOLANG-GOLANGORGXNETIDNA-17116876:
+        reason: LZ4 is bundled with Logstash's Kafka plugin, which is not used.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-ATYAWKLZ4-20570526:
     - '*':
-        reason: Kubectl obtains the API server endpoint from trusted cluster configuration and does not validate attacker-controlled hostnames.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-CHQOSLOGBACK-17675439:
+        reason: LZ4 is bundled with Logstash's Kafka plugin, which is not used.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-ORGXERIALSNAPPY-19778376:
     - '*':
-        reason: Logback configuration is immutable at runtime and the service does not use Janino conditional configuration.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-COMFASTERXMLJACKSONCORE-17972608:
+        reason: Snappy is bundled with Logstash's Kafka and WebHDFS plugins, which are not used.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-ORGXERIALSNAPPY-19964087:
     - '*':
-        reason: The service does not combine JsonView and JsonUnwrapped annotations during deserialization.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18170202:
+        reason: Snappy is bundled with Logstash's Kafka and WebHDFS plugins, which are not used.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-COMFASTERXMLJACKSONCORE-19778370:
     - '*':
-        reason: The service uses Spring MVC with Tomcat and does not install a Netty SPDY pipeline.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18170204:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-COMFASTERXMLJACKSONCORE-20059179:
     - '*':
-        reason: The service does not enable Netty HTTP/2 content decompression or DelegatingDecompressorFrameListener.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18170205:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-COMFASTERXMLJACKSONCORE-20059683:
     - '*':
-        reason: The service does not expose a Netty QUIC/HTTP3 server or install Http3FrameCodec.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18170213:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-COMFASTERXMLJACKSONDATAFORMAT-20416725:
     - '*':
-        reason: The service uses Spring MVC with Tomcat and does not install a Netty SPDY pipeline.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18230935:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-COMFASTERXMLJACKSONDATAFORMAT-20416727:
     - '*':
-        reason: The service does not install or expose Netty's Bzip2Decoder to untrusted compressed data.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18230936:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-TOOLSJACKSONCORE-20059180:
     - '*':
-        reason: The service does not install or expose Netty's Bzip2Decoder to untrusted compressed data.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-IONETTY-18233079:
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-TOOLSJACKSONCORE-20059682:
     - '*':
-        reason: The service uses Spring MVC with Tomcat and does not install a Netty SPDY pipeline.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-ORGAPACHEHTTPCOMPONENTSCORE5-17817217:
-    - '*':
-        reason: The service does not enable the Apache asynchronous HTTP/2 server path containing the vulnerable HPackDecoder.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-ORGAPACHETOMCATEMBED-17732890:
-    - '*':
-        reason: The service does not configure or use Tomcat clustering or EncryptionInterceptor.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-ORGAPACHETOMCATEMBED-17733746:
-    - '*':
-        reason: The service does not use Tomcat's FFM connector or configure certificate revocation lists.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-ORGSPRINGFRAMEWORKRETRY-17260993:
-    - '*':
-        reason: The service does not use stateful Spring Retry; stateless retries are not affected.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
-  SNYK-JAVA-TOOLSJACKSONCORE-17972609:
-    - '*':
-        reason: The service does not combine JsonView and JsonUnwrapped annotations during deserialization.
-        expires: 2026-11-04T00:00:00.000Z
-        created: 2026-08-04T00:00:00.000Z
+        reason: No parsing of untrusted JSON.
+        expires: 2026-12-01T00:00:00.000Z
+        created: 2026-10-08T00:00:00.000Z
 patch: {}
