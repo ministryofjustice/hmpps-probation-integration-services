@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
@@ -67,11 +68,34 @@ internal class TeamIntegrationTest @Autowired constructor(private val mockMvc: M
 
     @Test
     fun `returns 404 when team not found`() {
-        val team = TeamGenerator.DEFAULT
         mockMvc.get("/team/NOTFOUND/case-list") { withToken() }
             .andExpect {
                 status { isNotFound() }
                 jsonPath("$.message") { value("Team with code of NOTFOUND not found") }
+            }
+    }
+
+    @Test
+    fun `returns distinct staff across one or more teams`() {
+        val defaultTeam = TeamGenerator.DEFAULT
+        val otherTeam = TeamGenerator.OTHER_TEAM
+
+        mockMvc.get("/team/staff?teamCodes=${defaultTeam.code}&teamCodes=${otherTeam.code}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.content.length()") { value(4) }
+                jsonPath("$.content[0].code") { value(StaffGenerator.TEAM_STAFF.code) }
+                jsonPath("$.content[0].username") { doesNotExist() }
+                jsonPath("$.content[1].code") { value(StaffGenerator.OTHER_TEAM_STAFF.code) }
+                jsonPath("$.content[1].username") { doesNotExist() }
+                jsonPath("$.content[2].code") { value(StaffGenerator.DEFAULT.code) }
+                jsonPath("$.content[2].username") { value("officer") }
+                jsonPath("$.content[3].code") { value(StaffGenerator.BOTH_TEAMS_STAFF.code) }
+                jsonPath("$.content[3].username") { value("bothteamsofficer") }
+                jsonPath("$.page.size") { value(50) }
+                jsonPath("$.page.number") { value(0) }
+                jsonPath("$.page.totalElements") { value(4) }
+                jsonPath("$.page.totalPages") { value(1) }
             }
     }
 }
