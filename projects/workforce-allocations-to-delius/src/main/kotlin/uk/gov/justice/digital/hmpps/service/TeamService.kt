@@ -41,7 +41,8 @@ class TeamService(
         }
 
         val emails = ldapService.findEmailsForStaffIn(staff)
-        val caseloadsByStaffCode = caseloadRepository.findAllByStaffCodeIn(staff.map { it.code }).groupBy { it.staff.code }
+        val caseloadsByStaffCode =
+            caseloadRepository.findAllByStaffCodeIn(staff.map { it.code }).groupBy { it.staff.code }
         val crnSet = caseloadsByStaffCode.values.flatten().map { it.person.crn }.toSet()
 
         val staffResponses = if (crnSet.isEmpty()) {

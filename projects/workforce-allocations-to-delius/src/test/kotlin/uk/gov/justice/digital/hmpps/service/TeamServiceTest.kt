@@ -217,13 +217,15 @@ class TeamServiceTest {
         assertThat(response.staff[1].cases[0].crn).isEqualTo(person2.crn)
     }
 
-    private fun caseTypeByCrn(caseCrn: String, caseType: String) = object : uk.gov.justice.digital.hmpps.integrations.delius.person.CaseTypeByCrn {
-        override val crn: String = caseCrn
-        override val type: String = caseType
-    }
+    private fun caseTypeByCrn(caseCrn: String, caseType: String) =
+        object : uk.gov.justice.digital.hmpps.integrations.delius.person.CaseTypeByCrn {
+            override val crn: String = caseCrn
+            override val type: String = caseType
+        }
 
-    private fun initialAllocation(crnValue: String, allocatedAtValue: LocalDateTime?) = object : MostRecentInitialAllocation {
-        override val crn: String = crnValue
-        override val allocatedAt: LocalDateTime? = allocatedAtValue
-    }
+    private fun initialAllocation(crnValue: String, allocatedAtValue: LocalDateTime?) =
+        object : MostRecentInitialAllocation {
+            override val crn: String = crnValue
+            override val allocatedAt: LocalDateTime? = allocatedAtValue
+        }
 }
