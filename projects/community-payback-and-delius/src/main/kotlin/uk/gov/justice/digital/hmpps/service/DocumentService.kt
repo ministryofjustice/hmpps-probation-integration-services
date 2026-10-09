@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.StatusCode
+import io.sentry.Sentry
 import jakarta.persistence.EntityManager
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
@@ -17,6 +20,7 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
 @Transactional
@@ -40,7 +44,7 @@ class DocumentService(
             alfrescoId = "",
             name = filename,
             primaryKeyId = appointment.contact.id,
-            tableName = "CONTACT",
+            tableName = CONTACT_TABLE_NAME,
             externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
             lastSaved = ZonedDateTime.now(),
             createdDatetime = ZonedDateTime.now(),
@@ -79,13 +83,17 @@ class DocumentService(
         updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
-    fun deleteDocumentById(appointmentId: Long, documentId: Long) {
+    fun deleteDocumentByAppointmentAndDocumentId(
+        appointmentId: Long,
+        documentId: Long,
+        appointment: UnpaidWorkAppointment
+    ) {
         val document = documentRepository.findById(documentId)
             .orElseThrow {
-                NoSuchElementException("Document not found with id: $documentId")
+                NotFoundException("Document", "id", documentId)
             }
 
-        require(document.primaryKeyId == appointmentId) {
+        require(document.tableName == CONTACT_TABLE_NAME && document.primaryKeyId == appointment.contact.id) {
             "Document $documentId does not belong to appointment $appointmentId"
         }
 
@@ -129,6 +137,8 @@ class DocumentService(
     }
 
     companion object {
+        private const val CONTACT_TABLE_NAME = "CONTACT"
+
         val ALLOWED_EXTENSIONS = setOf(
             "doc", "docx", "rtf", "txt", "dot", "dotm", "docm", "odt", "xml", "wpd", "wri", "wps",
             "xls", "xlsb", "xlsx", "csv", "pdf", "bmp", "jpg", "jpeg", "gif", "png",

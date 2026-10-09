@@ -31,6 +31,7 @@ import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.util.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -61,12 +62,16 @@ internal class DocumentServiceTest {
         on { it.contact } doReturn contact
     }
 
-    private fun document(alfrescoId: String = "alfresco-id-1") = Document(
+    private fun document(
+        alfrescoId: String = "alfresco-id-1",
+        primaryKeyId: Long = 99L,
+        tableName: String = "CONTACT",
+    ) = Document(
         person = person,
         alfrescoId = alfrescoId,
         name = "evidence.pdf",
-        primaryKeyId = 99L,
-        tableName = "CONTACT",
+        primaryKeyId = primaryKeyId,
+        tableName = tableName,
         externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
         workInProgress = "N",
         status = "Y",
@@ -149,56 +154,114 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    fun `deleteDocumentById deletes document when appointment id matches`() {
+    fun `deleteDocumentByAppointmentAndDocumentId deletes document when it belongs to appointment`() {
         val appointmentId = 123L
         val documentId = 456L
+        val contactId = 789L
 
-        val document = mock<Document> {
-            on { id } doReturn documentId
-            on { primaryKeyId } doReturn appointmentId
-            on { alfrescoId } doReturn "alfresco-123"
-            on { tableName } doReturn "CONTACT"
-            on { externalReference } doReturn "urn:test"
-        }
+        val contact = mock<Contact>()
+        whenever(contact.id).thenReturn(contactId)
+
+        val appointment = mock<UnpaidWorkAppointment>()
+        whenever(appointment.contact).thenReturn(contact)
+
+        val document = mock<Document>()
+        whenever(document.id).thenReturn(documentId)
+        whenever(document.primaryKeyId).thenReturn(contactId)
+        whenever(document.alfrescoId).thenReturn("alfresco-123")
+        whenever(document.tableName).thenReturn("CONTACT")
+        whenever(document.externalReference).thenReturn("urn:test")
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
         whenever(
             documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
                 "CONTACT",
-                appointmentId,
+                contactId,
                 documentId
             )
         ).thenReturn(false)
 
-        documentService.deleteDocumentById(appointmentId, documentId)
+        documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
 
         verify(documentRepository).findById(documentId)
         verify(documentRepository).delete(document)
-        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
-            "CONTACT",
-            appointmentId,
-            documentId
-        )
     }
 
     @Test
-    fun `deleteDocumentById throws when document does not belong to appointment`() {
+    fun `deleteDocumentByAppointmentAndDocumentId throws when document does not belong to appointment`() {
         val appointmentId = 123L
-        val otherAppointmentId = 999L
+        val otherContactId = 999L
         val documentId = 456L
+        val contactId = 789L
 
-        val document = mock<Document> {
-            on { id } doReturn documentId
-            on { primaryKeyId } doReturn otherAppointmentId
-        }
+        val contact = mock<Contact>()
+        whenever(contact.id).thenReturn(contactId)
+
+        val appointment = mock<UnpaidWorkAppointment>()
+        whenever(appointment.contact).thenReturn(contact)
+
+        val document = mock<Document>()
+        whenever(document.id).thenReturn(documentId)
+        whenever(document.primaryKeyId).thenReturn(otherContactId)
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
 
         val exception = assertThrows<IllegalArgumentException> {
-            documentService.deleteDocumentById(appointmentId, documentId)
+            documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
         }
 
         assertThat(exception).hasMessage("Document $documentId does not belong to appointment $appointmentId")
+        verify(documentRepository).findById(documentId)
+        verify(documentRepository, never()).delete(any())
+    }
+
+    @Test
+    fun `deleteDocumentByAppointmentAndDocumentId throws when document belongs to another table with matching id`() {
+        val appointmentId = 123L
+        val documentId = 456L
+        val contactId = 789L
+
+        val contact = mock<Contact>()
+        whenever(contact.id).thenReturn(contactId)
+
+        val appointment = mock<UnpaidWorkAppointment>()
+        whenever(appointment.contact).thenReturn(contact)
+
+        val document = mock<Document>()
+        whenever(document.id).thenReturn(documentId)
+        whenever(document.primaryKeyId).thenReturn(contactId)
+        whenever(document.tableName).thenReturn("EVENT")
+
+        whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
+
+        val exception = assertThrows<IllegalArgumentException> {
+            documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
+        }
+
+        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $appointmentId")
+        verify(documentRepository).findById(documentId)
+        verify(documentRepository, never()).delete(any())
+    }
+
+    @Test
+    fun `deleteDocumentByAppointmentAndDocumentId throws when document not found`() {
+        val appointmentId = 123L
+        val documentId = 456L
+
+        val contact = mock<Contact>()
+        val appointment = mock<UnpaidWorkAppointment>()
+        whenever(appointment.contact).thenReturn(contact)
+
+        whenever(documentRepository.findById(documentId)).thenReturn(Optional.empty())
+
+        val exception = assertThrows<NotFoundException> {
+            documentService.deleteDocumentByAppointmentAndDocumentId(appointmentId, documentId, appointment)
+        }
+
+        assertThat(exception)
+            .isInstanceOf(NotFoundException::class.java)
+            .hasMessageContaining("Document")
+            .hasMessageContaining(documentId.toString())
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }
