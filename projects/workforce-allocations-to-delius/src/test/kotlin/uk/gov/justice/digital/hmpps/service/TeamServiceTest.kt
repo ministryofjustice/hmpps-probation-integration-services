@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.api.model.Team
@@ -215,6 +217,35 @@ class TeamServiceTest {
         assertThat(response.staff[1].code).isEqualTo(activeStaff2.code)
         assertThat(response.staff[1].cases).hasSize(1)
         assertThat(response.staff[1].cases[0].crn).isEqualTo(person2.crn)
+    }
+
+    @Test
+    fun `get team active cases with no crns returns empty cases and skips person lookups`() {
+        val team = TeamGenerator.ALLOCATION_TEAM
+        val activeStaff = StaffGenerator.generateStaffWithUser(
+            code = "N02ABS1",
+            forename = "Joe",
+            surname = "Bloggs",
+            teams = listOf(team),
+            user = StaffUserGenerator.generate("joe.bloggs")
+        )
+
+        whenever(teamRepository.findByCode(team.code)).thenReturn(team)
+        whenever(staffRepository.findActiveStaffInTeam(team.code)).thenReturn(listOf(activeStaff))
+        whenever(ldapService.findEmailsForStaffIn(listOf(activeStaff))).thenReturn(
+            mapOf(activeStaff.user!!.username to "joe.bloggs@example.com")
+        )
+        whenever(caseloadRepository.findAllByStaffCodeIn(listOf(activeStaff.code))).thenReturn(emptyList())
+
+        val response = teamService.getActiveCases(team.code)
+
+        assertThat(response.code).isEqualTo(team.code)
+        assertThat(response.description).isEqualTo(team.description)
+        assertThat(response.staff).hasSize(1)
+        assertThat(response.staff[0].code).isEqualTo(activeStaff.code)
+        assertThat(response.staff[0].email).isEqualTo("joe.bloggs@example.com")
+        assertThat(response.staff[0].cases).isEmpty()
+        verifyNoInteractions(personRepository)
     }
 
     private fun caseTypeByCrn(caseCrn: String, caseType: String) =
