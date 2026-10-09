@@ -18,5 +18,5 @@ class TeamResource(private val teamService: TeamService) {
     fun allTeams() = teamService.getAllTeams()
 
     @GetMapping("/team/{code}/active-cases", "/teams/{code}/active-cases")
-    fun activeCases(@PathVariable code: String) = teamService.getActiveCases(code)
+    fun getActiveCasesForTeam(@PathVariable code: String) = teamService.getActiveCases(code)
 }

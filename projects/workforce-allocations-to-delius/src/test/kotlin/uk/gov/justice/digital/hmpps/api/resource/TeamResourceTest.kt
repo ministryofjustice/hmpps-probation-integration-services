@@ -38,7 +38,7 @@ internal class TeamResourceTest {
         )
         whenever(teamService.getActiveCases("N02ABS")).thenReturn(response)
 
-        val res = resource.activeCases("N02ABS")
+        val res = resource.getActiveCasesForTeam("N02ABS")
 
         assertThat(res).isEqualTo(response)
     }
