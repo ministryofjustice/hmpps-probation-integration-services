@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 ##
-## Replay HMPPS Domain Event messages from prod into preprod
+## Replay HMPPS Domain Event messages from prod into preprod or prod
 ##
 ## Usage:
 ##   APP_INSIGHTS_APPLICATION_GUID=... APP_INSIGHTS_TOKEN=... \
-##   START_TIME=... END_TIME=... QUEUE_NAME=... ./replay-messages.sh
+##   START_TIME=... END_TIME=... QUEUE_NAME=... TARGET=... ./replay-messages.sh
 ##
 ## Examples:
 ##   * Replay messages from the last 24 hours:
@@ -16,7 +16,7 @@
 ## How it works:
 ##   This script makes use of output from the hmpps-domain-events-logger service, which logs all domain event messages
 ##   to Azure Application Insights as custom events. Once we have the logged events, we send them to the target queue by
-##   creating a pod in the preprod namespace and running the sqs-utils.py send script. This allows us to use the service
+##   creating a pod in the target namespace and running the sqs-utils.py send script. This allows us to use the service
 ##   account to access the SQS queue.
 
 set -eo pipefail
@@ -30,7 +30,10 @@ if [ -z "$START_TIME" ] \
 || [ -z "$APP_INSIGHTS_APPLICATION_GUID" ] \
 || [ -z "$APP_INSIGHTS_TOKEN" ]; then print_usage "$0"; exit 0; fi
 
-namespace=hmpps-probation-integration-services-preprod
+TARGET=${TARGET:-preprod}
+if [ "$TARGET" != preprod ] && [ "$TARGET" != prod ]; then fail "TARGET must be 'preprod' or 'prod'"; fi
+
+namespace="hmpps-probation-integration-services-$TARGET"
 pod_name="message-replay-$RANDOM"
 
 # Get subscription filters for the target queue
@@ -69,13 +72,13 @@ query="
 echo "Running app insights query: $query"
 curl --fail -H "Authorization: Bearer $APP_INSIGHTS_TOKEN" --data-urlencode "query=$query" --get "https://api.applicationinsights.io/v1/apps/$APP_INSIGHTS_APPLICATION_GUID/query" \
   | jq -c '.tables[0].rows | flatten | .[] | fromjson' \
-  | jq -c '.Message = (.Message | fromjson |
+  | jq -c --arg target "$TARGET" 'if $target == "preprod" then .Message = (.Message | fromjson |
     if .detailUrl? then
       .detailUrl |= if contains("https://offender-case-notes") then sub("https://offender-case-notes"; "https://preprod.offender-case-notes")
                     elif contains("https://moic") then sub("https://moic"; "https://preprod.moic")
                     elif contains("https://oasys") then sub("https://oasys"; "https://pp.oasys")
                     else sub("(?<prefix>https://.+?)\\."; "\(.prefix)-preprod.") end
-    else . end | tojson)' \
+    else . end | tojson) else . end' \
   > messages.jsonl
 echo "Found $(wc -l < messages.jsonl) messages to replay"
 
@@ -112,7 +115,7 @@ kubectl cp --namespace="$namespace" "$(dirname "${BASH_SOURCE[0]}")/sqs-utils.py
 kubectl cp --namespace="$namespace" ./messages.jsonl "$pod_name:/tmp/messages.jsonl"
 
 # Get queue url
-queue_url=$(kubectl exec "$pod_name" --namespace="$namespace" -- aws sqs get-queue-url --queue-name "probation-integration-preprod-$QUEUE_NAME" --query QueueUrl --output text)
+queue_url=$(kubectl exec "$pod_name" --namespace="$namespace" -- aws sqs get-queue-url --queue-name "probation-integration-$TARGET-$QUEUE_NAME" --query QueueUrl --output text)
 echo "Got queue URL: $queue_url"
 
 # Run script to replay messages
