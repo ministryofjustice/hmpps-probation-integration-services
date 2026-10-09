@@ -30,5 +30,4 @@ class TeamController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "50") size: Int,
     ) = teamService.getStaffForTeams(teamCodes, PageRequest.of(page, size, Sort.by("surname", "forename", "code")))
-
 }
