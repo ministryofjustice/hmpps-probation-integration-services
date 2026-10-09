@@ -108,5 +108,5 @@ spec:
                 - name: PIPELINE_BUFFER_TYPE
                   value: direct
                 - name: PIPELINE_ORDERED
-                  value: 'false'
+                  value: 'true'
           restartPolicy: Never
