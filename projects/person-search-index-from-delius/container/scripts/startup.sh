@@ -29,17 +29,26 @@ for pipeline in $pipelines; do
   fi
 done
 
+MONITORING_ENABLED=false
+MONITOR_PIDS=()
+export LOGSTASH_PID_FILE=/tmp/logstash.pid
+rm -f "$LOGSTASH_PID_FILE"
+
 if grep -q 'person' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "$PERSON_INDEX_PREFIX" -p /pipelines/person/index/person-search-pipeline.json -t /pipelines/person/index/person-search-template.json
   if grep -q 'person-full-load' <<<"$PIPELINES_ENABLED"; then
+    MONITORING_ENABLED=true
     /scripts/monitor-reindexing.sh -i "$PERSON_INDEX_PREFIX" -t "$PERSON_REINDEXING_TIMEOUT" &
+    MONITOR_PIDS+=("$!")
   fi
 fi
 
 if grep -q 'contact-keyword' <<<"$PIPELINES_ENABLED"; then
   /scripts/setup-index.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t /pipelines/contact-keyword/index/index-template-keyword.json
   if grep -q 'contact-keyword-full-load' <<<"$PIPELINES_ENABLED"; then
+    MONITORING_ENABLED=true
     /scripts/monitor-reindexing.sh -i "$CONTACT_KEYWORD_INDEX_PREFIX" -t "$CONTACT_KEYWORD_REINDEXING_TIMEOUT" &
+    MONITOR_PIDS+=("$!")
   fi
 fi
 
@@ -63,7 +72,9 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
     -t /pipelines/contact-semantic/index/index-template-contact-semantic-block.json \
 
   if grep -q 'contact-semantic-full-load' <<<"$PIPELINES_ENABLED"; then
+    MONITORING_ENABLED=true
     /scripts/monitor-reindexing.sh -i "$CONTACT_SEMANTIC_INDEX_PREFIX" -t "$CONTACT_SEMANTIC_REINDEXING_TIMEOUT" &
+    MONITOR_PIDS+=("$!")
     # export the name of the standby index to be referenced in logstash-full-load.conf, because the max_token_count check in the text_chunking ingest processor does not account for aliases (as of OpenSearch 2.19)
     CONTACT_SEMANTIC_INDEX_STANDBY=$(curl_json "${SEARCH_INDEX_HOST}/_alias/${CONTACT_SEMANTIC_INDEX_PREFIX}-standby" | jq -r 'keys[0]')
     export CONTACT_SEMANTIC_INDEX_STANDBY
@@ -71,4 +82,41 @@ if grep -q 'contact-semantic' <<<"$PIPELINES_ENABLED"; then
 fi
 
 echo Starting Logstash...
-/usr/local/bin/docker-entrypoint
+if [ "$MONITORING_ENABLED" = 'true' ]; then
+  /usr/local/bin/docker-entrypoint &
+  logstash_pid=$!
+  echo "$logstash_pid" > "$LOGSTASH_PID_FILE"
+  set +e
+  wait "$logstash_pid"
+  logstash_exit_code=$?
+
+  if [ "$logstash_exit_code" -ne 0 ] && [ "$logstash_exit_code" -ne 143 ]; then
+    for monitor_pid in "${MONITOR_PIDS[@]}"; do
+      if kill -0 "$monitor_pid" 2>/dev/null; then
+        kill -TERM "$monitor_pid"
+      fi
+    done
+  fi
+
+  monitor_exit_code=0
+  for monitor_pid in "${MONITOR_PIDS[@]}"; do
+    wait "$monitor_pid"
+    monitor_status=$?
+    if [ "$monitor_status" -ne 0 ]; then
+      monitor_exit_code=$monitor_status
+    fi
+  done
+  set -e
+
+  if [ "$monitor_exit_code" -ne 0 ]; then
+    exit "$monitor_exit_code"
+  fi
+
+  if [ "$logstash_exit_code" -eq 0 ] || [ "$logstash_exit_code" -eq 143 ]; then
+    exit 0
+  fi
+
+  exit "$logstash_exit_code"
+else
+  exec /usr/local/bin/docker-entrypoint
+fi
