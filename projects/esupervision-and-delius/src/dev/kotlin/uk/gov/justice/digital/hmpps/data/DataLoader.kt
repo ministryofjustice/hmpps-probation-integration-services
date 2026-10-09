@@ -17,7 +17,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(
             BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()),
             BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()),
+            BusinessInteraction(id(), BusinessInteractionCode.UPDATE_OFFENDER.code, ZonedDateTime.now()),
             RegistrationGenerator.CONTACT_SUSPENDED_TYPE,
+            RegistrationGenerator.SHPO_TYPE,
+            RegistrationGenerator.SOPS_TYPE,
             ContactTypeGenerator.CT_ESPCHI,
             ContactTypeGenerator.CT_ESPCHS,
             ContactOutcomeGenerator.COT_ESPC,
@@ -44,7 +47,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             PersonGenerator.PUNCTUATION_IN_NAME,
             PersonGenerator.SENSITIVE_CONTACT,
             PersonGenerator.SENSITIVE_CONTACT_MANAGER,
+            PersonGenerator.DECEASED_PERSON,
+            PersonGenerator.DECEASED_PERSON_COM,
+            PersonGenerator.YOUTH_PERSON,
+            PersonGenerator.YOUTH_PERSON_COM,
             ReferenceDataGenerator.LENGTH_UNIT_MONTHS,
+            LicenceConditionGenerator.CURFEW_SUB_CATEGORY,
+            LicenceConditionGenerator.RESIDENCE_MAIN_CATEGORY,
+            LicenceConditionGenerator.CURFEW_MAIN_CATEGORY,
             OffenceGenerator.BURGLARY,
             EventGenerator.EVENT_1,
             EventGenerator.EVENT_2,
@@ -57,6 +67,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             EventGenerator.INACTIVE_EVENT,
             EventGenerator.FALLBACK_EVENT_1,
             EventGenerator.FALLBACK_EVENT_2,
+            EventGenerator.YOUTH_EVENT,
+            LicenceConditionGenerator.YOUTH_ACTIVE_LICENCE_CONDITION,
             ContactGenerator.CONTACT_TO_REVIEW,
             ContactGenerator.CONTACT_TO_UPDATE,
             ContactGenerator.CONTACT_TO_UPDATE_EXPIRY,
@@ -69,6 +81,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactAlertGenerator.DEFAULT_ALERT,
             RegistrationGenerator.CONTACT_SUSPENDED_REGISTRATION,
             RegistrationGenerator.DEREGISTERED_PRC_REGISTRATION,
+            RegistrationGenerator.ACTIVE_SHPO_REGISTRATION,
+            RegistrationGenerator.DEREGISTERED_SOPS_REGISTRATION,
         )
     }
 }

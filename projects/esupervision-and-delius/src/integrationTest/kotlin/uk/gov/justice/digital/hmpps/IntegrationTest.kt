@@ -491,12 +491,48 @@ internal class IntegrationTest @Autowired constructor(
                             }
                           },
                           "contactSuspended": false,
-                          "activeShpoOrSopo": false
+                          "activeShpoOrSopo": true
                         }
                         """.trimIndent(),
                         JsonCompareMode.STRICT,
                     )
                 }
+            }
+    }
+
+    @Test
+    fun `get contact details for a deceased person includes dateOfDeath`() {
+        mockMvc.get("/case/${PersonGenerator.DECEASED_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.dateOfDeath") { value("2025-05-15") }
+                jsonPath("$.crn") { value(PersonGenerator.DECEASED_PERSON.crn) }
+                jsonPath("$.name.forename") { value("John") }
+                jsonPath("$.name.surname") { value("Doe") }
+            }
+    }
+
+    @Test
+    fun `get contact details for youth sentence includes youthSentence true and active licence conditions with full details`() {
+        mockMvc.get("/case/${PersonGenerator.YOUTH_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.crn") { value(PersonGenerator.YOUTH_PERSON.crn) }
+                jsonPath("$.events.length()") { value(1) }
+                jsonPath("$.events[0].number") { value(1) }
+                jsonPath("$.events[0].youthSentence") { value(true) }
+                jsonPath("$.events[0].sentence.date") { value("2026-03-01") }
+                jsonPath("$.events[0].sentence.description") { value("Youth Sentence") }
+                jsonPath("$.events[0].sentence.expectedEndDate") { value("2027-03-01") }
+                jsonPath("$.events[0].sentence.length") { value(12) }
+                jsonPath("$.events[0].sentence.lengthUnit") { value("Months") }
+                jsonPath("$.events[0].licenceConditions.length()") { value(1) }
+                jsonPath("$.events[0].licenceConditions[0].startDate") { value("2026-03-01") }
+                jsonPath("$.events[0].licenceConditions[0].mainCategory.code") { value("B") }
+                jsonPath("$.events[0].licenceConditions[0].mainCategory.description") { value("Curfew") }
+                jsonPath("$.events[0].licenceConditions[0].subCategory.code") { value("CURFEW_SUB") }
+                jsonPath("$.events[0].licenceConditions[0].subCategory.description") { value("Curfew at specified address") }
+                jsonPath("$.events[0].licenceConditions[0].notes") { value("Must be at residence between 21:00 and 06:00 daily") }
             }
     }
 
@@ -592,6 +628,46 @@ internal class IntegrationTest @Autowired constructor(
         }.andExpect {
             status { isOk() }
             jsonPath("$[0].contactSuspended") { value(true) }
+        }
+    }
+
+    @Test
+    fun `get contact details returns activeShpoOrSopo false when SHPO or SOPS registration is deregistered`() {
+        mockMvc.get("/case/${PersonGenerator.PERSON_CONTACT_DETAILS_1.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.activeShpoOrSopo") { value(false) }
+            }
+    }
+
+    @Test
+    fun `get contact details returns activeShpoOrSopo true when active SHPO registration exists`() {
+        mockMvc.get("/case/${PersonGenerator.DEFAULT_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.activeShpoOrSopo") { value(true) }
+            }
+    }
+
+    @Test
+    fun `get multiple cases returns activeShpoOrSopo true for active SHPO registration case`() {
+        mockMvc.post("/cases") {
+            json = listOf(PersonGenerator.DEFAULT_PERSON.crn)
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].activeShpoOrSopo") { value(true) }
+        }
+    }
+
+    @Test
+    fun `get multiple cases returns activeShpoOrSopo false when SHPO or SOPS registration is deregistered`() {
+        mockMvc.post("/cases") {
+            json = listOf(PersonGenerator.PERSON_CONTACT_DETAILS_1.crn)
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].activeShpoOrSopo") { value(false) }
         }
     }
 
