@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component
 import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.logging.Logger.logger
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -35,6 +36,7 @@ class CourtMessageHandler(
     @SqsListener("\${messaging.consumer.court-message-queue}")
     fun handle(receivedMessage: String) {
         try {
+            logger().info("Checking message: $receivedMessage")
             val notification: Notification<CommonPlatformHearing> = converter.fromMessage(receivedMessage) ?: return
 
             telemetryService.trackEvent(
