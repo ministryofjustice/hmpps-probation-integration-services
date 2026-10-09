@@ -45,12 +45,21 @@ class RegisterType(
 ) {
     companion object {
         const val CONTACT_SUSPENDED_TYPE_CODE = "PRC"
+        const val SHPO_TYPE_CODE = "SHPO"
+        const val SOPO_TYPE_CODE = "SOPS"
+
+        val SHPO_OR_SOPO_TYPE_CODES = setOf(SHPO_TYPE_CODE, SOPO_TYPE_CODE)
     }
 }
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun existsByPersonIdAndTypeCode(personId: Long, typeCode: String): Boolean
 
+    fun existsByPersonIdAndTypeCodeIn(personId: Long, typeCodes: Collection<String>): Boolean
+
     @Query("select r.personId from Registration r where r.personId in :personIds and r.type.code = :typeCode")
     fun findPersonIdsWithActiveType(personIds: Collection<Long>, typeCode: String): Set<Long>
+
+    @Query("select r.personId from Registration r where r.personId in :personIds and r.type.code in :typeCodes")
+    fun findPersonIdsWithActiveTypeIn(personIds: Collection<Long>, typeCodes: Collection<String>): Set<Long>
 }

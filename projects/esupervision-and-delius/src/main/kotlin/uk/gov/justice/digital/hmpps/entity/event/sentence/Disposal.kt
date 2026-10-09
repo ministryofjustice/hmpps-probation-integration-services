@@ -36,6 +36,9 @@ class Disposal(
     @Column(name = "entered_notional_end_date")
     val enteredNotionalEndDate: LocalDate? = null,
 
+    @OneToMany(mappedBy = "disposal")
+    val licenceConditions: List<LicenceCondition> = emptyList(),
+
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: EventEntity? = null,

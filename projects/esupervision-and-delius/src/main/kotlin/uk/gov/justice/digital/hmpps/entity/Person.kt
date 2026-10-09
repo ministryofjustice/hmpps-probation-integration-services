@@ -32,6 +32,9 @@ class Person(
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
 
+    @Column(name = "deceased_date")
+    val dateOfDeath: LocalDate? = null,
+
     @Column(name = "first_name")
     val firstName: String,
 

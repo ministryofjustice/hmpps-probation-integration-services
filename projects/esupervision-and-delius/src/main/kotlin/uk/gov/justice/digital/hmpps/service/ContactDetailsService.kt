@@ -8,9 +8,11 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.UPDATE_OFFENDER
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
+import uk.gov.justice.digital.hmpps.entity.event.sentence.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 import uk.gov.justice.digital.hmpps.ldap.findEmailByUsernames
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.entity.event.sentence.LicenceCondition as EntityLicenceCondition
 
 @Service
 class ContactDetailsService(
@@ -19,6 +21,7 @@ class ContactDetailsService(
     val ldapTemplate: LdapTemplate,
     val personRepository: PersonRepository,
     val contactRepository: ContactRepository,
+    val licenceConditionRepository: LicenceConditionRepository,
     auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
     private val expectedEndDateComparator =
@@ -28,6 +31,14 @@ class ContactDetailsService(
     fun getContactDetailsForCrn(crn: String) =
         comRepository.findByPersonCrn(crn)?.let { com ->
             val email = com.staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
+
+            val disposalIds = com.person.activeEvents.mapNotNull { it.disposal?.id }
+            val licenceConditionsByDisposalId = if (disposalIds.isNotEmpty()) {
+                licenceConditionRepository.findByDisposalIdIn(disposalIds).groupBy { it.disposal.id }
+            } else {
+                emptyMap()
+            }
+
             ContactDetails(
                 crn = com.person.crn,
                 name = Name(
@@ -35,13 +46,20 @@ class ContactDetailsService(
                     surname = com.person.lastName
                 ),
                 dateOfBirth = com.person.dateOfBirth,
+                dateOfDeath = com.person.dateOfDeath,
                 mobile = com.person.mobile,
                 email = com.person.emailAddress,
-                events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
+                events = com.person.activeEvents
+                    .sortedWith(expectedEndDateComparator)
+                    .map { it.asEvent(licenceConditionsByDisposalId) },
                 practitioner = com.asPractitioner { email },
                 contactSuspended = registrationRepository.existsByPersonIdAndTypeCode(
                     com.person.id,
                     RegisterType.CONTACT_SUSPENDED_TYPE_CODE
+                ),
+                activeShpoOrSopo = registrationRepository.existsByPersonIdAndTypeCodeIn(
+                    com.person.id,
+                    RegisterType.SHPO_OR_SOPO_TYPE_CODES
                 ),
             )
         }
@@ -56,10 +74,28 @@ class ContactDetailsService(
             }
 
             val personIds = coms.map { it.person.id }
+
             val casesWithContactSuspended = if (personIds.isNotEmpty()) {
                 registrationRepository.findPersonIdsWithActiveType(personIds, RegisterType.CONTACT_SUSPENDED_TYPE_CODE)
             } else {
                 emptySet()
+            }
+
+            val casesWithActiveShpoOrSopo = if (personIds.isNotEmpty()) {
+                registrationRepository.findPersonIdsWithActiveTypeIn(personIds, RegisterType.SHPO_OR_SOPO_TYPE_CODES)
+            } else {
+                emptySet()
+            }
+
+            val disposalIds = coms
+                .flatMap { it.person.activeEvents }
+                .mapNotNull { it.disposal?.id }
+                .distinct()
+
+            val licenceConditionsByDisposalId = if (disposalIds.isNotEmpty()) {
+                licenceConditionRepository.findByDisposalIdIn(disposalIds).groupBy { it.disposal.id }
+            } else {
+                emptyMap()
             }
 
             coms.map { com ->
@@ -70,11 +106,15 @@ class ContactDetailsService(
                         surname = com.person.lastName,
                     ),
                     dateOfBirth = com.person.dateOfBirth,
+                    dateOfDeath = com.person.dateOfDeath,
                     mobile = com.person.mobile,
                     email = com.person.emailAddress,
-                    events = com.person.activeEvents.sortedWith(expectedEndDateComparator).map { it.asEvent() },
+                    events = com.person.activeEvents
+                        .sortedWith(expectedEndDateComparator)
+                        .map { it.asEvent(licenceConditionsByDisposalId) },
                     practitioner = com.asPractitioner { emails[it] },
                     contactSuspended = com.person.id in casesWithContactSuspended,
+                    activeShpoOrSopo = com.person.id in casesWithActiveShpoOrSopo,
                 )
             }
         }
@@ -91,7 +131,9 @@ class ContactDetailsService(
         username = staff.user?.username,
     )
 
-    fun EventEntity.asEvent() = Event(
+    fun EventEntity.asEvent(
+        licenceConditionsByDisposalId: Map<Long, List<EntityLicenceCondition>>
+    ) = Event(
         number = number.toInt(),
         mainOffence = CodedDescription(mainOffence.offence.code, mainOffence.offence.description),
         sentence = disposal?.let {
@@ -102,7 +144,23 @@ class ContactDetailsService(
                 length = it.length,
                 lengthUnit = it.lengthUnit?.description,
             )
-        }
+        },
+        youthSentence = disposal?.type?.youthSentence ?: false,
+        licenceConditions = disposal?.id
+            ?.let { licenceConditionsByDisposalId[it] }
+            ?.map { condition ->
+                LicenceCondition(
+                    startDate = condition.startDate,
+                    mainCategory = CodedDescription(
+                        condition.mainCategory.code,
+                        condition.mainCategory.description
+                    ),
+                    subCategory = condition.subCategory?.let {
+                        CodedDescription(it.code, it.description)
+                    },
+                    notes = condition.notes,
+                )
+            } ?: emptyList()
     )
 
     fun Team.ldu() = with(ldu) { CodedDescription(code, description) }

@@ -14,6 +14,20 @@ object RegistrationGenerator {
         deregistered = true,
     )
 
+    val SHPO_TYPE = RegisterType(id = IdGenerator.getAndIncrement(), code = "SHPO")
+    val SOPS_TYPE = RegisterType(id = IdGenerator.getAndIncrement(), code = "SOPS")
+
+    val ACTIVE_SHPO_REGISTRATION = generateRegistration(
+        person = PersonGenerator.DEFAULT_PERSON,
+        type = SHPO_TYPE
+    )
+
+    val DEREGISTERED_SOPS_REGISTRATION = generateRegistration(
+        person = PersonGenerator.PERSON_CONTACT_DETAILS_1,
+        type = SOPS_TYPE,
+        deregistered = true,
+    )
+
     fun generateRegistration(
         person: Person,
         type: RegisterType = CONTACT_SUSPENDED_TYPE,

@@ -11,8 +11,9 @@ import uk.gov.justice.digital.hmpps.entity.event.sentence.DisposalType
 import java.time.LocalDate
 
 object EventGenerator {
-    val COMMUNITY_ORDER = DisposalType(id(), "ORA Community Order (24 Months)")
-    val CUSTODY = DisposalType(id(), "ORA Adult Custody (inc PSS)")
+    val COMMUNITY_ORDER = DisposalType(id(), "ORA Community Order (24 Months)", youthSentence = false)
+    val CUSTODY = DisposalType(id(), "ORA Adult Custody (inc PSS)", youthSentence = false)
+    val YOUTH_ORDER = DisposalType(id(), "Youth Sentence", youthSentence = true)
 
     val EVENT_1 = generateEvent(
         number = 1,
@@ -26,6 +27,7 @@ object EventGenerator {
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
         active = false,
     )
+
     val EVENT_2 = generateEvent(
         number = 2,
         referralDate = LocalDate.of(2026, 3, 1),
@@ -40,12 +42,14 @@ object EventGenerator {
         ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
+
     val EVENT_3 = generateEvent(
         number = 3,
         referralDate = LocalDate.of(2026, 3, 1),
         disposal = null,
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
+
     val SENSITIVE_CONTACT_EVENT = generateEvent(
         number = 1,
         person = PersonGenerator.SENSITIVE_CONTACT,
@@ -53,6 +57,7 @@ object EventGenerator {
         disposal = null,
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
+
     val INACTIVE_EVENT = generateEvent(
         number = 1,
         person = PersonGenerator.NO_ACTIVE_EVENT_PERSON,
@@ -66,6 +71,7 @@ object EventGenerator {
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
         active = false,
     )
+
     val FALLBACK_EVENT_1 = generateEvent(
         number = 1,
         person = PersonGenerator.FALLBACK_EVENT_PERSON,
@@ -78,6 +84,7 @@ object EventGenerator {
         ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
     )
+
     val FALLBACK_EVENT_2 = generateEvent(
         number = 2,
         person = PersonGenerator.FALLBACK_EVENT_PERSON,
@@ -89,6 +96,24 @@ object EventGenerator {
             notionalEndDate = LocalDate.of(2028, 1, 1),
         ),
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
+    )
+
+    val YOUTH_EVENT_DISPOSAL = Disposal(
+        id = id(),
+        date = LocalDate.of(2026, 3, 1),
+        type = YOUTH_ORDER,
+        length = 12,
+        lengthUnit = LENGTH_UNIT_MONTHS,
+        notionalEndDate = LocalDate.of(2027, 3, 1),
+        enteredNotionalEndDate = LocalDate.of(2027, 3, 1),
+    )
+
+    val YOUTH_EVENT = generateEvent(
+        number = 1,
+        person = PersonGenerator.YOUTH_PERSON,
+        referralDate = LocalDate.of(2026, 3, 1),
+        disposal = YOUTH_EVENT_DISPOSAL,
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
     )
 
     fun generateEvent(
