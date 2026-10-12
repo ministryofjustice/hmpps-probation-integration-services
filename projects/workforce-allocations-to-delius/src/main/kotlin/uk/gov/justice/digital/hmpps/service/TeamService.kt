@@ -35,22 +35,11 @@ class TeamService(
         val emails = ldapService.findEmailsForStaffIn(staff)
         val crnsByStaffCode =
             caseloadRepository.findAllByStaffCodeIn(staff.map { it.code }).groupBy { it.staff.code }
-                .mapValues { (_, caseloads) -> caseloads.map { it.person.crn }.distinct().sorted() }
-        val crnSet = crnsByStaffCode.values.flatten().toSet()
+                .mapValues { (_, caseloads) -> caseloads.map { it.person.crn } }
 
-        val staffResponses = if (crnSet.isEmpty()) {
-            staff.map { activeStaff ->
-                ActiveCasesResponse(
-                    activeStaff.code,
-                    activeStaff.name(),
-                    activeStaff.grade(),
-                    emails[activeStaff.user?.username],
-                    emptyList()
-                )
-            }
-        } else {
-            val casesByStaffCode = activeCaseService.getCasesByGroup(crnsByStaffCode)
+        val casesByStaffCode = activeCaseService.getCasesByGroup(crnsByStaffCode)
 
+        val staffResponses =
             staff.sortedBy { it.code }.map { activeStaff ->
                 ActiveCasesResponse(
                     activeStaff.code,
@@ -60,7 +49,6 @@ class TeamService(
                     casesByStaffCode[activeStaff.code].orEmpty()
                 )
             }
-        }
 
         return TeamActiveCasesResponse(team.code, team.description, staffResponses)
     }
