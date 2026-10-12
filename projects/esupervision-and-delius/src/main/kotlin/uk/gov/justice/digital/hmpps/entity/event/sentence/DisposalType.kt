@@ -1,10 +1,6 @@
 package uk.gov.justice.digital.hmpps.entity.event.sentence
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 
@@ -21,5 +17,5 @@ class DisposalType(
 
     @Column(name = "youth_sentence")
     @Convert(converter = YesNoConverter::class)
-    val youthSentence: Boolean = false,
+    val youthSentence: Boolean? = null,
 )

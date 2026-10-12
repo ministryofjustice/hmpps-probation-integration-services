@@ -145,7 +145,7 @@ class ContactDetailsService(
                 lengthUnit = it.lengthUnit?.description,
             )
         },
-        youthSentence = disposal?.type?.youthSentence ?: false,
+        youthSentence = disposal?.type?.youthSentence,
         licenceConditions = disposal?.id
             ?.let { licenceConditionsByDisposalId[it] }
             ?.map { condition ->

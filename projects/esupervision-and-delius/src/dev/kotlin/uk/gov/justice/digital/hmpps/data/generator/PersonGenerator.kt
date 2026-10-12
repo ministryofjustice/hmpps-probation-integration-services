@@ -4,11 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_PROVIDER
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_STAFF
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator.DEFAULT_TEAM
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.PersonManager
-import uk.gov.justice.digital.hmpps.entity.Provider
-import uk.gov.justice.digital.hmpps.entity.Staff
-import uk.gov.justice.digital.hmpps.entity.Team
+import uk.gov.justice.digital.hmpps.entity.*
 import java.time.LocalDate
 
 object PersonGenerator {
@@ -21,6 +17,7 @@ object PersonGenerator {
     val SENSITIVE_CONTACT = generatePerson("A000007")
     val DECEASED_PERSON = generatePerson("A000008", dateOfDeath = LocalDate.of(2025, 5, 15))
     val YOUTH_PERSON = generatePerson("A000009")
+    val NULL_YOUTH_SENTENCE_PERSON = generatePerson("A000010")
 
     val DEFAULT_COM = generatePersonManager(DEFAULT_PERSON)
     val NO_ACTIVE_EVENT_COM = generatePersonManager(NO_ACTIVE_EVENT_PERSON)
@@ -28,6 +25,7 @@ object PersonGenerator {
     val SENSITIVE_CONTACT_MANAGER = generatePersonManager(SENSITIVE_CONTACT)
     val DECEASED_PERSON_COM = generatePersonManager(DECEASED_PERSON)
     val YOUTH_PERSON_COM = generatePersonManager(YOUTH_PERSON)
+    val NULL_YOUTH_SENTENCE_COM = generatePersonManager(NULL_YOUTH_SENTENCE_PERSON)
 
     fun generatePerson(
         crn: String,
