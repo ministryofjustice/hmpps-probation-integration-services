@@ -2,6 +2,8 @@ api.http.host: 0.0.0.0
 config.reload.automatic: true
 config.support_escapes: true
 dead_letter_queue.enable: true
+pipeline.buffer.type: ${PIPELINE_BUFFER_TYPE:direct}
 pipeline.batch.size: ${PIPELINE_BATCH_SIZE:10}
+pipeline.ordered: ${PIPELINE_ORDERED:true}
 pipeline.workers: ${PIPELINE_WORKERS:1}
 log.level: warn

@@ -93,4 +93,9 @@ spec:
                       name: person-search-index-from-delius-sentry
                       key: PERSON_REINDEXING_SENTRY_MONITOR_ID
                       optional: false
+                - name: PIPELINE_BUFFER_TYPE
+                  value: direct
+                - name: PIPELINE_ORDERED
+                  value: 'true'
+
           restartPolicy: Never

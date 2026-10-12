@@ -105,4 +105,8 @@ spec:
                       name: person-search-index-from-delius-opensearch
                       key: connector_external_account_role_arn
                       optional: false
+                - name: PIPELINE_BUFFER_TYPE
+                  value: direct
+                - name: PIPELINE_ORDERED
+                  value: 'true'
           restartPolicy: Never
