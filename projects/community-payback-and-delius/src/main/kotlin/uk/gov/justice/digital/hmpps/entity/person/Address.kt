@@ -7,13 +7,15 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "address")
-@SequenceGenerator(name = "address_id_generator", sequenceName = "address_id_seq", allocationSize = 1)
 @SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "address_id_generator", sequenceName = "address_id_seq", allocationSize = 1)
 class Address(
     @Id
     @GeneratedId(generator = "address_id_generator")
@@ -45,17 +47,19 @@ class Address(
 
     @CreatedDate
     @Column(name = "created_datetime")
-    var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    var lastUpdatedDatetime: ZonedDateTime? = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
     @Column(name = "created_by_user_id")
-    var createdByUserId: Long? = null,
+    var createdByUserId: Long = 0,
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastUpdatedUserId: Long? = null,
+    var lastUpdatedUserId: Long = 0,
+
+    val partitionAreaId: Long = 0,
 )
