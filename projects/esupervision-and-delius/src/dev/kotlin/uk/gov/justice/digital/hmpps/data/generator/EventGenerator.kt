@@ -14,6 +14,7 @@ object EventGenerator {
     val COMMUNITY_ORDER = DisposalType(id(), "ORA Community Order (24 Months)", youthSentence = false)
     val CUSTODY = DisposalType(id(), "ORA Adult Custody (inc PSS)", youthSentence = false)
     val YOUTH_ORDER = DisposalType(id(), "Youth Sentence", youthSentence = true)
+    val NULL_YOUTH_SENTENCE_TYPE = DisposalType(id(), "Sentence with no youth flag")
 
     val EVENT_1 = generateEvent(
         number = 1,
@@ -114,6 +115,20 @@ object EventGenerator {
         referralDate = LocalDate.of(2026, 3, 1),
         disposal = YOUTH_EVENT_DISPOSAL,
         mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY)
+    )
+
+    val NULL_YOUTH_SENTENCE_EVENT = generateEvent(
+        number = 1,
+        person = PersonGenerator.NULL_YOUTH_SENTENCE_PERSON,
+        referralDate = LocalDate.of(2026, 3, 1),
+        disposal = Disposal(
+            id = id(),
+            date = LocalDate.of(2026, 3, 1),
+            type = NULL_YOUTH_SENTENCE_TYPE,
+            length = 12,
+            lengthUnit = LENGTH_UNIT_MONTHS,
+        ),
+        mainOffence = MainOffence(id(), OffenceGenerator.BURGLARY),
     )
 
     fun generateEvent(

@@ -464,7 +464,6 @@ internal class IntegrationTest @Autowired constructor(
                                 "code": "03100",
                                 "description": "Aggravated burglary in a building other than a dwelling (including attempts)"
                               },
-                              "youthSentence": false,
                               "licenceConditions": []
                             }
                           ],
@@ -509,6 +508,18 @@ internal class IntegrationTest @Autowired constructor(
                 jsonPath("$.crn") { value(PersonGenerator.DECEASED_PERSON.crn) }
                 jsonPath("$.name.forename") { value("John") }
                 jsonPath("$.name.surname") { value("Doe") }
+            }
+    }
+
+    @Test
+    fun `get case with null youth sentence omits youthSentence`() {
+        mockMvc.get("/case/${PersonGenerator.NULL_YOUTH_SENTENCE_PERSON.crn}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.crn") { value(PersonGenerator.NULL_YOUTH_SENTENCE_PERSON.crn) }
+                jsonPath("$.events.length()") { value(1) }
+                jsonPath("$.events[0].sentence.description") { value("Sentence with no youth flag") }
+                jsonPath("$.events[0].youthSentence") { doesNotHaveJsonPath() }
             }
     }
 

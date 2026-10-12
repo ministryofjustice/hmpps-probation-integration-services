@@ -23,7 +23,7 @@ data class Event(
     val number: Int,
     val mainOffence: CodedDescription,
     val sentence: Sentence?,
-    val youthSentence: Boolean,
+    val youthSentence: Boolean?,
     val licenceConditions: List<LicenceCondition>,
 ) {
     data class Sentence(
