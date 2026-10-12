@@ -38,7 +38,7 @@ jobs:
             --json-file-output=snyk-results.json \
             --sarif-file-output=snyk-results.sarif \
             --policy-path=.snyk \
-            "ghcr.io/ministryofjustice/hmpps-probation-integration-services/$PROJECT:latest"
+            "ghcr.io/ministryofjustice/hmpps-probation-integration-services/$PROJECT:prod"
         env:
           PROJECT: ${{ matrix.project }}
           CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
