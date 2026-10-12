@@ -58,4 +58,6 @@ class Address(
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long? = null,
+
+    val partitionAreaId: Long = 0,
 )

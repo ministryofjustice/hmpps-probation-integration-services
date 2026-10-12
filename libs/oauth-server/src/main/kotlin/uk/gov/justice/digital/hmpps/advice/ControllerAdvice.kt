@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -58,6 +59,11 @@ class ControllerAdvice {
         .status(BAD_REQUEST)
         .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
         .also { Span.current().recordException(e) }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handle(e: HttpMessageNotReadableException) = ResponseEntity
+        .status(BAD_REQUEST)
+        .body(ErrorResponse(status = BAD_REQUEST.value(), message = e.message))
 }
 
 @RestControllerAdvice(basePackages = ["uk.gov.justice.digital.hmpps"])
