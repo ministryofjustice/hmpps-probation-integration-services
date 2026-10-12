@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamWithDistrictRepository
@@ -17,14 +15,8 @@ class TeamService(
     private val teamWithDistrictRepository: TeamWithDistrictRepository,
     private val teamRepository: TeamRepository,
     private val caseloadRepository: CaseloadRepository,
-    private val personRepository: PersonRepository,
-    @Value("\${delius.db.username}") private val dbUsername: String,
+    private val activeCaseService: ActiveCaseService,
 ) {
-    companion object {
-        private const val ORACLE_IN_CLAUSE_BATCH_SIZE = 999
-        private const val CASE_TYPE_BATCH_SIZE = 50
-    }
-
     fun getTeams(teamCodes: List<String>) = TeamsResponse(
         teamCodes.associateWith { teamCode ->
             val staff = staffRepository.findActiveStaffInTeam(teamCode)
@@ -41,9 +33,10 @@ class TeamService(
         }
 
         val emails = ldapService.findEmailsForStaffIn(staff)
-        val caseloadsByStaffCode =
+        val crnsByStaffCode =
             caseloadRepository.findAllByStaffCodeIn(staff.map { it.code }).groupBy { it.staff.code }
-        val crnSet = caseloadsByStaffCode.values.flatten().map { it.person.crn }.toSet()
+                .mapValues { (_, caseloads) -> caseloads.map { it.person.crn }.distinct().sorted() }
+        val crnSet = crnsByStaffCode.values.flatten().toSet()
 
         val staffResponses = if (crnSet.isEmpty()) {
             staff.map { activeStaff ->
@@ -56,39 +49,15 @@ class TeamService(
                 )
             }
         } else {
-            val initialAllocationDates = crnSet.chunkedForOracleInClause()
-                .flatMap { personRepository.findMostRecentInitialAllocations(it, dbUsername) }
-                .associate { it.crn to it.allocatedAt?.toLocalDate() }
-            val caseTypes = crnSet.chunkedForCaseTypeInClause()
-                .flatMap { personRepository.findCaseTypes(it) }
-                .associate { it.crn to it.type }
-            val peopleByCrn = crnSet.chunkedForOracleInClause()
-                .flatMap { personRepository.findAllByCrnAndSoftDeletedFalse(it.toList()) }
-                .associateBy { it.crn }
+            val casesByStaffCode = activeCaseService.getCasesByGroup(crnsByStaffCode)
 
             staff.sortedBy { it.code }.map { activeStaff ->
-                val cases = caseloadsByStaffCode[activeStaff.code]
-                    .orEmpty()
-                    .map { it.person.crn }
-                    .distinct()
-                    .sorted()
-                    .mapNotNull { crn ->
-                        peopleByCrn[crn]?.let {
-                            Case(
-                                crn,
-                                it.name(),
-                                caseTypes[crn] ?: CaseType.UNKNOWN.name,
-                                initialAllocationDates[crn]
-                            )
-                        }
-                    }
-
                 ActiveCasesResponse(
                     activeStaff.code,
                     activeStaff.name(),
                     activeStaff.grade(),
                     emails[activeStaff.user?.username],
-                    cases
+                    casesByStaffCode[activeStaff.code].orEmpty()
                 )
             }
         }
@@ -119,9 +88,4 @@ class TeamService(
             }
     )
 
-    private fun Set<String>.chunkedForOracleInClause() =
-        toList().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE).map { it.toSet() }
-
-    private fun Set<String>.chunkedForCaseTypeInClause() =
-        toList().chunked(CASE_TYPE_BATCH_SIZE).map { it.toSet() }
 }
