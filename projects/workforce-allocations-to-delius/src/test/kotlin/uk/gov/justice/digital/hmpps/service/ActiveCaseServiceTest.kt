@@ -56,7 +56,9 @@ class ActiveCaseServiceTest {
         val firstChunk = crns.take(50).toSet()
         val secondChunk = crns.drop(50).toSet()
 
-        whenever(personRepository.findMostRecentInitialAllocations(crns.toSet(), AUDIT_USER.username)).thenReturn(emptyList())
+        whenever(personRepository.findMostRecentInitialAllocations(crns.toSet(), AUDIT_USER.username)).thenReturn(
+            emptyList()
+        )
         whenever(personRepository.findCaseTypes(firstChunk)).thenReturn(emptyList())
         whenever(personRepository.findCaseTypes(secondChunk)).thenReturn(emptyList())
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(crns)).thenReturn(emptyList())
@@ -85,7 +87,12 @@ class ActiveCaseServiceTest {
             )
         )
 
-        assertThat(response).isEqualTo(mapOf("A" to emptyList<uk.gov.justice.digital.hmpps.api.model.Case>(), "B" to emptyList()))
+        assertThat(response).isEqualTo(
+            mapOf(
+                "A" to emptyList<uk.gov.justice.digital.hmpps.api.model.Case>(),
+                "B" to emptyList()
+            )
+        )
         verifyNoInteractions(personRepository)
     }
 
@@ -94,9 +101,10 @@ class ActiveCaseServiceTest {
         override val type: String = caseType
     }
 
-    private fun initialAllocation(crnValue: String, allocatedAtValue: LocalDateTime?) = object : MostRecentInitialAllocation {
-        override val crn: String = crnValue
-        override val allocatedAt: LocalDateTime? = allocatedAtValue
-    }
+    private fun initialAllocation(crnValue: String, allocatedAtValue: LocalDateTime?) =
+        object : MostRecentInitialAllocation {
+            override val crn: String = crnValue
+            override val allocatedAt: LocalDateTime? = allocatedAtValue
+        }
 }
 

@@ -188,5 +188,4 @@ class StaffServiceTest {
         assertThat(response.code, equalTo(staff.code))
         assertThat(response.cases.size, equalTo(0))
     }
-
 }
