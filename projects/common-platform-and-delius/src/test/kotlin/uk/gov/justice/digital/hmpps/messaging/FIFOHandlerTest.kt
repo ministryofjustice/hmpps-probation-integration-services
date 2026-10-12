@@ -88,6 +88,29 @@ internal class FIFOHandlerTest {
     }
 
     @Test
+    fun `logs possible match with defendant court case and hearing details`() {
+        corePersonMatchStatusPossibleMatch()
+        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
+
+        handler.handle(notification)
+
+        verify(telemetryService).trackEvent(
+            "PossibleMatchCreationSkipped",
+            mapOf(
+                "matchStatus" to "POSSIBLE_MATCH",
+                "defendantId" to notification.message.hearing.prosecutionCases.first().defendants.first().id,
+                "caseURN" to notification.message.hearing.prosecutionCases.first().prosecutionCaseIdentifier.caseURN,
+                "hearingId" to notification.message.hearing.id,
+                "hearingDates" to notification.message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
+                "futureHearingDate" to "false"
+            ),
+            mapOf()
+        )
+        verify(telemetryService, never()).trackEvent(eq("PersonAlreadyExists"), anyMap(), anyMap())
+        verifyNoInteractions(featureFlags, offenceService, personService, remandService, notifier)
+    }
+
+    @Test
     fun `When defendants with remanded in custody are not found then no inserts occur`() {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_REMAND)
         handler.handle(notification)
@@ -138,6 +161,7 @@ internal class FIFOHandlerTest {
             "PersonAlreadyExists",
             mapOf(
                 "matchStatus" to "MATCH",
+                "defendantId" to notification.message.hearing.prosecutionCases.first().defendants.first().id,
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to "2024-01-01T12:00Z[Europe/London], 2024-03-19T12:00Z[Europe/London], 2030-12-31T12:00Z[Europe/London]",
                 "futureHearingDate" to "true"

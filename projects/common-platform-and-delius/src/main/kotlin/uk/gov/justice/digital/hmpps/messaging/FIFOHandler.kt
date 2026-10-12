@@ -47,11 +47,23 @@ class FIFOHandler(
 
         defendants.forEach { defendant ->
             val matchedPersonStatus = corePerson.findMatchStatusByDefendantId(defendant.id)
-            val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties
+            val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
+                ("defendantId" to defendant.id)
 
             // Defendant is matched with existing record in core person service
-            if (matchedPersonStatus.matchStatus != CorePersonRecordMatchStatus.NO_MATCH) {
+            if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.MATCH) {
                 telemetryService.trackEvent("PersonAlreadyExists", telemetryProperties)
+                return@forEach
+            }
+
+            val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
+                ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+
+            if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
+                telemetryService.trackEvent(
+                    "PossibleMatchCreationSkipped",
+                    telemetryProperties + ("caseURN" to caseUrn)
+                )
                 return@forEach
             }
 
@@ -65,9 +77,6 @@ class FIFOHandler(
             if (featureFlags.enabled("common-platform-record-creation-toggle")) {
                 val remandedOffences = offenceService.getRemandOffences(defendant.offences, telemetryProperties)
                 val mainOffence = offenceService.findMainOffence(remandedOffences) ?: return@forEach
-
-                val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
-                    ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
 
                 // Insert person and event
                 val insertRemandDTO = InsertRemandDTO(
