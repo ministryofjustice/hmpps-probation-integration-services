@@ -51,12 +51,27 @@ runs:
       env:
         project_name: ${{ inputs.project_name }}
 
-    - name: Render certificate templates
+    - name: Render certificate templates (non-prod)
       shell: bash # language=bash
+      if: inputs.environment != 'prod'
       run: |
         sed 's/$SERVICE_NAME/'"${project_name}"'/g;
              s/$SERVICE_URL/'"${project_name}-${environment}"'.hmpps.service.justice.gov.uk/g;
              s/$SERVICE_SHORT_URL/'"${project_name_hash}-${environment}"'.hmpps.service.justice.gov.uk/g;
+             s/$ENV/'"${environment}"'/g' \
+          "${GITHUB_ACTION_PATH}/../../../templates/certificate.yml" >> "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/05-certificates.yml"
+      env:
+        project_name: ${{ inputs.project_name }}
+        project_name_hash: ${{ steps.project_name.outputs.hash }}
+        environment: ${{ inputs.environment }}
+
+    - name: Render certificate templates (prod)
+      shell: bash # language=bash
+      if: inputs.environment == 'prod'
+      run: |
+        sed 's/$SERVICE_NAME/'"${project_name}"'/g;
+             s/$SERVICE_URL/'"${project_name}"'.hmpps.service.justice.gov.uk/g;
+             s/$SERVICE_SHORT_URL/'"${project_name_hash}"'.hmpps.service.justice.gov.uk/g;
              s/$ENV/'"${environment}"'/g' \
           "${GITHUB_ACTION_PATH}/../../../templates/certificate.yml" >> "namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-$environment/05-certificates.yml"
       env:
