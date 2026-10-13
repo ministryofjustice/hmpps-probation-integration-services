@@ -4,6 +4,10 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 object MessageGenerator {
+    val SCHEDULED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-scheduled-A000001")
+    val CANCELLED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-cancelled-A000001")
+    val LINK_DELIVERED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-link-delivered-A000001")
+    val LINK_NOT_DELIVERED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-link-not-delivered-A000001")
     val RECEIVED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-received-A000001")
     val RECEIVED_A000004 = ResourceLoader.get<HmppsDomainEvent>("esupervision-received-A000004")
     val EXPIRED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-expired-A000001")

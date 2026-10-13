@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_SCHEDULED
 import uk.gov.justice.digital.hmpps.service.CheckInService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -31,6 +32,10 @@ class Handler(
             Message(title = CHECK_IN_EXPIRED),
             Message(title = CHECK_IN_REVIEWED),
             Message(title = CHECK_IN_UPDATED),
+            Message(title = CHECK_IN_SCHEDULED),
+            Message(title = CHECK_IN_CANCELLED),
+            Message(title = CHECK_IN_LINK_DELIVERED),
+            Message(title = CHECK_IN_LINK_NOT_DELIVERED),
             Message(title = SETUP_COMPLETED),
             Message(title = SETUP_REMOVED),
         ]
@@ -47,6 +52,26 @@ class Handler(
                 CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> {
                     checkInService.updateCheckIn(notification.message)
                     telemetryService.trackEvent("CheckInEventUpdated", notification.telemetry())
+                }
+
+                CHECK_IN_SCHEDULED -> {
+                    checkInService.checkInScheduled(notification.message)
+                    telemetryService.trackEvent("CheckInScheduled", notification.telemetry())
+                }
+
+                CHECK_IN_CANCELLED -> {
+                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Cancelled")
+                    telemetryService.trackEvent("CheckInCancelled", notification.telemetry())
+                }
+
+                CHECK_IN_LINK_DELIVERED -> {
+                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Link delivered")
+                    telemetryService.trackEvent("CheckInLinkDelivered", notification.telemetry())
+                }
+
+                CHECK_IN_LINK_NOT_DELIVERED -> {
+                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Link not delivered")
+                    telemetryService.trackEvent("CheckInLinkNotDelivered", notification.telemetry())
                 }
 
                 SETUP_COMPLETED -> {
@@ -74,6 +99,10 @@ class Handler(
         const val CHECK_IN_EXPIRED = "esupervision.check-in.expired"
         const val CHECK_IN_REVIEWED = "esupervision.check-in.reviewed"
         const val CHECK_IN_UPDATED = "esupervision.check-in.updated"
+        const val CHECK_IN_SCHEDULED = "esupervision.check-in.scheduled"
+        const val CHECK_IN_LINK_DELIVERED = "esupervision.check-in.link.delivered"
+        const val CHECK_IN_LINK_NOT_DELIVERED = "esupervision.check-in.link.not_delivered"
+        const val CHECK_IN_CANCELLED = "esupervision.check-in.cancelled"
         const val SETUP_COMPLETED = "esupervision.setup.completed"
         const val SETUP_REMOVED = "esupervision.setup.removed"
     }
@@ -90,6 +119,7 @@ fun Notification<HmppsDomainEvent>.telemetry() = mapOf(
 fun HmppsDomainEvent.description() = when (eventType) {
     CHECK_IN_RECEIVED -> "Online check in completed"
     CHECK_IN_EXPIRED -> "Check in has not been submitted on time"
+    CHECK_IN_SCHEDULED -> "Check in status: Scheduled"
     else -> throw IllegalArgumentException("Unexpected event type: $eventType")
 }
 
