@@ -264,6 +264,130 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision scheduled then received then reviewed updates a single contact`() {
+        val uuid = "44444444-5555-6666-7777-888888888888"
+        val port = wireMockServer.port()
+        val externalReferences = listOf(
+            "urn:uk:gov:hmpps:esupervision:check-in:$uuid",
+            "urn:uk:gov:hmpps:esupervision:check-in-expiry:$uuid"
+        )
+
+        val scheduledNotification = prepMessage(
+            MessageGenerator.SCHEDULED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-scheduled/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(scheduledNotification)
+
+        val scheduledContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+
+        val receivedNotification = prepMessage(
+            MessageGenerator.RECEIVED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-submitted/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(receivedNotification)
+
+        val receivedContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+        assertThat(receivedContact.id).isEqualTo(scheduledContact.id)
+        assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(receivedContact.description).isEqualTo("Online check in completed")
+        assertThat(receivedContact.date).isEqualTo(LocalDate.parse("2025-12-21"))
+        assertThat(receivedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-21T09:30:00Z"))
+        assertThat(receivedContact.notes).isEqualTo(
+            """
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Lifecycle received notes
+            """.trimMargin()
+        )
+
+        val reviewedNotification = prepEvent("esupervision-reviewed-A000001", port).run {
+            copy(message = message.copy(detailUrl = "http://localhost:$port/e-supervision-api/checkin-reviewed/$uuid"))
+        }
+        channelManager.getChannel(queueName).publishAndWait(reviewedNotification)
+
+        val reviewedContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+        assertThat(reviewedContact.id).isEqualTo(scheduledContact.id)
+        assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(reviewedContact.notes).isEqualTo(
+            """
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Lifecycle received notes
+            |Lifecycle review notes
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision scheduled then expired then updated updates a single contact`() {
+        val uuid = "55555555-6666-7777-8888-999999999999"
+        val port = wireMockServer.port()
+        val externalReferences = listOf(
+            "urn:uk:gov:hmpps:esupervision:check-in:$uuid",
+            "urn:uk:gov:hmpps:esupervision:check-in-expiry:$uuid"
+        )
+
+        val scheduledNotification = prepMessage(
+            MessageGenerator.SCHEDULED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-scheduled/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(scheduledNotification)
+
+        val scheduledContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+
+        val expiredNotification = prepMessage(
+            MessageGenerator.EXPIRED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-submitted/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(expiredNotification)
+
+        val expiredContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+        assertThat(expiredContact.id).isEqualTo(scheduledContact.id)
+        assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(expiredContact.description).isEqualTo("Check in has not been submitted on time")
+        assertThat(expiredContact.notes).isEqualTo(
+            """
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Lifecycle expired notes
+            """.trimMargin()
+        )
+
+        val updatedNotification = prepEvent("esupervision-updated-expiry-A000001", port).run {
+            copy(message = message.copy(detailUrl = "http://localhost:$port/e-supervision-api/checkin-updated/$uuid"))
+        }
+        channelManager.getChannel(queueName).publishAndWait(updatedNotification)
+
+        val updatedContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+        assertThat(updatedContact.id).isEqualTo(scheduledContact.id)
+        assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(updatedContact.notes).isEqualTo(
+            """
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Lifecycle expired notes
+            |Lifecycle updated expiry notes
+            """.trimMargin()
+        )
+    }
+
+    @Test
     fun `esupervision cancelled contact updated`() {
         val originalContact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:11111111-2222-3333-4444-555555555555"
@@ -274,11 +398,14 @@ internal class IntegrationTest @Autowired constructor(
 
         val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
         assertThat(updatedContact.id).isEqualTo(originalContact.id)
+        assertThat(updatedContact.date).isEqualTo(LocalDate.parse("2025-12-23"))
+        assertThat(updatedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-23T11:45:00Z"))
         assertThat(updatedContact.isSensitive).isEqualTo(true)
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
             |Check in status: Cancelled
+            |Check in status: Rescheduled
             |Check-in cancelled
             """.trimMargin()
         )
@@ -313,6 +440,7 @@ internal class IntegrationTest @Autowired constructor(
             |Check-in link delivered
             """.trimMargin()
         )
+        assertThat(updatedContact.notes).doesNotContain("Check in status: Rescheduled")
         verify(telemetryService).trackEvent(
             "CheckInLinkDelivered",
             mapOf(

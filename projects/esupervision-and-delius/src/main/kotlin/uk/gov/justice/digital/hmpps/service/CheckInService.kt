@@ -34,10 +34,27 @@ class CheckInService(
     private val personRepository: PersonRepository,
     @Value("\${sentry.environment}") private val env: String,
 ) : AuditableService(auditedInteractionService) {
-    fun receiveCheckIn(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-        checkCrnExists(domainEvent.crn)
-        contactRepository.save(domainEvent.checkInContact("Review the online check in using the manage probation check ins service"))
-            .also { audit(it) }
+    fun receiveCheckIn(domainEvent: HmppsDomainEvent) {
+        val detail = domainEvent.getDetail()
+        val contact = detail?.let {
+            val externalReferences = Contact.checkInExternalReferencePrefixes.map { prefix -> prefix + it.checkinUuid }
+            contactRepository.findByExternalReferenceIn(externalReferences)
+        }
+
+        if (contact == null) {
+            audit(ADD_CONTACT) { audit ->
+                checkCrnExists(domainEvent.crn)
+                contactRepository.save(domainEvent.checkInContact("Review the online check in using the manage probation check ins service"))
+                    .also { audit(it) }
+            }
+        } else {
+            audit(UPDATE_CONTACT) { audit ->
+                checkCrnExists(domainEvent.crn)
+                require(domainEvent matches contact) { "Case details mismatch" }
+                contact.updateFromCheckIn(domainEvent, detail)
+                contactRepository.save(contact).also { audit(it) }
+            }
+        }
     }
 
     fun updateCheckIn(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
@@ -52,7 +69,7 @@ class CheckInService(
     }
 
     fun checkInScheduled(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-        checkCrnExists(domainEvent.crn)
+       checkCrnExists(domainEvent.crn)
         contactRepository.save(domainEvent.checkInContact("Check in status: Scheduled")).also { audit(it) }
     }
 
@@ -62,9 +79,15 @@ class CheckInService(
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
         require(domainEvent matches contact) { "Case details mismatch" }
+        detail.dateTime?.let { dateTime ->
+            contact.date = dateTime.toLocalDate()
+            contact.startTime = dateTime
+        }
+        val rescheduled = "Check in status: Rescheduled"
         contact.notes = listOfNotNull(
             contact.notes,
             notes,
+            detail.dateTime?.let { rescheduled },
             detail.notes
         ).joinToString(System.lineSeparator())
         contact.isSensitive = detail.sensitive || contact.isSensitive == true
@@ -101,6 +124,18 @@ class CheckInService(
 
     private fun HmppsDomainEvent.getDetail() =
         detailUrl?.let { domainEventDetailService.getDetail<CheckInDetail>(this) }
+
+    private fun Contact.updateFromCheckIn(domainEvent: HmppsDomainEvent, detail: CheckInDetail) {
+        val checkInDateTime = detail.dateTime
+        date = checkInDateTime?.toLocalDate() ?: domainEvent.occurredAt.toLocalDate()
+        startTime = checkInDateTime ?: domainEvent.occurredAt
+        description = domainEvent.description()
+        notes = listOfNotNull(
+            domainEvent.checkInUrl?.let { "Review the online check in using the manage probation check ins service: $it" },
+            detail.notes
+        ).joinToString(System.lineSeparator())
+        isSensitive = detail.sensitive || isSensitive == true
+    }
 
     private fun HmppsDomainEvent.checkInContact(notes: String): Contact {
         val detail = detailUrl?.let { domainEventDetailService.getDetail<CheckInDetail>(it) }
@@ -153,4 +188,5 @@ class CheckInService(
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
         contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
+
 }

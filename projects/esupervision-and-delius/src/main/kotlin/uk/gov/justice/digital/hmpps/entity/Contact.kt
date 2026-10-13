@@ -45,10 +45,10 @@ class Contact(
     var outcome: ContactOutcome? = null,
 
     @Column(name = "contact_date")
-    val date: LocalDate,
+    var date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    var startTime: ZonedDateTime,
 
     @ManyToOne
     @JoinColumn("probation_area_id")
@@ -62,7 +62,7 @@ class Contact(
     @JoinColumn("staff_id")
     val staff: Staff,
 
-    val description: String? = null,
+    var description: String? = null,
 
     @Lob
     var notes: String? = null,
