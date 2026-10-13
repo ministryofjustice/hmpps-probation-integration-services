@@ -36,7 +36,8 @@ class CheckInService(
 ) : AuditableService(auditedInteractionService) {
     fun receiveCheckIn(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
         checkCrnExists(domainEvent.crn)
-        contactRepository.save(domainEvent.checkInContact("Review the online check in using the manage probation check ins service")).also { audit(it) }
+        contactRepository.save(domainEvent.checkInContact("Review the online check in using the manage probation check ins service"))
+            .also { audit(it) }
     }
 
     fun updateCheckIn(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
@@ -51,7 +52,7 @@ class CheckInService(
     }
 
     fun checkInScheduled(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-       checkCrnExists(domainEvent.crn)
+        checkCrnExists(domainEvent.crn)
         contactRepository.save(domainEvent.checkInContact("Check in status: Scheduled")).also { audit(it) }
     }
 
@@ -152,5 +153,4 @@ class CheckInService(
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
         contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
-
 }
