@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.model.ContactResponse
 import uk.gov.justice.digital.hmpps.model.FailureAndEnforcementResponse
 import uk.gov.justice.digital.hmpps.model.RegistrationResponse
+import java.time.LocalTime
 import java.util.*
 
 @Service
@@ -35,7 +36,7 @@ class FailureAndEnforcementService(
             enforceableContacts = contacts.map {
                 ContactResponse(
                     id = it.id,
-                    datetime = it.date.atTime(it.startTime.toLocalTime()).atZone(EuropeLondon),
+                    datetime = it.date.atTime(it.startTime?.toLocalTime() ?: LocalTime.MIN).atZone(EuropeLondon),
                     description = it.description,
                     type = CodeAndDescription(it.type.code, it.type.description),
                     outcome = CodeAndDescription(it.outcomeType.code, it.outcomeType.description),
