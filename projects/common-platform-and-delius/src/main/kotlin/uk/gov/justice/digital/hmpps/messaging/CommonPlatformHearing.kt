@@ -57,7 +57,7 @@ data class HearingOffence(
     val offenceTitle: String,
     val wording: String,
     val offenceLegislation: String,
-    val listingNumber: Int,
+    val listingNumber: Int? = null,
     val judicialResults: List<JudicialResult>? = emptyList(),
     val plea: Plea? = null,
     val verdict: Verdict? = null
