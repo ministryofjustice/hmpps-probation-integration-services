@@ -219,7 +219,7 @@ class TeamServiceTest {
     }
 
     @Test
-    fun `get team active cases with no crns returns empty cases and skips person lookups`() {
+    fun `get team active cases with no crns returns empty cases after delegating an empty group map`() {
         val team = TeamGenerator.ALLOCATION_TEAM
         val activeStaff = StaffGenerator.generateStaffWithUser(
             code = "N02ABS1",
@@ -244,6 +244,6 @@ class TeamServiceTest {
         assertThat(response.staff[0].code).isEqualTo(activeStaff.code)
         assertThat(response.staff[0].email).isEqualTo("joe.bloggs@example.com")
         assertThat(response.staff[0].cases).isEmpty()
-        verifyNoInteractions(activeCaseService)
+        verify(activeCaseService).getCasesByGroup(emptyMap())
     }
 }

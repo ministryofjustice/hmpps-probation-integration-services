@@ -53,14 +53,11 @@ class ActiveCaseServiceTest {
     @Test
     fun `get cases by group batches repository queries across the combined crn set`() {
         val crns = (1..51).map { "CRN${it.toString().padStart(4, '0')}" }
-        val firstChunk = crns.take(50).toSet()
-        val secondChunk = crns.drop(50).toSet()
 
         whenever(personRepository.findMostRecentInitialAllocations(crns.toSet(), AUDIT_USER.username)).thenReturn(
             emptyList()
         )
-        whenever(personRepository.findCaseTypes(firstChunk)).thenReturn(emptyList())
-        whenever(personRepository.findCaseTypes(secondChunk)).thenReturn(emptyList())
+        whenever(personRepository.findCaseTypes(crns.toSet())).thenReturn(emptyList())
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(crns)).thenReturn(emptyList())
 
         val response = activeCaseService.getCasesByGroup(
@@ -73,8 +70,7 @@ class ActiveCaseServiceTest {
         assertThat(response["A"]).isEmpty()
         assertThat(response["B"]).isEmpty()
         verify(personRepository).findMostRecentInitialAllocations(crns.toSet(), AUDIT_USER.username)
-        verify(personRepository).findCaseTypes(firstChunk)
-        verify(personRepository).findCaseTypes(secondChunk)
+        verify(personRepository).findCaseTypes(crns.toSet())
         verify(personRepository).findAllByCrnAndSoftDeletedFalse(crns)
     }
 
