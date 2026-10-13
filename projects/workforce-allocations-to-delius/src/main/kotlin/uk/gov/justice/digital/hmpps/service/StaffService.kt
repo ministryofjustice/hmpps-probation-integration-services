@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeams
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithTeamsRepository
@@ -18,14 +17,9 @@ class StaffService(
     private val staffRepository: StaffRepository,
     private val staffWithTeamsRepository: StaffWithTeamsRepository,
     private val ldapService: LdapService,
-    private val personRepository: PersonRepository,
-    @Value($$"${delius.db.username}") private val dbUsername: String,
+    private val activeCaseService: ActiveCaseService,
     private val caseloadRepository: CaseloadRepository,
 ) {
-    companion object {
-        private const val ORACLE_IN_CLAUSE_BATCH_SIZE = 999
-    }
-
     fun getOfficerView(code: String): OfficerView {
         val staff = staffRepository.getWithUserByCode(code)
         return OfficerView(
@@ -47,7 +41,7 @@ class StaffService(
         return getAllActiveCasesForStaff(code, caseload.toList())
     }
 
-    private fun getAllActiveCasesForStaff(code: String, crns: List<String>): ActiveCasesResponse {
+    fun getAllActiveCasesForStaff(code: String, crns: List<String>): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
         if (crns.isEmpty()) {
             return ActiveCasesResponse(
@@ -59,31 +53,12 @@ class StaffService(
             )
         }
 
-        val crnSet = crns.toSet()
-        val initialAllocationDates =
-            crnSet.chunkedForOracleInClause().flatMap {
-                personRepository.findMostRecentInitialAllocations(it, dbUsername)
-            }
-                .associate { it.crn to it.allocatedAt?.toLocalDate() }
-        val caseTypes = crnSet.chunkedForOracleInClause()
-            .flatMap { personRepository.findCaseTypes(it) }
-            .associate { it.crn to it.type }
-        val cases = crns.distinct().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE)
-            .flatMap { personRepository.findAllByCrnAndSoftDeletedFalse(it) }
-            .map {
-                Case(
-                    it.crn,
-                    it.name(),
-                    caseTypes[it.crn] ?: CaseType.UNKNOWN.name,
-                    initialAllocationDates[it.crn]
-                )
-            }
         return ActiveCasesResponse(
             staff.code,
             staff.name(),
             staff.grade(),
             ldapService.findEmailForStaff(staff),
-            cases
+            activeCaseService.getCases(crns)
         )
     }
 
@@ -119,7 +94,4 @@ class StaffService(
             }
         )
     }
-
-    private fun Set<String>.chunkedForOracleInClause() =
-        toList().chunked(ORACLE_IN_CLAUSE_BATCH_SIZE).map { it.toSet() }
 }

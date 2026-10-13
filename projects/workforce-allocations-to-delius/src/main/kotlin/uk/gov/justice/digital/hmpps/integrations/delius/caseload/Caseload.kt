@@ -56,4 +56,14 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     """
     )
     fun findAllByStaffCode(staffCode: String): List<Caseload>
+
+    @Query(
+        """
+        select c from Caseload c
+        where c.staff.code in :staffCodes
+        and c.roleCode = 'OM'
+        and c.trustProviderFlag = false
+    """
+    )
+    fun findAllByStaffCodeIn(staffCodes: List<String>): List<Caseload>
 }
