@@ -69,7 +69,7 @@ class CheckInService(
     }
 
     fun checkInScheduled(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-       checkCrnExists(domainEvent.crn)
+        checkCrnExists(domainEvent.crn)
         contactRepository.save(domainEvent.checkInContact("Check in status: Scheduled")).also { audit(it) }
     }
 
@@ -188,5 +188,4 @@ class CheckInService(
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
         contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
-
 }
