@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.SETUP_COMPLETED
-import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.SETUP_REMOVED
 import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.E_SUPERVISION_CHECK_IN
 import uk.gov.justice.digital.hmpps.entity.ContactType.Companion.E_SUPERVISION_SETUP_COMPLETED
 import uk.gov.justice.digital.hmpps.entity.audit.BusinessInteractionCode.ADD_CONTACT
@@ -36,12 +35,12 @@ class CheckInService(
     @Value("\${sentry.environment}") private val env: String,
 ) : AuditableService(auditedInteractionService) {
     fun receiveCheckIn(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-        if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
-        contactRepository.save(domainEvent.checkInContact()).also { audit(it) }
+        checkCrnExists(domainEvent.crn)
+        contactRepository.save(domainEvent.checkInContact("Review the online check in using the manage probation check ins service")).also { audit(it) }
     }
 
     fun updateCheckIn(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
-        if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
+        checkCrnExists(domainEvent.crn)
         val detail = requireNotNull(domainEvent.getDetail())
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
@@ -51,13 +50,33 @@ class CheckInService(
         contactRepository.save(contact).also { audit(it) }
     }
 
+    fun checkInScheduled(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
+       checkCrnExists(domainEvent.crn)
+        contactRepository.save(domainEvent.checkInContact("Check in status: Scheduled")).also { audit(it) }
+    }
+
+    fun checkInUpdateNotes(domainEvent: HmppsDomainEvent, notes: String) = audit(UPDATE_CONTACT) { audit ->
+        checkCrnExists(domainEvent.crn)
+        val detail = requireNotNull(domainEvent.getDetail())
+        val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
+        val contact = contactRepository.getByExternalReferenceIn(externalReferences)
+        require(domainEvent matches contact) { "Case details mismatch" }
+        contact.notes = listOfNotNull(
+            contact.notes,
+            notes,
+            detail.notes
+        ).joinToString(System.lineSeparator())
+        contact.isSensitive = detail.sensitive || contact.isSensitive == true
+        contactRepository.save(contact).also { audit(it) }
+    }
+
     fun completeSetup(domainEvent: HmppsDomainEvent) = audit(ADD_CONTACT) { audit ->
-        if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
+        checkCrnExists(domainEvent.crn)
         contactRepository.save(domainEvent.setupCompletedContact()).also { audit(it) }
     }
 
     fun removeSetup(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
-        if (!personRepository.existsByCrn(domainEvent.crn)) throw IgnorableMessageException("CRN not found")
+        checkCrnExists(domainEvent.crn)
         val contact = if (domainEvent.setupId != null) {
             val externalReference = Contact.externalReferencePrefix(domainEvent.eventType) + domainEvent.setupId
             contactRepository.findByExternalReference(externalReference) ?: when (env) {
@@ -82,26 +101,31 @@ class CheckInService(
     private fun HmppsDomainEvent.getDetail() =
         detailUrl?.let { domainEventDetailService.getDetail<CheckInDetail>(this) }
 
-    private fun HmppsDomainEvent.checkInContact(): Contact {
+    private fun HmppsDomainEvent.checkInContact(notes: String): Contact {
         val detail = detailUrl?.let { domainEventDetailService.getDetail<CheckInDetail>(it) }
         val manager = personManagerRepository.getByCrn(crn)
+        val checkInDateTime = detail?.dateTime
         return Contact(
             person = manager.person,
             event = getEvent(),
             type = contactTypeRepository.getByCode(E_SUPERVISION_CHECK_IN),
-            date = occurredAt.toLocalDate(),
-            startTime = occurredAt,
+            date = checkInDateTime?.toLocalDate() ?: occurredAt.toLocalDate(),
+            startTime = checkInDateTime ?: occurredAt,
             provider = manager.provider,
             team = manager.team,
             staff = manager.staff,
             description = description(),
             notes = listOfNotNull(
-                checkInUrl?.let { "Review the online check in using the manage probation check ins service: $it" },
+                checkInUrl?.let { "$notes: $it" },
                 detail?.notes
             ).joinToString(System.lineSeparator()),
             isSensitive = detail?.sensitive ?: false,
             externalReference = detail?.checkinUuid?.let { Contact.externalReferencePrefix(eventType) + it },
         )
+    }
+
+    private fun checkCrnExists(crn: String) {
+        if (!personRepository.existsByCrn(crn)) throw IgnorableMessageException("CRN not found")
     }
 
     private fun HmppsDomainEvent.setupCompletedContact(): Contact {
@@ -128,4 +152,5 @@ class CheckInService(
 
     private infix fun HmppsDomainEvent.matches(contact: Contact) =
         contact.person.crn == crn && (eventNumber == null || contact.event?.number == eventNumber)
+
 }

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.SETUP_COMPLETED
@@ -16,6 +17,12 @@ object ContactGenerator {
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_UPDATED) + "a18648f4-46ec-4344-8e8e-ba15c18c3ab9")
     val CONTACT_TO_UPDATE_EXPIRY =
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_EXPIRED) + "b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23")
+    val CONTACT_TO_CANCEL =
+        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_RECEIVED) + "11111111-2222-3333-4444-555555555555")
+    val CONTACT_TO_LINK_DELIVERED =
+        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_RECEIVED) + "22222222-3333-4444-5555-666666666666")
+    val CONTACT_TO_LINK_NOT_DELIVERED =
+        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_EXPIRED) + "33333333-4444-5555-6666-777777777777")
     val SETUP_CONTACT_TO_UPDATE = generateContact(
         type = ContactTypeGenerator.CT_ESPCHS,
         outcome = ContactOutcomeGenerator.COT_ESPC,

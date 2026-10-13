@@ -1,0 +1,20 @@
+{
+  "eventType": "esupervision.check-in.scheduled",
+  "version": 2,
+  "description": "An e-Supervision remote check-in has been scheduled",
+  "detailUrl": "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-scheduled/2a1b3c4d-1111-2222-3333-444455556666",
+  "occurredAt": "2025-12-16T09:30:00+01:00",
+  "additionalInformation": {
+    "eventNumber": "2",
+    "checkInUrl": "https://esupervision/check-in/scheduled"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}
+

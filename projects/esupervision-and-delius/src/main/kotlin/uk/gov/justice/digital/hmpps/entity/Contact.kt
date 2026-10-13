@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.entity.event.EventEntity
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_SCHEDULED
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
@@ -119,7 +120,7 @@ class Contact(
 
     companion object {
         fun externalReferencePrefix(eventType: String): String = when (eventType) {
-            CHECK_IN_RECEIVED, CHECK_IN_REVIEWED, CHECK_IN_UPDATED -> "urn:uk:gov:hmpps:esupervision:check-in:"
+            CHECK_IN_RECEIVED, CHECK_IN_REVIEWED, CHECK_IN_UPDATED, CHECK_IN_SCHEDULED -> "urn:uk:gov:hmpps:esupervision:check-in:"
             CHECK_IN_EXPIRED -> "urn:uk:gov:hmpps:esupervision:check-in-expiry:"
             SETUP_COMPLETED, SETUP_REMOVED -> "urn:uk:gov:hmpps:esupervision:setup:"
             else -> throw IllegalArgumentException("Unexpected event type: $eventType")

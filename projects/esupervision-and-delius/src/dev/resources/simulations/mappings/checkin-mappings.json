@@ -77,6 +77,58 @@
         "status": 200,
         "body": "{\"checkinUuid\": \"b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23\", \"notes\": \"Check-in updated expiry\", \"sensitive\": false}"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-scheduled/2a1b3c4d-1111-2222-3333-444455556666"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"2a1b3c4d-1111-2222-3333-444455556666\", \"notes\": \"Scheduled notes\", \"sensitive\": false, \"dateTime\": \"2025-12-20T14:15:00Z\"}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-cancelled/11111111-2222-3333-4444-555555555555"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"11111111-2222-3333-4444-555555555555\", \"notes\": \"Check-in cancelled\", \"sensitive\": true}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-link-delivered/22222222-3333-4444-5555-666666666666"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"22222222-3333-4444-5555-666666666666\", \"notes\": \"Check-in link delivered\", \"sensitive\": false}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-link-not-delivered/33333333-4444-5555-6666-777777777777"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"33333333-4444-5555-6666-777777777777\", \"notes\": \"Check-in link not delivered\", \"sensitive\": false}"
+      }
     }
   ]
 }
