@@ -48,6 +48,10 @@ spec:
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
                   value: '2'
+                - name: PIPELINE_BUFFER_TYPE
+                  value: direct
+                - name: PIPELINE_ORDERED
+                  value: 'false'
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '250'
                 - name: JDBC_BATCH_SIZE # Maximum number of cases to return from DB at a time, note: each case corresponds to >1000 events
@@ -112,8 +116,4 @@ spec:
                       name: person-search-index-from-delius-opensearch
                       key: connector_external_account_role_arn
                       optional: false
-                - name: PIPELINE_BUFFER_TYPE
-                  value: direct
-                - name: PIPELINE_ORDERED
-                  value: 'true'
           restartPolicy: Never
