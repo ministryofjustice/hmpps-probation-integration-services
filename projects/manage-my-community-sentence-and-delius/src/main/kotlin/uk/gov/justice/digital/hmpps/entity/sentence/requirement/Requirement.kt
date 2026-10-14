@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 @Entity
 @Immutable
 @Table(name = "rqmnt")
-@SQLRestriction("active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Requirement(
     @Id
     @Column(name = "rqmnt_id")
@@ -37,6 +37,9 @@ class Requirement(
     val actualStartDate: LocalDate? = null,
     @Column(name = "termination_date")
     val actualEndDate: LocalDate? = null,
+    @ManyToOne
+    @JoinColumn(name = "rqmnt_termination_reason_id")
+    val terminationReason: ReferenceData? = null,
     @Column(name = "last_updated_datetime")
     val lastUpdatedDatetime: ZonedDateTime,
     @Column(columnDefinition = "number")

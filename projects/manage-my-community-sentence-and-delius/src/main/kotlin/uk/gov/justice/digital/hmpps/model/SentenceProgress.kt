@@ -35,6 +35,7 @@ data class SentenceProgress(
         val expectedEndDate: LocalDate? = null,
         val actualStartDate: LocalDate? = null,
         val actualEndDate: LocalDate? = null,
+        val terminationReason: CodeDescription? = null,
         val lastUpdatedAt: ZonedDateTime,
     )
 

@@ -147,4 +147,57 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                 }
             }
     }
+
+    @Test
+    fun `show terminated requirement on active event`() {
+        mockMvc.get("/person/${PersonData.BASIC.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                        {
+                          "sentences": [
+                            {
+                              "type": "Community Order",
+                              "startDate": "2024-01-01",
+                              "expectedEndDate": "2025-01-01",
+                              "lastUpdatedAt": "2026-01-01T12:00:00Z",
+                              "requirements": [
+                                {
+                                  "type": "Court - Accredited Programme",
+                                  "description": "Building Choices",
+                                  "mainCategory": {
+                                    "code": "C",
+                                    "description": "Court - Accredited Programme"
+                                  },
+                                  "subCategory": {
+                                    "code": "BC",
+                                    "description": "Building Choices"
+                                  },
+                                  "required": 15,
+                                  "unit": "DAYS",
+                                  "actualEndDate": "2026-02-15",
+                                  "terminationReason": {
+                                    "code": "B",
+                                    "description": "Normal"
+                                  },
+                                  "lastUpdatedAt": "2026-02-15T10:00:00Z"
+                                }
+                              ],
+                              "licenceConditions": [],
+                              "mainOffence": {
+                                "code": "TH001",
+                                "description": "Theft"
+                              },
+                              "additionalOffences": []
+                            }
+                          ]
+                        }
+                        """.trimIndent(),
+                        JsonCompareMode.STRICT
+                    )
+                }
+            }
+    }
 }
