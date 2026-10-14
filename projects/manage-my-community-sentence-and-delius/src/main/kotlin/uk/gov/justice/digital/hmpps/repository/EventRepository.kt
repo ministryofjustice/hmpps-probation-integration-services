@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 
 interface EventRepository : JpaRepository<Event, Long> {
-    @EntityGraph(attributePaths = ["disposal.type", "disposal.custody.sentenceExpiryDate", "disposal.requirements.mainCategory.lengthUnits", "disposal.requirements.subCategory", "disposal.licenceConditions.mainCategory", "disposal.licenceConditions.subCategory", "mainOffence.offence", "additionalOffences.offence"])
+    @EntityGraph(attributePaths = ["disposal.type", "disposal.custody.sentenceExpiryDate", "disposal.requirements.mainCategory.lengthUnits", "disposal.requirements.subCategory", "disposal.requirements.terminationReason", "disposal.licenceConditions.mainCategory", "disposal.licenceConditions.subCategory", "mainOffence.offence", "additionalOffences.offence"])
     fun findByPersonIdAndDisposalNotNull(personId: Long): List<Event>
 }

@@ -13,12 +13,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_
 import uk.gov.justice.digital.hmpps.data.TestData.RequirementData.RAR_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.TestData.SentenceData.DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
-import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
-import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
-import uk.gov.justice.digital.hmpps.entity.Person
-import uk.gov.justice.digital.hmpps.entity.PersonalContact
-import uk.gov.justice.digital.hmpps.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.entity.Restriction
+import uk.gov.justice.digital.hmpps.entity.*
 import uk.gov.justice.digital.hmpps.entity.address.Address
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
 import uk.gov.justice.digital.hmpps.entity.address.PersonAddress
@@ -55,6 +50,7 @@ object TestData {
         val COMMUNITY_ORDER = DisposalType(id(), "Community Order", "NP")
         val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "C", "Court - Accredited Programme", DAYS)
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
+        val REQUIREMENT_TERMINATION_REASON = ReferenceData(id(), "B", "Normal")
         val UPW_REQUIREMENT_CATEGORY = RequirementMainCategory(id(), Requirement.UPW, "Unpaid Work", HOURS)
         val UPW_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "UPW", "Regular")
         val RAR_REQUIREMENT_CATEGORY =
@@ -327,6 +323,17 @@ object TestData {
                 RAR_REQUIREMENT_SUBCATEGORY,
                 lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
             )
+        val TERMINATED_REQUIREMENT = Requirement(
+            id = id(),
+            length = 15,
+            disposal = SentenceData.BASIC_DISPOSAL,
+            mainCategory = REQUIREMENT_CATEGORY,
+            subCategory = REQUIREMENT_SUBCATEGORY,
+            actualEndDate = LocalDate.of(2026, 2, 15),
+            terminationReason = ReferenceData.REQUIREMENT_TERMINATION_REASON,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")),
+            activeFlag = false,
+        )
     }
 
     object LicenceConditionData {

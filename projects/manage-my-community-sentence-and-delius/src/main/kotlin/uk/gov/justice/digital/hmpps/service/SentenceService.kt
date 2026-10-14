@@ -51,6 +51,7 @@ class SentenceService(
                             expectedEndDate = requirement.expectedEndDate,
                             actualStartDate = requirement.actualStartDate,
                             actualEndDate = requirement.actualEndDate,
+                            terminationReason = requirement.terminationReason?.toModel(),
                             lastUpdatedAt = requirement.lastUpdatedDatetime,
                         )
                     },
