@@ -138,6 +138,16 @@ object TestData {
             manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
+
+        val GROUPED_UPW = Person(
+            id = id(),
+            crn = "X000005",
+            firstName = "Test",
+            surname = "Grouped Upw",
+            dateOfBirth = LocalDate.of(1992, 7, 7),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object AddressData {
@@ -199,6 +209,7 @@ object TestData {
         val SUSPENDED_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.SUSPENDED_EVENT, MAIN_OFFENCE_TYPE)
         val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
         val LAO_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.LAO_EVENT, MAIN_OFFENCE_TYPE)
+        val GROUPED_UPW_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.GROUPED_UPW_EVENT, MAIN_OFFENCE_TYPE)
     }
 
     object SentenceData {
@@ -280,6 +291,11 @@ object TestData {
             number = "1",
             personId = PersonData.LAO_RESTRICTED.id,
         )
+        val GROUPED_UPW_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.GROUPED_UPW.id,
+        )
         val LAO_DISPOSAL = Disposal(
             id = id(),
             event = LAO_EVENT,
@@ -288,6 +304,15 @@ object TestData {
             expectedEndDate = LocalDate.of(2025, 1, 1),
             enteredExpectedEndDate = null,
             lastUpdatedDatetime = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val GROUPED_UPW_DISPOSAL = Disposal(
+            id = id(),
+            event = GROUPED_UPW_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 3, 1),
+            expectedEndDate = LocalDate.of(2025, 3, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
         )
     }
 
@@ -327,6 +352,34 @@ object TestData {
                 RAR_REQUIREMENT_SUBCATEGORY,
                 lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
             )
+        val GROUPED_UPW_REQUIREMENT_1 =
+            Requirement(
+                id(),
+                length = 10,
+                SentenceData.GROUPED_UPW_DISPOSAL,
+                UPW_REQUIREMENT_CATEGORY,
+                UPW_REQUIREMENT_SUBCATEGORY,
+                imposedDate = LocalDate.of(2024, 3, 1),
+                expectedStartDate = LocalDate.of(2024, 3, 15),
+                expectedEndDate = LocalDate.of(2024, 9, 1),
+                actualStartDate = LocalDate.of(2024, 3, 20),
+                actualEndDate = LocalDate.of(2024, 9, 15),
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 1, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
+        val GROUPED_UPW_REQUIREMENT_2 =
+            Requirement(
+                id(),
+                length = 5,
+                SentenceData.GROUPED_UPW_DISPOSAL,
+                UPW_REQUIREMENT_CATEGORY,
+                null,
+                imposedDate = LocalDate.of(2024, 9, 2),
+                expectedStartDate = LocalDate.of(2024, 9, 16),
+                expectedEndDate = LocalDate.of(2025, 3, 1),
+                actualStartDate = LocalDate.of(2024, 9, 20),
+                actualEndDate = LocalDate.of(2025, 3, 5),
+                lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC"))
+            )
     }
 
     object LicenceConditionData {
@@ -343,10 +396,17 @@ object TestData {
 
     object UnpaidWorkData {
         val UNPAID_WORK_DETAILS = UnpaidWorkDetails(id(), DISPOSAL.id)
+        val GROUPED_UPW_DETAILS = UnpaidWorkDetails(id(), SentenceData.GROUPED_UPW_DISPOSAL.id)
         val UNPAID_WORK_PROJECT_1 = UnpaidWorkProject(
             id = id(),
             name = "Project 1",
             code = "PRJ1",
+            placementAddress = AddressData.PLACEMENT_ADDRESS
+        )
+        val GROUPED_UPW_PROJECT = UnpaidWorkProject(
+            id = id(),
+            name = "Grouped Project",
+            code = "PRJ2",
             placementAddress = AddressData.PLACEMENT_ADDRESS
         )
         val PAST_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
@@ -360,6 +420,18 @@ object TestData {
             contact = AppointmentData.FUTURE_UPW_CONTACT,
             pickUpLocation = TeamData.OFFICE,
             project = UNPAID_WORK_PROJECT_1
+        )
+        val GROUPED_UPW_APPOINTMENT_1 = UnpaidWorkAppointment(
+            id(), GROUPED_UPW_DETAILS, minutesCredited = 180,
+            contact = AppointmentData.GROUPED_UPW_CONTACT_1,
+            pickUpLocation = TeamData.OFFICE,
+            project = GROUPED_UPW_PROJECT
+        )
+        val GROUPED_UPW_APPOINTMENT_2 = UnpaidWorkAppointment(
+            id(), GROUPED_UPW_DETAILS, minutesCredited = 240,
+            contact = AppointmentData.GROUPED_UPW_CONTACT_2,
+            pickUpLocation = TeamData.OFFICE,
+            project = GROUPED_UPW_PROJECT
         )
     }
 
@@ -432,6 +504,18 @@ object TestData {
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
             attended = false, complied = false,
         )
+        val GROUPED_UPW_CONTACT_1 = generate(
+            LocalDate.of(2024, 4, 1), LocalTime.of(9, 0), LocalTime.of(12, 0),
+            eventId = SentenceData.GROUPED_UPW_EVENT.id,
+            personId = PersonData.GROUPED_UPW.id,
+            attended = true, complied = true,
+        )
+        val GROUPED_UPW_CONTACT_2 = generate(
+            LocalDate.of(2024, 10, 1), LocalTime.of(9, 0), LocalTime.of(13, 0),
+            eventId = SentenceData.GROUPED_UPW_EVENT.id,
+            personId = PersonData.GROUPED_UPW.id,
+            attended = true, complied = true,
+        )
         val FUTURE_INACTIVE_EVENT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
             eventId = SentenceData.INACTIVE_EVENT.id,
@@ -452,13 +536,14 @@ object TestData {
             type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
             location: OfficeLocation? = TeamData.OFFICE,
             eventId: Long? = SentenceData.EVENT.id,
+            personId: Long = PersonData.DEFAULT.id,
             attended: Boolean? = null,
             complied: Boolean? = null,
             outcome: ContactOutcome? = null,
             sensitive: Boolean? = null,
         ) = Contact(
             id = id(),
-            personId = PersonData.DEFAULT.id,
+            personId = personId,
             eventId = eventId,
             date = date,
             startTime = startTime,

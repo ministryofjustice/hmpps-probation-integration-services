@@ -147,4 +147,53 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                 }
             }
     }
+
+    @Test
+    fun `group multiple unpaid work requirements into a single progress entry`() {
+        mockMvc.get("/person/${PersonData.GROUPED_UPW.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                content {
+                    json(
+                        """
+                        {
+                          "sentences": [
+                            {
+                              "type": "Community Order",
+                              "startDate": "2024-03-01",
+                              "expectedEndDate": "2025-03-01",
+                              "lastUpdatedAt": "2026-04-01T13:00:00+01:00",
+                              "requirements": [
+                                {
+                                  "type": "Unpaid Work",
+                                  "mainCategory": {
+                                    "code": "W",
+                                    "description": "Unpaid Work"
+                                  },
+                                  "required": 15,
+                                  "completed": 7,
+                                  "unit": "HOURS",
+                                  "imposedDate": "2024-03-01",
+                                  "expectedStartDate": "2024-03-15",
+                                  "expectedEndDate": "2025-03-01",
+                                  "actualStartDate": "2024-03-20",
+                                  "actualEndDate": "2025-03-05",
+                                  "lastUpdatedAt": "2026-04-02T11:00:00+01:00"
+                                }
+                              ],
+                              "licenceConditions": [],
+                              "mainOffence": {
+                                "code": "TH001",
+                                "description": "Theft"
+                              },
+                              "additionalOffences": []
+                            }
+                          ]
+                        }
+                        """.trimIndent(),
+                        JsonCompareMode.STRICT
+                    )
+                }
+            }
+    }
 }
