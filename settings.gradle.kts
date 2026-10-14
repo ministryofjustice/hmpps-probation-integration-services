@@ -91,7 +91,7 @@ dependencyResolutionManagement {
             library("azure-identity", "com.azure:azure-identity:1.18.7")
             library("flipt", "io.flipt:flipt-client-java:1.3.4")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
-            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.70.0")
+            library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.71.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.2.1-RELEASE")
@@ -99,9 +99,9 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.31.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.32.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.59.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.60.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
