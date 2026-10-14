@@ -94,7 +94,7 @@ jobs:
 
       - name: Create Sentry release
         if: ${{ steps.chart_yaml.outputs.exists == 'true' && steps.enabled.outputs.enabled == 'true' }}
-        uses: getsentry/action-release@ff07929a6537bac57790c3451cf4d364aca38528 # v3.7.0
+        uses: getsentry/action-release@6fb9aeade7061441cf3864e34fbe11a1457ad7dc # v3.7.1
         env:
           SENTRY_ORG: ministryofjustice
           SENTRY_PROJECT: ${{ matrix.project }}
