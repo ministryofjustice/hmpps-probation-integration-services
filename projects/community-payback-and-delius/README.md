@@ -18,15 +18,8 @@ The service exposes RESTful API endpoints for the Community Payback service to:
 
 - Search for and retrieve Unpaid Work appointments and project details
 - Create, update, or delete Unpaid Work appointments and projects
-- Upload documents to appointments via `POST /appointments/{appointmentId}/documents`
-  - Supports the following file formats: doc, docx, rtf, txt, dot, dotm, docm, odt, xml, wpd, wri, wps, xls, xlsb, xlsx, csv, pdf, bmp, jpg, jpeg, gif, png, m4a, flac, mp3, mp4, wav, wma, aac
-  - Documents are uploaded to Alfresco and linked to the contact record in NDelius
-  - Request: multipart form data with `file` parameter
-  - Response: JSON with `documentId`, `filename`, and `alfrescoId`
-- Retrieve personal circumstances for a person by CRN via `GET /case/{crn}/personal-circumstances`
-  - Use `?activeOnly=true` to return active circumstances only
-  - Use `?activeOnly=false` (default) to return active and inactive circumstances
-  - Personal circumstance response includes `type`, `subType`, `startDate`, `endDate`, `verified`, and `notes`
+- List and upload documents related to Unpaid Work appointments
+- Retrieve personal circumstances for a person by CRN
 
 API endpoints are secured and require appropriate roles via HMPPS Auth.
 

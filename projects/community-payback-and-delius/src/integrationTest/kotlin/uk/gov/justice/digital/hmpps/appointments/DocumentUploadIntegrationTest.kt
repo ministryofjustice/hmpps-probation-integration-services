@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.appointments
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.aMultipart
-import com.github.tomakehurst.wiremock.client.WireMock.equalTo
-import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -55,7 +52,7 @@ class DocumentUploadIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<DocumentUploadResponse>()
 
         assertThat(response.filename).isEqualTo("evidence.pdf")
-        assertThat(response.alfrescoId).isEqualTo("00000000-0000-0000-0000-000000000001")
+        assertThat(response.documentId).isPositive()
 
         val document = documentRepository.findById(response.documentId).orElseThrow()
         assertThat(document.alfrescoId).isEqualTo("00000000-0000-0000-0000-000000000001")
@@ -65,6 +62,8 @@ class DocumentUploadIntegrationTest @Autowired constructor(
         assertThat(document.person.id).isEqualTo(appointment.person.id)
         assertThat(document.createdByUserId).isNotNull
         assertThat(document.lastUpdatedUserId).isEqualTo(document.createdByUserId)
+        assertThat(document.createdDatetime).isNotNull
+        assertThat(document.lastSaved).isNotNull
 
         wireMockServer.verify(
             postRequestedFor(urlEqualTo("/alfresco/uploadnew"))

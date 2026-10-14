@@ -1,14 +1,22 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.person.Person
+import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.ZonedDateTime
 import java.util.*
 
 @Entity
-@Table(name = "document")
+@SQLRestriction("soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 class Document(
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -28,13 +36,17 @@ class Document(
 
     val externalReference: String,
 
-    var lastSaved: ZonedDateTime? = null,
+    @LastModifiedDate
+    var lastSaved: ZonedDateTime? = ZonedDateTime.now(),
 
-    var createdDatetime: ZonedDateTime? = null,
+    @CreatedDate
+    var createdDatetime: ZonedDateTime? = ZonedDateTime.now(),
 
+    @CreatedBy
     @Column(name = "created_by_user_id")
     var createdByUserId: Long? = null,
 
+    @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long? = null,
 
@@ -48,14 +60,14 @@ class Document(
     var rowVersion: Long = 0,
 
     @Convert(converter = NumericBooleanConverter::class)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
 
     @Id
     @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
-    @uk.gov.justice.digital.hmpps.jpa.GeneratedId(generator = "document_id_generator")
+    @GeneratedId(generator = "document_id_generator")
     @Column(name = "document_id")
     val id: Long = 0,
 ) {
@@ -67,11 +79,7 @@ class Document(
 }
 
 interface DocumentRepository : JpaRepository<Document, Long> {
-    fun findByExternalReferenceAndSoftDeletedFalse(urn: String): Document?
+    fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
-    fun existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
-        tableName: String,
-        primaryKeyId: Long,
-        id: Long
-    ): Boolean
+    fun findAllByPrimaryKeyIdAndTableName(primaryKeyId: Long, tableName: String = "CONTACT"): List<Document>
 }
