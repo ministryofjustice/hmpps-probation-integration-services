@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement as RequirementEntity
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.RAR
 import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement.Companion.UPW
 import uk.gov.justice.digital.hmpps.model.CodeDescription
@@ -33,27 +34,7 @@ class SentenceService(
                     expectedEndDate = it.custody?.sentenceExpiryDate?.date
                         ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
-                    requirements = it.requirements.map { requirement ->
-                        Requirement(
-                            type = requirement.mainCategory.description,
-                            description = requirement.subCategory?.description,
-                            mainCategory = requirement.mainCategory.toModel(),
-                            subCategory = requirement.subCategory?.toModel(),
-                            required = requirement.length,
-                            completed = when (requirement.mainCategory.code) {
-                                RAR -> contactRepository.countRarDaysAttended(requirement.id)
-                                UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
-                                else -> null
-                            },
-                            unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
-                            imposedDate = requirement.imposedDate,
-                            expectedStartDate = requirement.expectedStartDate,
-                            expectedEndDate = requirement.expectedEndDate,
-                            actualStartDate = requirement.actualStartDate,
-                            actualEndDate = requirement.actualEndDate,
-                            lastUpdatedAt = requirement.lastUpdatedDatetime,
-                        )
-                    },
+                    requirements = mapRequirements(it.requirements.toList()),
                     licenceConditions = it.licenceConditions.map { licenceCondition ->
                         LicenceCondition(
                             type = licenceCondition.mainCategory.description,
@@ -78,6 +59,77 @@ class SentenceService(
                     },
                 )
             }
+        )
+    }
+
+    private fun mapRequirements(requirements: List<RequirementEntity>): List<Requirement> {
+        if (requirements.none { it.mainCategory.code == UPW }) {
+            return requirements.map(::toSentenceRequirement)
+        }
+
+        val unpaidWorkHoursByDisposal = requirements
+            .filter { it.mainCategory.code == UPW }
+            .map { it.disposal.id }
+            .distinct()
+            .associateWith { unpaidWorkAppointmentRepository.countHoursAttended(it) ?: 0 }
+
+        val groupedRequirements = mutableListOf<Requirement>()
+        val groupedUpwDisposals = mutableSetOf<Long>()
+
+        requirements.forEach { requirement ->
+            if (requirement.mainCategory.code == UPW) {
+                if (groupedUpwDisposals.add(requirement.disposal.id)) {
+                    groupedRequirements += toGroupedUnpaidWorkRequirement(
+                        requirements.filter { it.disposal.id == requirement.disposal.id && it.mainCategory.code == UPW },
+                        unpaidWorkHoursByDisposal.getValue(requirement.disposal.id),
+                    )
+                }
+            } else {
+                groupedRequirements += toSentenceRequirement(requirement)
+            }
+        }
+
+        return groupedRequirements
+    }
+
+    private fun toSentenceRequirement(requirement: RequirementEntity) = Requirement(
+        type = requirement.mainCategory.description,
+        description = requirement.subCategory?.description,
+        mainCategory = requirement.mainCategory.toModel(),
+        subCategory = requirement.subCategory?.toModel(),
+        required = requirement.length,
+        completed = when (requirement.mainCategory.code) {
+            RAR -> contactRepository.countRarDaysAttended(requirement.id)
+            UPW -> unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
+            else -> null
+        },
+        unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
+        imposedDate = requirement.imposedDate,
+        expectedStartDate = requirement.expectedStartDate,
+        expectedEndDate = requirement.expectedEndDate,
+        actualStartDate = requirement.actualStartDate,
+        actualEndDate = requirement.actualEndDate,
+        lastUpdatedAt = requirement.lastUpdatedDatetime,
+    )
+
+    private fun toGroupedUnpaidWorkRequirement(requirements: List<RequirementEntity>, completedHours: Int): Requirement {
+        val first = requirements.first()
+        val uniqueSubCategories = requirements.mapNotNull { it.subCategory }.distinctBy { it.id }
+
+        return Requirement(
+            type = first.mainCategory.description,
+            description = uniqueSubCategories.singleOrNull()?.description,
+            mainCategory = first.mainCategory.toModel(),
+            subCategory = uniqueSubCategories.singleOrNull()?.toModel(),
+            required = requirements.sumOf { it.length ?: 0 },
+            completed = completedHours,
+            unit = first.length?.let { DurationUnit.ofCode(first.mainCategory.lengthUnits.code) },
+            imposedDate = requirements.mapNotNull { it.imposedDate }.minOrNull(),
+            expectedStartDate = requirements.mapNotNull { it.expectedStartDate }.minOrNull(),
+            expectedEndDate = requirements.mapNotNull { it.expectedEndDate }.maxOrNull(),
+            actualStartDate = requirements.mapNotNull { it.actualStartDate }.minOrNull(),
+            actualEndDate = requirements.mapNotNull { it.actualEndDate }.maxOrNull(),
+            lastUpdatedAt = requirements.maxOf { it.lastUpdatedDatetime },
         )
     }
 }
