@@ -112,7 +112,10 @@ class SentenceService(
         lastUpdatedAt = requirement.lastUpdatedDatetime,
     )
 
-    private fun toGroupedUnpaidWorkRequirement(requirements: List<RequirementEntity>, completedHours: Int): Requirement {
+    private fun toGroupedUnpaidWorkRequirement(
+        requirements: List<RequirementEntity>,
+        completedHours: Int
+    ): Requirement {
         val first = requirements.first()
         val uniqueSubCategories = requirements.mapNotNull { it.subCategory }.distinctBy { it.id }
 
