@@ -372,7 +372,7 @@ object TestData {
                 length = 5,
                 SentenceData.GROUPED_UPW_DISPOSAL,
                 UPW_REQUIREMENT_CATEGORY,
-                UPW_REQUIREMENT_SUBCATEGORY,
+                null,
                 imposedDate = LocalDate.of(2024, 9, 2),
                 expectedStartDate = LocalDate.of(2024, 9, 16),
                 expectedEndDate = LocalDate.of(2025, 3, 1),

@@ -117,13 +117,16 @@ class SentenceService(
         completedHours: Int
     ): Requirement {
         val first = requirements.first()
-        val uniqueSubCategories = requirements.mapNotNull { it.subCategory }.distinctBy { it.id }
+        val uniqueSubCategory = requirements
+            .map { it.subCategory }
+            .distinctBy { it?.id }
+            .singleOrNull()
 
         return Requirement(
             type = first.mainCategory.description,
-            description = uniqueSubCategories.singleOrNull()?.description,
+            description = uniqueSubCategory?.description,
             mainCategory = first.mainCategory.toModel(),
-            subCategory = uniqueSubCategories.singleOrNull()?.toModel(),
+            subCategory = uniqueSubCategory?.toModel(),
             required = requirements.sumOf { it.length ?: 0 },
             completed = completedHours,
             unit = first.length?.let { DurationUnit.ofCode(first.mainCategory.lengthUnits.code) },

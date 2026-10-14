@@ -166,14 +166,9 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               "requirements": [
                                 {
                                   "type": "Unpaid Work",
-                                  "description": "Regular",
                                   "mainCategory": {
                                     "code": "W",
                                     "description": "Unpaid Work"
-                                  },
-                                  "subCategory": {
-                                    "code": "UPW",
-                                    "description": "Regular"
                                   },
                                   "required": 15,
                                   "completed": 7,
