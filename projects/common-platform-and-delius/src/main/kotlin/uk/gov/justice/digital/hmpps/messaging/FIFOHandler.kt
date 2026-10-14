@@ -59,14 +59,6 @@ class FIFOHandler(
             val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
                 ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
 
-            if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
-                telemetryService.trackEvent(
-                    "PossibleMatchCreationSkipped",
-                    telemetryProperties + ("caseURN" to caseUrn)
-                )
-                return@forEach
-            }
-
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
             if (dateOfBirth == null || YEARS.between(dateOfBirth, LocalDate.now()) <= 10) {
@@ -90,6 +82,13 @@ class FIFOHandler(
                 )
 
                 if (personService.personWithDefendantIdExists(defendant.id)) return
+
+                if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
+                    telemetryService.trackEvent(
+                        "PossibleMatchCreationSkipped", telemetryProperties + ("caseURN" to caseUrn)
+                    )
+                    return@forEach
+                }
 
                 insertPersonAndEvent(insertRemandDTO)
             } else {

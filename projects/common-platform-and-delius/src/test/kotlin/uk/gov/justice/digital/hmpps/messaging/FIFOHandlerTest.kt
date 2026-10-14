@@ -90,6 +90,8 @@ internal class FIFOHandlerTest {
     @Test
     fun `logs possible match with defendant court case and hearing details`() {
         corePersonMatchStatusPossibleMatch()
+        featureFlagIsEnabled(true)
+        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
 
         handler.handle(notification)
@@ -107,7 +109,7 @@ internal class FIFOHandlerTest {
             mapOf()
         )
         verify(telemetryService, never()).trackEvent(eq("PersonAlreadyExists"), anyMap(), anyMap())
-        verifyNoInteractions(featureFlags, offenceService, personService, remandService, notifier)
+        verifyNoInteractions(remandService, notifier)
     }
 
     @Test
