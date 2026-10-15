@@ -109,8 +109,8 @@ class AdjustmentService(
         reason: String?,
         minutes: Int?,
         pageable: Pageable
-    ): Page<Adjustment> {
-        return adjustmentRepository.searchAdjustments(
+    ): PagedModel<Adjustment> = PagedModel(
+        adjustmentRepository.searchAdjustments(
             crn = crn,
             eventNumber = eventNumber?.toString(),
             date = date,
@@ -128,7 +128,7 @@ class AdjustmentService(
                 reason = CodeName(name = it.reason.description, code = it.reason.code),
             )
         }
-    }
+    )
 
     fun UnpaidWorkAdjustment.reference() =
         externalReference?.removePrefix(REFERENCE_PREFIX)?.let { UUID.fromString(it) }
