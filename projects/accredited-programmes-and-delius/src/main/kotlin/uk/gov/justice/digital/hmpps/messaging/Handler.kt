@@ -32,16 +32,17 @@ class Handler(
 
         when (notification.eventType) {
             REFERRAL_STATUS_CHANGED -> detailService.getDetail<StatusInfo>(domainEvent.detailUrl).also { detail ->
-                statusChangeService.statusChanged(notification.id, crn, domainEvent.occurredAt, detail)
-                telemetryService.trackEvent(
-                    "StatusChanged",
-                    mapOf(
-                        "crn" to crn,
-                        "componentId" to detail.sourcedFromEntityId.toString(),
-                        "status" to detail.newStatus.toString(),
-                        "username" to detail.username,
+                if (statusChangeService.statusChanged(notification.id, crn, domainEvent.occurredAt, detail)) {
+                    telemetryService.trackEvent(
+                        "StatusChanged",
+                        mapOf(
+                            "crn" to crn,
+                            "componentId" to detail.sourcedFromEntityId.toString(),
+                            "status" to detail.newStatus.toString(),
+                            "username" to detail.username,
+                        )
                     )
-                )
+                }
             }
 
             REFERRAL_COMPLETE -> detailService.getDetail<ReferralCompletion>(domainEvent.detailUrl).also { detail ->
