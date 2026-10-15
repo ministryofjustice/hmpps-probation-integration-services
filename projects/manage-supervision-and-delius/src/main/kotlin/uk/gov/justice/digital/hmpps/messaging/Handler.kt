@@ -14,8 +14,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentR
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.ContactLogService
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
 @Channel("manage-supervision-and-delius-queue")
@@ -49,7 +49,8 @@ class Handler(
                         type = CreateContact.Type.EmailTextToPoP.code,
                         staffCode = relatedAppointment.staff.code,
                         teamCode = relatedAppointment.team.code,
-                        notes = smsDetails.smsMessage
+                        notes = smsDetails.smsMessage,
+                        description = smsDetails.description,
                     )
                 )
                 telemetryService.trackEvent("SmsContactCreated", notification.message.telemetry())
