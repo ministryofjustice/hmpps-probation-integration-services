@@ -37,5 +37,4 @@ class UserController(
     @GetMapping(value = ["/case/{crn}/sexual-offence-registrations"])
     fun getSexualOffenceRegistrations(@PathVariable crn: String): SexualOffenceRegistrations =
         registrationService.getSexualOffenceRegistrations(crn)
-
 }
