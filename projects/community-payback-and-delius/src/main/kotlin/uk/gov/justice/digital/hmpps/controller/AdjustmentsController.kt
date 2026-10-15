@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import uk.gov.justice.digital.hmpps.model.AdjustmentType
 import uk.gov.justice.digital.hmpps.model.CreateAdjustmentRequest
 import uk.gov.justice.digital.hmpps.model.UpdateAdjustmentRequest
 import uk.gov.justice.digital.hmpps.service.AdjustmentService
+import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
 import java.time.LocalDate
 import java.util.*
 
@@ -51,24 +54,20 @@ class AdjustmentsController(
         @RequestParam(required = false) type: String?,
         @RequestParam(required = false) reason: String?,
         @RequestParam(required = false) minutes: Int?,
-        pageable: Pageable
+        @PageableDefault(page = 0, size = 10) pageable: Pageable
     ) = adjustmentService.searchAdjustments(
         crn = crn,
         eventNumber = eventNumber,
         date = date,
-        type = type?.let { uk.gov.justice.digital.hmpps.model.AdjustmentType.valueOf(it.uppercase()) },
+        type = type?.let { AdjustmentType.valueOf(it.uppercase()) },
         reason = reason,
         minutes = minutes,
-        pageable = org.springframework.data.domain.PageRequest.of(
-            pageable.pageNumber,
-            pageable.pageSize,
-            org.springframework.data.domain.Sort.by(pageable.sort.toList().map { order ->
-                when (order.property) {
-                    "minutes" -> order.withProperty("amount")
-                    "reference" -> order.withProperty("externalReference")
-                    else -> order
-                }
-            })
+        pageable.mapSorts(
+                    "minutes" to "amount",
+                    "reference" to "externalReference",
+                    "date" to "date",
+                    "type" to "type",
+                    "reason" to "reason.code"
         )
     )
 }
