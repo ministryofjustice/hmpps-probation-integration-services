@@ -42,5 +42,6 @@ internal class MessagingIntegrationTest : BaseIntegrationTest() {
         val contacts = contactRepository.findByPersonId(pop!!.id)
         val actualContact = contacts.first { it.type.code == CreateContact.Type.EmailTextToPoP.code }
         assertThat(actualContact.notes).startsWith("This is a test message about your appointment")
+        assertThat(actualContact.description).startsWith("SMS message delivered")
     }
 }

@@ -10,7 +10,8 @@
     "status": 200,
     "jsonBody": {
       "smsMessage": "This is a test message about your appointment",
-      "deliusExternalReference": "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002"
+      "deliusExternalReference": "urn:uk:gov:hmpps:manage-supervision-service:appointment:00000000-0000-0000-0000-000000000002",
+      "description": "SMS message delivered"
     }
   }
 }
