@@ -59,6 +59,16 @@ class AdjustmentsController(
         type = type?.let { uk.gov.justice.digital.hmpps.model.AdjustmentType.valueOf(it.uppercase()) },
         reason = reason,
         minutes = minutes,
-        pageable = pageable
+        pageable = org.springframework.data.domain.PageRequest.of(
+            pageable.pageNumber,
+            pageable.pageSize,
+            org.springframework.data.domain.Sort.by(pageable.sort.toList().map { order ->
+                when (order.property) {
+                    "minutes" -> order.withProperty("amount")
+                    "reference" -> order.withProperty("externalReference")
+                    else -> order
+                }
+            })
+        )
     )
 }
