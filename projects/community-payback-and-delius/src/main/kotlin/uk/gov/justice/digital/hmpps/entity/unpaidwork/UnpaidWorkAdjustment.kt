@@ -10,6 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Versioned
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
@@ -87,4 +89,24 @@ interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, L
     fun findFirstById(id: Long): UnpaidWorkAdjustment?
     fun findByExternalReference(urn: String): UnpaidWorkAdjustment?
     fun findByReference(uuid: UUID) = findByExternalReference("$REFERENCE_PREFIX$uuid")
+    @Query(
+        """
+            select a from UnpaidWorkAdjustment a
+            where (:crn is null or a.upwDetails.disposal.event.person.crn = :crn)
+              and (:eventNumber is null or a.upwDetails.disposal.event.number = :eventNumber)
+              and (:date is null or a.date = :date)
+              and (:type is null or a.type = :type)
+              and (:reason is null or a.reason.code = :reason)
+              and (:minutes is null or a.amount = :minutes)
+        """
+    )
+    fun searchAdjustments(
+        crn: String?,
+        eventNumber: String?,
+        date: LocalDate?,
+        type: String?,
+        reason: String?,
+        minutes: Int?,
+        pageable: Pageable
+    ): Page<UnpaidWorkAdjustment>
 }
