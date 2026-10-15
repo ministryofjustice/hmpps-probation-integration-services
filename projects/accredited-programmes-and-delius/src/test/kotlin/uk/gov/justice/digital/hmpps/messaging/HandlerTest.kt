@@ -53,7 +53,14 @@ internal class HandlerTest {
         val notification = statusChangedNotification()
         val detail = statusInfo()
         givenStatusDetail(notification, detail)
-        whenever(statusChangeService.statusChanged(notification.id, "A000001", notification.message.occurredAt, detail)).thenReturn(true)
+        whenever(
+            statusChangeService.statusChanged(
+                notification.id,
+                "A000001",
+                notification.message.occurredAt,
+                detail
+            )
+        ).thenReturn(true)
 
         handler.handle(notification)
 
@@ -75,7 +82,14 @@ internal class HandlerTest {
         val notification = statusChangedNotification()
         val detail = statusInfo()
         givenStatusDetail(notification, detail)
-        whenever(statusChangeService.statusChanged(notification.id, "A000001", notification.message.occurredAt, detail)).thenReturn(false)
+        whenever(
+            statusChangeService.statusChanged(
+                notification.id,
+                "A000001",
+                notification.message.occurredAt,
+                detail
+            )
+        ).thenReturn(false)
 
         handler.handle(notification)
 
@@ -106,7 +120,6 @@ internal class HandlerTest {
         attributes = MessageAttributes(Handler.REFERRAL_STATUS_CHANGED),
         id = UUID.fromString("aa2c2828-167f-529b-8e19-73735a2fb85c")
     )
-
 
     private fun statusInfo() = StatusInfo(
         newStatus = StatusInfo.Status.BREACH,
