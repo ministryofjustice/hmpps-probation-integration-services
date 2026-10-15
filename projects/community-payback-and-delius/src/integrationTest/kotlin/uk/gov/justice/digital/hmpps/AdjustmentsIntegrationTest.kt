@@ -439,12 +439,12 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             param("sort", "date,desc")
         }.andExpect {
             status { isOk() }
-            jsonPath("$.content.length()").value(1)
-            jsonPath("$.content[0].reference").value(adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX))
-            jsonPath("$.content[0].type").value(AdjustmentType.NEGATIVE.name)
-            jsonPath("$.content[0].minutes").value(adjustment.amount)
-            jsonPath("$.content[0].date").value(adjustment.date.toString())
-            jsonPath("$.content[0].reason.code").value("OT")
+            jsonPath("$.content.length()") { value(1) }
+            jsonPath("$.content[0].reference") { value(adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)) }
+            jsonPath("$.content[0].type") { value(AdjustmentType.NEGATIVE.name) }
+            jsonPath("$.content[0].minutes") { value(adjustment.amount) }
+            jsonPath("$.content[0].date") { value(adjustment.date.toString()) }
+            jsonPath("$.content[0].reason.code") { value("OT") }
         }
     }
 
