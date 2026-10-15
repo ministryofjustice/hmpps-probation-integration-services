@@ -28,7 +28,6 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdjustmentsIntegrationTest @Autowired constructor(
