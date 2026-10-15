@@ -18,7 +18,7 @@ The service exposes RESTful API endpoints for the Community Payback service to:
 
 - Search for and retrieve Unpaid Work appointments and project details
 - Create, update, or delete Unpaid Work appointments and projects
-- List and upload documents related to Unpaid Work appointments
+- Upload, list, download or delete documents related to Unpaid Work appointments
 - Retrieve personal circumstances for a person by CRN
 
 API endpoints are secured and require appropriate roles via HMPPS Auth.

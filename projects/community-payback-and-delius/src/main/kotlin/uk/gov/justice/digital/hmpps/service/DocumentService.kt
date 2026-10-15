@@ -3,14 +3,17 @@ package uk.gov.justice.digital.hmpps.service
 import jakarta.persistence.EntityManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.Document
@@ -26,6 +29,7 @@ import java.util.*
 @Transactional
 class DocumentService(
     private val documentRepository: DocumentRepository,
+    private val alfrescoClient: AlfrescoClient,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager,
     auditedInteractionService: AuditedInteractionService,
@@ -36,6 +40,12 @@ class DocumentService(
             DocumentUploadResponse(it.id, it.name)
         }
     )
+
+    fun downloadDocument(appointmentId: Long, documentId: Long): ResponseEntity<StreamingResponseBody> {
+        val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
+        require(document.primaryKeyId == appointmentId) { "Document $documentId does not belong to appointment $appointmentId" }
+        return alfrescoClient.streamDocument(document.alfrescoId, document.name)
+    }
 
     fun uploadAppointmentDocument(
         appointment: UnpaidWorkAppointment,
