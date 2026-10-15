@@ -457,15 +457,19 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX)
         )
 
-        val response = mockMvc.get("/adjustments/search") {
+        mockMvc.get("/adjustments/search") {
             withToken()
             param("page", "0")
             param("size", "20")
             param("sort", "date,desc")
-        }.andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<AdjustmentPage>()
-
-        assertThat(response.content.map { it.reference.toString() }).containsAll(expectedReferences)
-        assertThat(response.totalElements).isGreaterThanOrEqualTo(expectedReferences.size.toLong())
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.content").isArray
+            jsonPath("$.content.length()").value(4)
+            jsonPath("$.content[0].reference").value(expectedReferences[0])
+            jsonPath("$.content[1].reference").value(expectedReferences[1])
+            jsonPath("$.content[2].reference").value(expectedReferences[2])
+            jsonPath("$.content[3].reference").value(expectedReferences[3])
+        }
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
