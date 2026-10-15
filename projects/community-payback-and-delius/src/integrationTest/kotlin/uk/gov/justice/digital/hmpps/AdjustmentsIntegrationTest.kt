@@ -28,11 +28,6 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
-data class AdjustmentPage(
-    val content: List<Adjustment>,
-    val totalElements: Long,
-    val pageable: Map<String, Any>? = null
-)
 
 @SpringBootTest
 @AutoConfigureMockMvc
