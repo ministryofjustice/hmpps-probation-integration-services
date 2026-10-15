@@ -89,6 +89,7 @@ interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, L
     fun findFirstById(id: Long): UnpaidWorkAdjustment?
     fun findByExternalReference(urn: String): UnpaidWorkAdjustment?
     fun findByReference(uuid: UUID) = findByExternalReference("$REFERENCE_PREFIX$uuid")
+
     @Query(
         """
             select a from UnpaidWorkAdjustment a
