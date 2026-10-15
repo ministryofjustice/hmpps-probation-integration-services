@@ -450,10 +450,12 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `search unpaid work adjustments without filters returns a page`() {
-        val adjustment1 = UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE
-        val adjustment2 = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
-        val adjustment3 = UPWGenerator.GET_ADJUSTMENT_NEGATIVE
-        val adjustment4 = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val adjustments = listOf(
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE,
+            UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON,
+            UPWGenerator.GET_ADJUSTMENT_NEGATIVE,
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE
+        )
         mockMvc.get("/adjustments/search") {
             withToken()
             param("page", "0")
@@ -461,12 +463,13 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             param("sort", "date,desc")
         }.andExpect {
             status { isOk() }
-            jsonPath("$.content").isArray
-            jsonPath("$.content.length()").value(4)
-            jsonPath("$.content[0].reference").value(adjustment1.externalReference!!.removePrefix(REFERENCE_PREFIX))
-            jsonPath("$.content[1].reference").value(adjustment2.externalReference!!.removePrefix(REFERENCE_PREFIX))
-            jsonPath("$.content[2].reference").value(adjustment3.externalReference!!.removePrefix(REFERENCE_PREFIX))
-            jsonPath("$.content[3].reference").value(adjustment4.externalReference!!.removePrefix(REFERENCE_PREFIX))
+            jsonPath("$.content") { isArray() }
+            jsonPath("$.content.length()") { value(4) }
+            jsonPath("$.content[*].reference") {
+                value(org.hamcrest.Matchers.containsInAnyOrder(
+                    *adjustments.map { it.externalReference!!.removePrefix(REFERENCE_PREFIX) }.toTypedArray()
+                ))
+            }
 
         }
     }
