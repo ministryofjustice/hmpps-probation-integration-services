@@ -11,17 +11,15 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
-import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.client.AlfrescoDocument
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.entity.Document
@@ -29,8 +27,9 @@ import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import java.util.*
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -38,6 +37,9 @@ internal class DocumentServiceTest {
 
     @Mock
     lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var alfrescoClient: AlfrescoClient
 
     @Mock
     lateinit var alfrescoUploadClient: AlfrescoUploadClient
@@ -61,17 +63,17 @@ internal class DocumentServiceTest {
         on { it.contact } doReturn contact
     }
 
-    private fun document(alfrescoId: String = "alfresco-id-1") = Document(
+    private fun document(id: Long = 1L, name: String = "evidence.pdf", alfrescoId: String = "alfresco-id-1") = Document(
         person = person,
         alfrescoId = alfrescoId,
-        name = "evidence.pdf",
+        name = name,
         primaryKeyId = 99L,
         tableName = "CONTACT",
         externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
         workInProgress = "N",
         status = "Y",
         softDeleted = false,
-        id = 7L,
+        id = id,
     )
 
     @BeforeEach
@@ -84,17 +86,63 @@ internal class DocumentServiceTest {
     @Test
     fun `uploads appointment document successfully`() {
         whenever(alfrescoUploadClient.upload(any())).thenReturn(AlfrescoDocument("alfresco-id-1"))
+        val file = MockMultipartFile("file", "evidence.pdf", "application/pdf", "file-content".toByteArray())
 
-        val result = documentService.uploadAppointmentDocument(
-            appointment, "evidence.pdf", "file-content".toByteArray(), userId = 42L
-        )
+        val result = documentService.uploadAppointmentDocument(appointment, file)
 
         assertThat(result.alfrescoId).isEqualTo("alfresco-id-1")
         assertThat(result.name).isEqualTo("evidence.pdf")
         assertThat(result.primaryKeyId).isEqualTo(99L)
-        assertThat(result.lastUpdatedUserId).isEqualTo(42L)
+        verify(alfrescoUploadClient).upload(check {
+            assertThat(it.getFirst("fileName")?.body).isEqualTo(file.originalFilename)
+            assertThat(it.getFirst("filedata")?.body).isEqualTo(file.bytes)
+            assertThat(it.getFirst("CRN")?.body).isEqualTo(person.crn)
+            assertThat(it.getFirst("entityId")?.body).isEqualTo("99")
+        })
+        verify(documentRepository).save(result)
         verify(query).setParameter("documentLinked", "Y")
         verify(query).setParameter("contactId", 99L)
+    }
+
+    @Test
+    fun `gets documents for an appointment`() {
+        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")).thenReturn(
+            listOf(
+                document(id = 1L, name = "evidence.pdf"),
+                document(id = 2L, name = "certificate.docx")
+            )
+        )
+
+        val result = documentService.getDocuments(99L)
+
+        assertThat(result.content).containsExactly(
+            DocumentUploadResponse(1L, "evidence.pdf"),
+            DocumentUploadResponse(2L, "certificate.docx"),
+        )
+        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")
+    }
+
+    @Test
+    fun `gets empty document list when appointment has no documents`() {
+        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")).thenReturn(emptyList())
+
+        val result = documentService.getDocuments(99L)
+
+        assertThat(result.content).isEmpty()
+        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")
+    }
+
+    @Test
+    fun `downloads document`() {
+        val document = document()
+        val expectedResponse = ResponseEntity<StreamingResponseBody>(HttpStatus.OK)
+        whenever(documentRepository.findById(document.id)).thenReturn(Optional.of(document))
+        whenever(alfrescoClient.streamDocument(document.alfrescoId, document.name)).thenReturn(expectedResponse)
+
+        val result = documentService.downloadDocument(document.primaryKeyId, document.id)
+
+        assertThat(result).isSameAs(expectedResponse)
+        verify(alfrescoClient).streamDocument(document.alfrescoId, document.name)
     }
 
     @Test
@@ -106,10 +154,10 @@ internal class DocumentServiceTest {
 
     @Test
     fun `throws exception for disallowed file extension and never uploads or saves`() {
+        val file = MockMultipartFile("file", "malware.exe", "application/octet-stream", "file-content".toByteArray())
+
         val exception = assertThrows<IllegalArgumentException> {
-            documentService.uploadAppointmentDocument(
-                appointment, "malware.exe", "file-content".toByteArray(), userId = 42L
-            )
+            documentService.uploadAppointmentDocument(appointment, file)
         }
 
         assertThat(exception.message).isEqualTo(
@@ -124,7 +172,8 @@ internal class DocumentServiceTest {
     fun `deletes document, removes it from alfresco and unlinks contact when no documents remain`() {
         val document = document()
         whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
+            documentRepository
+                .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
         ).thenReturn(false)
 
         documentService.deleteDocument(document)
@@ -139,7 +188,8 @@ internal class DocumentServiceTest {
         val document = document(alfrescoId = "missing-id")
         whenever(alfrescoUploadClient.delete("missing-id")).thenThrow(mock<HttpClientErrorException.NotFound>())
         whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse("CONTACT", 99L, 7L)
+            documentRepository
+                .existsByTableNameAndPrimaryKeyIdAndIdNot(document.tableName, document.primaryKeyId, document.id)
         ).thenReturn(true)
 
         documentService.deleteDocument(document)
@@ -162,23 +212,14 @@ internal class DocumentServiceTest {
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
-        whenever(
-            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
-                "CONTACT",
-                appointmentId,
-                documentId
-            )
-        ).thenReturn(false)
+        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", appointmentId, documentId))
+            .thenReturn(false)
 
         documentService.deleteDocumentById(appointmentId, documentId)
 
         verify(documentRepository).findById(documentId)
         verify(documentRepository).delete(document)
-        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
-            "CONTACT",
-            appointmentId,
-            documentId
-        )
+        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", appointmentId, documentId)
     }
 
     @Test
@@ -202,6 +243,18 @@ internal class DocumentServiceTest {
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }
+
+    @Test
+    fun `deleteDocumentById throws when document does not exist`() {
+        whenever(documentRepository.findById(456L)).thenReturn(Optional.empty())
+
+        val exception = assertThrows<NotFoundException> {
+            documentService.deleteDocumentById(123L, 456L)
+        }
+
+        assertThat(exception).hasMessage("Document with id of 456 not found")
+        verify(documentRepository).findById(456L)
+        verify(documentRepository, never()).delete(any())
+        verifyNoInteractions(alfrescoUploadClient, entityManager)
+    }
 }
-
-

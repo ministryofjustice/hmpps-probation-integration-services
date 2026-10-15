@@ -1,38 +1,57 @@
 package uk.gov.justice.digital.hmpps.service
 
 import jakarta.persistence.EntityManager
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.client.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
-import java.time.ZonedDateTime
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
+import uk.gov.justice.digital.hmpps.model.DocumentListResponse
+import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import java.util.*
-import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
-import uk.gov.justice.digital.hmpps.audit.service.AuditableService
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 
 @Service
 @Transactional
 class DocumentService(
     private val documentRepository: DocumentRepository,
+    private val alfrescoClient: AlfrescoClient,
     private val alfrescoUploadClient: AlfrescoUploadClient,
-    auditedInteractionService: AuditedInteractionService,
     private val entityManager: EntityManager,
+    auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
+
+    fun getDocuments(appointmentId: Long) = DocumentListResponse(
+        documentRepository.findAllByPrimaryKeyIdAndTableName(appointmentId).map {
+            DocumentUploadResponse(it.id, it.name)
+        }
+    )
+
+    fun downloadDocument(appointmentId: Long, documentId: Long): ResponseEntity<StreamingResponseBody> {
+        val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
+        require(document.primaryKeyId == appointmentId) { "Document $documentId does not belong to appointment $appointmentId" }
+        return alfrescoClient.streamDocument(document.alfrescoId, document.name)
+    }
 
     fun uploadAppointmentDocument(
         appointment: UnpaidWorkAppointment,
-        filename: String,
-        file: ByteArray,
-        userId: Long
+        file: MultipartFile,
     ): Document = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
+        val filename = file.originalFilename ?: "document"
         validateFile(filename)
 
         val document = Document(
@@ -42,18 +61,11 @@ class DocumentService(
             primaryKeyId = appointment.contact.id,
             tableName = "CONTACT",
             externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
-            lastSaved = ZonedDateTime.now(),
-            createdDatetime = ZonedDateTime.now(),
-            createdByUserId = userId,
-            lastUpdatedUserId = userId,
             workInProgress = "N",
             status = "Y",
-            softDeleted = false,
-            partitionAreaId = 0,
-            id = 0,
         )
 
-        val alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file, appointment.person)).id
+        val alfrescoId = alfrescoUploadClient.upload(document.toMultipart(file.bytes, appointment.person)).id
         document.alfrescoId = alfrescoId
 
         populateAudit(document, it)
@@ -71,7 +83,7 @@ class DocumentService(
         nullIfNotFound { alfrescoUploadClient.delete(document.alfrescoId) }
 
         documentRepository.delete(document)
-        val hasDocuments = documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNotAndSoftDeletedFalse(
+        val hasDocuments = documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot(
             document.tableName,
             document.primaryKeyId,
             document.id
@@ -80,10 +92,7 @@ class DocumentService(
     }
 
     fun deleteDocumentById(appointmentId: Long, documentId: Long) {
-        val document = documentRepository.findById(documentId)
-            .orElseThrow {
-                NoSuchElementException("Document not found with id: $documentId")
-            }
+        val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
 
         require(document.primaryKeyId == appointmentId) {
             "Document $documentId does not belong to appointment $appointmentId"
@@ -93,9 +102,7 @@ class DocumentService(
     }
 
     private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
-        entityManager.createNativeQuery(
-            "update contact set document_linked = :documentLinked where contact_id = :contactId"
-        )
+        entityManager.createNativeQuery("update contact set document_linked = :documentLinked where contact_id = :contactId")
             .setParameter("documentLinked", if (hasDocuments) "Y" else "N")
             .setParameter("contactId", contactId)
             .executeUpdate()

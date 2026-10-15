@@ -1,15 +1,17 @@
 package uk.gov.justice.digital.hmpps.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/appointments")
@@ -52,20 +54,22 @@ class AppointmentsController(
         @RequestParam file: MultipartFile
     ) = documentService.uploadAppointmentDocument(
         appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId),
-        filename = file.originalFilename ?: "document",
-        file = file.bytes,
-        userId = uk.gov.justice.digital.hmpps.security.ServiceContext.servicePrincipal()!!.userId
-    ).let { document ->
-        uk.gov.justice.digital.hmpps.model.DocumentUploadResponse(
-            documentId = document.id,
-            filename = document.name,
-            alfrescoId = document.alfrescoId,
-        )
-    }
+        file = file,
+    ).let { DocumentUploadResponse(it.id, it.name) }
 
     @DeleteMapping("/{appointmentId}/documents/{documentId}")
     fun deleteAppointmentDocument(
         @PathVariable appointmentId: Long,
         @PathVariable documentId: Long
     ) = documentService.deleteDocumentById(appointmentId, documentId)
+
+    @GetMapping("/{appointmentId}/documents")
+    fun getDocuments(@PathVariable appointmentId: Long) = documentService.getDocuments(appointmentId)
+
+    @GetMapping(value = ["/{appointmentId}/documents/{documentId}"])
+    @Operation(summary = "Download document content")
+    fun downloadDocument(
+        @PathVariable appointmentId: Long,
+        @PathVariable documentId: Long
+    ) = documentService.downloadDocument(appointmentId, documentId)
 }
