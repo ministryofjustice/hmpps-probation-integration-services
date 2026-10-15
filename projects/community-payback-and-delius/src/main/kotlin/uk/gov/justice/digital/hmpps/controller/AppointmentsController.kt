@@ -72,5 +72,4 @@ class AppointmentsController(
         @PathVariable appointmentId: Long,
         @PathVariable documentId: Long
     ) = documentService.downloadDocument(appointmentId, documentId)
-
 }
