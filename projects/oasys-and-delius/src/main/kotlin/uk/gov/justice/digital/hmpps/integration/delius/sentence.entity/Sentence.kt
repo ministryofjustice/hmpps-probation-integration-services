@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.Person
 
@@ -95,7 +96,7 @@ class RequirementMainCategory(
     val description: String,
 
     @Column(name = "restrictive", columnDefinition = "char(1)")
-    @Convert(converter = NumericBooleanConverter::class)
+    @Convert(converter = YesNoConverter::class)
     val restrictive: Boolean,
 
     ) {
