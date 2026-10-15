@@ -22,4 +22,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query("select distinct p.crn, p.noms from Person p join Caseload c on p.id = c.person.id where c.team.code = :teamCode")
     fun findCaseIdentifiersByTeamCode(teamCode: String, pageable: Pageable): Page<CaseIdentifiers>
+
+    fun existsByCrnAndSoftDeletedIsFalse(crn: String): Boolean
 }

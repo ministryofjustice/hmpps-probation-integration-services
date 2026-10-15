@@ -47,5 +47,12 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(CaseloadGenerator.CL_BOTH_DEFAULT_4)
         save(CaseloadGenerator.CL_BOTH_DEFAULT_5)
         save(CaseloadGenerator.CL_BOTH_OTHER_1)
+
+        save(ReferenceDataGenerator.REGISTER_CATEGORY_M3)
+        save(RegisterTypeGenerator.REGISTER_SO)
+        save(PersonGenerator.PERSON_SO)
+        save(PersonGenerator.PERSON_SO_WITHOUT_CATEGORY)
+        save(RegistrationGenerator.REGISTER_SO)
+        save(RegistrationGenerator.REGISTER_SO_WITHOUT_CATEGORY)
     }
 }

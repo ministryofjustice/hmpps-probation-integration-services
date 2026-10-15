@@ -27,7 +27,11 @@ object PersonGenerator {
         roshRegistrations = listOf(
             Registration(
                 id = id(),
-                type = RegisterTypeGenerator.HIGH_ROSH
+                type = RegisterTypeGenerator.HIGH_ROSH,
+                category = null,
+                level = null,
+                date = LocalDate.now(),
+                nextReviewDate = null,
             )
         )
     )
@@ -130,8 +134,45 @@ object PersonGenerator {
             probationAreaId = ProviderGenerator.DEFAULT.id,
         ),
         roshRegistrations = listOf(
-            Registration(id = id(), type = RegisterTypeGenerator.NON_ROSH),
-            Registration(id = id(), type = RegisterTypeGenerator.HIGH_ROSH),
+            Registration(
+                id = id(),
+                type = RegisterTypeGenerator.NON_ROSH,
+                category = null,
+                level = null,
+                date = LocalDate.now(),
+                nextReviewDate = null,
+            ),
+            Registration(
+                id = id(),
+                type = RegisterTypeGenerator.HIGH_ROSH,
+                category = null,
+                level = null,
+                date = LocalDate.now(),
+                nextReviewDate = null,
+            ),
         ),
+    )
+
+    val PERSON_SO = generate(crn = "A000099")
+    val PERSON_SO_WITHOUT_CATEGORY = generate(crn = "A000098")
+
+    private fun generate(crn: String) = Person(
+        id = id(),
+        crn = crn,
+        firstName = "Test",
+        secondName = null,
+        thirdName = null,
+        surname = "Person",
+        dateOfBirth = LocalDate.of(1980, 1, 1),
+        gender = ReferenceDataGenerator.GENDER_MALE,
+        noms = null,
+        pnc = null,
+        manager = PersonManager(
+            id = id(),
+            team = TeamGenerator.DEFAULT,
+            staff = StaffGenerator.DEFAULT,
+            probationAreaId = ProviderGenerator.DEFAULT.id,
+        ),
+        roshRegistrations = emptyList(),
     )
 }

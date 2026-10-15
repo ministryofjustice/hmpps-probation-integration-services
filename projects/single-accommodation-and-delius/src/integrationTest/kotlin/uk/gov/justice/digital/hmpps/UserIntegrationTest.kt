@@ -442,4 +442,58 @@ internal class UserIntegrationTest @Autowired constructor(private val mockMvc: M
         mockMvc.get("/case/${person.crn}")
             .andExpect { status { isUnauthorized() } }
     }
+
+    @Test
+    fun `sexual offence registrations are returned with category details when present`() {
+        val crn = PersonGenerator.PERSON_SO.crn
+        val response = mockMvc.get("/case/$crn/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn).isEqualTo(crn)
+        assertThat(response.sexualOffenceRegistrations).hasSize(1)
+
+        val registration = response.sexualOffenceRegistrations!!.single()
+        assertThat(registration.type).isEqualTo(CodeDescription("ARSO", "SEX_OFFENCE"))
+        assertThat(registration.category).isEqualTo(CodeDescription("M3", "MAPPA Category M3"))
+        assertThat(registration.startDate).isEqualTo(RegistrationGenerator.SEX_OFFENCE_START_DATE)
+        assertThat(registration.nextReviewDate).isEqualTo(registration.startDate.plusWeeks(2))
+        assertThat(registration.endDate).isNull()
+    }
+
+    @Test
+    fun `sexual offence registrations return empty category details when category is not present`() {
+        val crn = PersonGenerator.PERSON_SO_WITHOUT_CATEGORY.crn
+        val response = mockMvc.get("/case/$crn/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn).isEqualTo(crn)
+        assertThat(response.sexualOffenceRegistrations).hasSize(1)
+
+        val registration = response.sexualOffenceRegistrations!!.single()
+        assertThat(registration.type).isEqualTo(CodeDescription("ARSO", "SEX_OFFENCE"))
+        assertThat(registration.category).isNull()
+        assertThat(registration.endDate).isNull()
+    }
+
+    @Test
+    fun `sexual offence registrations filter out non sexual offence registrations`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        val response = mockMvc.get("/case/$crn/sexual-offence-registrations") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SexualOffenceRegistrations>()
+
+        assertThat(response.crn).isEqualTo(crn)
+        assertThat(response.sexualOffenceRegistrations).isEmpty()
+    }
+
+    @Test
+    fun `sexual offence registrations return 404 for an unknown crn`() {
+        mockMvc.get("/case/NOTFOUND/sexual-offence-registrations") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Person with crn of NOTFOUND not found") }
+            }
+    }
 }
