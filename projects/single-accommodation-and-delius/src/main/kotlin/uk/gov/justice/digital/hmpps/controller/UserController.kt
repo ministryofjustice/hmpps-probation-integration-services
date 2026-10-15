@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.model.SexualOffenceRegistrations
 import uk.gov.justice.digital.hmpps.service.CaseListService
+import uk.gov.justice.digital.hmpps.service.RegistrationService
 
 @RestController
 class UserController(
     private val caseListService: CaseListService,
+    private val registrationService: RegistrationService
 ) {
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
     @GetMapping(value = ["/case-list/{username}"])
@@ -29,4 +32,10 @@ class UserController(
     @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
     @GetMapping(value = ["/case/{crn}"])
     fun getCaseByEvent(@PathVariable crn: String) = caseListService.getCase(crn)
+
+    @PreAuthorize("hasRole('PROBATION_API__SINGLE_ACCOMMODATION__CASE_LIST')")
+    @GetMapping(value = ["/case/{crn}/sexual-offence-registrations"])
+    fun getSexualOffenceRegistrations(@PathVariable crn: String): SexualOffenceRegistrations =
+        registrationService.getSexualOffenceRegistrations(crn)
+
 }

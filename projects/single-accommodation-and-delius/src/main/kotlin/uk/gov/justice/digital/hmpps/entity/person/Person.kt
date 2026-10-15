@@ -36,7 +36,7 @@ class Person(
     val manager: PersonManager,
 
     @OneToMany(mappedBy = "person")
-    @SQLRestriction("register_type_id in (select r_register_type.register_type_id from r_register_type where r_register_type.code in ('RLRH', 'RMRH', 'RHRH', 'RVHR'))")
+    @SQLRestriction("deregistered = 0 and register_type_id in (select r_register_type.register_type_id from r_register_type where r_register_type.code in ('RLRH', 'RMRH', 'RHRH', 'RVHR'))")
     val roshRegistrations: List<Registration>,
 
     @Column(name = "noms_number", columnDefinition = "char(7)")

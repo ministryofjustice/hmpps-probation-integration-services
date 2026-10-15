@@ -14,8 +14,3 @@ data class SexualOffenceRegistration(
     val nextReviewDate: LocalDate?,
     val endDate: LocalDate?,
 )
-
-data class CodeDescription(
-    val code: String?,
-    val description: String?
-)
