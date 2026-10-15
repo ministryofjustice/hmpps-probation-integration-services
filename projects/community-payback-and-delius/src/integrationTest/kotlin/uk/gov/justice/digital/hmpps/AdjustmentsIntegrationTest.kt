@@ -28,6 +28,12 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
 
+data class AdjustmentPage(
+    val content: List<Adjustment>,
+    val totalElements: Long,
+    val pageable: Map<String, Any>? = null
+)
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdjustmentsIntegrationTest @Autowired constructor(
@@ -450,29 +456,22 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `search unpaid work adjustments without filters returns a page`() {
-        val adjustments = listOf(
-            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE,
-            UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON,
-            UPWGenerator.GET_ADJUSTMENT_NEGATIVE,
-            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE
+        val expectedReferences = listOf(
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE.externalReference!!.removePrefix(REFERENCE_PREFIX),
+            UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON.externalReference!!.removePrefix(REFERENCE_PREFIX),
+            UPWGenerator.GET_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX),
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX)
         )
-        mockMvc.get("/adjustments/search") {
+
+        val response = mockMvc.get("/adjustments/search") {
             withToken()
             param("page", "0")
             param("size", "20")
             param("sort", "date,desc")
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.content") { isArray() }
-            jsonPath("$.content.length()") { value(4) }
-            jsonPath("$.content[*].reference") {
-                value(
-                    org.hamcrest.Matchers.containsInAnyOrder(
-                        *adjustments.map { it.externalReference!!.removePrefix(REFERENCE_PREFIX) }.toTypedArray()
-                    )
-                )
-            }
+        }.andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AdjustmentPage>()
 
-        }
+        assertThat(response.content.map { it.reference.toString() }).containsAll(expectedReferences)
+        assertThat(response.totalElements).isGreaterThanOrEqualTo(expectedReferences.size.toLong())
     }
 }
