@@ -19,7 +19,9 @@ import uk.gov.justice.digital.hmpps.client.RestClientUtils.nullIfNotFound
 import uk.gov.justice.digital.hmpps.entity.Document
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.person.Person
-import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.getAppointment
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.DocumentListResponse
 import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
@@ -29,30 +31,38 @@ import java.util.*
 @Transactional
 class DocumentService(
     private val documentRepository: DocumentRepository,
+    private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val alfrescoClient: AlfrescoClient,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val entityManager: EntityManager,
     auditedInteractionService: AuditedInteractionService,
 ) : AuditableService(auditedInteractionService) {
 
-    fun getDocuments(appointmentId: Long) = DocumentListResponse(
-        documentRepository.findAllByPrimaryKeyIdAndTableName(appointmentId).map {
-            DocumentUploadResponse(it.id, it.name)
-        }
-    )
+    fun getDocuments(appointmentId: Long): DocumentListResponse {
+        val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
+            ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
+        return DocumentListResponse(
+            content = documentRepository.findAllByPrimaryKeyIdAndTableName(contactId, "CONTACT").map {
+                DocumentUploadResponse(it.id, it.name)
+            }
+        )
+    }
 
     fun downloadDocument(appointmentId: Long, documentId: Long): ResponseEntity<StreamingResponseBody> {
+        val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
+            ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
         val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
-        require(document.primaryKeyId == appointmentId) { "Document $documentId does not belong to appointment $appointmentId" }
+        require(document.primaryKeyId == contactId) { "Document $documentId does not belong to appointment $contactId" }
         return alfrescoClient.streamDocument(document.alfrescoId, document.name)
     }
 
     fun uploadAppointmentDocument(
-        appointment: UnpaidWorkAppointment,
+        appointmentId: Long,
         file: MultipartFile,
-    ): Document = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
+    ): DocumentUploadResponse = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
         val filename = file.originalFilename ?: "document"
         validateFile(filename)
+        val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
 
         val document = Document(
             person = appointment.person,
@@ -73,7 +83,7 @@ class DocumentService(
         val savedDocument = documentRepository.save(document)
         updateContactDocumentLinked(appointment.contact.id, true)
 
-        savedDocument
+        DocumentUploadResponse(savedDocument.id, savedDocument.name)
     }
 
     fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {

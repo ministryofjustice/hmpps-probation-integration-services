@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.entity.person.Person
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
+import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import java.util.*
@@ -37,6 +38,9 @@ internal class DocumentServiceTest {
 
     @Mock
     lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    lateinit var unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
 
     @Mock
     lateinit var alfrescoClient: AlfrescoClient
@@ -59,6 +63,7 @@ internal class DocumentServiceTest {
     private val person = mock<Person> { on { crn } doReturn "X123456" }
     private val contact = mock<Contact> { on { id } doReturn 99L }
     private val appointment = mock<UnpaidWorkAppointment> {
+        on { id } doReturn 123L
         on { it.person } doReturn person
         on { it.contact } doReturn contact
     }
@@ -78,6 +83,8 @@ internal class DocumentServiceTest {
 
     @BeforeEach
     fun setUp() {
+        whenever(unpaidWorkAppointmentRepository.getUpwAppointmentById(appointment.id)).thenReturn(appointment)
+        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointment.id)).thenReturn(99L)
         whenever(entityManager.createNativeQuery(any())).thenReturn(query)
         whenever(query.setParameter(any<String>(), any())).thenReturn(query)
         whenever(documentRepository.save(any<Document>())).thenAnswer { it.arguments[0] as Document }
@@ -88,18 +95,20 @@ internal class DocumentServiceTest {
         whenever(alfrescoUploadClient.upload(any())).thenReturn(AlfrescoDocument("alfresco-id-1"))
         val file = MockMultipartFile("file", "evidence.pdf", "application/pdf", "file-content".toByteArray())
 
-        val result = documentService.uploadAppointmentDocument(appointment, file)
+        val result = documentService.uploadAppointmentDocument(appointment.id, file)
 
-        assertThat(result.alfrescoId).isEqualTo("alfresco-id-1")
-        assertThat(result.name).isEqualTo("evidence.pdf")
-        assertThat(result.primaryKeyId).isEqualTo(99L)
+        assertThat(result.filename).isEqualTo("evidence.pdf")
         verify(alfrescoUploadClient).upload(check {
             assertThat(it.getFirst("fileName")?.body).isEqualTo(file.originalFilename)
             assertThat(it.getFirst("filedata")?.body).isEqualTo(file.bytes)
             assertThat(it.getFirst("CRN")?.body).isEqualTo(person.crn)
             assertThat(it.getFirst("entityId")?.body).isEqualTo("99")
         })
-        verify(documentRepository).save(result)
+        verify(documentRepository).save(check {
+            assertThat(it.alfrescoId).isEqualTo("alfresco-id-1")
+            assertThat(it.primaryKeyId).isEqualTo(99L)
+            assertThat(it.id).isEqualTo(result.documentId)
+        })
         verify(query).setParameter("documentLinked", "Y")
         verify(query).setParameter("contactId", 99L)
     }
@@ -113,7 +122,7 @@ internal class DocumentServiceTest {
             )
         )
 
-        val result = documentService.getDocuments(99L)
+        val result = documentService.getDocuments(appointment.id)
 
         assertThat(result.content).containsExactly(
             DocumentUploadResponse(1L, "evidence.pdf"),
@@ -126,7 +135,7 @@ internal class DocumentServiceTest {
     fun `gets empty document list when appointment has no documents`() {
         whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")).thenReturn(emptyList())
 
-        val result = documentService.getDocuments(99L)
+        val result = documentService.getDocuments(appointment.id)
 
         assertThat(result.content).isEmpty()
         verify(documentRepository).findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")
@@ -139,7 +148,7 @@ internal class DocumentServiceTest {
         whenever(documentRepository.findById(document.id)).thenReturn(Optional.of(document))
         whenever(alfrescoClient.streamDocument(document.alfrescoId, document.name)).thenReturn(expectedResponse)
 
-        val result = documentService.downloadDocument(document.primaryKeyId, document.id)
+        val result = documentService.downloadDocument(appointment.id, document.id)
 
         assertThat(result).isSameAs(expectedResponse)
         verify(alfrescoClient).streamDocument(document.alfrescoId, document.name)
@@ -157,7 +166,7 @@ internal class DocumentServiceTest {
         val file = MockMultipartFile("file", "malware.exe", "application/octet-stream", "file-content".toByteArray())
 
         val exception = assertThrows<IllegalArgumentException> {
-            documentService.uploadAppointmentDocument(appointment, file)
+            documentService.uploadAppointmentDocument(appointment.id, file)
         }
 
         assertThat(exception.message).isEqualTo(

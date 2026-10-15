@@ -6,7 +6,6 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import uk.gov.justice.digital.hmpps.model.DocumentUploadResponse
 import uk.gov.justice.digital.hmpps.service.CommunityPaybackAppointmentsService
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
@@ -52,10 +51,7 @@ class AppointmentsController(
     fun uploadAppointmentDocument(
         @PathVariable appointmentId: Long,
         @RequestParam file: MultipartFile
-    ) = documentService.uploadAppointmentDocument(
-        appointment = communityPaybackAppointmentsService.getAppointmentForDocumentUpload(appointmentId),
-        file = file,
-    ).let { DocumentUploadResponse(it.id, it.name) }
+    ) = documentService.uploadAppointmentDocument(appointmentId, file)
 
     @DeleteMapping("/{appointmentId}/documents/{documentId}")
     fun deleteAppointmentDocument(

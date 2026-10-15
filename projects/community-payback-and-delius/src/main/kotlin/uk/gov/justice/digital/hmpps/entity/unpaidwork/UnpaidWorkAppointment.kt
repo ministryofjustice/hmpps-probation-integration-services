@@ -544,6 +544,9 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         ),
         pageable
     )
+
+    @Query("select a.contact.id from UnpaidWorkAppointment a where a.id = :appointmentId")
+    fun getContactIdForUnpaidWorkAppointment(appointmentId: Long): Long?
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
