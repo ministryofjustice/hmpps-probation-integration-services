@@ -64,7 +64,6 @@ class AdjustmentsController(
         minutes = minutes,
         pageable.mapSorts(
             "minutes" to "amount",
-            "reference" to "externalReference",
             "date" to "date",
             "type" to "type",
             "reason" to "reason.code"
