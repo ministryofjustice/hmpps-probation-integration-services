@@ -48,7 +48,7 @@ class AdjustmentsController(
         @RequestParam(required = false) crn: String?,
         @RequestParam(required = false) eventNumber: Int?,
         @RequestParam(required = false) date: LocalDate?,
-        @RequestParam(required = false) type: String?,
+        @RequestParam(required = false) type: AdjustmentType?,
         @RequestParam(required = false) reason: String?,
         @RequestParam(required = false) minutes: Int?,
         pageable: Pageable
@@ -56,7 +56,7 @@ class AdjustmentsController(
         crn = crn,
         eventNumber = eventNumber,
         date = date,
-        type = type?.let { uk.gov.justice.digital.hmpps.model.AdjustmentType.valueOf(it.uppercase()) },
+        type = type,
         reason = reason,
         minutes = minutes,
         pageable = org.springframework.data.domain.PageRequest.of(
