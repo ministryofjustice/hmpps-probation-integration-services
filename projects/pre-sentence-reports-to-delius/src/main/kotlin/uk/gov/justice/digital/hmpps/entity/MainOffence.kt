@@ -33,7 +33,9 @@ class OffenceEntity(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
+    @Column(columnDefinition = "char(5)")
+    val code: String,
+    val description: String,
     @Column(name = "main_category_code", columnDefinition = "char(3)")
     val mainCategoryCode: String,
     val mainCategoryDescription: String,
