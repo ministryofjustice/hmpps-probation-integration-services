@@ -12,9 +12,11 @@ object AdditionalOffenceGenerator {
         event = EventGenerator.DEFAULT_EVENT,
         offence = OffenceEntity(
             id = id(),
-            mainCategoryCode = "1  ",
+            code = "12345",
+            description = "Full description",
+            mainCategoryCode = "123",
             mainCategoryDescription = "Main additional offence description",
-            subCategoryCode = "1A",
+            subCategoryCode = "45",
             subCategoryDescription = "Sub additional offence description"
         )
     )

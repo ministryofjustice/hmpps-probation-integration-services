@@ -16,26 +16,30 @@ class OffenceService(
     fun getOffences(crn: String, event: Int): OffenceDetails {
         val mainOffence = mainOffenceRepository.findByPersonCrnAndEventEventNumber(crn, event.toString())
             ?: throw NotFoundException("No offences found for CRN $crn and event $event")
-        val additionalOffences = additionalOffenceRepository.findAllByEventId(mainOffence.event.id).map {
-            Offence(
-                it.date,
-                CodeAndDescription(it.offence.mainCategoryCode.trim(), it.offence.mainCategoryDescription),
-                CodeAndDescription(it.offence.subCategoryCode.trim(), it.offence.subCategoryDescription)
-            )
-        }
 
         return OffenceDetails(
-            Offence(
-                mainOffence.date,
-                CodeAndDescription(
-                    mainOffence.offence.mainCategoryCode.trim(),
+            mainOffence = Offence(
+                date = mainOffence.date,
+                code = mainOffence.offence.code,
+                description = mainOffence.offence.description,
+                mainCategory = CodeAndDescription(
+                    mainOffence.offence.mainCategoryCode,
                     mainOffence.offence.mainCategoryDescription
                 ),
-                CodeAndDescription(
-                    mainOffence.offence.subCategoryCode.trim(),
+                subCategory = CodeAndDescription(
+                    mainOffence.offence.subCategoryCode,
                     mainOffence.offence.subCategoryDescription
                 )
-            ), additionalOffences
+            ),
+            additionalOffences = additionalOffenceRepository.findAllByEventId(mainOffence.event.id).map {
+                Offence(
+                    date = it.date,
+                    code = it.offence.code,
+                    description = it.offence.description,
+                    mainCategory = CodeAndDescription(it.offence.mainCategoryCode, it.offence.mainCategoryDescription),
+                    subCategory = CodeAndDescription(it.offence.subCategoryCode, it.offence.subCategoryDescription)
+                )
+            }
         )
     }
 }

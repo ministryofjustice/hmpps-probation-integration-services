@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.DocumentService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.lang.IllegalArgumentException
 
 @Component
 @Channel("pre-sentence-reports-to-delius-queue")
@@ -44,9 +43,9 @@ class Handler(
 }
 
 val HmppsDomainEvent.psrId
-    get() = additionalInformation["psrId"].toString() ?: throw IllegalArgumentException("Missing psrId")
+    get() = checkNotNull(additionalInformation["psrId"]).toString()
 val HmppsDomainEvent.username
-    get() = additionalInformation["username"].toString() ?: throw IllegalArgumentException("Missing username")
+    get() = checkNotNull(additionalInformation["username"]).toString()
 
 fun HmppsDomainEvent.telemetry() = mapOf(
     "crn" to personReference.findCrn(),
