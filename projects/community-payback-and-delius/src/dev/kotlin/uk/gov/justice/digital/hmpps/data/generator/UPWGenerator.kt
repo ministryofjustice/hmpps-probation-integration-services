@@ -589,7 +589,8 @@ object UPWGenerator {
     val ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON = generateUPWAdjustment(
         upwDetails = UPW_DETAILS_ADJUSTMENT,
         adjustmentAmount = 3,
-        adjustmentType = "NEGATIVE"
+        adjustmentType = "NEGATIVE",
+        adjustmentDate = LocalDate.of(2026, 1, 1)
     )
 
     fun generateUpwProject(
