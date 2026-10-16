@@ -27,7 +27,8 @@ class SentenceService(
         val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
         return SentenceProgress(
             sentences = events.mapNotNull { it.disposal }.map {
-                val upwSubTypes = it.requirements.filter { requirement -> requirement.mainCategory.code == UPW }.map { requirement -> Pair(requirement.subCategory?.code!!, requirement.length) }
+                val upwSubTypes = it.requirements.filter { requirement -> requirement.mainCategory.code == UPW }
+                    .map { requirement -> Pair(requirement.subCategory?.code!!, requirement.length) }
                 Sentence(
                     type = it.type.description,
                     startDate = it.date,
@@ -35,7 +36,8 @@ class SentenceService(
                         ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
                     lastUpdatedAt = it.lastUpdatedDatetime,
                     requirements = it.requirements.map { requirement ->
-                        val totalUPWHours = unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
+                        val totalUPWHours =
+                            unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
                         val apportionedUPW = apportionHours(upwSubTypes, totalUPWHours)
                         Requirement(
                             type = requirement.mainCategory.description,
@@ -84,6 +86,7 @@ class SentenceService(
             }
         )
     }
+
     fun apportionHours(upwSubTypes: List<Pair<String, Int?>>, totalUPWHours: Int): Map<String, Int> {
         val totalHours = totalUPWHours.coerceAtLeast(0)
         var runningTotal = totalHours
@@ -99,7 +102,7 @@ class SentenceService(
                 val apportioned = minOf(requiredHours ?: 0, remainingHours)
                 if (apportioned <= 0) return@forEach
 
-            apportionedHours[subTypeCode] = (apportionedHours[subTypeCode] ?: 0) + apportioned
+                apportionedHours[subTypeCode] = (apportionedHours[subTypeCode] ?: 0) + apportioned
                 if (UPWSubTypes.isConcurrent(subTypeCode)) {
                     concurrentRunningTotal -= apportioned
                 } else {
@@ -111,8 +114,6 @@ class SentenceService(
     }
 }
 
-
-
 enum class UPWSubTypes(val code: String, val description: String, val concurrency: Boolean) {
     REGULAR("W01", "Regular UPW Hours", false),
     ADDITIONAL("W03", "Additional UPW Hours", false),
@@ -120,6 +121,7 @@ enum class UPWSubTypes(val code: String, val description: String, val concurrenc
     HOURS_CONCURRENT_TO_ANOTHER_ORDER("W06", "Hours Concurrent to another Order", true),
     HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY("W08", "Hours Outstanding at Sentence Expiry", false),
     HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
+
     companion object {
         fun fromCode(code: String): UPWSubTypes? {
             return when {
