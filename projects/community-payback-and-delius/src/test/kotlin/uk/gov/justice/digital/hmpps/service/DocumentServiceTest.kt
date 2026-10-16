@@ -211,44 +211,50 @@ internal class DocumentServiceTest {
     fun `deleteDocumentById deletes document when appointment id matches`() {
         val appointmentId = 123L
         val documentId = 456L
+        val contactId = 789L
 
         val document = mock<Document> {
             on { id } doReturn documentId
-            on { primaryKeyId } doReturn appointmentId
+            on { primaryKeyId } doReturn contactId
             on { alfrescoId } doReturn "alfresco-123"
             on { tableName } doReturn "CONTACT"
             on { externalReference } doReturn "urn:test"
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
-        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", appointmentId, documentId))
+        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId))
+            .thenReturn(contactId)
+        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", contactId, documentId))
             .thenReturn(false)
 
         documentService.deleteDocumentById(appointmentId, documentId)
 
         verify(documentRepository).findById(documentId)
         verify(documentRepository).delete(document)
-        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", appointmentId, documentId)
+        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", contactId, documentId)
     }
 
     @Test
     fun `deleteDocumentById throws when document does not belong to appointment`() {
         val appointmentId = 123L
-        val otherAppointmentId = 999L
+        val otherAppointmentId = 789L
+        val contactId = 999L
         val documentId = 456L
 
         val document = mock<Document> {
             on { id } doReturn documentId
-            on { primaryKeyId } doReturn otherAppointmentId
+            on { primaryKeyId } doReturn appointmentId
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
+        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(otherAppointmentId))
+            .thenReturn(contactId)
 
         val exception = assertThrows<IllegalArgumentException> {
-            documentService.deleteDocumentById(appointmentId, documentId)
+            documentService.deleteDocumentById(otherAppointmentId, documentId)
         }
 
-        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $appointmentId")
+        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $contactId")
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }
@@ -256,6 +262,8 @@ internal class DocumentServiceTest {
     @Test
     fun `deleteDocumentById throws when document does not exist`() {
         whenever(documentRepository.findById(456L)).thenReturn(Optional.empty())
+        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(123L))
+            .thenReturn(789L)
 
         val exception = assertThrows<NotFoundException> {
             documentService.deleteDocumentById(123L, 456L)

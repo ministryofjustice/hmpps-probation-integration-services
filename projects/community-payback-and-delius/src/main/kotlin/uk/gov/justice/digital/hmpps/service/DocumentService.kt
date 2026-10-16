@@ -49,10 +49,7 @@ class DocumentService(
     }
 
     fun downloadDocument(appointmentId: Long, documentId: Long): ResponseEntity<StreamingResponseBody> {
-        val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
-            ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
-        val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
-        require(document.primaryKeyId == contactId) { "Document $documentId does not belong to appointment $contactId" }
+        val document = getDocument(appointmentId, documentId)
         return alfrescoClient.streamDocument(document.alfrescoId, document.name)
     }
 
@@ -102,12 +99,7 @@ class DocumentService(
     }
 
     fun deleteDocumentById(appointmentId: Long, documentId: Long) {
-        val document = documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId)
-
-        require(document.primaryKeyId == appointmentId) {
-            "Document $documentId does not belong to appointment $appointmentId"
-        }
-
+        val document = getDocument(appointmentId, documentId)
         deleteDocument(document)
     }
 
@@ -124,6 +116,13 @@ class DocumentService(
             "File extension '$extension' is not allowed. Allowed extensions: ${ALLOWED_EXTENSIONS.joinToString(", ")}"
         }
     }
+
+    private fun getDocument(appointmentId: Long, documentId: Long) =
+        documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId).also {
+            val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
+                ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
+            require(it.primaryKeyId == contactId) { "Document $documentId does not belong to appointment $contactId" }
+        }
 
     private fun Document.toMultipart(file: ByteArray, person: Person) =
         MultipartBodyBuilder().apply {
