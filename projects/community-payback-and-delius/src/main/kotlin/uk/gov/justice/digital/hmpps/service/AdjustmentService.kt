@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedModel
 import uk.gov.justice.digital.hmpps.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
@@ -12,6 +15,7 @@ import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentReposi
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -97,6 +101,33 @@ class AdjustmentService(
             minutes = adjustment.amount,
         )
     }
+
+    fun searchAdjustments(
+        crn: String?,
+        eventNumber: Int?,
+        date: LocalDate?,
+        type: AdjustmentType?,
+        reason: String?,
+        pageable: Pageable
+    ): PagedModel<Adjustment> = PagedModel(
+        adjustmentRepository.searchAdjustments(
+            crn = crn,
+            eventNumber = eventNumber?.toString(),
+            date = date,
+            type = type?.code,
+            reason = reason,
+            pageable = pageable
+        ).map {
+            Adjustment(
+                id = it.id!!,
+                reference = it.reference(),
+                date = it.date,
+                type = AdjustmentType.valueOf(it.type),
+                minutes = it.amount,
+                reason = CodeName(name = it.reason.description, code = it.reason.code),
+            )
+        }
+    )
 
     fun UnpaidWorkAdjustment.reference() =
         externalReference?.removePrefix(REFERENCE_PREFIX)?.let { UUID.fromString(it) }

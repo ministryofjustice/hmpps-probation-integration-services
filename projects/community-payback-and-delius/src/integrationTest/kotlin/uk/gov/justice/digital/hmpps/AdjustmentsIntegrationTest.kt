@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UPWGenerator
@@ -418,5 +419,55 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(adjustmentAfterFailure).isNotNull()
         assertThat(adjustmentAfterFailure!!.type).isEqualTo(AdjustmentType.POSITIVE.code)
         assertThat(adjustmentAfterFailure.amount).isEqualTo(100)
+    }
+
+    @Test
+    fun `search unpaid work adjustments by filters`() {
+        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+
+        mockMvc.get("/adjustments/search") {
+            withToken()
+            param("crn", crn)
+            param("eventNumber", UPWGenerator.EVENT_ADJUSTMENT.number.toString())
+            param("date", adjustment.date.toString())
+            param("type", AdjustmentType.NEGATIVE.name)
+            param("reason", "OT")
+            param("page", "0")
+            param("size", "20")
+            param("sort", "date,desc")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.content.length()") { value(1) }
+            jsonPath("$.content[0].reference") { value(adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)) }
+            jsonPath("$.content[0].type") { value(AdjustmentType.NEGATIVE.name) }
+            jsonPath("$.content[0].minutes") { value(adjustment.amount) }
+            jsonPath("$.content[0].date") { value(adjustment.date.toString()) }
+            jsonPath("$.content[0].reason.code") { value("OT") }
+        }
+    }
+
+    @Test
+    fun `search unpaid work adjustments without filters returns a page`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
+        val expectedReferences = listOf(
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE.externalReference!!.removePrefix(REFERENCE_PREFIX),
+            UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX)
+        )
+
+        mockMvc.get("/adjustments/search") {
+            withToken()
+            param("crn", crn)
+            param("eventNumber", UPWGenerator.EVENT_ADJUSTMENT.number.toString())
+            param("page", "0")
+            param("size", "20")
+            param("sort", "date,desc")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.content").isArray
+            jsonPath("$.content.length()").value(2)
+            jsonPath("$.content[0].reference").value(expectedReferences[0])
+            jsonPath("$.content[1].reference").value(expectedReferences[1])
+        }
     }
 }
