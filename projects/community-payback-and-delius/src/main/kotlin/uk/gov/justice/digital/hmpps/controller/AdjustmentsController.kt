@@ -48,12 +48,11 @@ class AdjustmentsController(
 
     @GetMapping("/adjustments/search")
     fun searchAdjustments(
-        @RequestParam(required = false) crn: String?,
-        @RequestParam(required = false) eventNumber: Int?,
+        @RequestParam crn: String,
+        @RequestParam eventNumber: Int,
         @RequestParam(required = false) date: LocalDate?,
         @RequestParam(required = false) type: String?,
         @RequestParam(required = false) reason: String?,
-        @RequestParam(required = false) minutes: Int?,
         @PageableDefault(page = 0, size = 10) pageable: Pageable
     ) = adjustmentService.searchAdjustments(
         crn = crn,
@@ -61,7 +60,6 @@ class AdjustmentsController(
         date = date,
         type = type?.let { AdjustmentType.valueOf(it.uppercase()) },
         reason = reason,
-        minutes = minutes,
         pageable.mapSorts(
             "minutes" to "amount",
             "date" to "date",

@@ -108,7 +108,6 @@ class AdjustmentService(
         date: LocalDate?,
         type: AdjustmentType?,
         reason: String?,
-        minutes: Int?,
         pageable: Pageable
     ): PagedModel<Adjustment> = PagedModel(
         adjustmentRepository.searchAdjustments(
@@ -117,7 +116,6 @@ class AdjustmentService(
             date = date,
             type = type?.code,
             reason = reason,
-            minutes = minutes,
             pageable = pageable
         ).map {
             Adjustment(

@@ -98,7 +98,6 @@ interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, L
               and (:date is null or a.date = :date)
               and (:type is null or a.type = :type)
               and (:reason is null or a.reason.code = :reason)
-              and (:minutes is null or a.amount = :minutes)
         """
     )
     fun searchAdjustments(
@@ -107,7 +106,6 @@ interface UnpaidWorkAdjustmentRepository : JpaRepository<UnpaidWorkAdjustment, L
         date: LocalDate?,
         type: String?,
         reason: String?,
-        minutes: Int?,
         pageable: Pageable
     ): Page<UnpaidWorkAdjustment>
 }

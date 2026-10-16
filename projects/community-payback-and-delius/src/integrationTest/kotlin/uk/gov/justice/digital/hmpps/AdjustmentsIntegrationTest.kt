@@ -433,7 +433,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             param("date", adjustment.date.toString())
             param("type", AdjustmentType.NEGATIVE.name)
             param("reason", "OT")
-            param("minutes", adjustment.amount.toString())
             param("page", "0")
             param("size", "20")
             param("sort", "date,desc")
@@ -450,26 +449,25 @@ class AdjustmentsIntegrationTest @Autowired constructor(
 
     @Test
     fun `search unpaid work adjustments without filters returns a page`() {
+        val crn = PersonGenerator.DEFAULT_PERSON.crn
         val expectedReferences = listOf(
             UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_POSITIVE.externalReference!!.removePrefix(REFERENCE_PREFIX),
-            UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON.externalReference!!.removePrefix(REFERENCE_PREFIX),
-            UPWGenerator.GET_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX),
             UPWGenerator.DEFAULT_UPW_DETAILS_ADJUSTMENT_NEGATIVE.externalReference!!.removePrefix(REFERENCE_PREFIX)
         )
 
         mockMvc.get("/adjustments/search") {
             withToken()
+            param("crn", crn)
+            param("eventNumber", UPWGenerator.EVENT_ADJUSTMENT.number.toString())
             param("page", "0")
             param("size", "20")
             param("sort", "date,desc")
         }.andExpect {
             status { isOk() }
             jsonPath("$.content").isArray
-            jsonPath("$.content.length()").value(4)
+            jsonPath("$.content.length()").value(2)
             jsonPath("$.content[0].reference").value(expectedReferences[0])
             jsonPath("$.content[1].reference").value(expectedReferences[1])
-            jsonPath("$.content[2].reference").value(expectedReferences[2])
-            jsonPath("$.content[3].reference").value(expectedReferences[3])
         }
     }
 }
