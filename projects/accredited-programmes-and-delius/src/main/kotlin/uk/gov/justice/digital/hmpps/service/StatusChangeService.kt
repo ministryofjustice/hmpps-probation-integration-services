@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.repository.*
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -20,17 +21,31 @@ class StatusChangeService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val staffRepository: StaffRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val telemetryService: TelemetryService
 ) {
-    fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo) {
+    fun statusChanged(messageId: UUID, crn: String, occurredAt: ZonedDateTime, info: StatusInfo): Boolean {
         val component = info.getComponent(crn)
+        if (component == null) {
+            telemetryService.trackEvent(
+                "StatusChangedComponentNotFound",
+                mapOf(
+                    "crn" to crn,
+                    "componentId" to info.sourcedFromEntityId.toString(),
+                    "status" to info.newStatus.toString(),
+                    "username" to info.username,
+                )
+            )
+            return false
+        }
         contactRepository.save(info.asStatusChangeContact(messageId, component, occurredAt))
+        return true
     }
 
-    private fun StatusInfo.getComponent(crn: String): SentenceComponent = when (sourcedFromEntityType) {
-        EntityType.LICENCE_CONDITION -> licenceConditionRepository.findByIdOrNotFound(sourcedFromEntityId)
-        EntityType.REQUIREMENT -> requirementRepository.findByIdOrNotFound(sourcedFromEntityId)
-    }.also { require(crn == it.disposal.event.person.crn) { "CRN and component do not match" } }
+    private fun StatusInfo.getComponent(crn: String): SentenceComponent? = when (sourcedFromEntityType) {
+        EntityType.LICENCE_CONDITION -> licenceConditionRepository.findLicenceConditionById(sourcedFromEntityId)
+        EntityType.REQUIREMENT -> requirementRepository.findRequirementById(sourcedFromEntityId)
+    }?.also { require(crn == it.disposal.event.person.crn) { "CRN and component do not match" } }
 
     private fun StatusInfo.asStatusChangeContact(
         messageId: UUID,

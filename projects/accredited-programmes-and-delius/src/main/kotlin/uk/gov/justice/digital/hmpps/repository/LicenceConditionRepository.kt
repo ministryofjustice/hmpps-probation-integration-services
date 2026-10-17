@@ -72,6 +72,7 @@ interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
     ): List<LicenceCondition>
 
     fun findByIdOrNotFound(id: Long) = findByIdAndMainCategoryCodeIn(id).orNotFoundBy("id", id)
+    fun findLicenceConditionById(id: Long) = findByIdAndMainCategoryCodeIn(id)
     fun getAllByIdIn(ids: List<Long>) = ids.toSet().let { ids ->
         findAllByIdInAndActiveTrueAndMainCategoryCodeIn(ids).associateBy { it.id }.reportMissingIds(ids)
     }
