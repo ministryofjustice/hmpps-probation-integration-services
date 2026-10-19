@@ -93,6 +93,7 @@ class SentenceService(
     fun Disposal.apportionHoursByRequirementId(): Map<Long, Int> {
         val upwRequirements = requirements
             .filter { requirement -> requirement.mainCategory.code == UPW }
+            .ifEmpty { return emptyMap() }
         val totalUPWHours = unpaidWorkAppointmentRepository.countHoursAttended(id) ?: 0
         val totalHours = totalUPWHours.coerceAtLeast(0)
         var runningTotal = totalHours
