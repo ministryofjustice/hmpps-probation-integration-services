@@ -229,8 +229,10 @@ object TestData {
         val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
         val LAO_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.LAO_EVENT, MAIN_OFFENCE_TYPE)
         val UPW_ALIAS_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.UPW_ALIAS_EVENT, MAIN_OFFENCE_TYPE)
-        val UPW_CONCURRENT_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.UPW_CONCURRENT_EVENT, MAIN_OFFENCE_TYPE)
-        val UPW_NULL_SUBTYPE_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.UPW_NULL_SUBTYPE_EVENT, MAIN_OFFENCE_TYPE)
+        val UPW_CONCURRENT_MAIN_OFFENCE: MainOffence =
+            MainOffence(id(), SentenceData.UPW_CONCURRENT_EVENT, MAIN_OFFENCE_TYPE)
+        val UPW_NULL_SUBTYPE_MAIN_OFFENCE: MainOffence =
+            MainOffence(id(), SentenceData.UPW_NULL_SUBTYPE_EVENT, MAIN_OFFENCE_TYPE)
     }
 
     object SentenceData {
