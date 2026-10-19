@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
-import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCodeDocument
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -56,7 +56,7 @@ class DocumentService(
     fun uploadAppointmentDocument(
         appointmentId: Long,
         file: MultipartFile,
-    ): DocumentUploadResponse = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
+    ): DocumentUploadResponse = audit(BusinessInteractionCodeDocument.UPLOAD_DOCUMENT) {
         val filename = file.originalFilename ?: "document"
         validateFile(filename)
         val appointment = unpaidWorkAppointmentRepository.getAppointment(appointmentId)
@@ -83,7 +83,7 @@ class DocumentService(
         DocumentUploadResponse(savedDocument.id, savedDocument.name)
     }
 
-    fun deleteDocument(document: Document) = audit(BusinessInteractionCode.DELETE_DOCUMENT) {
+    fun deleteDocument(document: Document) = audit(BusinessInteractionCodeDocument.DELETE_DOCUMENT) {
         populateAudit(document, it)
 
         alfrescoUploadClient.release(document.alfrescoId)

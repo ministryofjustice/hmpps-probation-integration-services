@@ -28,7 +28,7 @@ class Document(
     @Column(name = "document_name")
     var name: String,
 
-    @Column
+    @Column(name = "primary_key_id")
     val primaryKeyId: Long,
 
     @Column(name = "table_name")
