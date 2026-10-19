@@ -26,19 +26,29 @@ class SentenceService(
         val personId = personRepository.getIdByCrn(crn)
         val events = eventRepository.findByPersonIdAndDisposalNotNull(personId)
         return SentenceProgress(
-            sentences = events.mapNotNull { it.disposal }.map {
-                val upwSubTypes = it.requirements.filter { requirement -> requirement.mainCategory.code == UPW }
-                    .map { requirement -> Pair(requirement.subCategory?.code!!, requirement.length) }
+            sentences = events.mapNotNull { it.disposal }.map { disposal ->
+                val upwRequirements = disposal.requirements
+                    .filter { requirement -> requirement.mainCategory.code == UPW }
+                val apportionedUPW = if (upwRequirements.isEmpty()) {
+                    emptyMap<Long, Int>()
+                } else {
+                    apportionHoursByRequirementId(
+                        upwRequirements.map { requirement ->
+                            Triple(requirement.id, requirement.subCategory?.code ?: UPW, requirement.length)
+                        },
+                        unpaidWorkAppointmentRepository.countHoursAttended(disposal.id) ?: 0,
+                    )
+                }
+
                 Sentence(
-                    type = it.type.description,
-                    startDate = it.date,
-                    expectedEndDate = it.custody?.sentenceExpiryDate?.date
-                        ?: it.enteredExpectedEndDate ?: it.expectedEndDate,
-                    lastUpdatedAt = it.lastUpdatedDatetime,
-                    requirements = it.requirements.map { requirement ->
-                        val totalUPWHours =
-                            unpaidWorkAppointmentRepository.countHoursAttended(requirement.disposal.id) ?: 0
-                        val apportionedUPW = apportionHours(upwSubTypes, totalUPWHours)
+                    type = disposal.type.description,
+                    startDate = disposal.date,
+                    expectedEndDate = disposal.custody?.sentenceExpiryDate?.date
+                        ?: disposal.enteredExpectedEndDate ?: disposal.expectedEndDate,
+                    lastUpdatedAt = disposal.lastUpdatedDatetime,
+                    requirements = disposal.requirements
+                        .sortedBy { it.id }
+                        .map { requirement ->
                         Requirement(
                             type = requirement.mainCategory.description,
                             description = requirement.subCategory?.description,
@@ -47,7 +57,7 @@ class SentenceService(
                             required = requirement.length,
                             completed = when (requirement.mainCategory.code) {
                                 RAR -> contactRepository.countRarDaysAttended(requirement.id)
-                                UPW -> apportionedUPW[requirement.subCategory?.code] ?: 0
+                                UPW -> apportionedUPW[requirement.id] ?: 0
                                 else -> null
                             },
                             unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
@@ -60,7 +70,7 @@ class SentenceService(
                             lastUpdatedAt = requirement.lastUpdatedDatetime,
                         )
                     },
-                    licenceConditions = it.licenceConditions.map { licenceCondition ->
+                    licenceConditions = disposal.licenceConditions.map { licenceCondition ->
                         LicenceCondition(
                             type = licenceCondition.mainCategory.description,
                             description = licenceCondition.subCategory?.description,
@@ -70,13 +80,13 @@ class SentenceService(
                             expectedEndDate = licenceCondition.expectedEndDate,
                         )
                     },
-                    mainOffence = it.event.mainOffence!!.offence.let { offence ->
+                    mainOffence = disposal.event.mainOffence!!.offence.let { offence ->
                         CodeDescription(
                             code = offence.code,
                             description = offence.description,
                         )
                     },
-                    additionalOffences = it.event.additionalOffences.map { offence ->
+                    additionalOffences = disposal.event.additionalOffences.map { offence ->
                         CodeDescription(
                             code = offence.offence.code,
                             description = offence.offence.description,
@@ -85,6 +95,31 @@ class SentenceService(
                 )
             }
         )
+    }
+    fun apportionHoursByRequirementId(upwRequirements: List<Triple<Long, String, Int?>>, totalUPWHours: Int): Map<Long, Int> {
+        val totalHours = totalUPWHours.coerceAtLeast(0)
+        var runningTotal = totalHours
+        var concurrentRunningTotal = totalHours
+        val apportionedHours = mutableMapOf<Long, Int>()
+
+        upwRequirements
+            .sortedWith(compareBy<Triple<Long, String, Int?>> { UPWSubTypes.priorityOf(it.second) }.thenBy { it.first })
+            .forEach { (requirementId, subTypeCode, requiredHours) ->
+                val remainingHours = if (UPWSubTypes.isConcurrent(subTypeCode)) concurrentRunningTotal else runningTotal
+                if (remainingHours <= 0) return@forEach
+
+                val apportioned = minOf(requiredHours ?: 0, remainingHours)
+                if (apportioned <= 0) return@forEach
+
+                apportionedHours[requirementId] = apportioned
+                if (UPWSubTypes.isConcurrent(subTypeCode)) {
+                    concurrentRunningTotal -= apportioned
+                } else {
+                    runningTotal -= apportioned
+                }
+            }
+
+        return apportionedHours
     }
 
     fun apportionHours(upwSubTypes: List<Pair<String, Int?>>, totalUPWHours: Int): Map<String, Int> {
@@ -112,38 +147,37 @@ class SentenceService(
 
         return apportionedHours
     }
-}
 
-enum class UPWSubTypes(val code: String, val description: String, val concurrency: Boolean) {
-    REGULAR("W01", "Regular UPW Hours", false),
-    ADDITIONAL("W03", "Additional UPW Hours", false),
-    HOURS_CONSECUTIVE_TO_OTHER_ORDER("W07", "Hours consecutive to another order", false),
-    HOURS_CONCURRENT_TO_ANOTHER_ORDER("W06", "Hours Concurrent to another Order", true),
-    HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY("W08", "Hours Outstanding at Sentence Expiry", false),
-    HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
-
-    companion object {
-        fun fromCode(code: String): UPWSubTypes? {
-            return when {
-                code.equals("UPW", ignoreCase = true) -> REGULAR
-                else -> entries.find { it.code.equals(code, ignoreCase = true) }
+    enum class UPWSubTypes(val code: String, val description: String, val concurrency: Boolean) {
+        REGULAR("W01", "Regular UPW Hours", false),
+        ADDITIONAL("W03", "Additional UPW Hours", false),
+        HOURS_CONSECUTIVE_TO_OTHER_ORDER("W07", "Hours consecutive to another order", false),
+        HOURS_CONCURRENT_TO_ANOTHER_ORDER("W06", "Hours Concurrent to another Order", true),
+        HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY("W08", "Hours Outstanding at Sentence Expiry", false),
+        HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
+        companion object {
+            fun fromCode(code: String): UPWSubTypes? {
+                return when {
+                    code.equals("UPW", ignoreCase = true) -> REGULAR
+                    else -> entries.find { it.code.equals(code, ignoreCase = true) }
+                }
             }
-        }
 
-        fun priorityOf(code: String): Int {
-            return when (fromCode(code)) {
-                REGULAR -> 0
-                ADDITIONAL -> 1
-                HOURS_CONSECUTIVE_TO_OTHER_ORDER -> 2
-                HOURS_CONCURRENT_TO_ANOTHER_ORDER -> 3
-                HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER -> 4
-                HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY -> 5
-                null -> Int.MAX_VALUE
+            fun priorityOf(code: String): Int {
+                return when (fromCode(code)) {
+                    REGULAR -> 0
+                    ADDITIONAL -> 1
+                    HOURS_CONSECUTIVE_TO_OTHER_ORDER -> 2
+                    HOURS_CONCURRENT_TO_ANOTHER_ORDER -> 3
+                    HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER -> 4
+                    HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY -> 5
+                    null -> Int.MAX_VALUE
+                }
             }
-        }
 
-        fun isConcurrent(code: String): Boolean {
-            return fromCode(code)?.concurrency == true
+            fun isConcurrent(code: String): Boolean {
+                return fromCode(code)?.concurrency == true
+            }
         }
     }
 }
