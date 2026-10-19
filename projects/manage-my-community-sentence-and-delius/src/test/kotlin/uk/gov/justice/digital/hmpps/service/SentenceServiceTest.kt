@@ -56,11 +56,13 @@ internal class SentenceServiceTest {
         whenever(disposal.expectedEndDate).thenReturn(LocalDate.of(2026, 1, 1))
         whenever(disposal.enteredExpectedEndDate).thenReturn(null)
         whenever(disposal.lastUpdatedDatetime).thenReturn(ZonedDateTime.parse("2024-01-02T00:00:00Z"))
-        whenever(disposal.requirements).thenReturn(setOf(
-            upwRequirement(1L, 3, disposal),
-            upwRequirement(2L, 4, disposal),
-            upwRequirement(3L, 5, disposal),
-        ))
+        whenever(disposal.requirements).thenReturn(
+            setOf(
+                upwRequirement(1L, 3, disposal),
+                upwRequirement(2L, 4, disposal),
+                upwRequirement(3L, 5, disposal),
+            )
+        )
         whenever(disposal.licenceConditions).thenReturn(emptySet())
         whenever(disposal.custody).thenReturn(null)
         whenever(disposal.event).thenReturn(event)

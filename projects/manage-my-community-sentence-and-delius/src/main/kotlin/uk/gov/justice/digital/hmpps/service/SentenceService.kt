@@ -49,27 +49,27 @@ class SentenceService(
                     requirements = disposal.requirements
                         .sortedBy { it.id }
                         .map { requirement ->
-                        Requirement(
-                            type = requirement.mainCategory.description,
-                            description = requirement.subCategory?.description,
-                            mainCategory = requirement.mainCategory.toModel(),
-                            subCategory = requirement.subCategory?.toModel(),
-                            required = requirement.length,
-                            completed = when (requirement.mainCategory.code) {
-                                RAR -> contactRepository.countRarDaysAttended(requirement.id)
-                                UPW -> apportionedUPW[requirement.id] ?: 0
-                                else -> null
-                            },
-                            unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
-                            imposedDate = requirement.imposedDate,
-                            expectedStartDate = requirement.expectedStartDate,
-                            expectedEndDate = requirement.expectedEndDate,
-                            actualStartDate = requirement.actualStartDate,
-                            actualEndDate = requirement.actualEndDate,
-                            terminationReason = requirement.terminationReason?.toModel(),
-                            lastUpdatedAt = requirement.lastUpdatedDatetime,
-                        )
-                    },
+                            Requirement(
+                                type = requirement.mainCategory.description,
+                                description = requirement.subCategory?.description,
+                                mainCategory = requirement.mainCategory.toModel(),
+                                subCategory = requirement.subCategory?.toModel(),
+                                required = requirement.length,
+                                completed = when (requirement.mainCategory.code) {
+                                    RAR -> contactRepository.countRarDaysAttended(requirement.id)
+                                    UPW -> apportionedUPW[requirement.id] ?: 0
+                                    else -> null
+                                },
+                                unit = requirement.length?.let { DurationUnit.ofCode(requirement.mainCategory.lengthUnits.code) },
+                                imposedDate = requirement.imposedDate,
+                                expectedStartDate = requirement.expectedStartDate,
+                                expectedEndDate = requirement.expectedEndDate,
+                                actualStartDate = requirement.actualStartDate,
+                                actualEndDate = requirement.actualEndDate,
+                                terminationReason = requirement.terminationReason?.toModel(),
+                                lastUpdatedAt = requirement.lastUpdatedDatetime,
+                            )
+                        },
                     licenceConditions = disposal.licenceConditions.map { licenceCondition ->
                         LicenceCondition(
                             type = licenceCondition.mainCategory.description,
@@ -96,7 +96,11 @@ class SentenceService(
             }
         )
     }
-    fun apportionHoursByRequirementId(upwRequirements: List<Triple<Long, String, Int?>>, totalUPWHours: Int): Map<Long, Int> {
+
+    fun apportionHoursByRequirementId(
+        upwRequirements: List<Triple<Long, String, Int?>>,
+        totalUPWHours: Int
+    ): Map<Long, Int> {
         val totalHours = totalUPWHours.coerceAtLeast(0)
         var runningTotal = totalHours
         var concurrentRunningTotal = totalHours
@@ -155,6 +159,7 @@ class SentenceService(
         HOURS_CONCURRENT_TO_ANOTHER_ORDER("W06", "Hours Concurrent to another Order", true),
         HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY("W08", "Hours Outstanding at Sentence Expiry", false),
         HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
+
         companion object {
             fun fromCode(code: String): UPWSubTypes? {
                 return when {
