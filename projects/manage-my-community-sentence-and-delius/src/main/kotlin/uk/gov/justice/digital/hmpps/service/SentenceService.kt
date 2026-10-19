@@ -100,12 +100,10 @@ class SentenceService(
 
         upwRequirements
             .sortedWith(compareBy<Requirement> {
-                UPWSubTypes.fromCode(
-                    it.subCategory?.code ?: UPWSubTypes.REGULAR.code
-                )?.ordinal ?: Int.MAX_VALUE
+                UPWSubTypes.fromCode(it.upwSubTypeCode()).ordinal
             }.thenBy { it.id })
             .forEach { requirement ->
-                val isConcurrent = UPWSubTypes.isConcurrent(requirement.subCategory?.code ?: UPWSubTypes.REGULAR.code)
+                val isConcurrent = UPWSubTypes.isConcurrent(requirement.upwSubTypeCode())
                 val remainingHours = if (isConcurrent) concurrentRunningTotal else runningTotal
                 if (remainingHours <= 0) return@forEach
 
@@ -123,25 +121,7 @@ class SentenceService(
         return apportionedHours
     }
 
-    enum class UPWSubTypes(val code: String, val description: String, val concurrency: Boolean) {
-        REGULAR("W01", "Regular UPW Hours", false),
-        ADDITIONAL("W03", "Additional UPW Hours", false),
-        HOURS_CONSECUTIVE_TO_OTHER_ORDER("W07", "Hours consecutive to another order", false),
-        HOURS_CONCURRENT_TO_ANOTHER_ORDER("W06", "Hours Concurrent to another Order", true),
-        HOURS_OUTSTANDING_AT_SENTENCE_EXPIRY("W08", "Hours Outstanding at Sentence Expiry", false),
-        HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
-
-        companion object {
-            fun fromCode(code: String): UPWSubTypes? {
-                return when {
-                    code.equals("UPW", ignoreCase = true) -> REGULAR
-                    else -> entries.find { it.code.equals(code, ignoreCase = true) }
-                }
-            }
-
-            fun isConcurrent(code: String): Boolean {
-                return fromCode(code)?.concurrency == true
-            }
-        }
+    private fun Requirement.upwSubTypeCode() = requireNotNull(subCategory?.code) {
+        "UPW requirement $id must have a subtype"
     }
 }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -68,14 +69,14 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 },
                                 {
                                   "type": "Unpaid Work",
-                                  "description": "Regular",
+                                  "description": "Regular UPW Hours",
                                   "mainCategory": {
                                     "code": "W",
                                     "description": "Unpaid Work"
                                   },
                                   "subCategory": {
-                                    "code": "UPW",
-                                    "description": "Regular"
+                                    "code": "W01",
+                                    "description": "Regular UPW Hours"
                                   },
                                   "required": 10,
                                   "completed": 6,
@@ -202,11 +203,11 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
     }
 
     @Test
-    fun `get sentences apportions regular UPW before additional hours when subtype code is UPW`() {
-        mockMvc.get("/person/${PersonData.UPW_ALIAS.crn}/sentences") { withToken() }
+    fun `get sentences apportions regular UPW before additional hours when subtype code is W01`() {
+        mockMvc.get("/person/${PersonData.UPW_REGULAR.crn}/sentences") { withToken() }
             .andExpect {
                 status { isOk() }
-                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("UPW") }
+                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("W01") }
                 jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
                 jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
                 jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
@@ -228,14 +229,11 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
     }
 
     @Test
-    fun `get sentences treats null unpaid work subtype as regular for apportioning`() {
+    fun `get sentences fails when unpaid work subtype is null`() {
         mockMvc.get("/person/${PersonData.UPW_NULL_SUBTYPE.crn}/sentences") { withToken() }
             .andExpect {
-                status { isOk() }
-                jsonPath("$.sentences[0].requirements[0].subCategory") { doesNotExist() }
-                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
-                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
-                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+                status { isBadRequest() }
+                jsonPath("$.message") { value(containsString("must have a subtype")) }
             }
     }
 }
