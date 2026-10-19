@@ -187,11 +187,13 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:8b8a8cf1-a8fe-42c4-879c-095bbed91466"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in reviewed")
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check-in review
+            |Check in status: Rescheduled
+            |Lifecycle review notes
             """.trimMargin()
         )
     }
@@ -205,11 +207,13 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in updated")
         assertThat(contact.isSensitive).isEqualTo(true)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check-in updated
+            |Check in status: Rescheduled
+            |Lifecycle updated notes
             """.trimMargin()
         )
     }
@@ -223,11 +227,13 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in updated")
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check-in updated expiry
+            |Check in status: Rescheduled
+            |Lifecycle updated expiry notes
             """.trimMargin()
         )
     }
@@ -241,7 +247,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:2a1b3c4d-1111-2222-3333-444455556666"
         }
 
-        assertThat(contact.description).isEqualTo("Check in status: Scheduled")
+        assertThat(contact.description).isEqualTo("Online check in scheduled")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(LocalDate.parse("2025-12-20"))
         assertThat(contact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-20T14:15:00Z"))
@@ -317,10 +323,12 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(reviewedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(reviewedContact.description).isEqualTo("Online check in reviewed")
         assertThat(reviewedContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
             |Lifecycle received notes
+            |Check in status: Rescheduled
             |Lifecycle review notes
             """.trimMargin()
         )
@@ -360,7 +368,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(expiredContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
-        assertThat(expiredContact.description).isEqualTo("Check in has not been submitted on time")
+        assertThat(expiredContact.description).isEqualTo("Online check in missed")
         assertThat(expiredContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
@@ -378,10 +386,12 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(updatedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(updatedContact.description).isEqualTo("Online check in updated")
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
             |Lifecycle expired notes
+            |Check in status: Rescheduled
             |Lifecycle updated expiry notes
             """.trimMargin()
         )

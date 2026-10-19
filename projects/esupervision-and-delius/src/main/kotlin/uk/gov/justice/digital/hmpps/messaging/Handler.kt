@@ -12,9 +12,14 @@ import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.SETUP_REMOVE
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_CANCELLED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_EXPIRED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_LINK_DELIVERED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_LINK_NOT_DELIVERED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_RECEIVED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_REVIEWED
 import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_SCHEDULED
+import uk.gov.justice.digital.hmpps.messaging.Handler.Companion.CHECK_IN_UPDATED
 import uk.gov.justice.digital.hmpps.service.CheckInService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -117,9 +122,14 @@ fun Notification<HmppsDomainEvent>.telemetry() = mapOf(
 )
 
 fun HmppsDomainEvent.description() = when (eventType) {
+    CHECK_IN_SCHEDULED -> "Online check in scheduled"
+    CHECK_IN_LINK_DELIVERED -> "Online check in link sent"
+    CHECK_IN_LINK_NOT_DELIVERED -> "Online check in link not sent"
+    CHECK_IN_CANCELLED -> "Online check in cancelled"
     CHECK_IN_RECEIVED -> "Online check in completed"
-    CHECK_IN_EXPIRED -> "Check in has not been submitted on time"
-    CHECK_IN_SCHEDULED -> "Check in status: Scheduled"
+    CHECK_IN_EXPIRED -> "Online check in missed"
+    CHECK_IN_REVIEWED -> "Online check in reviewed"
+    CHECK_IN_UPDATED -> "Online check in updated"
     else -> throw IllegalArgumentException("Unexpected event type: $eventType")
 }
 

@@ -63,7 +63,16 @@ class CheckInService(
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
         require(domainEvent matches contact) { "Case details mismatch" }
-        contact.notes = listOfNotNull(contact.notes, detail.notes).joinToString(System.lineSeparator())
+        val rescheduled = "Check in status: Rescheduled"
+        detail.dateTime?.let { dateTime ->
+            contact.date = dateTime.toLocalDate()
+            contact.startTime = dateTime
+        }
+        contact.notes = listOfNotNull(
+            contact.notes,
+            detail.dateTime?.let { rescheduled },
+            detail.notes
+        ).joinToString(System.lineSeparator())
         contact.isSensitive = detail.sensitive || contact.isSensitive == true
         contactRepository.save(contact).also { audit(it) }
     }
@@ -79,17 +88,8 @@ class CheckInService(
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
         val contact = contactRepository.getByExternalReferenceIn(externalReferences)
         require(domainEvent matches contact) { "Case details mismatch" }
-        detail.dateTime?.let { dateTime ->
-            contact.date = dateTime.toLocalDate()
-            contact.startTime = dateTime
-        }
-        val rescheduled = "Check in status: Rescheduled"
-        contact.notes = listOfNotNull(
-            contact.notes,
-            notes,
-            detail.dateTime?.let { rescheduled },
-            detail.notes
-        ).joinToString(System.lineSeparator())
+
+
         contact.isSensitive = detail.sensitive || contact.isSensitive == true
         contactRepository.save(contact).also { audit(it) }
     }
