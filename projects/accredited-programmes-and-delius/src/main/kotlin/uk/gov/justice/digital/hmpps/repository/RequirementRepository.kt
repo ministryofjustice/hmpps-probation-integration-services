@@ -73,6 +73,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     ): List<Requirement>
 
     fun findByIdOrNotFound(id: Long) = findAllByIdAndMainCategoryCodeIn(id).orNotFoundBy("id", id)
+    fun findRequirementById(id: Long) = findAllByIdAndMainCategoryCodeIn(id)
     fun getAllByIdIn(ids: List<Long>) = ids.toSet().let { ids ->
         findAllByIdInAndActiveTrueAndMainCategoryCodeIn(ids).associateBy { it.id }.reportMissingIds(ids)
     }
