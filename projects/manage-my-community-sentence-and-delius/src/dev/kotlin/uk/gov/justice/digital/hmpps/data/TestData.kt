@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.RAR_REQUIREMENT_
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_SUBCATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_CATEGORY
-import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_SUBCATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REGULAR_REQUIREMENT_SUBCATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.RequirementData.RAR_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.TestData.SentenceData.DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
@@ -52,7 +52,9 @@ object TestData {
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
         val REQUIREMENT_TERMINATION_REASON = ReferenceData(id(), "B", "Normal")
         val UPW_REQUIREMENT_CATEGORY = RequirementMainCategory(id(), Requirement.UPW, "Unpaid Work", HOURS)
-        val UPW_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "UPW", "Regular")
+        val UPW_REGULAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "W01", "Regular UPW Hours")
+        val UPW_ADDITIONAL_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "W03", "Additional UPW Hours")
+        val UPW_CONCURRENT_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "W06", "Hours Concurrent to another Order")
         val RAR_REQUIREMENT_CATEGORY =
             RequirementMainCategory(id(), Requirement.RAR, "Rehabilitation Activity Requirement (RAR)", DAYS)
         val RAR_REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "RAR", "Rehabilitation Activity Requirement (RAR)")
@@ -134,6 +136,36 @@ object TestData {
             manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
             lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
         )
+
+        val UPW_REGULAR = Person(
+            id = id(),
+            crn = "X000005",
+            firstName = "Test",
+            surname = "UpwRegular",
+            dateOfBirth = LocalDate.of(1988, 3, 20),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
+
+        val UPW_CONCURRENT = Person(
+            id = id(),
+            crn = "X000006",
+            firstName = "Test",
+            surname = "UpwConcurrent",
+            dateOfBirth = LocalDate.of(1987, 7, 12),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
+
+        val UPW_NULL_SUBTYPE = Person(
+            id = id(),
+            crn = "X000007",
+            firstName = "Test",
+            surname = "UpwNullSubtype",
+            dateOfBirth = LocalDate.of(1986, 9, 5),
+            manager = CommunityManager(id(), StaffData.STAFF, TeamData.TEAM),
+            lastUpdatedDatetime = ZonedDateTime.of(2025, 5, 1, 9, 15, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object AddressData {
@@ -195,6 +227,11 @@ object TestData {
         val SUSPENDED_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.SUSPENDED_EVENT, MAIN_OFFENCE_TYPE)
         val ADDITIONAL_OFFENCE: AdditionalOffence = AdditionalOffence(id(), SentenceData.EVENT, ADDITIONAL_OFFENCE_TYPE)
         val LAO_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.LAO_EVENT, MAIN_OFFENCE_TYPE)
+        val UPW_REGULAR_MAIN_OFFENCE: MainOffence = MainOffence(id(), SentenceData.UPW_REGULAR_EVENT, MAIN_OFFENCE_TYPE)
+        val UPW_CONCURRENT_MAIN_OFFENCE: MainOffence =
+            MainOffence(id(), SentenceData.UPW_CONCURRENT_EVENT, MAIN_OFFENCE_TYPE)
+        val UPW_NULL_SUBTYPE_MAIN_OFFENCE: MainOffence =
+            MainOffence(id(), SentenceData.UPW_NULL_SUBTYPE_EVENT, MAIN_OFFENCE_TYPE)
     }
 
     object SentenceData {
@@ -285,6 +322,48 @@ object TestData {
             enteredExpectedEndDate = null,
             lastUpdatedDatetime = ZonedDateTime.of(2026, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")),
         )
+        val UPW_REGULAR_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.UPW_REGULAR.id,
+        )
+        val UPW_REGULAR_DISPOSAL = Disposal(
+            id = id(),
+            event = UPW_REGULAR_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 3, 1),
+            expectedEndDate = LocalDate.of(2025, 3, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 3, 5, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_CONCURRENT_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.UPW_CONCURRENT.id,
+        )
+        val UPW_CONCURRENT_DISPOSAL = Disposal(
+            id = id(),
+            event = UPW_CONCURRENT_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 4, 1),
+            expectedEndDate = LocalDate.of(2025, 4, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 5, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_NULL_SUBTYPE_EVENT = Event(
+            id = id(),
+            number = "1",
+            personId = PersonData.UPW_NULL_SUBTYPE.id,
+        )
+        val UPW_NULL_SUBTYPE_DISPOSAL = Disposal(
+            id = id(),
+            event = UPW_NULL_SUBTYPE_EVENT,
+            type = COMMUNITY_ORDER,
+            date = LocalDate.of(2024, 5, 1),
+            expectedEndDate = LocalDate.of(2025, 5, 1),
+            enteredExpectedEndDate = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 5, 5, 12, 0, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object RegistrationData {
@@ -311,7 +390,7 @@ object TestData {
                 length = 10,
                 DISPOSAL,
                 UPW_REQUIREMENT_CATEGORY,
-                UPW_REQUIREMENT_SUBCATEGORY,
+                UPW_REGULAR_REQUIREMENT_SUBCATEGORY,
                 lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC"))
             )
         val RAR_REQUIREMENT =
@@ -334,6 +413,62 @@ object TestData {
             lastUpdatedDatetime = ZonedDateTime.of(2026, 2, 15, 10, 0, 0, 0, ZoneId.of("UTC")),
             activeFlag = false,
         )
+        val UPW_REGULAR_REQUIREMENT = Requirement(
+            id = id(),
+            length = 10,
+            disposal = SentenceData.UPW_REGULAR_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = UPW_REGULAR_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 3, 6, 10, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_REGULAR_ADDITIONAL_REQUIREMENT = Requirement(
+            id = id(),
+            length = 8,
+            disposal = SentenceData.UPW_REGULAR_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = ReferenceData.UPW_ADDITIONAL_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 3, 6, 10, 5, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_CONCURRENT_REGULAR_REQUIREMENT = Requirement(
+            id = id(),
+            length = 10,
+            disposal = SentenceData.UPW_CONCURRENT_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = ReferenceData.UPW_REGULAR_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 6, 10, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_CONCURRENT_ADDITIONAL_REQUIREMENT = Requirement(
+            id = id(),
+            length = 8,
+            disposal = SentenceData.UPW_CONCURRENT_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = ReferenceData.UPW_ADDITIONAL_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 6, 10, 5, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_CONCURRENT_PARALLEL_REQUIREMENT = Requirement(
+            id = id(),
+            length = 4,
+            disposal = SentenceData.UPW_CONCURRENT_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = ReferenceData.UPW_CONCURRENT_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 4, 6, 10, 10, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_NULL_SUBTYPE_REGULAR_REQUIREMENT = Requirement(
+            id = id(),
+            length = 10,
+            disposal = SentenceData.UPW_NULL_SUBTYPE_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = null,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 5, 6, 10, 0, 0, 0, ZoneId.of("UTC")),
+        )
+        val UPW_NULL_SUBTYPE_ADDITIONAL_REQUIREMENT = Requirement(
+            id = id(),
+            length = 8,
+            disposal = SentenceData.UPW_NULL_SUBTYPE_DISPOSAL,
+            mainCategory = UPW_REQUIREMENT_CATEGORY,
+            subCategory = ReferenceData.UPW_ADDITIONAL_REQUIREMENT_SUBCATEGORY,
+            lastUpdatedDatetime = ZonedDateTime.of(2026, 5, 6, 10, 5, 0, 0, ZoneId.of("UTC")),
+        )
     }
 
     object LicenceConditionData {
@@ -350,6 +485,9 @@ object TestData {
 
     object UnpaidWorkData {
         val UNPAID_WORK_DETAILS = UnpaidWorkDetails(id(), DISPOSAL.id)
+        val UPW_REGULAR_DETAILS = UnpaidWorkDetails(id(), SentenceData.UPW_REGULAR_DISPOSAL.id)
+        val UPW_CONCURRENT_DETAILS = UnpaidWorkDetails(id(), SentenceData.UPW_CONCURRENT_DISPOSAL.id)
+        val UPW_NULL_SUBTYPE_DETAILS = UnpaidWorkDetails(id(), SentenceData.UPW_NULL_SUBTYPE_DISPOSAL.id)
         val UNPAID_WORK_PROJECT_1 = UnpaidWorkProject(
             id = id(),
             name = "Project 1",
@@ -365,6 +503,24 @@ object TestData {
         val FUTURE_UNPAID_WORK_APPOINTMENT = UnpaidWorkAppointment(
             id(), UNPAID_WORK_DETAILS, minutesCredited = 180,
             contact = AppointmentData.FUTURE_UPW_CONTACT,
+            pickUpLocation = TeamData.OFFICE,
+            project = UNPAID_WORK_PROJECT_1
+        )
+        val UPW_REGULAR_APPOINTMENT = UnpaidWorkAppointment(
+            id(), UPW_REGULAR_DETAILS, minutesCredited = 720,
+            contact = AppointmentData.UPW_REGULAR_CONTACT,
+            pickUpLocation = TeamData.OFFICE,
+            project = UNPAID_WORK_PROJECT_1
+        )
+        val UPW_CONCURRENT_APPOINTMENT = UnpaidWorkAppointment(
+            id(), UPW_CONCURRENT_DETAILS, minutesCredited = 720,
+            contact = AppointmentData.UPW_CONCURRENT_CONTACT,
+            pickUpLocation = TeamData.OFFICE,
+            project = UNPAID_WORK_PROJECT_1
+        )
+        val UPW_NULL_SUBTYPE_APPOINTMENT = UnpaidWorkAppointment(
+            id(), UPW_NULL_SUBTYPE_DETAILS, minutesCredited = 720,
+            contact = AppointmentData.UPW_NULL_SUBTYPE_CONTACT,
             pickUpLocation = TeamData.OFFICE,
             project = UNPAID_WORK_PROJECT_1
         )
@@ -439,6 +595,24 @@ object TestData {
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
             attended = false, complied = false,
         )
+        val UPW_REGULAR_CONTACT = generate(
+            LocalDate.of(2020, 2, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            personId = PersonData.UPW_REGULAR.id,
+            eventId = SentenceData.UPW_REGULAR_EVENT.id,
+            attended = false, complied = false,
+        )
+        val UPW_CONCURRENT_CONTACT = generate(
+            LocalDate.of(2020, 3, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            personId = PersonData.UPW_CONCURRENT.id,
+            eventId = SentenceData.UPW_CONCURRENT_EVENT.id,
+            attended = false, complied = false,
+        )
+        val UPW_NULL_SUBTYPE_CONTACT = generate(
+            LocalDate.of(2020, 4, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            personId = PersonData.UPW_NULL_SUBTYPE.id,
+            eventId = SentenceData.UPW_NULL_SUBTYPE_EVENT.id,
+            attended = false, complied = false,
+        )
         val FUTURE_INACTIVE_EVENT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
             eventId = SentenceData.INACTIVE_EVENT.id,
@@ -459,13 +633,14 @@ object TestData {
             type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
             location: OfficeLocation? = TeamData.OFFICE,
             eventId: Long? = SentenceData.EVENT.id,
+            personId: Long = PersonData.DEFAULT.id,
             attended: Boolean? = null,
             complied: Boolean? = null,
             outcome: ContactOutcome? = null,
             sensitive: Boolean? = null,
         ) = Contact(
             id = id(),
-            personId = PersonData.DEFAULT.id,
+            personId = personId,
             eventId = eventId,
             date = date,
             startTime = startTime,

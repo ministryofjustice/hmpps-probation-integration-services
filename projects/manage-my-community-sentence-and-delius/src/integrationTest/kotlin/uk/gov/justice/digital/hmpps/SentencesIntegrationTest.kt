@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -68,14 +69,14 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 },
                                 {
                                   "type": "Unpaid Work",
-                                  "description": "Regular",
+                                  "description": "Regular UPW Hours",
                                   "mainCategory": {
                                     "code": "W",
                                     "description": "Unpaid Work"
                                   },
                                   "subCategory": {
-                                    "code": "UPW",
-                                    "description": "Regular"
+                                    "code": "W01",
+                                    "description": "Regular UPW Hours"
                                   },
                                   "required": 10,
                                   "completed": 6,
@@ -198,6 +199,41 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                         JsonCompareMode.STRICT
                     )
                 }
+            }
+    }
+
+    @Test
+    fun `get sentences apportions regular UPW before additional hours when subtype code is W01`() {
+        mockMvc.get("/person/${PersonData.UPW_REGULAR.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("W01") }
+                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
+                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
+                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+            }
+    }
+
+    @Test
+    fun `get sentences apportions concurrent unpaid work independently of sequential hours`() {
+        mockMvc.get("/person/${PersonData.UPW_CONCURRENT.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("W01") }
+                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
+                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
+                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+                jsonPath("$.sentences[0].requirements[2].subCategory.code") { value("W06") }
+                jsonPath("$.sentences[0].requirements[2].completed") { value(4) }
+            }
+    }
+
+    @Test
+    fun `get sentences fails when unpaid work subtype is null`() {
+        mockMvc.get("/person/${PersonData.UPW_NULL_SUBTYPE.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isBadRequest() }
+                jsonPath("$.message") { value(containsString("Unexpected unpaid work sub-type")) }
             }
     }
 }
