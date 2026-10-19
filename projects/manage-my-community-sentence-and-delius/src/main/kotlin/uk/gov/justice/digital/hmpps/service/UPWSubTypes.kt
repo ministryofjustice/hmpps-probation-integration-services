@@ -11,10 +11,6 @@ enum class UPWSubTypes(val code: String, val description: String, val concurrenc
     HOURS_OUTSTANDING_FROM_PREVIOUS_ORDER("W05", "Z - Hours Outstanding from a Previous Order", false);
 
     companion object {
-        fun fromCode(code: String) = entries.first { it.code.equals(code, ignoreCase = true) }
-
-        fun isConcurrent(code: String) = fromCode(code).concurrency
-
         fun Requirement.upwSubType() =
             requireNotNull(subCategory?.code?.let { code -> entries.find { it.code == code } }) {
                 "Unexpected unpaid work sub-type: ${subCategory?.code}"

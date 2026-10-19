@@ -104,7 +104,7 @@ class SentenceService(
                 it.upwSubType().ordinal
             }.thenBy { it.id })
             .forEach { requirement ->
-                val isConcurrent = UPWSubTypes.isConcurrent(requirement.upwSubType().code)
+                val isConcurrent = requirement.upwSubType().concurrency
                 val remainingHours = if (isConcurrent) concurrentRunningTotal else runningTotal
                 if (remainingHours <= 0) return@forEach
 
