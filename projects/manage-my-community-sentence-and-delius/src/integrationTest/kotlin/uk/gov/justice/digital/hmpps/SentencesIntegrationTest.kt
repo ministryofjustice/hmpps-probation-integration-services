@@ -200,4 +200,42 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                 }
             }
     }
+
+    @Test
+    fun `get sentences apportions regular UPW before additional hours when subtype code is UPW`() {
+        mockMvc.get("/person/${PersonData.UPW_ALIAS.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("UPW") }
+                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
+                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
+                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+            }
+    }
+
+    @Test
+    fun `get sentences apportions concurrent unpaid work independently of sequential hours`() {
+        mockMvc.get("/person/${PersonData.UPW_CONCURRENT.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences[0].requirements[0].subCategory.code") { value("W01") }
+                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
+                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
+                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+                jsonPath("$.sentences[0].requirements[2].subCategory.code") { value("W06") }
+                jsonPath("$.sentences[0].requirements[2].completed") { value(4) }
+            }
+    }
+
+    @Test
+    fun `get sentences treats null unpaid work subtype as regular for apportioning`() {
+        mockMvc.get("/person/${PersonData.UPW_NULL_SUBTYPE.crn}/sentences") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences[0].requirements[0].subCategory") { doesNotExist() }
+                jsonPath("$.sentences[0].requirements[0].completed") { value(10) }
+                jsonPath("$.sentences[0].requirements[1].subCategory.code") { value("W03") }
+                jsonPath("$.sentences[0].requirements[1].completed") { value(2) }
+            }
+    }
 }
