@@ -233,7 +233,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
         mockMvc.get("/person/${PersonData.UPW_NULL_SUBTYPE.crn}/sentences") { withToken() }
             .andExpect {
                 status { isBadRequest() }
-                jsonPath("$.message") { value(containsString("must have a subtype")) }
+                jsonPath("$.message") { value(containsString("Unexpected unpaid work sub-type")) }
             }
     }
 }

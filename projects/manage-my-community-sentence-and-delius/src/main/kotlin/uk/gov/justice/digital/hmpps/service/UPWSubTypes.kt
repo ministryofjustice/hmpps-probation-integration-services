@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import uk.gov.justice.digital.hmpps.entity.sentence.requirement.Requirement
+
 enum class UPWSubTypes(val code: String, val description: String, val concurrency: Boolean) {
     REGULAR("W01", "Regular UPW Hours", false),
     ADDITIONAL("W03", "Additional UPW Hours", false),
@@ -12,5 +14,10 @@ enum class UPWSubTypes(val code: String, val description: String, val concurrenc
         fun fromCode(code: String) = entries.first { it.code.equals(code, ignoreCase = true) }
 
         fun isConcurrent(code: String) = fromCode(code).concurrency
+
+        fun Requirement.upwSubType() =
+            requireNotNull(subCategory?.code?.let { code -> entries.find { it.code == code } }) {
+                "Unexpected unpaid work sub-type: ${subCategory?.code}"
+            }
     }
 }

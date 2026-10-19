@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.repository.UnpaidWorkAppointmentRepository
+import uk.gov.justice.digital.hmpps.service.UPWSubTypes.Companion.upwSubType
 
 @Service
 class SentenceService(
@@ -100,10 +101,10 @@ class SentenceService(
 
         upwRequirements
             .sortedWith(compareBy<Requirement> {
-                UPWSubTypes.fromCode(it.upwSubTypeCode()).ordinal
+                it.upwSubType().ordinal
             }.thenBy { it.id })
             .forEach { requirement ->
-                val isConcurrent = UPWSubTypes.isConcurrent(requirement.upwSubTypeCode())
+                val isConcurrent = UPWSubTypes.isConcurrent(requirement.upwSubType().code)
                 val remainingHours = if (isConcurrent) concurrentRunningTotal else runningTotal
                 if (remainingHours <= 0) return@forEach
 
@@ -121,7 +122,4 @@ class SentenceService(
         return apportionedHours
     }
 
-    private fun Requirement.upwSubTypeCode() = requireNotNull(subCategory?.code) {
-        "UPW requirement $id must have a subtype"
-    }
 }
