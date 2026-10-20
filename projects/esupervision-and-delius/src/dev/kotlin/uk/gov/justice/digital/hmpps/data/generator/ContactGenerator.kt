@@ -50,6 +50,13 @@ object ContactGenerator {
         externalReference = Contact.externalReferencePrefix(SETUP_COMPLETED) + "c3d4e5f6-a7b8-9012-cdef-123456789012"
     )
 
+    val SETUP_CONTACT_FOR_NO_SETUPID_REMOVAL = generateContact(
+        event = EventGenerator.EVENT_3,
+        type = ContactTypeGenerator.CT_ESPCHS,
+        outcome = ContactOutcomeGenerator.COT_ESPC,
+        externalReference = Contact.externalReferencePrefix(SETUP_COMPLETED) + "e5f6a7b8-c9d0-1234-5678-90abcdef1234"
+    )
+
     val ALERT_CONTACT = generateContact(
         alert = true,
         description = "Alert contact for testing",

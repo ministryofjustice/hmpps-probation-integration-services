@@ -83,6 +83,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             ContactGenerator.SETUP_CONTACT_MANUAL_STOP,
             ContactGenerator.SETUP_CONTACT_NO_ACTIVE_EVENTS,
             ContactGenerator.SETUP_CONTACT_IN_RESET,
+            ContactGenerator.SETUP_CONTACT_FOR_NO_SETUPID_REMOVAL,
             ContactGenerator.ALERT_CONTACT,
             ContactAlertGenerator.DEFAULT_ALERT,
             RegistrationGenerator.CONTACT_SUSPENDED_REGISTRATION,

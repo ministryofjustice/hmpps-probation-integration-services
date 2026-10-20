@@ -1225,4 +1225,20 @@ internal class IntegrationTest @Autowired constructor(
         val updatedContact = contactRepository.findAll().single { it.id == manualStopContact.id }
         assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.MANUAL_STOP)
     }
+
+    @Test
+    fun `removeSetup finds contact by eventNumber without setupId`() {
+        // The setup contact already exists in the database via ContactGenerator.SETUP_CONTACT_FOR_NO_SETUPID_REMOVAL
+        val setupContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:e5f6a7b8-c9d0-1234-5678-90abcdef1234"
+        }
+        assertThat(setupContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        // Remove it using a message without setupId (only eventNumber)
+        val removeEvent = prepMessage(MessageGenerator.SETUP_REMOVED_NO_SETUPID_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removeEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == setupContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
+    }
 }
