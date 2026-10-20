@@ -1199,13 +1199,15 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `removeSetup contact not found in non-dev env throws NotFoundException`() {
-        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_A000001.copy(
-            additionalInformation = mapOf(
-                "eventNumber" to "2",
-                "setupId" to "ffffffff-ffff-ffff-ffff-ffffffffffff",
-                "outcomeCode" to "ESPRD"
+        val removedEvent = prepMessage(
+            MessageGenerator.SETUP_REMOVED_A000001.copy(
+                additionalInformation = mapOf(
+                    "eventNumber" to "2",
+                    "setupId" to "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                    "outcomeCode" to "ESPRD"
+                )
             )
-        ))
+        )
 
         assertThatThrownBy { handler.handle(removedEvent) }
             .isInstanceOf(NotFoundException::class.java)
