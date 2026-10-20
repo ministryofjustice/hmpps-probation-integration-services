@@ -15,6 +15,8 @@ object ContactGenerator {
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_REVIEWED) + "8b8a8cf1-a8fe-42c4-879c-095bbed91466")
     val CONTACT_TO_UPDATE =
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_UPDATED) + "a18648f4-46ec-4344-8e8e-ba15c18c3ab9")
+    val CONTACT_TO_UPDATE_WITH_DATETIME =
+        generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_UPDATED) + "d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e")
     val CONTACT_TO_UPDATE_EXPIRY =
         generateContact(externalReference = Contact.externalReferencePrefix(CHECK_IN_EXPIRED) + "b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23")
     val CONTACT_TO_CANCEL =

@@ -74,6 +74,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             LicenceConditionGenerator.YOUTH_ACTIVE_LICENCE_CONDITION,
             ContactGenerator.CONTACT_TO_REVIEW,
             ContactGenerator.CONTACT_TO_UPDATE,
+            ContactGenerator.CONTACT_TO_UPDATE_WITH_DATETIME,
             ContactGenerator.CONTACT_TO_UPDATE_EXPIRY,
             ContactGenerator.CONTACT_TO_CANCEL,
             ContactGenerator.CONTACT_TO_LINK_DELIVERED,

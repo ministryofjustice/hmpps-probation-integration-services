@@ -26,7 +26,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
-import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -235,6 +234,30 @@ internal class IntegrationTest @Autowired constructor(
             """
             |Existing Notes
             |Check-in updated expiry
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision updated with datetime updates contact date and start time`() {
+        val message = MessageGenerator.UPDATED_WITH_DATETIME_A000001.copy(
+            detailUrl = "http://localhost:${wireMockServer.port()}/e-supervision-api/checkin-updated-with-datetime/d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
+        )
+        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
+        }
+
+        assertThat(contact.description).isEqualTo("Online check in updated")
+        assertThat(contact.date).isEqualTo(LocalDate.parse("2025-12-25"))
+        assertThat(contact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-25T14:30:00Z"))
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check in status: Rescheduled
+            |Check-in with datetime
             """.trimMargin()
         )
     }
