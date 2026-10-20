@@ -243,7 +243,8 @@ internal class IntegrationTest @Autowired constructor(
         val message = MessageGenerator.UPDATED_WITH_DATETIME_A000001.copy(
             detailUrl = "http://localhost:${wireMockServer.port()}/e-supervision-api/checkin-updated-with-datetime/d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
         )
-        val notification = Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
