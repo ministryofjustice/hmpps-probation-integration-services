@@ -407,7 +407,7 @@ internal class IntegrationTest @Autowired constructor(
         val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
         assertThat(updatedContact.id).isEqualTo(originalContact.id)
         assertThat(updatedContact.date).isEqualTo(LocalDate.now())
-        assertThat(updatedContact.startTime).isCloseTo(ZonedDateTime.now(),within(5, ChronoUnit.MINUTES) )
+        assertThat(updatedContact.startTime).isCloseTo(ZonedDateTime.now(), within(5, ChronoUnit.MINUTES))
         assertThat(updatedContact.isSensitive).isEqualTo(true)
         assertThat(updatedContact.notes).isEqualTo(
             """
