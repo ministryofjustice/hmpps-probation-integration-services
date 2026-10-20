@@ -1164,9 +1164,9 @@ internal class IntegrationTest @Autowired constructor(
     @Test
     fun `removeSetup finds contact by crn and event number line 116-118`() {
         val setupContact = contactRepository.findAll().find {
-            it.person.crn == PersonGenerator.DEFAULT_PERSON.crn && 
-            it.event?.number == EventGenerator.EVENT_2.number && 
-            it.type.code == ContactType.E_SUPERVISION_SETUP_COMPLETED
+            it.person.crn == PersonGenerator.DEFAULT_PERSON.crn &&
+                it.event?.number == EventGenerator.EVENT_2.number &&
+                it.type.code == ContactType.E_SUPERVISION_SETUP_COMPLETED
         }
         assertThat(setupContact).isNotNull()
         assertThat(setupContact!!.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
