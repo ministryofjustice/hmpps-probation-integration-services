@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.within
-import org.assertj.core.data.TemporalOffset
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -1098,5 +1097,57 @@ internal class IntegrationTest @Autowired constructor(
             withToken()
             json = UpdateContactDetails(mobileNumber = "07999999999", emailAddress = "new@example.com")
         }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `esupervision checkInContact populates manager properties correctly`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
+        assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
+        assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
+        assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
+    }
+
+    @Test
+    fun `esupervision received with detail url populates external reference`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.externalReference).isNotNull()
+        assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
+    }
+
+    @Test
+    fun `esupervision received with detail sensitive flag sets contact sensitive`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000007", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:23531be1-335a-428b-8097-d911bf199ae9"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.isSensitive).isTrue()
+    }
+
+    @Test
+    fun `esupervision updateFromCheckIn preserves sensitive flag via OR logic`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.isSensitive).isTrue()
     }
 }
