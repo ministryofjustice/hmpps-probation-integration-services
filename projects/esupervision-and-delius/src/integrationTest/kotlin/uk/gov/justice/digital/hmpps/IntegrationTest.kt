@@ -1153,22 +1153,35 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `removeSetup external reference lookup line 111`() {
-        val setupContact = contactRepository.findAll().single {
-            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:5b487c04-974d-44ca-b8c2-c95053d82479"
+    fun `updateCheckIn executes detail dateTime let block`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
-        assertThat(setupContact.person.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
-        assertThat(setupContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.date).isNotNull()
+        assertThat(contact.startTime).isNotNull()
     }
 
     @Test
-    fun `removeSetup finds contact by crn and event number line 116-118`() {
-        val setupContact = contactRepository.findAll().find {
-            it.person.crn == PersonGenerator.DEFAULT_PERSON.crn &&
-                it.event?.number == EventGenerator.EVENT_2.number &&
-                it.type.code == ContactType.E_SUPERVISION_SETUP_COMPLETED
+    fun `removeSetup executes findByExternalReference with ESPRS outcome`() {
+        val inResetContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:c3d4e5f6-a7b8-9012-cdef-123456789012"
         }
-        assertThat(setupContact).isNotNull()
-        assertThat(setupContact!!.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_IN_RESET_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removedEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == inResetContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.IN_RESET)
+    }
+
+    @Test
+    fun `removeSetup orIgnore handles missing contact when setupId is absent`() {
+        val setupRemoval = MessageGenerator.SETUP_REMOVED_NULL_EVENT_A000001
+        val notification = prepMessage(setupRemoval)
+        channelManager.getChannel(queueName).publishAndWait(notification)
     }
 }
