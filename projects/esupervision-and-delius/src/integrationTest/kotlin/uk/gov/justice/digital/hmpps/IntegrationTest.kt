@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -1149,5 +1150,25 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(contact).isNotNull()
         assertThat(contact!!.isSensitive).isTrue()
+    }
+
+    @Test
+    fun `removeSetup external reference lookup line 111`() {
+        val setupContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:5b487c04-974d-44ca-b8c2-c95053d82479"
+        }
+        assertThat(setupContact.person.crn).isEqualTo(PersonGenerator.DEFAULT_PERSON.crn)
+        assertThat(setupContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+    }
+
+    @Test
+    fun `removeSetup finds contact by crn and event number line 116-118`() {
+        val setupContact = contactRepository.findAll().find {
+            it.person.crn == PersonGenerator.DEFAULT_PERSON.crn && 
+            it.event?.number == EventGenerator.EVENT_2.number && 
+            it.type.code == ContactType.E_SUPERVISION_SETUP_COMPLETED
+        }
+        assertThat(setupContact).isNotNull()
+        assertThat(setupContact!!.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
     }
 }
