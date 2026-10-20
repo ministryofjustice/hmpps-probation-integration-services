@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.within
+import org.assertj.core.data.TemporalOffset
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -39,6 +41,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -91,7 +94,7 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Check in has not been submitted on time" && it.externalReference == null
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in missed" && it.externalReference == null
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -192,8 +195,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Rescheduled
-            |Lifecycle review notes
+            |Check-in review
             """.trimMargin()
         )
     }
@@ -212,8 +214,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Rescheduled
-            |Lifecycle updated notes
+            |Check-in updated
             """.trimMargin()
         )
     }
@@ -232,8 +233,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Rescheduled
-            |Lifecycle updated expiry notes
+            |Check-in updated expiry
             """.trimMargin()
         )
     }
@@ -328,7 +328,6 @@ internal class IntegrationTest @Autowired constructor(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
             |Lifecycle received notes
-            |Check in status: Rescheduled
             |Lifecycle review notes
             """.trimMargin()
         )
@@ -391,7 +390,6 @@ internal class IntegrationTest @Autowired constructor(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
             |Lifecycle expired notes
-            |Check in status: Rescheduled
             |Lifecycle updated expiry notes
             """.trimMargin()
         )
@@ -408,14 +406,13 @@ internal class IntegrationTest @Autowired constructor(
 
         val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
         assertThat(updatedContact.id).isEqualTo(originalContact.id)
-        assertThat(updatedContact.date).isEqualTo(LocalDate.parse("2025-12-23"))
-        assertThat(updatedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-23T11:45:00Z"))
+        assertThat(updatedContact.date).isEqualTo(LocalDate.now())
+        assertThat(updatedContact.startTime).isCloseTo(ZonedDateTime.now(),within(5, ChronoUnit.MINUTES) )
         assertThat(updatedContact.isSensitive).isEqualTo(true)
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
             |Check in status: Cancelled
-            |Check in status: Rescheduled
             |Check-in cancelled
             """.trimMargin()
         )
@@ -693,7 +690,7 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:93d51990-3b72-4a7b-97cb-92759b04eaeb"
         }
-        assertThat(contact.description).isEqualTo("Check in has not been submitted on time")
+        assertThat(contact.description).isEqualTo("Online check in missed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
