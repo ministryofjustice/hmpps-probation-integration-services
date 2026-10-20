@@ -48,8 +48,6 @@ spec:
                   value: contact-semantic-full-load
                 - name: PIPELINE_WORKERS
                   value: '2'
-                - name: PIPELINE_BUFFER_TYPE
-                  value: direct
                 - name: PIPELINE_ORDERED
                   value: 'false'
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
