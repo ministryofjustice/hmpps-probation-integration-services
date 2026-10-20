@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -1183,5 +1184,43 @@ internal class IntegrationTest @Autowired constructor(
         val setupRemoval = MessageGenerator.SETUP_REMOVED_NULL_EVENT_A000001
         val notification = prepMessage(setupRemoval)
         channelManager.getChannel(queueName).publishAndWait(notification)
+    }
+
+    @Test
+    fun `updateCheckIn dateTime null skips let block`() {
+        val notification = prepEvent("esupervision-updated-expiry-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
+        }
+        assertThat(contact).isNotNull()
+    }
+
+    @Test
+    fun `removeSetup contact not found in non-dev env throws NotFoundException`() {
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_A000001.copy(
+            additionalInformation = mapOf(
+                "eventNumber" to "2",
+                "setupId" to "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                "outcomeCode" to "ESPRD"
+            )
+        ))
+
+        assertThatThrownBy { handler.handle(removedEvent) }
+            .isInstanceOf(NotFoundException::class.java)
+    }
+
+    @Test
+    fun `removeSetup finds contact by eventNumber when setupId null`() {
+        val manualStopContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        }
+
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_MANUAL_STOP_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removedEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == manualStopContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.MANUAL_STOP)
     }
 }
