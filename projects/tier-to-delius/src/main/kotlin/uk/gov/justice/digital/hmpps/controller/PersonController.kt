@@ -23,7 +23,14 @@ class PersonController(private val personRepository: PersonRepository) {
                 surname = it.surname
             ),
             dateOfBirth = it.dateOfBirth,
-            age = YEARS.between(it.dateOfBirth, LocalDate.now())
+            age = YEARS.between(it.dateOfBirth, LocalDate.now()),
+            om = it.managers.firstOrNull()?.staff?.let { staff ->
+                Name(
+                    forename = staff.forename,
+                    middleName = staff.forename2,
+                    surname = staff.surname
+                )
+            }
         )
     }
 }

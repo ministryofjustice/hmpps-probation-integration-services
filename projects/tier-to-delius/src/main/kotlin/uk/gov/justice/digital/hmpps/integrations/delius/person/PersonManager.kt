@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.NumericBooleanConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 
 @Entity
 @Immutable
@@ -12,6 +13,10 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id", nullable = false)
     val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "staff_employee_id", nullable = false)
+    val staff: Staff,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)

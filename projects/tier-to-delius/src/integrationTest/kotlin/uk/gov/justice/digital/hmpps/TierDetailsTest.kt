@@ -69,6 +69,8 @@ class TierDetailsTest @Autowired constructor(
                 jsonPath("$.name.forename") { value("Test") }
                 jsonPath("$.name.surname") { value("Person") }
                 jsonPath("$.age") { value(18) }
+                jsonPath("$.om.forename") { value("Test") }
+                jsonPath("$.om.surname") { value("Staff") }
             }
     }
 
