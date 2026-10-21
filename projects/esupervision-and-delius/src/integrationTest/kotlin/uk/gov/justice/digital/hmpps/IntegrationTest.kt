@@ -645,7 +645,6 @@ internal class IntegrationTest @Autowired constructor(
             "esupervision-cancelled-A000001",
             "esupervision-link-delivered-A000001",
             "esupervision-link-not-delivered-A000001",
-            "esupervision-setup-removed-A000001"
         ]
     )
     fun `incorrect CRN is rejected`(file: String) {
@@ -656,6 +655,15 @@ internal class IntegrationTest @Autowired constructor(
             .hasMessage("Case details mismatch")
     }
 
+    @Test
+    fun `incorrect CRN is rejected on setup removal`() {
+        val notification = prepEvent("esupervision-setup-removed-A000001", wireMockServer.port())
+        notification.message.personReference.identifiers[0].set("value", "A000007")
+        assertThatThrownBy { handler.handle(notification) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("CRN mismatch")
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = [
@@ -663,7 +671,6 @@ internal class IntegrationTest @Autowired constructor(
             "esupervision-cancelled-A000001",
             "esupervision-link-delivered-A000001",
             "esupervision-link-not-delivered-A000001",
-            "esupervision-setup-removed-A000001"
         ]
     )
     fun `incorrect event number is rejected`(file: String) {
