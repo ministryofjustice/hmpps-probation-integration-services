@@ -15,8 +15,8 @@ class PersonManager(
     val id: Long,
 
     @ManyToOne
-    @JoinColumn(name = "staff_employee_id", nullable = false)
-    val staff: Staff,
+    @JoinColumn(name = "allocation_staff_id")
+    val staff: Staff?,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
