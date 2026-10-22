@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
@@ -39,6 +41,7 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.json
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -91,7 +94,7 @@ internal class IntegrationTest @Autowired constructor(
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Check in has not been submitted on time" && it.externalReference == null
+            it.person.id == PersonGenerator.DEFAULT_PERSON.id && it.description == "Online check in missed" && it.externalReference == null
         }
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(notification.message.occurredAt.toLocalDate())
@@ -187,6 +190,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:8b8a8cf1-a8fe-42c4-879c-095bbed91466"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in reviewed")
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
@@ -205,6 +209,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in updated")
         assertThat(contact.isSensitive).isEqualTo(true)
         assertThat(contact.notes).isEqualTo(
             """
@@ -223,11 +228,37 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
         }
 
+        assertThat(contact.description).isEqualTo("Online check in updated")
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
             |Existing Notes
             |Check-in updated expiry
+            """.trimMargin()
+        )
+    }
+
+    @Test
+    fun `esupervision updated with datetime updates contact date and start time`() {
+        val message = MessageGenerator.UPDATED_WITH_DATETIME_A000001.copy(
+            detailUrl = "http://localhost:${wireMockServer.port()}/e-supervision-api/checkin-updated-with-datetime/d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
+        )
+        val notification =
+            Notification(message = message, attributes = MessageAttributes(eventType = message.eventType))
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
+        }
+
+        assertThat(contact.description).isEqualTo("Online check in updated")
+        assertThat(contact.date).isEqualTo(LocalDate.parse("2025-12-25"))
+        assertThat(contact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-25T14:30:00Z"))
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Existing Notes
+            |Check in status: Rescheduled
+            |Check-in with datetime
             """.trimMargin()
         )
     }
@@ -241,7 +272,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:2a1b3c4d-1111-2222-3333-444455556666"
         }
 
-        assertThat(contact.description).isEqualTo("Check in status: Scheduled")
+        assertThat(contact.description).isEqualTo("Online check in scheduled")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.date).isEqualTo(LocalDate.parse("2025-12-20"))
         assertThat(contact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-20T14:15:00Z"))
@@ -317,6 +348,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(reviewedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(reviewedContact.description).isEqualTo("Online check in reviewed")
         assertThat(reviewedContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
@@ -360,7 +392,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(expiredContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
-        assertThat(expiredContact.description).isEqualTo("Check in has not been submitted on time")
+        assertThat(expiredContact.description).isEqualTo("Online check in missed")
         assertThat(expiredContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
@@ -378,6 +410,7 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(updatedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
+        assertThat(updatedContact.description).isEqualTo("Online check in updated")
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
@@ -398,14 +431,13 @@ internal class IntegrationTest @Autowired constructor(
 
         val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
         assertThat(updatedContact.id).isEqualTo(originalContact.id)
-        assertThat(updatedContact.date).isEqualTo(LocalDate.parse("2025-12-23"))
-        assertThat(updatedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-23T11:45:00Z"))
+        assertThat(updatedContact.date).isEqualTo(LocalDate.now())
+        assertThat(updatedContact.startTime).isCloseTo(ZonedDateTime.now(), within(5, ChronoUnit.MINUTES))
         assertThat(updatedContact.isSensitive).isEqualTo(true)
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
             |Check in status: Cancelled
-            |Check in status: Rescheduled
             |Check-in cancelled
             """.trimMargin()
         )
@@ -690,7 +722,7 @@ internal class IntegrationTest @Autowired constructor(
         val contact = contactRepository.findAll().single {
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:93d51990-3b72-4a7b-97cb-92759b04eaeb"
         }
-        assertThat(contact.description).isEqualTo("Check in has not been submitted on time")
+        assertThat(contact.description).isEqualTo("Online check in missed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
         assertThat(contact.event?.id).isEqualTo(EventGenerator.EVENT_2.id)
         assertThat(contact.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
@@ -1098,5 +1130,146 @@ internal class IntegrationTest @Autowired constructor(
             withToken()
             json = UpdateContactDetails(mobileNumber = "07999999999", emailAddress = "new@example.com")
         }.andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `esupervision checkInContact populates manager properties correctly`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.provider.id).isEqualTo(ProviderGenerator.DEFAULT_PROVIDER.id)
+        assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
+        assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
+        assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
+    }
+
+    @Test
+    fun `esupervision received with detail url populates external reference`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.externalReference).isNotNull()
+        assertThat(contact.person.id).isEqualTo(PersonGenerator.DEFAULT_PERSON.id)
+    }
+
+    @Test
+    fun `esupervision received with detail sensitive flag sets contact sensitive`() {
+        val notification = prepEvent("esupervision-received-detail-url-A000007", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:23531be1-335a-428b-8097-d911bf199ae9"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.isSensitive).isTrue()
+    }
+
+    @Test
+    fun `esupervision updateFromCheckIn preserves sensitive flag via OR logic`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.isSensitive).isTrue()
+    }
+
+    @Test
+    fun `updateCheckIn executes detail dateTime let block`() {
+        val notification = prepEvent("esupervision-updated-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
+        }
+        assertThat(contact).isNotNull()
+        assertThat(contact!!.date).isNotNull()
+        assertThat(contact.startTime).isNotNull()
+    }
+
+    @Test
+    fun `removeSetup executes findByExternalReference with ESPRS outcome`() {
+        val inResetContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:c3d4e5f6-a7b8-9012-cdef-123456789012"
+        }
+
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_IN_RESET_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removedEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == inResetContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.IN_RESET)
+    }
+
+    @Test
+    fun `removeSetup orIgnore handles missing contact when setupId is absent`() {
+        val setupRemoval = MessageGenerator.SETUP_REMOVED_NULL_EVENT_A000001
+        val notification = prepMessage(setupRemoval)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+    }
+
+    @Test
+    fun `updateCheckIn dateTime null skips let block`() {
+        val notification = prepEvent("esupervision-updated-expiry-A000001", wireMockServer.port())
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val contact = contactRepository.findAll().find {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
+        }
+        assertThat(contact).isNotNull()
+    }
+
+    @Test
+    fun `removeSetup contact not found in non-dev env throws NotFoundException`() {
+        val removedEvent = prepMessage(
+            MessageGenerator.SETUP_REMOVED_A000001.copy(
+                additionalInformation = mapOf(
+                    "eventNumber" to "2",
+                    "setupId" to "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                    "outcomeCode" to "ESPRD"
+                )
+            )
+        )
+
+        assertThatThrownBy { handler.handle(removedEvent) }
+            .isInstanceOf(NotFoundException::class.java)
+    }
+
+    @Test
+    fun `removeSetup finds contact by eventNumber when setupId null`() {
+        val manualStopContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        }
+
+        val removedEvent = prepMessage(MessageGenerator.SETUP_REMOVED_MANUAL_STOP_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removedEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == manualStopContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.MANUAL_STOP)
+    }
+
+    @Test
+    fun `removeSetup finds contact by eventNumber without setupId`() {
+        // The setup contact already exists in the database via ContactGenerator.SETUP_CONTACT_FOR_NO_SETUPID_REMOVAL
+        val setupContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:e5f6a7b8-c9d0-1234-5678-90abcdef1234"
+        }
+        assertThat(setupContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_COMPLETED)
+
+        // Remove it using a message without setupId (only eventNumber)
+        val removeEvent = prepMessage(MessageGenerator.SETUP_REMOVED_NO_SETUPID_A000001)
+        channelManager.getChannel(queueName).publishAndWait(removeEvent)
+
+        val updatedContact = contactRepository.findAll().single { it.id == setupContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(ContactOutcome.SETUP_REMOVED)
     }
 }

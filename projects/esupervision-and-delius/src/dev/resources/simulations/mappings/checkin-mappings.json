@@ -207,6 +207,19 @@
         "status": 200,
         "body": "{\"checkinUuid\": \"55555555-6666-7777-8888-999999999999\", \"notes\": \"Lifecycle updated expiry notes\", \"sensitive\": false}"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-updated-with-datetime/d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e\", \"notes\": \"Check-in with datetime\", \"sensitive\": false, \"dateTime\": \"2025-12-25T14:30:00Z\"}"
+      }
     }
   ]
 }
