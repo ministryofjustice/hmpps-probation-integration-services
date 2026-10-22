@@ -7,7 +7,7 @@ data class PersonDetails(
     val name: Name,
     val dateOfBirth: LocalDate,
     val age: Long,
-    val om: Name? = null
+    val manager: Name? = null
 )
 
 data class Name(

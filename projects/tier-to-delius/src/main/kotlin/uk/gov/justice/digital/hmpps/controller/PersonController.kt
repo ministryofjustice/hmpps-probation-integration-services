@@ -24,7 +24,7 @@ class PersonController(private val personRepository: PersonRepository) {
             ),
             dateOfBirth = it.dateOfBirth,
             age = YEARS.between(it.dateOfBirth, LocalDate.now()),
-            om = it.managers.firstOrNull { manager -> !manager.softDeleted }?.staff?.let { staff ->
+            manager = it.managers.firstOrNull()?.staff?.let { staff ->
                 Name(
                     forename = staff.forename,
                     middleName = staff.forename2,
