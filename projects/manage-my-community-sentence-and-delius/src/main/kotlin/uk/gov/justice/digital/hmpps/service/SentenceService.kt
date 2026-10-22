@@ -85,6 +85,8 @@ class SentenceService(
                             description = offence.offence.description,
                         )
                     },
+                    eventId = disposal.event.id,
+                    bookingId = disposal.custody?.bookingId
                 )
             }
         )
