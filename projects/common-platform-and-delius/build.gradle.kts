@@ -18,6 +18,7 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("tools.jackson.dataformat:jackson-dataformat-csv")
     implementation("io.awspring.cloud:spring-cloud-aws-starter-s3")
+    implementation("com.amazonaws:amazon-sqs-java-extended-client-lib")
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
