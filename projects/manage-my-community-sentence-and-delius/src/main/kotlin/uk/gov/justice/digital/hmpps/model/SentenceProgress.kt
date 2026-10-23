@@ -16,6 +16,8 @@ data class SentenceProgress(
         val licenceConditions: List<LicenceCondition>,
         val mainOffence: CodeDescription,
         val additionalOffences: List<CodeDescription>,
+        val eventNumber: Int,
+        val bookingId: String? = null,
     )
 
     data class Requirement(

@@ -258,6 +258,7 @@ object TestData {
         val CUSTODY = Custody(
             id = id(),
             disposal = DISPOSAL,
+            bookingId = "38412A",
         )
         val SED_KEY_DATE_TYPE = ReferenceData(id(), "SED", "Sentence Expiry Date")
         val SED_KEY_DATE = KeyDate(
