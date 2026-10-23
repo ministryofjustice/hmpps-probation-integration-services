@@ -85,7 +85,7 @@ class SentenceService(
                             description = offence.offence.description,
                         )
                     },
-                    eventNumber = disposal.event.number,
+                    eventNumber = disposal.event.number.toInt(),
                     bookingId = disposal.custody?.bookingId
                 )
             }
