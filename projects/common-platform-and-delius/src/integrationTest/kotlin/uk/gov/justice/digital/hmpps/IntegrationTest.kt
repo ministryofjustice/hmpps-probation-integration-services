@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -12,102 +11,24 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
-import software.amazon.awssdk.core.ResponseInputStream
-import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.GetObjectRequest
-import software.amazon.awssdk.services.s3.model.GetObjectResponse
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.generate
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.client.CorePersonClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddress
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.service.EventService
-import uk.gov.justice.digital.hmpps.service.PersonService
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class IntegrationTest @Autowired constructor(
     private val referenceDataRepository: ReferenceDataRepository,
-    @Value("\${messaging.consumer.queue}") private val queueName: String,
-    @Value("\${messaging.producer.topic}") private val topicName: String,
+    @Value($$"${messaging.producer.topic}") private val topicName: String,
     private val channelManager: HmppsChannelManager,
-    private val hmppsChannelManager: HmppsChannelManager,
-    private val wireMockServer: WireMockServer
-) {
-
-    @MockitoSpyBean
-    lateinit var telemetryService: TelemetryService
-
-    @MockitoSpyBean
-    lateinit var auditedInteractionService: AuditedInteractionService
-
-    @MockitoSpyBean
-    lateinit var personRepository: PersonRepository
-
-    @MockitoSpyBean
-    lateinit var addressRepository: PersonAddressRepository
-
-    @MockitoSpyBean
-    lateinit var personManagerRepository: PersonManagerRepository
-
-    @MockitoSpyBean
-    lateinit var personService: PersonService
-
-    @MockitoSpyBean
-    private lateinit var featureFlags: FeatureFlags
-
-    @MockitoSpyBean
-    lateinit var eventRepository: EventRepository
-
-    @MockitoSpyBean
-    lateinit var courtAppearanceRepository: CourtAppearanceRepository
-
-    @MockitoSpyBean
-    lateinit var contactRepository: ContactRepository
-
-    @MockitoSpyBean
-    lateinit var courtRepository: CourtRepository
-
-    @MockitoSpyBean
-    lateinit var mainOffenceRepository: MainOffenceRepository
-
-    @MockitoSpyBean
-    lateinit var additionalOffenceRepository: AdditionalOffenceRepository
-
-    @MockitoSpyBean
-    lateinit var orderManagerRepository: OrderManagerRepository
-
-    @MockitoSpyBean
-    lateinit var eventService: EventService
-
-    @MockitoBean
-    lateinit var s3Client: S3Client
-
-    @MockitoSpyBean
-    lateinit var corePersonClient: CorePersonClient
-
-    @BeforeEach
-    fun setup() {
-        doReturn("A111111").whenever(personService).generateCrn()
-        whenever(featureFlags.enabled("common-platform-record-creation-toggle")).thenReturn(true)
-    }
+) : BaseIntegrationTest() {
 
     @Order(2)
     @Test
@@ -224,7 +145,7 @@ internal class IntegrationTest @Autowired constructor(
     @Order(1)
     @Test
     fun `engagement created and address created sns messages are published on insert person`() {
-        mockS3Client()
+        mockOffencePriorityData()
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -249,7 +170,7 @@ internal class IntegrationTest @Autowired constructor(
             assertThat(it.typeVerified, Matchers.equalTo(false))
         })
 
-        val topic = hmppsChannelManager.getChannel(topicName)
+        val topic = channelManager.getChannel(topicName)
         val messages = topic.pollFor(2)
         val messageTypes = messages.mapNotNull { it.eventType }
 
@@ -369,7 +290,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `A hearing message with a remanded offence is received and an event is inserted`() {
-        mockS3Client()
+        mockOffencePriorityData()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -442,7 +363,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Main offence is the offence with the lowest priority when message contains multiple offences`() {
-        mockS3Client()
+        mockOffencePriorityData()
 
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MULTIPLE_OFFENCES)
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -515,7 +436,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Correct data submitted to CPR PUT endpoint`() {
-        mockS3Client()
+        mockOffencePriorityData()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_CPR)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -568,7 +489,7 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `Missing values are excluded from CPR PUT request, not sent as null`() {
-        mockS3Client()
+        mockOffencePriorityData()
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_MINIMAL)
         channelManager.getChannel(queueName).publishAndWait(notification)
 
@@ -601,53 +522,5 @@ internal class IntegrationTest @Autowired constructor(
                     )
                 )
         )
-    }
-
-    private fun thenNoRecordsAreInserted() {
-        verify(orderManagerRepository, never()).save(any())
-        verify(courtAppearanceRepository, never()).save(any())
-        verify(contactRepository, never()).save(any())
-        verify(eventRepository, never()).save(any())
-        verify(mainOffenceRepository, never()).save(any())
-        verify(addressRepository, never()).save(any())
-        verify(personRepository, never()).save(any())
-        verify(personManagerRepository, never()).save(any())
-        verify(auditedInteractionService, Mockito.never())
-            .createAuditedInteraction(any(), any(), eq(AuditedInteraction.Outcome.SUCCESS), any(), anyOrNull())
-    }
-
-    private fun mockS3Client() {
-        val mockCsv = """
-            ho_offence_code,offence_desc,priority,offence_type,max_custodial_sentence
-            00100,Test offence 1,20,Type,30
-            00101,Test offence 2,60,Type,240
-            00102,Test offence 3,30,Type,100
-        """.trimIndent()
-        val inputStream = ByteArrayInputStream(mockCsv.toByteArray())
-        val responseStream = ResponseInputStream(GetObjectResponse.builder().build(), inputStream)
-        val request = GetObjectRequest.builder()
-            .bucket("offence-priority-bucket")
-            .key("offence_priority.csv")
-            .build()
-
-        whenever(s3Client.getObject(request)).thenReturn(responseStream)
-    }
-
-    @AfterEach
-    fun resetWireMock() {
-        wireMockServer.resetAll()
-    }
-
-    @AfterEach
-    fun cleanup() {
-        courtAppearanceRepository.deleteAll()
-        additionalOffenceRepository.deleteAll()
-        mainOffenceRepository.deleteAll()
-        orderManagerRepository.deleteAll()
-        eventRepository.deleteAll()
-        addressRepository.deleteAll()
-        contactRepository.deleteAll()
-        personManagerRepository.deleteAll()
-        personRepository.deleteAll()
     }
 }
