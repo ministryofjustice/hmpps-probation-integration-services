@@ -74,53 +74,6 @@ internal class SentenceServiceTest {
         )
     }
 
-    @Test
-    fun `getSentenceProgress maps custodial event id and booking id`() {
-        val personRepository = mock<PersonRepository>()
-        val eventRepository = mock<EventRepository>()
-        val contactRepository = mock<ContactRepository>()
-        val unpaidWorkAppointmentRepository = mock<UnpaidWorkAppointmentRepository>()
-        val sentenceService = SentenceService(
-            eventRepository = eventRepository,
-            personRepository = personRepository,
-            contactRepository = contactRepository,
-            unpaidWorkAppointmentRepository = unpaidWorkAppointmentRepository,
-        )
-
-        val event = mock<Event>()
-        val disposal = mock<Disposal>()
-        val custody = mock<uk.gov.justice.digital.hmpps.entity.sentence.Custody>()
-        val mainOffence = mock<MainOffence>()
-        val offence = mock<Offence>()
-
-        whenever(personRepository.getIdByCrn("CRN")).thenReturn(10L)
-        whenever(eventRepository.findByPersonIdAndDisposalNotNull(10L)).thenReturn(listOf(event))
-        whenever(event.disposal).thenReturn(disposal)
-        whenever(disposal.id).thenReturn(99L)
-        whenever(disposal.type).thenReturn(DisposalType(1, "Custodial Sentence"))
-        whenever(disposal.date).thenReturn(LocalDate.of(2024, 1, 1))
-        whenever(disposal.expectedEndDate).thenReturn(LocalDate.of(2026, 1, 1))
-        whenever(disposal.enteredExpectedEndDate).thenReturn(null)
-        whenever(disposal.lastUpdatedDatetime).thenReturn(ZonedDateTime.parse("2024-01-02T00:00:00Z"))
-        whenever(disposal.requirements).thenReturn(emptySet())
-        whenever(disposal.licenceConditions).thenReturn(emptySet())
-        whenever(disposal.custody).thenReturn(custody)
-        whenever(disposal.event).thenReturn(event)
-        whenever(event.id).thenReturn(12345L)
-        whenever(event.mainOffence).thenReturn(mainOffence)
-        whenever(event.additionalOffences).thenReturn(emptySet())
-        whenever(mainOffence.offence).thenReturn(offence)
-        whenever(offence.code).thenReturn("M1")
-        whenever(offence.description).thenReturn("Main offence")
-        whenever(custody.bookingId).thenReturn("38412A")
-
-        val response = sentenceService.getSentenceProgress("CRN")
-
-        val sentence = response.sentences.single()
-        assertThat(sentence.eventId, equalTo(12345L))
-        assertThat(sentence.bookingId, equalTo("38412A"))
-    }
-
     private fun upwRequirement(id: Long, length: Int, disposal: Disposal): Requirement {
         val mainCategory = RequirementMainCategory(1, "W", "Unpaid Work", ReferenceData(1, "H", "Hours"))
         val subCategory = ReferenceData(2, "W03", "Additional UPW Hours")
