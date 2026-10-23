@@ -126,6 +126,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "description": "Actual Bodily Harm"
                                 }
                               ],
+                               "disposalTypeCode": 1000008,
                                "eventNumber": 1,
                                "bookingId": "38412A"
                             },
@@ -141,6 +142,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 "description": "Theft"
                               },
                               "additionalOffences": [],
+                              "disposalTypeCode": 1000008,
                               "eventNumber": 2
                             }
                           ]
@@ -195,7 +197,8 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 "description": "Theft"
                               },
                               "additionalOffences": [],
-                              "eventNumber": 1
+                              "eventNumber": 1,
+                              "disposalTypeCode": 1000008
                             }
                           ]
                         }
