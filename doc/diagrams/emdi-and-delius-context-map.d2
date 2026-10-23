@@ -1,0 +1,36 @@
+context-emdi: EMDI Context {
+  entities: Entities {
+    grid-columns: 3
+    session: Session
+    region: Region
+    provider: Provider
+    pdu: PDU
+    lau: LAU
+    team: Team
+    staff: Staff
+  }
+}
+
+context-delius: Delius Context {
+  interface: EMDI\nand Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    provider: Provider
+    pdu: PDU
+    lau: LAU
+    team: Team
+    staff: Staff
+    userTeamMembership: User/Team\nMembership
+  }
+
+  provider -> pdu: contains
+  pdu -> lau: belongs to
+  lau -> team: contains
+  team -> staff: staffed by
+  staff -> userTeamMembership: linked to
+}
+
+context-cp -- context-delius.interface: reads\nreference data\nand team membership
