@@ -49,6 +49,9 @@ internal class SentenceServiceTest {
         whenever(disposal.expectedEndDate).thenReturn(LocalDate.of(2026, 1, 1))
         whenever(disposal.enteredExpectedEndDate).thenReturn(null)
         whenever(disposal.lastUpdatedDatetime).thenReturn(ZonedDateTime.parse("2024-01-02T00:00:00Z"))
+        whenever(disposal.event).thenReturn(event)
+        whenever(event.id).thenReturn(12345L)
+        whenever(event.number).thenReturn("1")
         whenever(disposal.requirements).thenReturn(
             setOf(
                 upwRequirement(1L, 3, disposal),
