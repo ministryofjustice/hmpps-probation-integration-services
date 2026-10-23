@@ -39,6 +39,7 @@ class SentenceService(
                     expectedEndDate = disposal.custody?.sentenceExpiryDate?.date
                         ?: disposal.enteredExpectedEndDate ?: disposal.expectedEndDate,
                     lastUpdatedAt = disposal.lastUpdatedDatetime,
+                    disposalTypeCode = disposal.type.code,
                     requirements = disposal.requirements
                         .sortedBy { it.id }
                         .map { requirement ->
