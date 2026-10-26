@@ -13,7 +13,7 @@ plugins {
     kotlin("jvm") version "2.4.21"
     kotlin("plugin.noarg") version "2.4.21" apply false
     kotlin("plugin.spring") version "2.4.21" apply false
-    id("org.springframework.boot") version "4.1.1" apply false
+    id("org.springframework.boot") version "4.1.2" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.gorylenko.gradle-git-properties") version "4.0.1" apply false
     id("com.google.cloud.tools.jib") apply false
@@ -24,7 +24,7 @@ plugins {
 buildscript {
     repositories { gradlePluginPortal() }
     dependencies {
-        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.12")
+        classpath("uk.gov.justice.hmpps.gradle:hmpps-gradle-spring-boot:11.0.14")
     }
 }
 
