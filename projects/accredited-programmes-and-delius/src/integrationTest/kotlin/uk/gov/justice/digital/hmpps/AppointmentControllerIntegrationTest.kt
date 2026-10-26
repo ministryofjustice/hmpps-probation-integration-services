@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -100,10 +101,11 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
         }.andExpect { status { isBadRequest() } }
     }
 
-    @Test
-    fun `get appointments success`() {
-        val requirementIds = REQUIREMENTS.map { it.id }
-        val licenceConditionIds = LICENCE_CONDITIONS.map { it.id }
+    @ParameterizedTest
+    @CsvSource("true, false", "false, true", "true, true")
+    fun `get appointments success`(includeRequirements: Boolean, includeLicenceConditions: Boolean) {
+        val requirementIds = if (includeRequirements) REQUIREMENTS.map { it.id } else emptyList()
+        val licenceConditionIds = if (includeLicenceConditions) LICENCE_CONDITIONS.map { it.id } else emptyList()
         val fromDate = LocalDate.of(2030, 1, 1)
         val toDate = LocalDate.of(2030, 12, 31)
 
@@ -116,6 +118,12 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
                 toDate = toDate,
             )
         }.andExpect { status { isOk() } }.andReturn().response.contentAsJson<GetAppointmentsResponse>()
+
+        val expectedReferences = (TestData.APPOINTMENTS + TestData.LEGACY_APPOINTMENT)
+            .filter { it.requirement?.id in requirementIds || it.licenceCondition?.id in licenceConditionIds }
+            .map { it.externalReference?.removePrefix(Contact.REFERENCE_PREFIX) }
+        assertThat(response.content.values.flatten().map { it.reference })
+            .containsExactlyInAnyOrderElementsOf(expectedReferences)
 
         val appointments = response.content.getValue("A000001")
         assertThat(appointments).isNotEmpty
