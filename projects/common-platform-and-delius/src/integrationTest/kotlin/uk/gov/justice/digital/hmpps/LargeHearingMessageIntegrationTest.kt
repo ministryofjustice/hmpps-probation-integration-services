@@ -68,7 +68,14 @@ internal class LargeHearingMessageIntegrationTest @Autowired constructor(
                 eq(request),
                 any<AsyncResponseTransformer<GetObjectResponse, ResponseBytes<GetObjectResponse>>>()
             )
-        ).thenReturn(completedFuture(ResponseBytes.fromByteArray(GetObjectResponse.builder().build(), payload.toByteArray(Charsets.UTF_8))))
+        ).thenReturn(
+            completedFuture(
+                ResponseBytes.fromByteArray(
+                    GetObjectResponse.builder().build(),
+                    payload.toByteArray(Charsets.UTF_8)
+                )
+            )
+        )
     }
 
     private fun sendLargeMessage(payload: String) {
