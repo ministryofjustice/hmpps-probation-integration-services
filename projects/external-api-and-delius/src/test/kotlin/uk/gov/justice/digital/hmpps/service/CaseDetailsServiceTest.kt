@@ -22,16 +22,10 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.CourtAppearanceRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.OgrsAssessmentRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonAddressRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.ResponsibleOfficerRepository
-import uk.gov.justice.digital.hmpps.integration.delius.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.integration.delius.entity.*
 import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.model.CourtAppearance
+import uk.gov.justice.digital.hmpps.model.Offence
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -73,6 +67,9 @@ internal class CaseDetailsServiceTest {
 
     @Mock
     lateinit var staffRepository: StaffRepository
+
+    @Mock
+    lateinit var licenceConditionRepository: LicenceConditionRepository
 
     @InjectMocks
     lateinit var caseDetailsService: CaseDetailsService
