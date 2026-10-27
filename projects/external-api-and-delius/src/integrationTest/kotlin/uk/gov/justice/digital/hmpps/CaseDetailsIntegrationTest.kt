@@ -2,16 +2,14 @@ package uk.gov.justice.digital.hmpps
 
 import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.empty
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
@@ -159,6 +157,34 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
             .andReturn().response.contentAsJson<CrnPage>()
 
         assertThat(response.content, containsInAnyOrder(*expectedCrns.toTypedArray()))
+    }
+
+    @Test
+    fun `can retrieve licence conditions`() {
+        mockMvc.get("/case/${PersonGenerator.DEFAULT.crn}/licence-conditions") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.sentences.length()") { value(1) }
+                jsonPath("$.sentences[0].eventNumber") { value(1) }
+                jsonPath("$.sentences[0].licenceConditions.length()") { value(1) }
+                jsonPath("$.sentences[0].licenceConditions[0].mainCategory.code") { value("LC01") }
+                jsonPath("$.sentences[0].licenceConditions[0].mainCategory.description") { value("Licence condition main category") }
+                jsonPath("$.sentences[0].licenceConditions[0].subCategory.code") { value("LCS01") }
+                jsonPath("$.sentences[0].licenceConditions[0].subCategory.description") { value("Licence condition subcategory") }
+                jsonPath("$.sentences[0].licenceConditions[0].createAndVaryALicenceCode") { value("CVL01") }
+                jsonPath("$.sentences[0].licenceConditions[0].createdDate") { value("2026-01-01") }
+                jsonPath("$.sentences[0].licenceConditions[0].updatedDate") { value("2026-01-02") }
+            }
+    }
+
+    @Test
+    fun `returns 404 when case not found checking for licence conditions`() {
+        mockMvc
+            .get("/case/UNKNOWN/licence-conditions") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Person with crn of UNKNOWN not found") }
+            }
     }
 
     private fun getDetailResponse(): CaseDetails {

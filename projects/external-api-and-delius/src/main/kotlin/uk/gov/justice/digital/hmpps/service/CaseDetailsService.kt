@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.integration.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.entity.*
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.model.Court
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
+import uk.gov.justice.digital.hmpps.model.LicenceConditions.LicenceCondition
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.Provider
 import uk.gov.justice.digital.hmpps.model.Team
@@ -30,7 +32,8 @@ class CaseDetailsService(
     private val ogrsAssessmentRepository: OgrsAssessmentRepository,
     private val ldapTemplate: LdapTemplate,
     private val limitedAccess: LimitedAccessService,
-    private val staffRepository: StaffRepository
+    private val staffRepository: StaffRepository,
+    private val licenceConditionRepository: LicenceConditionRepository
 ) {
     fun getAddresses(crn: String): AddressWrapper {
         val addresses = personAddressRepository.findAllByPersonCrn(crn)
@@ -50,6 +53,25 @@ class CaseDetailsService(
     }
 
     fun getLimitedAccessDetail(crn: String): LimitedAccessDetail = personRepository.getByCrn(crn).limitedAccessDetail()
+
+    fun getLicenceConditions(crn: String): LicenceConditions = if (personRepository.existsByCrn(crn)) {
+        licenceConditionRepository.findAllByCrn(crn)
+            .groupBy { checkNotNull(it.disposal.event?.number) }
+            .map { (eventNumber, conditions) ->
+                LicenceConditions.Sentence(
+                    eventNumber = eventNumber.toInt(),
+                    licenceConditions = conditions.map {
+                        LicenceCondition(
+                            createdDate = it.createdDateTime.toLocalDate(),
+                            updatedDate = it.lastUpdatedDateTime.toLocalDate(),
+                            mainCategory = it.mainCategory.run { CodedValue(code, description) },
+                            subCategory = it.subCategory?.run { CodedValue(code, description) },
+                            createAndVaryALicenceCode = it.createAndVaryALicenceMapping?.cvlCode,
+                        )
+                    }
+                )
+            }.let { LicenceConditions(it) }
+    } else throw NotFoundException("Person", "crn", crn)
 
     fun getResponsiblePersons(officerCode: String, pageable: Pageable): Page<String> {
         staffRepository.findByCode(officerCode.trim().uppercase()).orNotFoundBy("officerCode", officerCode)
