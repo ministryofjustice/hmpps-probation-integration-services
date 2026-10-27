@@ -9,6 +9,7 @@ data class LicenceConditions(
         val eventNumber: Int,
         val licenceConditions: List<LicenceCondition>,
     )
+
     data class LicenceCondition(
         val mainCategory: CodedValue,
         val subCategory: CodedValue?,
