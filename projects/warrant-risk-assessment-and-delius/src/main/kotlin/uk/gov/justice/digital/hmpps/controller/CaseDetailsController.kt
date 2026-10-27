@@ -11,14 +11,18 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.advice.ErrorResponse
 import uk.gov.justice.digital.hmpps.model.BasicDetails
 import uk.gov.justice.digital.hmpps.model.DocumentCrn
+import uk.gov.justice.digital.hmpps.model.DocumentIds
 import uk.gov.justice.digital.hmpps.service.BasicDetailsService
+import uk.gov.justice.digital.hmpps.service.DocumentService
 import java.util.*
 
 @RestController
-class BasicDetailsController(private val basicDetailsService: BasicDetailsService) {
-
+@PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
+class CaseDetailsController(
+    private val basicDetailsService: BasicDetailsService,
+    private val documentService: DocumentService
+) {
     @GetMapping("/basic-details/{crn}")
-    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     @Operation(
         summary = "Retrieve basic offender details for the WRA form",
         responses = [
@@ -44,7 +48,12 @@ class BasicDetailsController(private val basicDetailsService: BasicDetailsServic
         basicDetailsService.getBasicDetails(crn)
 
     @GetMapping("/case/{warrantRiskAssessmentId}")
-    @PreAuthorize("hasRole('PROBATION_API__WARRANT_RISK_ASSESSMENT__CASE_DETAIL')")
     fun findCrnForWarrantRiskAssessment(@PathVariable warrantRiskAssessmentId: UUID): DocumentCrn =
         basicDetailsService.crnFor(warrantRiskAssessmentId)
+
+    @GetMapping(value = ["/wra-event-documents/{crn}/{eventNumber}"])
+    fun getDocumentIds(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String
+    ): DocumentIds = documentService.getDocumentIds(crn, eventNumber)
 }

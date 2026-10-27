@@ -156,4 +156,57 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
         mockMvc.get("/case/99999999-9999-9999-9999-999999999999") { withToken() }
             .andExpect { status { isNotFound() } }
     }
+
+    @Test
+    fun `returns document ids`() {
+        mockMvc
+            .get("/wra-event-documents/${PersonGenerator.DEFAULT.crn}/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.wraIdList.size()") { value(1) }
+                jsonPath("$.wraIdList[0]") { value(DocumentGenerator.WRA_ID.toString()) }
+            }
+    }
+
+    @Test
+    fun `returns empty document id list when event has no documents`() {
+        mockMvc
+            .get("/wra-event-documents/${PersonGenerator.DEFAULT.crn}/${EventGenerator.NO_DOCUMENT_EVENT.number}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.wraIdList.size()") { value(0) }
+            }
+    }
+
+    @Test
+    fun `returns document ids for terminated event`() {
+        mockMvc
+            .get("/wra-event-documents/${PersonGenerator.DEFAULT.crn}/${EventGenerator.TERMINATED_EVENT.number}") { withToken() }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.wraIdList.size()") { value(1) }
+                jsonPath("$.wraIdList[0]") { value(DocumentGenerator.TERMINATED_EVENT_DOCUMENT_ID.toString()) }
+            }
+    }
+
+    @Test
+    fun `returns 404 when CRN is not found`() {
+        mockMvc
+            .get("/wra-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Event number 1 with CRN of UNKNOWN not found") }
+            }
+    }
+
+    @Test
+    fun `returns 404 when event number is not found for a valid CRN`() {
+        val person = PersonGenerator.DEFAULT
+        mockMvc
+            .get("/wra-event-documents/${person.crn}/99") { withToken() }
+            .andExpect {
+                status { isNotFound() }
+                jsonPath("$.message") { value("Event number 99 with CRN of A000001 not found") }
+            }
+    }
 }
