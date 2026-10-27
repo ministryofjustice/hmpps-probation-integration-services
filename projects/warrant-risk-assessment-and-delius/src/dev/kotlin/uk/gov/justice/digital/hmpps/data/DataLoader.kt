@@ -29,6 +29,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.DEFAULT)
         save(PersonGenerator.NO_OPTIONAL_FIELDS)
         save(PersonGenerator.HOME_VISIT)
+        save(EventGenerator.DEFAULT_EVENT)
+        save(EventGenerator.NO_DOCUMENT_EVENT)
+        save(EventGenerator.TERMINATED_EVENT)
         save(AddressGenerator.MAIN_STATUS)
         save(AddressGenerator.POSTAL_STATUS)
         save(AddressGenerator.MAIN_ADDRESS)
@@ -64,5 +67,6 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DocumentGenerator.DEFAULT_WRA_FORM)
         save(DocumentGenerator.DELETED_WRA_FORM)
         save(DocumentGenerator.SOFT_DELETED_WRA_FORM)
+        save(DocumentGenerator.TERMINATED_EVENT_DOCUMENT)
     }
 }
