@@ -99,10 +99,10 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.32.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.0"
             )
             library("sentry", "io.sentry:sentry-spring-boot-4:8.61.1")
-            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
