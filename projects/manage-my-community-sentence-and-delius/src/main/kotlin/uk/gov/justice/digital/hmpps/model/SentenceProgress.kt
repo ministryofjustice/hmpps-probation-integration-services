@@ -19,7 +19,7 @@ data class SentenceProgress(
         val eventNumber: Int,
         val bookingId: String? = null,
         val typeCode: String,
-        )
+    )
 
     data class Requirement(
         @Deprecated("Use mainCategory", replaceWith = ReplaceWith("mainCategory.description"))
