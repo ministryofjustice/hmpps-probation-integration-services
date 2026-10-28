@@ -47,7 +47,7 @@ object TestData {
         val DAYS = ReferenceData(id(), "D", "Days")
         val APPOINTMENT_CONTACT_TYPE = ContactType(id(), "COF", "Office Appointment", true)
         val NON_APPOINTMENT_CONTACT_TYPE = ContactType(id(), "CSN", "Case Note", false)
-        val COMMUNITY_ORDER = DisposalType(id(), "Community Order", "NP")
+        val COMMUNITY_ORDER = DisposalType(id(), "307", "Adult Custody < 12m")
         val REQUIREMENT_CATEGORY = RequirementMainCategory(id(), "C", "Court - Accredited Programme", DAYS)
         val REQUIREMENT_SUBCATEGORY = ReferenceData(id(), "BC", "Building Choices")
         val REQUIREMENT_TERMINATION_REASON = ReferenceData(id(), "B", "Normal")

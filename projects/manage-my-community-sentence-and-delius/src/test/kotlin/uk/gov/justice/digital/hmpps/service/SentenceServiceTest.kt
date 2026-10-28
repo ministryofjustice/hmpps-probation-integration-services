@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.TestData
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.sentence.Disposal
 import uk.gov.justice.digital.hmpps.entity.sentence.DisposalType
@@ -44,7 +45,7 @@ internal class SentenceServiceTest {
         whenever(eventRepository.findByPersonIdAndDisposalNotNull(10L)).thenReturn(listOf(event))
         whenever(event.disposal).thenReturn(disposal)
         whenever(disposal.id).thenReturn(99L)
-        whenever(disposal.type).thenReturn(DisposalType(1, "Sentence"))
+        whenever(disposal.type).thenReturn(TestData.ReferenceData.COMMUNITY_ORDER)
         whenever(disposal.date).thenReturn(LocalDate.of(2024, 1, 1))
         whenever(disposal.expectedEndDate).thenReturn(LocalDate.of(2026, 1, 1))
         whenever(disposal.enteredExpectedEndDate).thenReturn(null)
