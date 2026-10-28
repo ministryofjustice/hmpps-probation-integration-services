@@ -127,11 +127,12 @@ class CheckInService(
 
     private fun Contact.updateFromCheckIn(domainEvent: HmppsDomainEvent, detail: CheckInDetail) {
         val checkInDateTime = detail.dateTime
-        date = checkInDateTime?.toLocalDate() ?: domainEvent.occurredAt.toLocalDate()
         startTime = checkInDateTime ?: domainEvent.occurredAt
         description = domainEvent.description()
         notes = listOfNotNull(
+            notes,
             domainEvent.checkInUrl?.let { "Review the online check in using the manage probation check ins service: $it" },
+            "Check in expired: ${domainEvent.occurredAt.toLocalDateTime()}",
             detail.notes
         ).joinToString(System.lineSeparator())
         isSensitive = detail.sensitive || isSensitive == true
@@ -152,7 +153,9 @@ class CheckInService(
             staff = manager.staff,
             description = description(),
             notes = listOfNotNull(
-                checkInUrl?.let { "$notes: $it" },
+                listOfNotNull(
+                notes,
+                checkInUrl?.let { ": $it" }).joinToString(""),
                 detail?.notes
             ).joinToString(System.lineSeparator()),
             isSensitive = detail?.sensitive ?: false,

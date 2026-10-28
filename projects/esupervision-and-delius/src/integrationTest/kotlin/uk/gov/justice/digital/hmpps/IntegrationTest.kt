@@ -163,7 +163,10 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Some notes about the check-in")
+        assertThat(contact.notes).isEqualTo("""
+            |Review the online check in using the manage probation check ins service
+            |Some notes about the check-in
+            """.trimMargin())
     }
 
     @Test
@@ -264,6 +267,42 @@ internal class IntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `esupervision scheduled then received preserves scheduled notes and appends expiry marker`() {
+        val uuid = "44444444-5555-6666-7777-888888888888"
+        val port = wireMockServer.port()
+
+        val scheduledNotification = prepMessage(
+            MessageGenerator.SCHEDULED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-scheduled/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(scheduledNotification)
+
+        val receivedNotification = prepMessage(
+            MessageGenerator.RECEIVED_A000001.copy(
+                detailUrl = "http://localhost:{dev.wiremock.port}/e-supervision-api/checkin-submitted/$uuid"
+            ),
+            port
+        )
+        channelManager.getChannel(queueName).publishAndWait(receivedNotification)
+
+        val contact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:$uuid"
+        }
+
+        assertThat(contact.notes).isEqualTo(
+            """
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled notes
+            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Check in expired: 2025-08-26T09:30
+            |Lifecycle received notes
+            """.trimMargin()
+        )
+    }
+
+    @Test
     fun `esupervision scheduled then received then reviewed updates a single contact`() {
         val uuid = "44444444-5555-6666-7777-888888888888"
         val port = wireMockServer.port()
@@ -298,11 +337,14 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(receivedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
         assertThat(receivedContact.description).isEqualTo("Online check in completed")
-        assertThat(receivedContact.date).isEqualTo(LocalDate.parse("2025-12-21"))
+        assertThat(receivedContact.date).isEqualTo(LocalDate.parse("2025-12-20"))
         assertThat(receivedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-21T09:30:00Z"))
         assertThat(receivedContact.notes).isEqualTo(
             """
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled notes
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Check in expired: 2025-08-26T09:30
             |Lifecycle received notes
             """.trimMargin()
         )
@@ -319,7 +361,10 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
         assertThat(reviewedContact.notes).isEqualTo(
             """
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled notes
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Check in expired: 2025-08-26T09:30
             |Lifecycle received notes
             |Lifecycle review notes
             """.trimMargin()
@@ -363,7 +408,10 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(expiredContact.description).isEqualTo("Check in has not been submitted on time")
         assertThat(expiredContact.notes).isEqualTo(
             """
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled expiry notes
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Check in expired: 2025-08-26T09:30
             |Lifecycle expired notes
             """.trimMargin()
         )
@@ -380,7 +428,10 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
         assertThat(updatedContact.notes).isEqualTo(
             """
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled expiry notes
             |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Check in expired: 2025-08-26T09:30
             |Lifecycle expired notes
             |Lifecycle updated expiry notes
             """.trimMargin()
@@ -690,7 +741,9 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Some notes about the expired check-in")
+        assertThat(contact.notes).isEqualTo("""
+        |Review the online check in using the manage probation check ins service
+            |Some notes about the expired check-in""".trimMargin())
     }
 
     @Test
