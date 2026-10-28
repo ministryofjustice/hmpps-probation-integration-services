@@ -128,7 +128,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               ],
                                 "eventNumber": 1,
                                 "bookingId": "38412A",
-                                "disposalTypeCode": "307"
+                                "typeCode": "307"
                             },
                             {
                               "type": "Adult Custody < 12m",
@@ -143,7 +143,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               },
                               "additionalOffences": [],
                               "eventNumber": 2,
-                              "disposalTypeCode": "307"
+                              "typeCode": "307"
                             }
                           ]
                         }
@@ -198,7 +198,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               },
                               "additionalOffences": [],
                               "eventNumber": 1,
-                              "disposalTypeCode": "307"
+                              "typeCode": "307"
                             }
                           ]
                         }
