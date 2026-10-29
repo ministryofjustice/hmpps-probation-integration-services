@@ -24,6 +24,8 @@ dependencies {
     dev("org.testcontainers:testcontainers-oracle-free")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
+    runtimeOnly("com.amazonaws:amazon-sqs-java-extended-client-lib")
+    runtimeOnly("software.amazon.awssdk:aws-crt-client")
 
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation(libs.bundles.mockito)
