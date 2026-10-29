@@ -26,11 +26,7 @@ context-delius: Delius Context {
     userTeamMembership: User/Team\nMembership
   }
 
-  provider -> pdu: contains
-  pdu -> lau: belongs to
-  lau -> team: contains
-  team -> staff: staffed by
-  staff -> userTeamMembership: linked to
+
 }
 
-context-cp -- context-delius.interface: reads\nreference data\nand team membership
+context-emdi--context-delius.interface: Upstream\n\n\nDownstream

@@ -1,6 +1,6 @@
 # EMDI and Delius
 
-This service enables the [EMDI](https://github.com/ministryofjustice/hmpps-electronic-monitoring-service) service to retrieve reference data and user/team structure from NDelius so it can present the correct organisational context for users and support case workflows.
+This service enables the [EMDI](https://github.com/ministryofjustice/hmpps-electronic-monitoring-data-insights-api/) service to retrieve user/team structure from NDelius so it can present the correct organisational context for users and support case workflows. It creates an event timeline from the locations of a tag attached to a person on probation on certain licence conditions.
 
 ## Business need
 
@@ -46,19 +46,3 @@ API endpoints are protected by roles supplied by the HMPPS Auth client used in t
 | `/regions/**`        | `ROLE_PROBATION_API__EMDI__REFERENCE_DATA`        |
 | `/user/**`           | `ROLE_PROBATION_API__EMDI__REFERENCE_DATA`        |
 
-## How it works
-
-The service sits between EMDI and Delius and exposes a small, controlled set of lookup APIs. It reads data from Delius and returns it as simplified coded values and team data that EMDI can consume without needing direct access to the full Delius domain model.
-
-This keeps the integration focused on:
-- organisational hierarchy lookup
-- user-to-team mapping
-- reliable access to reference data needed by the EMDI application
-
-## Why this matters
-
-Having this data available through a dedicated service allows EMDI to:
-- present accurate regional and team information
-- route users to the correct organisational context
-- reduce duplication and maintenance of reference data in upstream systems
-- keep Delius as the system of record for organisational structure and team membership
