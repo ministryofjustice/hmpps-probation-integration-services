@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.NotFound
-import org.hibernate.annotations.NotFoundAction
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -30,24 +28,6 @@ class LicenceCondition(
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_sub_cat_id")
     val subCategory: ReferenceData? = null,
-
-    @ManyToOne
-    @JoinColumns(
-        JoinColumn(
-            name = "lic_cond_type_main_cat_id",
-            referencedColumnName = "lic_cond_type_main_cat_id",
-            insertable = false,
-            updatable = false,
-        ),
-        JoinColumn(
-            name = "lic_cond_type_sub_cat_id",
-            referencedColumnName = "lic_cond_type_sub_cat_id",
-            insertable = false,
-            updatable = false,
-        )
-    )
-    @NotFound(action = NotFoundAction.IGNORE)
-    val createAndVaryALicenceMapping: CreateAndVaryALicenceMapping? = null,
 
     @Column(name = "created_datetime")
     val createdDateTime: ZonedDateTime = ZonedDateTime.now(),

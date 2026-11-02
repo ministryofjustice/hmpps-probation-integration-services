@@ -58,7 +58,7 @@ class CaseDetailsService(
         licenceConditionRepository.findAllByCrn(crn)
             .groupBy { checkNotNull(it.disposal.event?.number) }
             .map { (eventNumber, conditions) ->
-                LicenceConditions.Sentence(
+                LicenceConditions.LicenceConditionSentence(
                     eventNumber = eventNumber.toInt(),
                     licenceConditions = conditions.map {
                         LicenceCondition(
@@ -66,7 +66,6 @@ class CaseDetailsService(
                             updatedDate = it.lastUpdatedDateTime.toLocalDate(),
                             mainCategory = it.mainCategory.run { CodedValue(code, description) },
                             subCategory = it.subCategory?.run { CodedValue(code, description) },
-                            createAndVaryALicenceCode = it.createAndVaryALicenceMapping?.cvlCode,
                         )
                     }
                 )
