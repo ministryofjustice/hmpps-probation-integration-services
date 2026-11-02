@@ -4,8 +4,10 @@ import com.asyncapi.kotlinasyncapi.annotation.Schema
 import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
+import io.sentry.Sentry
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
@@ -32,8 +34,8 @@ class FIFOHandler(
     private val featureFlags: FeatureFlags,
     private val remandService: RemandService,
     private val offenceService: OffenceService,
-    private val corePerson: CorePersonClient,
-    private val notifier: Notifier
+    private val corePersonClient: CorePersonClient,
+    private val notifier: Notifier,
 ) : NotificationHandler<CommonPlatformHearing> {
 
     @Publish(messages = [Message(title = "COMMON_PLATFORM_HEARING", payload = Schema(CommonPlatformHearing::class))])
@@ -46,7 +48,7 @@ class FIFOHandler(
         }.ifEmpty { return }
 
         defendants.forEach { defendant ->
-            val matchedPersonStatus = corePerson.findMatchStatusByDefendantId(defendant.id)
+            val matchedPersonStatus = corePersonClient.findMatchStatusByDefendantId(defendant.id)
             val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
                 ("defendantId" to defendant.id)
 
@@ -98,103 +100,102 @@ class FIFOHandler(
     }
 
     private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
-        val insertRemandResult = remandService.insertPersonOnRemand(insertRemandDTO)
+        val (personResult, eventResult) = remandService.insertPersonOnRemand(insertRemandDTO)
 
         telemetryService.trackEvent(
             "PersonCreated", mapOf(
                 "hearingId" to insertRemandDTO.hearingId,
                 "defendantId" to insertRemandDTO.defendant.id,
-                "CRN" to insertRemandResult.insertPersonResult.person.crn,
-                "personId" to insertRemandResult.insertPersonResult.person.id.toString(),
-                "personManagerId" to insertRemandResult.insertPersonResult.personManager.id.toString(),
-                "equalityId" to insertRemandResult.insertPersonResult.equality.id.toString(),
-                "addressId" to insertRemandResult.insertPersonResult.address?.id.toString(),
+                "CRN" to personResult.person.crn,
+                "personId" to personResult.person.id.toString(),
+                "personManagerId" to personResult.personManager.id.toString(),
+                "equalityId" to personResult.equality.id.toString(),
+                "addressId" to personResult.address?.id.toString(),
             )
         )
 
         telemetryService.trackEvent(
             "EventCreated", mapOf(
                 "hearingId" to insertRemandDTO.hearingId,
-                "eventId" to insertRemandResult.insertEventResult.event.id.toString(),
-                "eventNumber" to insertRemandResult.insertEventResult.event.number,
-                "CRN" to insertRemandResult.insertEventResult.event.person.crn,
-                "personId" to insertRemandResult.insertEventResult.event.person.id.toString(),
-                "orderManagerId" to insertRemandResult.insertEventResult.orderManager.id.toString(),
-                "mainOffenceId" to insertRemandResult.insertEventResult.mainOffence.id.toString(),
-                "courtAppearanceId" to insertRemandResult.insertEventResult.courtAppearance.id.toString(),
-                "contactId" to insertRemandResult.insertEventResult.contact.id.toString()
+                "eventId" to eventResult.event.id.toString(),
+                "eventNumber" to eventResult.event.number,
+                "CRN" to eventResult.event.person.crn,
+                "personId" to eventResult.event.person.id.toString(),
+                "orderManagerId" to eventResult.orderManager.id.toString(),
+                "mainOffenceId" to eventResult.mainOffence.id.toString(),
+                "courtAppearanceId" to eventResult.courtAppearance.id.toString(),
+                "contactId" to eventResult.contact.id.toString()
             )
         )
 
-        val cprRequest = CreateCorePersonRequest(
-            name = Name(
-                forename = insertRemandResult.insertPersonResult.person.forename,
-                middleName = insertRemandResult.insertPersonResult.person.secondName,
-                surname = insertRemandResult.insertPersonResult.person.surname
-            ),
-            title = null,
-            dateOfBirth = insertRemandResult.insertPersonResult.person.dateOfBirth,
-            gender = CodeValue(code = insertRemandResult.insertPersonResult.person.gender.code),
-            nationality = insertRemandResult.insertPersonResult.person.nationality?.code?.let { CodeValue(it) },
-            secondaryNationality = insertRemandResult.insertPersonResult.person.secondNationality?.code?.let {
-                CodeValue(
-                    it
+        retry(3, delay = Duration.ofSeconds(1)) {
+            corePersonClient.createPersonRecord(insertRemandDTO.defendant.id, personResult.toCorePersonRequest())
+        }.apply {
+            if (statusCode.is2xxSuccessful) {
+                telemetryService.trackEvent(
+                    "CPRRecordCreated", mapOf(
+                        "hearingId" to insertRemandDTO.hearingId,
+                        "defendantId" to insertRemandDTO.defendant.id,
+                        "CRN" to personResult.person.crn
+                    )
                 )
-            },
-            ethnicity = insertRemandResult.insertPersonResult.person.ethnicity?.code?.let { CodeValue(it) },
-            identifiers = NewIdentifiers(
-                crn = insertRemandResult.insertPersonResult.person.crn,
-                pnc = insertRemandResult.insertPersonResult.person.pncNumber,
-                cro = insertRemandResult.insertPersonResult.person.croNumber
-            ),
-            contactDetails = ContactDetails(
-                telephone = insertRemandResult.insertPersonResult.person.telephoneNumber,
-                mobile = insertRemandResult.insertPersonResult.person.mobileNumber,
-                email = insertRemandResult.insertPersonResult.person.email
-            ),
-            addresses = listOf(
-                Address(
-                    fullAddress = listOfNotNull(
-                        insertRemandResult.insertPersonResult.address?.buildingName,
-                        insertRemandResult.insertPersonResult.address?.addressNumber,
-                        insertRemandResult.insertPersonResult.address?.streetName,
-                        insertRemandResult.insertPersonResult.address?.district,
-                        insertRemandResult.insertPersonResult.address?.town,
-                        insertRemandResult.insertPersonResult.address?.county
-                    ).joinToString(", "),
-                    postcode = insertRemandResult.insertPersonResult.address?.postcode,
-                    startDate = LocalDate.now(),
-                    endDate = null,
-                    noFixedAbode = insertRemandResult.insertPersonResult.address?.noFixedAbode ?: false
+            } else {
+                Sentry.setExtra("defendantId", insertRemandDTO.defendant.id)
+                Sentry.setExtra("CRN", personResult.person.crn)
+                Sentry.captureException(RuntimeException("Failed to link core person record"))
+                telemetryService.trackEvent(
+                    "CPRCreateEndpointFailed", mapOf(
+                        "defendantId" to insertRemandDTO.defendant.id,
+                        "CRN" to personResult.person.crn
+                    )
                 )
-            ),
-            sentences = emptyList()
-        )
-
-        val cprResponse = retry(3, delay = Duration.ofSeconds(1)) {
-            corePerson.createPersonRecord(insertRemandDTO.defendant.id, cprRequest)
+            }
         }
 
-        if (cprResponse.statusCode.is2xxSuccessful) {
-            telemetryService.trackEvent(
-                "CPRRecordCreated", mapOf(
-                    "hearingId" to insertRemandDTO.hearingId,
-                    "defendantId" to insertRemandDTO.defendant.id,
-                    "CRN" to insertRemandResult.insertPersonResult.person.crn
-                )
-            )
-        } else {
-            telemetryService.trackEvent(
-                "CPRCreateEndpointFailed", mapOf(
-                    "defendantId" to insertRemandDTO.defendant.id,
-                    "CRN" to insertRemandResult.insertPersonResult.person.crn
-                )
-            )
-        }
-
-        notifier.caseCreated(insertRemandResult.insertPersonResult.person)
-        insertRemandResult.insertPersonResult.address?.let { notifier.addressCreated(it) }
+        notifier.caseCreated(personResult.person)
+        personResult.address?.let { notifier.addressCreated(it) }
     }
+
+    private fun InsertPersonResult.toCorePersonRequest() = CreateCorePersonRequest(
+        name = Name(
+            forename = person.forename,
+            middleName = person.secondName,
+            surname = person.surname
+        ),
+        title = null,
+        dateOfBirth = person.dateOfBirth,
+        gender = CodeValue(person.gender.code),
+        nationality = person.nationality?.code?.let { CodeValue(it) },
+        secondaryNationality = person.secondNationality?.code?.let { CodeValue(it) },
+        ethnicity = person.ethnicity?.code?.let { CodeValue(it) },
+        identifiers = Identifiers(
+            crn = person.crn,
+            pnc = person.pncNumber,
+            cro = person.croNumber
+        ),
+        contactDetails = ContactDetails(
+            telephone = person.telephoneNumber,
+            mobile = person.mobileNumber,
+            email = person.email
+        ),
+        addresses = listOf(
+            Address(
+                fullAddress = listOfNotNull(
+                    address?.buildingName,
+                    address?.addressNumber,
+                    address?.streetName,
+                    address?.district,
+                    address?.town,
+                    address?.county
+                ).joinToString(", "),
+                postcode = address?.postcode,
+                startDate = LocalDate.now(),
+                endDate = null,
+                noFixedAbode = address?.noFixedAbode ?: false
+            )
+        ),
+        sentences = emptyList()
+    )
 
     private val CorePersonRecordStatusResponse.telemetryProperties
         get() = mapOf(
