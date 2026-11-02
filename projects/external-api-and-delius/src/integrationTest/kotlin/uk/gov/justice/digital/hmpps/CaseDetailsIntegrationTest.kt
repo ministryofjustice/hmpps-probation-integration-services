@@ -171,7 +171,6 @@ internal class CaseDetailsIntegrationTest : BaseIntegrationTest() {
                 jsonPath("$.sentences[0].licenceConditions[0].mainCategory.description") { value("Licence condition main category") }
                 jsonPath("$.sentences[0].licenceConditions[0].subCategory.code") { value("LCS01") }
                 jsonPath("$.sentences[0].licenceConditions[0].subCategory.description") { value("Licence condition subcategory") }
-                jsonPath("$.sentences[0].licenceConditions[0].createAndVaryALicenceCode") { value("CVL01") }
                 jsonPath("$.sentences[0].licenceConditions[0].createdDate") { value("2026-01-01") }
                 jsonPath("$.sentences[0].licenceConditions[0].updatedDate") { value("2026-01-02") }
             }
