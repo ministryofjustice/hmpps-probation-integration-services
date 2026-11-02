@@ -34,7 +34,6 @@ class StaffService(
     }
 
     fun getActiveCases(code: String, crns: List<String>, teamCode: String? = null): ActiveCasesResponse {
-        val staff = staffRepository.getWithUserByCode(code)
 
         val filteredCrns = if (teamCode == null) {
             crns
