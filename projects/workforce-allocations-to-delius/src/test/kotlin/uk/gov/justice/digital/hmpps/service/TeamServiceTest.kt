@@ -134,7 +134,7 @@ class TeamServiceTest {
     }
 
     @Test
-    fun `get team active cases`() {
+    fun `get team active cases from caseloads linked to team`() {
         val team = TeamGenerator.ALLOCATION_TEAM
         val activeStaff1 = StaffGenerator.generateStaffWithUser(
             code = "N02ABS1",
@@ -168,18 +168,20 @@ class TeamServiceTest {
         val person2 = PersonGenerator.generate("X222222")
 
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
-        whenever(staffRepository.findActiveStaffInTeam(team.code)).thenReturn(listOf(activeStaff1, activeStaff2))
-        whenever(ldapService.findEmailsForStaffIn(listOf(activeStaff1, activeStaff2))).thenReturn(
-            mapOf(
-                activeStaff1.user!!.username to "joe.bloggs@example.com",
-                activeStaff2.user!!.username to "jane.smith@example.com"
-            )
-        )
-        whenever(caseloadRepository.findAllByStaffCodeIn(listOf(activeStaff1.code, activeStaff2.code))).thenReturn(
+        whenever(caseloadRepository.findAllByTeamCode(team.code)).thenReturn(
             listOf(
                 CaseloadGenerator.generate(person = person1, staff = caseloadStaff1, team = team),
                 CaseloadGenerator.generate(person = person2, staff = caseloadStaff1, team = team),
                 CaseloadGenerator.generate(person = person2, staff = caseloadStaff2, team = team)
+            )
+        )
+        whenever(staffRepository.findStaffWithUserByCodeIn(listOf(activeStaff1.code, activeStaff2.code))).thenReturn(
+            listOf(activeStaff1, activeStaff2)
+        )
+        whenever(ldapService.findEmailsForStaffIn(listOf(activeStaff1, activeStaff2))).thenReturn(
+            mapOf(
+                activeStaff1.user!!.username to "joe.bloggs@example.com",
+                activeStaff2.user!!.username to "jane.smith@example.com"
             )
         )
         whenever(activeCaseService.getCasesByGroup(any())).thenReturn(
@@ -202,48 +204,27 @@ class TeamServiceTest {
         assertThat(response.staff[0].code).isEqualTo(activeStaff1.code)
         assertThat(response.staff[0].email).isEqualTo("joe.bloggs@example.com")
         assertThat(response.staff[0].cases).hasSize(2)
-        assertThat(response.staff[0].cases[0].crn).isEqualTo(person1.crn)
-        assertThat(response.staff[0].cases[0].type).isEqualTo(CaseType.CUSTODY.name)
-        assertThat(response.staff[0].cases[0].initialAllocationDate).isEqualTo(LocalDate.of(2022, 6, 24))
-        assertThat(response.staff[0].cases[1].crn).isEqualTo(person2.crn)
-        assertThat(response.staff[0].cases[1].type).isEqualTo(CaseType.COMMUNITY.name)
         assertThat(response.staff[1].code).isEqualTo(activeStaff2.code)
         assertThat(response.staff[1].cases).hasSize(1)
-        assertThat(response.staff[1].cases[0].crn).isEqualTo(person2.crn)
-        verify(activeCaseService).getCasesByGroup(
-            mapOf(
-                activeStaff1.code to listOf(person1.crn, person2.crn),
-                activeStaff2.code to listOf(person2.crn)
-            )
-        )
+
+        verify(caseloadRepository).findAllByTeamCode(team.code)
+        verify(staffRepository).findStaffWithUserByCodeIn(listOf(activeStaff1.code, activeStaff2.code))
     }
 
     @Test
-    fun `get team active cases with no crns returns empty cases after delegating an empty group map`() {
+    fun `get team active cases with no team caseload rows returns empty staff list`() {
         val team = TeamGenerator.ALLOCATION_TEAM
-        val activeStaff = StaffGenerator.generateStaffWithUser(
-            code = "N02ABS1",
-            forename = "Joe",
-            surname = "Bloggs",
-            teams = listOf(team),
-            user = StaffUserGenerator.generate("joe.bloggs")
-        )
 
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
-        whenever(staffRepository.findActiveStaffInTeam(team.code)).thenReturn(listOf(activeStaff))
-        whenever(ldapService.findEmailsForStaffIn(listOf(activeStaff))).thenReturn(
-            mapOf(activeStaff.user!!.username to "joe.bloggs@example.com")
-        )
-        whenever(caseloadRepository.findAllByStaffCodeIn(listOf(activeStaff.code))).thenReturn(emptyList())
+        whenever(caseloadRepository.findAllByTeamCode(team.code)).thenReturn(emptyList())
 
         val response = teamService.getActiveCases(team.code)
 
         assertThat(response.code).isEqualTo(team.code)
         assertThat(response.description).isEqualTo(team.description)
-        assertThat(response.staff).hasSize(1)
-        assertThat(response.staff[0].code).isEqualTo(activeStaff.code)
-        assertThat(response.staff[0].email).isEqualTo("joe.bloggs@example.com")
-        assertThat(response.staff[0].cases).isEmpty()
-        verify(activeCaseService).getCasesByGroup(emptyMap())
+        assertThat(response.staff).isEmpty()
+
+        verify(caseloadRepository).findAllByTeamCode(team.code)
     }
+
 }

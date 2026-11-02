@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import jakarta.persistence.EntityManager
+import org.hamcrest.CoreMatchers.hasItem
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -75,6 +76,49 @@ class TeamActiveCasesTest @Autowired constructor(
                 jsonPath("$.staff[1].cases[0].crn") { value(personTwo.crn) }
                 jsonPath("$.staff[1].cases[0].type") { value("LICENSE") }
                 jsonPath("$.staff[1].cases[0].initialAllocationDate") { doesNotExist() }
+            }
+    }
+
+    @Test
+    fun `team active cases ignores staff without caseload entries for the team`() {
+        val team = TeamGenerator.ALLOCATION_TEAM
+        val staffOne = StaffGenerator.STAFF_WITH_USER
+        val staffTwo = StaffGenerator.SPO_STAFF
+        val extraTeamStaff = StaffGenerator.generateStaff(
+            code = "N02EXTRA",
+            forename = "Extra",
+            surname = "Staff",
+            teams = listOf(team)
+        )
+        val personOne = PersonGenerator.DEFAULT
+        val personTwo = persistSentenceCase()
+
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personOne.id),
+                staff = staffReference(staffOne.id),
+                team = teamReference(team.id)
+            )
+        )
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personTwo.id),
+                staff = staffReference(staffTwo.id),
+                team = teamReference(team.id)
+            )
+        )
+
+        mockMvc.get("/team/${team.code}/active-cases") {
+            withToken()
+        }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.code") { value(team.code) }
+                jsonPath("$.description") { value(team.description) }
+                jsonPath("$.staff.length()") { value(2) }
+                jsonPath("$.staff[0].code") { value(staffOne.code) }
+                jsonPath("$.staff[1].code") { value(staffTwo.code) }
+                jsonPath("$.staff[*].code") { value(org.hamcrest.Matchers.not(hasItem(extraTeamStaff.code))) }
             }
     }
 

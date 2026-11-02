@@ -33,12 +33,32 @@ class StaffService(
         )
     }
 
-    fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse =
-        getAllActiveCasesForStaff(code, crns)
+    fun getActiveCases(code: String, crns: List<String>, teamCode: String? = null): ActiveCasesResponse {
+        val staff = staffRepository.getWithUserByCode(code)
 
-    fun getActiveCases(code: String): ActiveCasesResponse {
-        val caseload = caseloadRepository.findAllByStaffCode(code).map { it.person.crn }.toSet()
-        return getAllActiveCasesForStaff(code, caseload.toList())
+        val filteredCrns = if (teamCode == null) {
+            crns
+        } else {
+            val teamCaseloadCrns = caseloadRepository
+                .findAllByStaffCodeAndTeamCode(code, teamCode)
+                .map { it.person.crn }
+                .toSet()
+
+            crns.filter { it in teamCaseloadCrns }
+        }
+
+        return getAllActiveCasesForStaff(code, filteredCrns)
+    }
+
+    fun getActiveCases(code: String, teamCode: String? = null): ActiveCasesResponse {
+        val caseload = if (teamCode == null) {
+            caseloadRepository.findAllByStaffCode(code)
+        } else {
+            caseloadRepository.findAllByStaffCodeAndTeamCode(code, teamCode)
+        }
+
+        val crns = caseload.map { it.person.crn }.toSet()
+        return getAllActiveCasesForStaff(code, crns.toList())
     }
 
     fun getAllActiveCasesForStaff(code: String, crns: List<String>): ActiveCasesResponse {
