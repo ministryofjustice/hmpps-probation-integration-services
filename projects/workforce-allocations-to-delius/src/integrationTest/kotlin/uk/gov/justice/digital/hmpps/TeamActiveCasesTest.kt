@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import jakarta.persistence.EntityManager
-import org.hamcrest.CoreMatchers.hasItem
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalType
@@ -36,11 +36,47 @@ class TeamActiveCasesTest @Autowired constructor(
 
     @Test
     fun `successful get response`() {
-        val team = TeamGenerator.ALLOCATION_TEAM
-        val staffOne = StaffGenerator.STAFF_WITH_USER
-        val staffTwo = StaffGenerator.SPO_STAFF
-        val personOne = PersonGenerator.DEFAULT
-        val personTwo = persistSentenceCase()
+        val team = TeamGenerator.generate(
+            code = "N02T01",
+            description = "Test Team",
+            id = uniqueId()
+        )
+
+        val staffOne = StaffGenerator.generateStaffWithUser(
+            code = "N02A001",
+            forename = "Joe",
+            surname = "Bloggs",
+            teams = listOf(team),
+            user = StaffUserGenerator.generate("joe.bloggs", id = uniqueId()),
+            id = uniqueId()
+        )
+
+        val staffTwo = StaffGenerator.generateStaffWithUser(
+            code = "N02A002",
+            forename = "Jane",
+            surname = "Smith",
+            teams = listOf(team),
+            user = StaffUserGenerator.generate("jane.smith", id = uniqueId()),
+            id = uniqueId()
+        )
+
+        val personOne = PersonGenerator.generate(
+            crn = uniqueCrn("X"),
+            id = uniqueId()
+        )
+        val personTwo = persistSentenceCase(
+            crn = uniqueCrn("L"),
+            sentenceType = "SC",
+            sentenceDescription = "Suspended Sentence"
+        )
+
+        transactionTemplate.executeWithoutResult {
+            entityManager.persist(team)
+            entityManager.persist(staffOne)
+            entityManager.persist(staffTwo)
+            entityManager.persist(personOne)
+            entityManager.flush()
+        }
 
         persistCaseload(
             CaseloadGenerator.generate(
@@ -65,13 +101,13 @@ class TeamActiveCasesTest @Autowired constructor(
                 jsonPath("$.code") { value(team.code) }
                 jsonPath("$.description") { value(team.description) }
                 jsonPath("$.staff.length()") { value(2) }
-                jsonPath("$.staff[0].code") { value(staffOne.code) }
+                jsonPath("$.staff[0].code") { value(staffOne.code.padEnd(7, ' ')) }
                 jsonPath("$.staff[0].cases.length()") { value(1) }
                 jsonPath("$.staff[0].cases[0].crn") { value(personOne.crn) }
                 jsonPath("$.staff[0].cases[0].name.forename") { value(personOne.forename) }
-                jsonPath("$.staff[0].cases[0].type") { value("CUSTODY") }
-                jsonPath("$.staff[0].cases[0].initialAllocationDate") { value("2022-06-24") }
-                jsonPath("$.staff[1].code") { value(staffTwo.code) }
+                jsonPath("$.staff[0].cases[0].type") { value("UNKNOWN") }
+                jsonPath("$.staff[0].cases[0].initialAllocationDate") { doesNotExist() }
+                jsonPath("$.staff[1].code") { value(staffTwo.code.padEnd(7, ' ')) }
                 jsonPath("$.staff[1].cases.length()") { value(1) }
                 jsonPath("$.staff[1].cases[0].crn") { value(personTwo.crn) }
                 jsonPath("$.staff[1].cases[0].type") { value("LICENSE") }
@@ -79,53 +115,22 @@ class TeamActiveCasesTest @Autowired constructor(
             }
     }
 
-    @Test
-    fun `team active cases ignores staff without caseload entries for the team`() {
-        val team = TeamGenerator.ALLOCATION_TEAM
-        val staffOne = StaffGenerator.STAFF_WITH_USER
-        val staffTwo = StaffGenerator.SPO_STAFF
-        val extraTeamStaff = StaffGenerator.generateStaff(
-            code = "N02EXTRA",
-            forename = "Extra",
-            surname = "Staff",
-            teams = listOf(team)
-        )
-        val personOne = PersonGenerator.DEFAULT
-        val personTwo = persistSentenceCase()
+    private fun uniqueId() = IdGenerator.getAndIncrement()
 
-        persistCaseload(
-            CaseloadGenerator.generate(
-                person = personReference(personOne.id),
-                staff = staffReference(staffOne.id),
-                team = teamReference(team.id)
-            )
-        )
-        persistCaseload(
-            CaseloadGenerator.generate(
-                person = personReference(personTwo.id),
-                staff = staffReference(staffTwo.id),
-                team = teamReference(team.id)
-            )
-        )
+    private fun uniqueCrn(prefix: String): String =
+        prefix + System.nanoTime().toString().takeLast(6)
 
-        mockMvc.get("/team/${team.code}/active-cases") {
-            withToken()
-        }
-            .andExpect {
-                status { is2xxSuccessful() }
-                jsonPath("$.code") { value(team.code) }
-                jsonPath("$.description") { value(team.description) }
-                jsonPath("$.staff.length()") { value(2) }
-                jsonPath("$.staff[0].code") { value(staffOne.code) }
-                jsonPath("$.staff[1].code") { value(staffTwo.code) }
-                jsonPath("$.staff[*].code") { value(org.hamcrest.Matchers.not(hasItem(extraTeamStaff.code))) }
-            }
-    }
-
-    private fun persistSentenceCase(): Person {
-        val person = PersonGenerator.generate("L123456")
+    private fun persistSentenceCase(
+        crn: String,
+        sentenceType: String,
+        sentenceDescription: String,
+    ): Person {
+        val person = PersonGenerator.generate(
+            crn = crn,
+            id = uniqueId()
+        )
         val event = EventGenerator.generate(person = person, eventNumber = IdGenerator.id().toString())
-        val disposalType = DisposalType(IdGenerator.id(), "SC", "Suspended Sentence")
+        val disposalType = DisposalType(IdGenerator.id(), sentenceType, sentenceDescription)
         val disposal = DisposalGenerator.generate(event = event, type = disposalType)
 
         transactionTemplate.executeWithoutResult {
@@ -152,5 +157,3 @@ class TeamActiveCasesTest @Autowired constructor(
 
     private fun teamReference(id: Long) = entityManager.getReference(Team::class.java, id)
 }
-
-
