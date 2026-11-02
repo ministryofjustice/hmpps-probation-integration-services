@@ -226,5 +226,4 @@ class TeamServiceTest {
 
         verify(caseloadRepository).findAllByTeamCode(team.code)
     }
-
 }
