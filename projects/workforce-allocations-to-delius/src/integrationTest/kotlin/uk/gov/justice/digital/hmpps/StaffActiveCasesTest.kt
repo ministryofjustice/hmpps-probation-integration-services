@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
@@ -237,6 +238,7 @@ class StaffActiveCasesTest @Autowired constructor(
     }
 
     @Test
+    @Transactional
     fun `get response can filter by team code`() {
         val staff = StaffGenerator.generateStaff(
             code = "N02F001",
@@ -283,12 +285,13 @@ class StaffActiveCasesTest @Autowired constructor(
     }
 
     @Test
+    @Transactional
     fun `post response can filter by team code`() {
         val staff = StaffGenerator.DEFAULT
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.generate("X123456")
+        val personInTeamA = PersonGenerator.generate("F100001")
         val personInTeamB = PersonGenerator.generate("X888888")
 
         transactionTemplate.executeWithoutResult {
