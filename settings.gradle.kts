@@ -86,9 +86,9 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.4")
-            library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.2.0")
+            library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.2.1")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.10")
-            library("azure-identity", "com.azure:azure-identity:1.18.7")
+            library("azure-identity", "com.azure:azure-identity:1.19.0")
             library("flipt", "io.flipt:flipt-client-java:1.3.5")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.72.0")
@@ -99,9 +99,9 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.0"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.61.1")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.62.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
