@@ -1,0 +1,32 @@
+context-emdi: EMDI Context {
+  entities: Entities {
+    grid-columns: 3
+    session: Session
+    region: Region
+    provider: Provider
+    pdu: PDU
+    lau: LAU
+    team: Team
+    staff: Staff
+  }
+}
+
+context-delius: Delius Context {
+  interface: EMDI\nand Delius {
+    type: Anti-Corruption\nLayer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    provider: Provider
+    pdu: PDU
+    lau: LAU
+    team: Team
+    staff: Staff
+    userTeamMembership: User/Team\nMembership
+  }
+
+
+}
+
+context-emdi--context-delius.interface: Upstream\n\n\nDownstream
