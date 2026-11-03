@@ -248,7 +248,7 @@ class StaffActiveCasesTest @Autowired constructor(
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.generate("X123456")
+        val personInTeamA = PersonGenerator.generate("F200001")
         val personInTeamB = PersonGenerator.generate("X234567")
 
         transactionTemplate.executeWithoutResult {

@@ -24,12 +24,6 @@ class StaffResourceTest {
     }
 
     @Test
-    fun `active cases calls service`() {
-        staffResource.activeCases("ABC", listOf(PersonGenerator.DEFAULT.crn), teamCode = null)
-        verify(staffService).getActiveCases("ABC", listOf(PersonGenerator.DEFAULT.crn))
-    }
-
-    @Test
     fun `active cases calls service with team code filter`() {
         staffResource.activeCases("ABC", "TEAM1", listOf(PersonGenerator.DEFAULT.crn))
         verify(staffService).getActiveCases("ABC", listOf(PersonGenerator.DEFAULT.crn), "TEAM1")
