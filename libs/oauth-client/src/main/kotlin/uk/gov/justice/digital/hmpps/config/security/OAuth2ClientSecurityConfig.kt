@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
-import org.springframework.boot.security.autoconfigure.web.servlet.ConditionalOnDefaultWebSecurity
+import org.springframework.boot.security.autoconfigure.web.servlet.ConditionalOnDefaultServletWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 
 @Configuration
-@ConditionalOnDefaultWebSecurity
+@ConditionalOnDefaultServletWebSecurity
 class OAuth2ClientSecurityConfig {
     @Bean
     fun authorizedClientManager(

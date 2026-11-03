@@ -13,8 +13,10 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from Contact c
+        left join c.requirement r
+        left join c.licenceCondition lc
         where c.type.code in ('${ContactType.APPOINTMENT}', '${ContactType.IAPS_APPOINTMENT}')
-        and (c.requirement.id in :requirementIds or c.licenceCondition.id in :licenceConditionIds)
+        and (r.id in :requirementIds or lc.id in :licenceConditionIds)
         and (:fromDate is null or c.date >= :fromDate)
         and (:toDate is null or c.date <= :toDate)
         """
@@ -104,4 +106,3 @@ interface ContactTypeRepository : JpaRepository<ContactType, Long> {
 
 fun ContactTypeRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
-

@@ -99,6 +99,7 @@ class AppointmentService(
             it.addNotes(mergeAppointment.notes)
             appointment.outcome = outcomeRepository.getByCode(mergeAppointment.rescheduleOutcome)
             appointment.rarActivity = false
+            appointment.clearEnforcement()
             contactRepository.save(it)
         }
 
@@ -114,11 +115,14 @@ class AppointmentService(
         }
 
         if (outcome.compliantAcceptable == false) {
-            handleNonCompliance(appointment)
+            appointment.handleNonCompliance()
+        } else {
+            appointment.clearEnforcement()
         }
 
         contactRepository.saveAndFlush(appointment)
         nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
+        appointment.updateFtcCount()
         return appointment.id!!
     }
 
@@ -199,31 +203,39 @@ class AppointmentService(
         }
     }
 
-    private fun handleNonCompliance(appointment: Contact) {
+    private fun Contact.handleNonCompliance() {
         val action = enforcementActionRepository.getByCode(EnforcementAction.Code.REFER_TO_PERSON_MANAGER.value)
-        enforcementRepository.findByContactId(appointment.id!!) ?: Enforcement(
-            appointment,
+        enforcementRepository.findByContactId(id!!) ?: Enforcement(
+            this,
             action,
             action.responseByPeriod?.let { now().plusDays(it) }
         ).apply {
             enforcementRepository.save(this)
-            val eac = appointment.createEnforcementActionContact(action)
+            val eac = createEnforcementActionContact(action)
             contactRepository.save(eac)
         }
-        appointment.enforcementActionId = action.id
-        appointment.enforcement = true
+        enforcementActionId = action.id
+        enforcement = true
+    }
 
-        appointment.eventId?.let {
+    private fun Contact.updateFtcCount() {
+        eventId?.let {
             val event = eventRepository.findById(it).orElseThrow { NotFoundException("Event", "id", it) }
             val currentCount = contactRepository.countFailureToComply(
-                it,
+                event.id,
                 listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
             )
             event.ftcCount = currentCount
             if (event.disposal?.type?.overLimit(currentCount) == true && !event.enforcementUnderReview()) {
-                contactRepository.save(appointment.reviewEnforcement())
+                contactRepository.save(reviewEnforcement())
             }
         }
+    }
+
+    private fun Contact.clearEnforcement() {
+        enforcementActionId = null
+        enforcement = null
+        enforcementRepository.findByContactId(checkNotNull(id))?.let(enforcementRepository::delete)
     }
 
     private fun Contact.createEnforcementActionContact(action: EnforcementAction) = Contact(

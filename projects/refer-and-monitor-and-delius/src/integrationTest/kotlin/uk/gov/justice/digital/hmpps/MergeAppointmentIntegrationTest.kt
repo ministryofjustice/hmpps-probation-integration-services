@@ -5,22 +5,25 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
+import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome.Code
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
@@ -36,15 +39,17 @@ import java.util.*
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class MergeAppointmentIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val enforcementRepository: EnforcementRepository,
 ) {
 
     private fun makeRequest(person: Person, referralId: UUID, request: MergeAppointment, result: ResultMatcher) {
-        mockMvc.put("/probation-case/${person.crn}/referrals/$referralId/appointments") {
-            withToken()
-            json = request
-        }
-            .andExpect { result }
+        mockMvc
+            .put("/probation-case/${person.crn}/referrals/$referralId/appointments") {
+                withToken()
+                json = request
+            }
+            .andExpect { match(result) }
     }
 
     @Test
@@ -142,7 +147,7 @@ internal class MergeAppointmentIntegrationTest @Autowired constructor(
 
         val existing =
             contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
-        assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_POP_REQUEST.value))
+        assertThat(existing.outcome?.code, equalTo(Code.RESCHEDULED_POP_REQUEST.value))
         assertFalse(existing.attended!!)
         assertThat(existing.rarActivity, equalTo(false))
 
@@ -208,7 +213,7 @@ internal class MergeAppointmentIntegrationTest @Autowired constructor(
 
         val previousAppt =
             contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
-        assertThat(previousAppt.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
+        assertThat(previousAppt.outcome?.code, equalTo(Code.RESCHEDULED_SERVICE_REQUEST.value))
         assertFalse(previousAppt.attended!!)
         assertThat(previousAppt.rarActivity, equalTo(false))
     }
@@ -276,6 +281,49 @@ internal class MergeAppointmentIntegrationTest @Autowired constructor(
         assertThat(appointment.attended, equalTo(true))
         assertNull(appointment.hoursCredited)
         assertThat(appointment.rarActivity, equalTo(false))
+    }
+
+    @Test
+    fun `acceptable outcomes clear existing enforcement flag`() {
+        val person = PersonGenerator.DEFAULT
+        val nsi = NsiGenerator.WITHDRAWN
+        val referralId = UUID.fromString(nsi.externalReference!!.substringAfterLast(":"))
+        val createAppointment = MergeAppointment(
+            id = UUID.randomUUID(),
+            referralId = referralId,
+            referralReference = "RE1234F",
+            start = ZonedDateTime.now().minusDays(5),
+            durationInMinutes = 30,
+            notes = "Appointment Notes",
+            officeLocationCode = "DEFAULT",
+            countsTowardsRar = true,
+            outcome = Outcome(Attended.NO),
+            sentenceId = nsi.eventId,
+            previousId = null,
+            deliusId = null,
+            rescheduleRequestedBy = null
+        )
+        makeRequest(person, referralId, createAppointment, status().isOk)
+
+        val original = contactRepository.findByPersonCrnAndExternalReference(person.crn, createAppointment.urn)!!
+        assertTrue(original.enforcement!!)
+        assertNotNull(original.enforcementActionId)
+        assertNotNull(enforcementRepository.findByContactId(original.id!!))
+
+        val reschedule = createAppointment.copy(
+            id = UUID.randomUUID(),
+            previousId = createAppointment.id,
+            start = ZonedDateTime.now().plusDays(7),
+            outcome = null,
+            rescheduleRequestedBy = "Person on probation"
+        )
+        makeRequest(person, referralId, reschedule, status().isOk)
+
+        val updated = contactRepository.findById(original.id!!).orElseThrow()
+        assertThat(updated.outcome?.code, equalTo(Code.RESCHEDULED_POP_REQUEST.value))
+        assertNull(updated.enforcement)
+        assertNull(updated.enforcementActionId)
+        assertNull(enforcementRepository.findByContactId(updated.id!!))
     }
 
     @Test

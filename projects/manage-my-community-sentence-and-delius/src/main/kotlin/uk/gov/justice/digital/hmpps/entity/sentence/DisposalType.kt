@@ -13,6 +13,7 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-    val description: String,
-    val sentenceType: String? = null,
+    @Column(name = "disposal_type_code")
+    val code: String,
+    val description: String
 )

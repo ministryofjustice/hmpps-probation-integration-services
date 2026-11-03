@@ -28,6 +28,8 @@ class Contact(
     @Column(name = "contact_date")
     val date: LocalDate,
 
+    val eventId: Long? = null,
+
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,

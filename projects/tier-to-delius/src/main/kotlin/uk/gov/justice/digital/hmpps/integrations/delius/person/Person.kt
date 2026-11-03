@@ -13,7 +13,6 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "offender")
 class Person(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
@@ -51,7 +50,7 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    @SQLRestriction("active_flag = 1")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val managers: MutableList<PersonManager> = mutableListOf(),
 
     @Column(nullable = false, updatable = false)

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.model.CaseDetails
+import uk.gov.justice.digital.hmpps.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.model.LimitedAccessDetail
 import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 
@@ -36,6 +37,9 @@ class CaseDetailsController(
     @GetMapping(value = ["/case/{crn}/access-limitations"])
     fun accessLimitations(@PathVariable crn: String): LimitedAccessDetail =
         caseDetailsService.getLimitedAccessDetail(crn)
+
+    @GetMapping(value = ["/case/{crn}/licence-conditions"])
+    fun licenceConditions(@PathVariable crn: String): LicenceConditions = caseDetailsService.getLicenceConditions(crn)
 
     @GetMapping(value = ["/staff/{officerCode}/managed-cases"])
     @Operation(summary = "Get a list of crns for whom an officer is currently responsible")

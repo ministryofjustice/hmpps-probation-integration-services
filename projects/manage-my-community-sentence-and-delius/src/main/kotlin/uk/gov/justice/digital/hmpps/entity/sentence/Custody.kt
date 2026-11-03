@@ -17,6 +17,9 @@ class Custody(
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal? = null,
 
+    @Column(name = "prisoner_number")
+    val bookingId: String? = null,
+
     @OneToOne(mappedBy = "custody")
     @SQLRestriction("key_date_type_id in (select t.standard_reference_list_id from r_standard_reference_list t where t.code_value = 'SED')")
     val sentenceExpiryDate: KeyDate? = null,

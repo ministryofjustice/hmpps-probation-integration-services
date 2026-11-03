@@ -24,25 +24,17 @@ data class CorePersonRecordStatusResponse(
     val matchStatus: CorePersonRecordMatchStatus
 )
 
-enum class CorePersonRecordMatchStatus() {
+enum class CorePersonRecordMatchStatus {
     MATCH,
     NO_MATCH,
     POSSIBLE_MATCH
 }
 
-data class Identifiers(
-    val crns: List<String> = emptyList(),
-    val prisonNumbers: List<String> = emptyList(),
-    val defendantIds: List<String> = emptyList(),
-    val pncs: List<String> = emptyList(),
-    val cros: List<String> = emptyList(),
-)
-
 data class CreateCorePersonRequest(
     val title: CodeValue?,
     val name: Name,
     val dateOfBirth: LocalDate,
-    val identifiers: NewIdentifiers,
+    val identifiers: Identifiers,
     val contactDetails: ContactDetails,
     val addresses: List<Address>,
     val sentences: List<Sentence>,
@@ -62,7 +54,7 @@ data class Name(
     val surname: String
 )
 
-data class NewIdentifiers(
+data class Identifiers(
     val crn: String? = null,
     val pnc: String? = null,
     val cro: String? = null,

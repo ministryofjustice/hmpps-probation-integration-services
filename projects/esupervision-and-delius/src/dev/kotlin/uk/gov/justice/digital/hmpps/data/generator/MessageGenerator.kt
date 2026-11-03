@@ -11,6 +11,8 @@ object MessageGenerator {
     val RECEIVED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-received-A000001")
     val RECEIVED_A000004 = ResourceLoader.get<HmppsDomainEvent>("esupervision-received-A000004")
     val EXPIRED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-expired-A000001")
+    val UPDATED_WITH_DATETIME_A000001 =
+        ResourceLoader.get<HmppsDomainEvent>("esupervision-updated-with-datetime-A000001")
     val SETUP_COMPLETED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-completed-A000001")
     val SETUP_REMOVED_A000001 = ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-A000001")
     val SETUP_REMOVED_MANUAL_STOP_A000001 =
@@ -21,4 +23,6 @@ object MessageGenerator {
         ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-in-reset-A000001")
     val SETUP_REMOVED_NULL_EVENT_A000001 =
         ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-null-event-A000001")
+    val SETUP_REMOVED_NO_SETUPID_A000001 =
+        ResourceLoader.get<HmppsDomainEvent>("esupervision-setup-removed-no-eventNumber-A000001")
 }

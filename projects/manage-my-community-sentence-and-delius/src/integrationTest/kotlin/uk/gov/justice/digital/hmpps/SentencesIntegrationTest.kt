@@ -44,7 +44,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                         {
                           "sentences": [
                             {
-                              "type": "Community Order",
+                              "type": "Adult Custody < 12m",
                               "startDate": "2024-01-01",
                               "expectedEndDate": "2025-10-01",
                               "lastUpdatedAt": "2026-03-01T12:00:00Z",
@@ -125,10 +125,13 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                   "code": "AB001",
                                   "description": "Actual Bodily Harm"
                                 }
-                              ]
+                              ],
+                                "eventNumber": 1,
+                                "bookingId": "38412A",
+                                "typeCode": "307"
                             },
                             {
-                              "type": "Community Order",
+                              "type": "Adult Custody < 12m",
                               "startDate": "2024-06-01",
                               "expectedEndDate": "2026-06-01",
                               "lastUpdatedAt": "2026-02-01T12:00:00Z",
@@ -138,7 +141,9 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 "code": "TH001",
                                 "description": "Theft"
                               },
-                              "additionalOffences": []
+                              "additionalOffences": [],
+                              "eventNumber": 2,
+                              "typeCode": "307"
                             }
                           ]
                         }
@@ -160,7 +165,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                         {
                           "sentences": [
                             {
-                              "type": "Community Order",
+                              "type": "Adult Custody < 12m",
                               "startDate": "2024-01-01",
                               "expectedEndDate": "2025-01-01",
                               "lastUpdatedAt": "2026-01-01T12:00:00Z",
@@ -191,7 +196,9 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                                 "code": "TH001",
                                 "description": "Theft"
                               },
-                              "additionalOffences": []
+                              "additionalOffences": [],
+                              "eventNumber": 1,
+                              "typeCode": "307"
                             }
                           ]
                         }

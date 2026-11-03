@@ -6,7 +6,8 @@ data class PersonDetails(
     val crn: String,
     val name: Name,
     val dateOfBirth: LocalDate,
-    val age: Long
+    val age: Long,
+    val manager: Name? = null
 )
 
 data class Name(

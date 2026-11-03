@@ -46,11 +46,16 @@ existing Delius values will be updated on receiving an event trigger. The custod
 
 ### Derived key dates:
 
-- Probation Reset Suspension Date (two-thirds of community supervision length)
-- Final Third Start Date (two-thirds of custodial sentence length, working back from sentence expiry date)
-- Electronic Monitoring End Date (7%, or 17% if SDS+, of custodial sentence length from conditional release date)
+- Probation Reset Suspension Date 
+  - two-thirds of community supervision length
+- Final Third Start Date
+  - two-thirds of sentence length, working backwards from sentence expiry date or calculated expected end date
+  - only applies to custodial standard determinate sentences (SDS)
+- Electronic Monitoring End Date
+  - 7% of sentence length from conditional release date
+  - or 17% for serious standard determinate sentences (SDS+)
+  - only applies to custodial SDS or SDS+ sentences
 
-Electronic Monitoring End Date and Final Third Start Date are derived for all eligible active custodial sentences using
-Delius sentence information and the latest key dates, including changes received in the same update. These calculations
-continue when the prison booking is inactive or its reference is missing or duplicated in Delius. Other key dates still
-require an active booking with a unique matching custody record.
+Electronic Monitoring End Date and Final Third Start Date are derived for all active custodial standard determinate 
+sentences using Delius sentence information and the latest key dates. Other key dates still require an active prison 
+booking with a unique matching custody record.
