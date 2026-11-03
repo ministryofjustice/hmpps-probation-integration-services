@@ -2,6 +2,7 @@
 generic-service:
   productId: HMPPS518
   nameOverride: single-accommodation-and-delius
+  serviceAccountName: single-accommodation-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/single-accommodation-and-delius
@@ -12,12 +13,16 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
+    single-accommodation-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
     single-accommodation-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     single-accommodation-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
+    single-accommodation-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: single-accommodation-and-delius
-

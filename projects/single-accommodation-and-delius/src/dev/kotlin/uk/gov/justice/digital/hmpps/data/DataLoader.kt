@@ -10,6 +10,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
+        save(ContactTypeGenerator.DUTY_TO_REFER_CREATED)
+        save(ContactTypeGenerator.DUTY_TO_REFER_UPDATED)
         save(ReferenceDataGenerator.GENDER_MALE)
         save(ReferenceDataGenerator.EXP_RELEASE_DATE_TYPE)
         save(ProviderGenerator.DEFAULT)
