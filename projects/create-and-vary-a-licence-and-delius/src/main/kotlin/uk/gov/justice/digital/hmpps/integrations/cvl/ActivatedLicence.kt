@@ -11,20 +11,23 @@ data class ActivatedLicence(
 )
 
 interface Describable {
-    val description: String
+    val text: String?
+    val description: String?
+    val descriptionOrText: String
+        get() = checkNotNull(description ?: text)
 }
 
 data class StandardLicenceCondition(
     val code: String,
-    @JsonAlias("text")
-    override val description: String,
+    override val text: String?,
+    override val description: String?,
 ) : Describable
 
 data class AdditionalLicenceCondition(
     val type: String,
     val code: String,
-    @JsonAlias("text")
-    override val description: String,
+    override val text: String?,
+    override val description: String?,
     val restrictions: List<Restriction>?
 ) : Describable {
     enum class Restriction(val modifier: String) {
@@ -39,8 +42,8 @@ data class AdditionalLicenceCondition(
 }
 
 data class BespokeLicenceCondition(
-    @JsonAlias("text")
-    override val description: String
+    override val text: String?,
+    override val description: String?,
 ) : Describable
 
 data class Conditions(

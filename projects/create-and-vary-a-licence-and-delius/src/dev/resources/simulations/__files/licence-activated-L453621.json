@@ -38,7 +38,8 @@
       ],
       "bespoke": [
         {
-          "text": "First Bespoke Condition"
+          "text": "First Bespoke Condition",
+          "description": null
         },
         {
           "text": "Second Bespoke Condition"
