@@ -381,7 +381,10 @@ internal class IntegrationTest @Autowired constructor(
             assertThat(it.referralDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
             assertTrue(it.active)
             assertThat(it.number, Matchers.equalTo("1"))
-            assertThat(it.notes, Matchers.equalTo("This case record was initially created using information from HMCTS Common Platform. Please check and update Offence information"))
+            assertThat(
+                it.notes,
+                Matchers.equalTo("This case record was initially created using information from HMCTS Common Platform. Please check and update Offence information")
+            )
         })
         verify(mainOffenceRepository).save(check<MainOffence> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
