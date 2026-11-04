@@ -4,6 +4,9 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -42,17 +45,18 @@ class DutyToReferIntegrationTest @Autowired constructor(
     @Test
     fun `creates duty to refer created contact`() {
         val event = prepEvent("duty-to-refer-created", wireMockServer.port())
+        val messageId = event.message.additionalInformation.getValue("messageId") as String
         channelManager.getChannel(queueName).publishAndWait(event)
 
         val contact = contactRepository.findAll().single { it.type.code == ContactType.DUTY_TO_REFER_CREATED }
-        assertContact(contact, ContactType.DUTY_TO_REFER_CREATED, event.message.occurredAt)
+        assertContact(contact, ContactType.DUTY_TO_REFER_CREATED, event.message.occurredAt, messageId)
         verify(telemetryService).trackEvent(
             "DutyToReferContactCreated",
             mapOf(
                 "crn" to details.crn,
+                "messageId" to messageId,
                 "contactId" to contact.id.toString(),
                 "contactType" to ContactType.DUTY_TO_REFER_CREATED,
-                "externalReference" to "urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:bb201dac-a8af-4ee0-a39f-0c62839e28f0",
             )
         )
     }
@@ -60,19 +64,35 @@ class DutyToReferIntegrationTest @Autowired constructor(
     @Test
     fun `creates duty to refer updated contact`() {
         val event = prepEvent("duty-to-refer-updated", wireMockServer.port())
+        val messageId = event.message.additionalInformation.getValue("messageId") as String
         channelManager.getChannel(queueName).publishAndWait(event)
 
         val contact = contactRepository.findAll().single { it.type.code == ContactType.DUTY_TO_REFER_UPDATED }
-        assertContact(contact, ContactType.DUTY_TO_REFER_UPDATED, event.message.occurredAt)
+        assertContact(contact, ContactType.DUTY_TO_REFER_UPDATED, event.message.occurredAt, messageId)
         verify(telemetryService).trackEvent(
             "DutyToReferContactCreated",
             mapOf(
                 "crn" to details.crn,
+                "messageId" to messageId,
                 "contactId" to contact.id.toString(),
                 "contactType" to ContactType.DUTY_TO_REFER_UPDATED,
-                "externalReference" to "urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:bb201dac-a8af-4ee0-a39f-0c62839e28f0",
             )
         )
+    }
+
+    @Test
+    fun `missing message ID is rejected`() {
+        val count = contactRepository.count()
+        val event = prepEvent("duty-to-refer-created", wireMockServer.port()).run {
+            copy(message = message.copy(additionalInformation = message.additionalInformation - "messageId"))
+        }
+
+        assertThatThrownBy { handler.handle(event) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Missing messageId")
+
+        assertThat(contactRepository.count()).isEqualTo(count)
+        verify(telemetryService, never()).trackEvent(eq("DutyToReferContactCreated"), any(), any())
     }
 
     @Test
@@ -99,19 +119,33 @@ class DutyToReferIntegrationTest @Autowired constructor(
 
     @Test
     fun `missing CRN throws not found`() {
-        assertThatThrownBy { contactService.createContact(details.copy(crn = "X999999"), ZonedDateTime.now(), "EADR") }
-            .isInstanceOf(NotFoundException::class.java)
-            .hasMessage("Person with crn of X999999 not found")
+        assertThatThrownBy {
+            contactService.createContact(
+                crn = "X999999",
+                typeCode = ContactType.DUTY_TO_REFER_CREATED,
+                occurredAt = ZonedDateTime.now(),
+                notes = "For more details, click here: ${details.viewUrl}",
+                externalReference = "urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:cd75e6b7-4ab8-4ed0-9c2f-24bdf2079293",
+            )
+        }.isInstanceOf(NotFoundException::class.java)
+            .hasMessage("Person with CRN of X999999 not found")
     }
 
     @Test
     fun `missing contact types throws not found`() {
-        assertThatThrownBy { contactService.createContact(details, ZonedDateTime.now(), "UNKNOWN") }
-            .isInstanceOf(NotFoundException::class.java)
+        assertThatThrownBy {
+            contactService.createContact(
+                crn = details.crn,
+                typeCode = "UNKNOWN",
+                occurredAt = ZonedDateTime.now(),
+                notes = "For more details, click here: ${details.viewUrl}",
+                externalReference = "urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:cd75e6b7-4ab8-4ed0-9c2f-24bdf2079293",
+            )
+        }.isInstanceOf(NotFoundException::class.java)
             .hasMessage("ContactType with code of UNKNOWN not found")
     }
 
-    private fun assertContact(contact: Contact, typeCode: String, occurredAt: ZonedDateTime) {
+    private fun assertContact(contact: Contact, typeCode: String, occurredAt: ZonedDateTime, messageId: String) {
         val person = PersonGenerator.DEFAULT
         assertThat(contact.id).isPositive()
         assertThat(contact.person.id).isEqualTo(person.id)
@@ -123,7 +157,7 @@ class DutyToReferIntegrationTest @Autowired constructor(
         assertThat(contact.providerId).isEqualTo(person.manager.probationAreaId)
         assertThat(contact.notes).isEqualTo("For more details, click here: ${details.viewUrl}")
         assertThat(contact.externalReference)
-            .isEqualTo("urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:${details.id}")
+            .isEqualTo("urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:$messageId")
         assertThat(contact.createdByUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
         assertThat(contact.lastUpdatedUserId).isEqualTo(UserGenerator.AUDIT_USER.id)
     }
