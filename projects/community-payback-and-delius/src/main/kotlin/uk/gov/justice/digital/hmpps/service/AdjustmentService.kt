@@ -88,7 +88,8 @@ class AdjustmentService(
         existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
         adjustmentRepository.save(existingAdjustment)
         adjustmentRepository.flush()
-        val refreshedDetails = unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
+        val refreshedDetails =
+            unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
         communityPaybackAppointmentsService.updateStatus(refreshedDetails)
     }
 
@@ -96,7 +97,8 @@ class AdjustmentService(
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         adjustmentRepository.delete(existingAdjustment)
         adjustmentRepository.flush()
-        val refreshedDetails = unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
+        val refreshedDetails =
+            unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
         communityPaybackAppointmentsService.updateStatus(refreshedDetails)
     }
 
