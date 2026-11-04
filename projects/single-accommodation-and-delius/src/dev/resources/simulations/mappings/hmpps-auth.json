@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/auth/oauth/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "access_token": "token",
+      "token_type": "bearer",
+      "expires_in": 9999999999,
+      "scope": "read write"
+    }
+  }
+}
