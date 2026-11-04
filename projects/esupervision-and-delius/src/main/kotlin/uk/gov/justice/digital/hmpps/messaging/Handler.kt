@@ -65,17 +65,17 @@ class Handler(
                 }
 
                 CHECK_IN_CANCELLED -> {
-                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Cancelled")
+                    checkInService.checkInUpdateNotes(notification.message)
                     telemetryService.trackEvent("CheckInCancelled", notification.telemetry())
                 }
 
                 CHECK_IN_LINK_DELIVERED -> {
-                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Link delivered")
+                    checkInService.checkInUpdateNotes(notification.message)
                     telemetryService.trackEvent("CheckInLinkDelivered", notification.telemetry())
                 }
 
                 CHECK_IN_LINK_NOT_DELIVERED -> {
-                    checkInService.checkInUpdateNotes(notification.message, "Check in status: Link not delivered")
+                    checkInService.checkInUpdateNotes(notification.message)
                     telemetryService.trackEvent("CheckInLinkNotDelivered", notification.telemetry())
                 }
 
@@ -129,7 +129,7 @@ fun HmppsDomainEvent.description() = when (eventType) {
     CHECK_IN_RECEIVED -> "Online check in completed"
     CHECK_IN_EXPIRED -> "Online check in missed"
     CHECK_IN_REVIEWED -> "Online check in reviewed"
-    CHECK_IN_UPDATED -> "Online check in updated"
+    CHECK_IN_UPDATED -> "Online check in scheduled"
     else -> throw IllegalArgumentException("Unexpected event type: $eventType")
 }
 
