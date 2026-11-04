@@ -171,7 +171,8 @@ internal class IntegrationTest @Autowired constructor(
               |Some notes about the check-in
               |Some notes about the check-in
               |Some notes about the check-in
-            """.trimMargin())
+            """.trimMargin()
+        )
     }
 
     @Test
