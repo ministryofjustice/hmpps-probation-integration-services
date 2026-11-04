@@ -12,8 +12,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import software.amazon.awssdk.core.ResponseInputStream
@@ -381,6 +381,7 @@ internal class IntegrationTest @Autowired constructor(
             assertThat(it.referralDate, Matchers.equalTo(LocalDate.of(2024, 1, 1)))
             assertTrue(it.active)
             assertThat(it.number, Matchers.equalTo("1"))
+            assertThat(it.notes, Matchers.equalTo("This case record was initially created using information from HMCTS Common Platform. Please check and update Offence information"))
         })
         verify(mainOffenceRepository).save(check<MainOffence> {
             assertThat(it.person.forename, Matchers.equalTo("Example First Name"))
