@@ -47,7 +47,8 @@ class EventService(
                     person = person,
                     number = eventRepository.getNextEventNumber(person.id!!),
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
-                    courtCaseUrn = caseUrn
+                    courtCaseUrn = caseUrn,
+                    notes = "This case record was initially created using information from HMCTS Common Platform. Please check and update Offence information"
                 )
             )
 
