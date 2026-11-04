@@ -166,7 +166,12 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo("Some notes about the check-in")
+        assertThat(contact.notes).isEqualTo(
+            """
+              |Some notes about the check-in
+              |Some notes about the check-in
+              |Some notes about the check-in
+            """.trimMargin())
     }
 
     @Test
@@ -209,7 +214,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:a18648f4-46ec-4344-8e8e-ba15c18c3ab9"
         }
 
-        assertThat(contact.description).isEqualTo("Online check in updated")
+        assertThat(contact.description).isEqualTo("Online check in scheduled")
         assertThat(contact.isSensitive).isEqualTo(true)
         assertThat(contact.notes).isEqualTo(
             """
@@ -228,7 +233,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:b5a4d4c6-15c5-4f54-8ec2-f7f38c6f8b23"
         }
 
-        assertThat(contact.description).isEqualTo("Online check in updated")
+        assertThat(contact.description).isEqualTo("Online check in scheduled")
         assertThat(contact.isSensitive).isEqualTo(false)
         assertThat(contact.notes).isEqualTo(
             """
@@ -251,7 +256,7 @@ internal class IntegrationTest @Autowired constructor(
             it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e"
         }
 
-        assertThat(contact.description).isEqualTo("Online check in updated")
+        assertThat(contact.description).isEqualTo("Online check in scheduled")
         assertThat(contact.date).isEqualTo(LocalDate.parse("2025-12-25"))
         assertThat(contact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-25T14:30:00Z"))
         assertThat(contact.notes).isEqualTo(
@@ -333,7 +338,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(receivedContact.startTime).isEqualTo(ZonedDateTime.parse("2025-12-21T09:30:00Z"))
         assertThat(receivedContact.notes).isEqualTo(
             """
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled notes
             |Lifecycle received notes
             """.trimMargin()
         )
@@ -351,7 +357,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(reviewedContact.description).isEqualTo("Online check in reviewed")
         assertThat(reviewedContact.notes).isEqualTo(
             """
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/received
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled notes
             |Lifecycle received notes
             |Lifecycle review notes
             """.trimMargin()
@@ -395,7 +402,8 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(expiredContact.description).isEqualTo("Online check in missed")
         assertThat(expiredContact.notes).isEqualTo(
             """
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled expiry notes
             |Lifecycle expired notes
             """.trimMargin()
         )
@@ -410,10 +418,11 @@ internal class IntegrationTest @Autowired constructor(
         }
         assertThat(updatedContact.id).isEqualTo(scheduledContact.id)
         assertThat(contactRepository.findAll().count { it.externalReference in externalReferences }).isEqualTo(1)
-        assertThat(updatedContact.description).isEqualTo("Online check in updated")
+        assertThat(updatedContact.description).isEqualTo("Online check in scheduled")
         assertThat(updatedContact.notes).isEqualTo(
             """
-            |Review the online check in using the manage probation check ins service: https://esupervision/check-in/expired
+            |Check in status: Scheduled: https://esupervision/check-in/scheduled
+            |Lifecycle scheduled expiry notes
             |Lifecycle expired notes
             |Lifecycle updated expiry notes
             """.trimMargin()
@@ -437,7 +446,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Cancelled
             |Check-in cancelled
             """.trimMargin()
         )
@@ -468,7 +476,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Link delivered
             |Check-in link delivered
             """.trimMargin()
         )
@@ -500,7 +507,6 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(updatedContact.notes).isEqualTo(
             """
             |Existing Notes
-            |Check in status: Link not delivered
             |Check-in link not delivered
             """.trimMargin()
         )
