@@ -113,13 +113,13 @@ class LicenceConditionApplier(
             }
         ) {
             licenceConditionService.createLicenceCondition(
-                sentencedCase.sentence,
-                startDate!!,
-                category,
-                subCategory,
-                STANDARD_PREFIX,
-                described.joinToString(System.lineSeparator()) { it.description },
-                sentencedCase.com
+                disposal = sentencedCase.sentence,
+                startDate = startDate!!,
+                category = category,
+                subCategory = subCategory,
+                prefix = STANDARD_PREFIX,
+                cvlText = described.joinToString(System.lineSeparator()) { it.descriptionOrText },
+                com = sentencedCase.com
             )
             ActionResult.Success(
                 ActionResult.Type.StandardLicenceConditionAdded,
@@ -176,13 +176,13 @@ class LicenceConditionApplier(
             val subCategory = referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE)
             if (sentencedCase.licenceConditions.none { it.mainCategory.code == category.code && it.subCategory.code == subCategory.code }) {
                 licenceConditionService.createLicenceCondition(
-                    sentencedCase.sentence,
-                    startDate!!,
-                    category,
-                    subCategory,
-                    CONDITION_PREFIX,
-                    condition.description,
-                    sentencedCase.com
+                    disposal = sentencedCase.sentence,
+                    startDate = startDate!!,
+                    category = category,
+                    subCategory = subCategory,
+                    prefix = CONDITION_PREFIX,
+                    cvlText = condition.descriptionOrText,
+                    com = sentencedCase.com
                 )
             } else {
                 null
