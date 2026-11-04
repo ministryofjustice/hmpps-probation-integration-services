@@ -220,8 +220,11 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `updating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_7
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
+        val beingWorkedEvent = UPWGenerator.EVENT_6
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
+
+        entityManager.createNativeQuery("DELETE FROM upw_adjustment").executeUpdate()
+        entityManager.flush()
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
@@ -240,7 +243,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         }.andExpect { status { isOk() } }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
 
-        val statusUpdateStarted = ZonedDateTime.now()
         mockMvc.put("/adjustments/$reference?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
             json = UpdateAdjustmentRequest(
@@ -249,7 +251,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 date = LocalDate.now(),
                 reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
                 type = AdjustmentType.NEGATIVE,
-                minutes = 3600,
+                minutes = 60,
             )
         }.andExpect { status { isOk() } }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
@@ -261,8 +263,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val positiveReference = UUID.randomUUID()
         val negativeReference = UUID.randomUUID()
         val beingWorkedEvent = UPWGenerator.EVENT_7
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
-        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        val upwDetailsId = UPWGenerator.UPW_DETAILS_7.id
+        entityManager.createNativeQuery("DELETE FROM upw_adjustment").executeUpdate()
+        entityManager.flush()
+        assertThat(upwDetailsRepository.findByIdOrNull(upwDetailsId)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
@@ -287,10 +291,10 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 )
             )
         }.andExpect { status { isOk() } }
-        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        assertThat(upwDetailsRepository.findByIdOrNull(upwDetailsId)?.status?.code).isEqualTo("WK")
 
         mockMvc.delete("/adjustments/$positiveReference") { withToken() }.andExpect { status { isOk() } }
-        val details = upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)
+        val details = upwDetailsRepository.findByIdOrNull(upwDetailsId)
         assertThat(details?.status?.code).isEqualTo("HC")
         assertThat(details?.statusDate).isCloseTo(ZonedDateTime.now(), within(1, SECONDS))
     }
@@ -468,6 +472,62 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             jsonPath("$.content.length()").value(2)
             jsonPath("$.content[0].reference").value(expectedReferences[0])
             jsonPath("$.content[1].reference").value(expectedReferences[1])
+        }
+    }
+
+    @Test
+    fun `set adjustment external reference updates the URN when absent`() {
+        val adjustment = UPWGenerator.generateUPWAdjustment(
+            upwDetails = UPWGenerator.UPW_DETAILS_7,
+            adjustmentAmount = 30,
+            adjustmentType = AdjustmentType.POSITIVE.code,
+            adjustmentReason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER,
+            reference = UUID.randomUUID(),
+        )
+        val saved = adjustmentRepository.save(adjustment)
+        saved.externalReference = null  // Clear the reference to test setting it via API
+        adjustmentRepository.save(saved)
+        adjustmentRepository.flush()
+
+        val newReference = UUID.randomUUID()
+        mockMvc.put("/adjustment/${saved.id}") {
+            withToken()
+            json = mapOf("reference" to newReference)
+        }.andExpect { status { isOk() } }
+
+        val updated = adjustmentRepository.findById(saved.id!!).get()
+        assertThat(updated.externalReference).isEqualTo("$REFERENCE_PREFIX$newReference")
+    }
+
+    @Test
+    fun `set adjustment external reference returns 404 when adjustment not found`() {
+        val missingId = Long.MAX_VALUE
+        mockMvc.put("/adjustment/$missingId") {
+            withToken()
+            json = mapOf("reference" to UUID.randomUUID())
+        }.andExpect {
+            status { isNotFound() }
+            jsonPath("$.message") { containsString("Adjustment with id of $missingId not found") }
+        }
+    }
+
+    @Test
+    fun `set adjustment external reference returns 409 when external reference already set`() {
+        val adjustment = UPWGenerator.generateUPWAdjustment(
+            upwDetails = UPWGenerator.UPW_DETAILS_7,
+            adjustmentAmount = 30,
+            adjustmentType = AdjustmentType.POSITIVE.code,
+            adjustmentReason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER,
+            reference = UUID.randomUUID(),
+        )
+        val saved = adjustmentRepository.save(adjustment)
+
+        mockMvc.put("/adjustment/${saved.id}") {
+            withToken()
+            json = mapOf("reference" to UUID.randomUUID())
+        }.andExpect {
+            status { isConflict() }
+            jsonPath("$.message") { containsString("already has an external reference set") }
         }
     }
 }

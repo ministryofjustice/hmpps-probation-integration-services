@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
@@ -50,7 +52,11 @@ class AdjustmentService(
                 )
             )
             AdjustmentPostResponse(adjustment.id!!, adjustment.reference()!!)
-        }.also { upwDetails.values.onEach { communityPaybackAppointmentsService.updateStatus(it) } }
+        }.also {
+            adjustmentRepository.flush()
+            upwDetails.values.map { unpaidWorkDetailsRepository.findById(it.id).orElse(it) }
+                .onEach { communityPaybackAppointmentsService.updateStatus(it) }
+        }
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
@@ -81,13 +87,17 @@ class AdjustmentService(
         existingAdjustment.adjustedByUserId = user.id
         existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
         adjustmentRepository.save(existingAdjustment)
-        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
+        adjustmentRepository.flush()
+        val refreshedDetails = unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
+        communityPaybackAppointmentsService.updateStatus(refreshedDetails)
     }
 
     fun deleteAdjustment(reference: UUID) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         adjustmentRepository.delete(existingAdjustment)
-        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
+        adjustmentRepository.flush()
+        val refreshedDetails = unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
+        communityPaybackAppointmentsService.updateStatus(refreshedDetails)
     }
 
     fun getAdjustment(reference: UUID): Adjustment {
@@ -134,5 +144,19 @@ class AdjustmentService(
 
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:adjustment:"
+    }
+
+    fun setAdjustmentReference(id: Long, reference: UUID) {
+        val existingAdjustment = adjustmentRepository.findFirstById(id)
+            ?: throw NotFoundException("Adjustment", "id", id)
+
+        val urn = "$REFERENCE_PREFIX$reference"
+        if (existingAdjustment.externalReference != null) {
+            throw ConflictException("Adjustment ${existingAdjustment.id} already has an external reference set")
+        }
+
+        existingAdjustment.externalReference = urn
+        adjustmentRepository.save(existingAdjustment)
+        adjustmentRepository.flush()
     }
 }
