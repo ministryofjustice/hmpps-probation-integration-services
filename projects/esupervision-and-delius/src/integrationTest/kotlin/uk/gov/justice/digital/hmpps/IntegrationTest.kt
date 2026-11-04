@@ -153,11 +153,11 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `esupervision received with detail url`() {
-        val notification = prepEvent("esupervision-received-detail-url-A000001", wireMockServer.port())
+        val notification = prepEvent("esupervision-received-detail-url-A000001-once", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:61e80782-bdd1-43c3-b69f-78366582210a"
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in:9f1a7b91-2d83-4a27-b0dc-0b9276b8c541"
         }
         assertThat(contact.description).isEqualTo("Online check in completed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
@@ -166,13 +166,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(contact.team.id).isEqualTo(ProviderGenerator.DEFAULT_TEAM.id)
         assertThat(contact.staff.id).isEqualTo(ProviderGenerator.DEFAULT_STAFF.id)
         assertThat(contact.isSensitive).isEqualTo(false)
-        assertThat(contact.notes).isEqualTo(
-            """
-              |Some notes about the check-in
-              |Some notes about the check-in
-              |Some notes about the check-in
-            """.trimMargin()
-        )
+        assertThat(contact.notes).isEqualTo("Some notes about the check-in")
     }
 
     @Test
@@ -723,11 +717,11 @@ internal class IntegrationTest @Autowired constructor(
 
     @Test
     fun `esupervision expired with detail url`() {
-        val notification = prepEvent("esupervision-expired-detail-url-A000001", wireMockServer.port())
+        val notification = prepEvent("esupervision-expired-detail-url-A000001-once", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contact = contactRepository.findAll().single {
-            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:93d51990-3b72-4a7b-97cb-92759b04eaeb"
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:check-in-expiry:a2db1d4a-9e7f-4a4d-861d-9e7b5f9fb4cc"
         }
         assertThat(contact.description).isEqualTo("Online check in missed")
         assertThat(contact.type.code).isEqualTo(ContactType.E_SUPERVISION_CHECK_IN)
