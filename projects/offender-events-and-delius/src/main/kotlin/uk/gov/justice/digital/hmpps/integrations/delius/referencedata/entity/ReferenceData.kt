@@ -38,7 +38,7 @@ class Dataset(
     @Column(name = "code_set_name")
     val name: String,
 
-    ) {
+) {
     enum class Code(val value: String) {
         DOMAIN_EVENT_TYPE("DOMAIN EVENT TYPE")
     }

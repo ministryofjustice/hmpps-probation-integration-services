@@ -19,7 +19,7 @@ data class PniAssessment(
     val staticSeriousViolentReoffendingPredictor: Predictor?,
     val dynamicSeriousViolentReoffendingPredictor: Predictor?,
 
-    )
+)
 
 data class Ldc(val score: Int, val subTotal: Int) {
     companion object {

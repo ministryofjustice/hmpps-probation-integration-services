@@ -38,4 +38,4 @@ class AdditionalSentence(
     @JoinColumn(name = "additional_sentence_type_id", nullable = false)
     val type: ReferenceData,
 
-    )
+)

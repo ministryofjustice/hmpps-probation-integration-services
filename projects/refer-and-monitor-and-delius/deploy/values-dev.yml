@@ -3,7 +3,7 @@ generic-service:
     host: refer-and-monitor-and-delius-dev.hmpps.service.justice.gov.uk
 
   scheduledDowntime:
-    enabled: false
+    enabled: true
 
   env:
     SENTRY_ENVIRONMENT: dev
