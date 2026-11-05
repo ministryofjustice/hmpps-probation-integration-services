@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.objectMapper
 
 @ExtendWith(MockitoExtension::class)
-internal class CourtMessageHandlerTest {
+internal class MessageGroupingHandlerTest {
     @Mock
     lateinit var converter: NotificationConverter<CommonPlatformHearing>
 
@@ -29,11 +29,11 @@ internal class CourtMessageHandlerTest {
     @Mock
     lateinit var sqsTemplate: SqsTemplate
 
-    lateinit var handler: CourtMessageHandler
+    lateinit var handler: MessageGroupingHandler
 
     @BeforeEach
     fun setup() {
-        handler = CourtMessageHandler(
+        handler = MessageGroupingHandler(
             converter,
             telemetryService,
             sqsTemplate,

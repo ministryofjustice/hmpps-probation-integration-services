@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import io.sentry.Sentry
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
@@ -25,9 +26,10 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.YEARS
 
+@Primary
 @Component
 @Channel("common-platform-and-delius-fifo-queue")
-class FIFOHandler(
+class Handler(
     override val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,

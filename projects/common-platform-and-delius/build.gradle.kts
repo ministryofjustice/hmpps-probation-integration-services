@@ -18,13 +18,13 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("tools.jackson.dataformat:jackson-dataformat-csv")
     implementation("io.awspring.cloud:spring-cloud-aws-starter-s3")
+    implementation("com.amazonaws:amazon-sqs-java-extended-client-lib")
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
     dev("org.testcontainers:testcontainers-oracle-free")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
-    runtimeOnly("com.amazonaws:amazon-sqs-java-extended-client-lib")
     runtimeOnly("software.amazon.awssdk:aws-crt-client")
 
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
