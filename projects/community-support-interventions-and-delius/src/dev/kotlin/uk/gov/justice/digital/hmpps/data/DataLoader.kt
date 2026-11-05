@@ -5,7 +5,12 @@ import org.springframework.ldap.support.LdapNameBuilder
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -25,6 +30,14 @@ class DataLoader(dataManager: DataManager, private val ldapTemplate: LdapTemplat
         save(ReferenceDataGenerator.DISABILITY_TYPE_VISUAL)
         save(PersonGenerator.PERSON1)
         save(PersonGenerator.PERSON2)
+        save(EventGenerator.EVENT)
+        save(EventGenerator.EVENT2)
+        save(DisposalTypeGenerator.DISPOSAL_TYPE)
+        save(DisposalGenerator.DISPOSAL)
+        save(DisposalGenerator.NOMS_DISPOSAL)
+        save(OffenceGenerator.OFFENCE1)
+        save(MainOffenceGenerator.MAIN_OFFENCE1)
+        save(MainOffenceGenerator.MAIN_OFFENCE2)
         save(RegistrationGenerator.HOIE_TYPE)
         save(RegistrationGenerator.HOME_OFFICE_INTEREST)
         save(PersonalCircumstanceGenerator.TYPE_EMPLOYMENT)
