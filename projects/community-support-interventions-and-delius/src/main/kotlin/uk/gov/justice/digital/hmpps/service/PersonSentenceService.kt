@@ -22,16 +22,24 @@ class PersonSentenceService(
         } else {
             personRepository.findByNomsNumber(personIdentifier)?.id.orNotFoundBy("NOMS Number", personIdentifier)
         }
-        val eventId = eventRepository.findByPersonId(personId).firstOrNull()?.id.orNotFoundBy("Person",  personIdentifier)
-        val offence = mainOffenceRepository.findByEventId(eventId).firstOrNull().orNotFoundBy("Event", eventId.toString())
+        val eventId =
+            eventRepository.findByPersonId(personId).firstOrNull()?.id.orNotFoundBy("Person", personIdentifier)
+        val offence =
+            mainOffenceRepository.findByEventId(eventId).firstOrNull().orNotFoundBy("Event", eventId.toString())
         val disposal = disposalRepository.findByEventId(eventId).firstOrNull().orNotFoundBy("Event", eventId.toString())
 
-        val sentenceEndDate = disposal.enteredNotionalEndDate ?: disposal.notionalEndDate.orNotFoundBy("No end Date found for disposal", disposal.id.toString())
+        val sentenceEndDate = disposal.enteredNotionalEndDate ?: disposal.notionalEndDate.orNotFoundBy(
+            "No end Date found for disposal",
+            disposal.id.toString()
+        )
 
         return OffenceAndSentenceDetail(
             offence = CodeAndDescription(offence.offence.mainCategoryCode, offence.offence.mainCategoryDescription),
-            offenceSubCategory = CodeAndDescription(offence.offence.subCategoryCode, offence.offence.subCategoryDescription),
-            outcome = CodeAndDescription(disposal.disposalType.code,disposal.disposalType.description),
+            offenceSubCategory = CodeAndDescription(
+                offence.offence.subCategoryCode,
+                offence.offence.subCategoryDescription
+            ),
+            outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
             sentenceEndDate = sentenceEndDate
         )
     }

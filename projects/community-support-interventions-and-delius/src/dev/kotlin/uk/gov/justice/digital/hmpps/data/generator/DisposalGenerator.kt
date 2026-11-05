@@ -28,7 +28,6 @@ object DisposalGenerator {
     )
 }
 
-
 object DisposalTypeGenerator {
     val DISPOSAL_TYPE = DisposalType(
         id = IdGenerator.getAndIncrement(),

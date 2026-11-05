@@ -18,7 +18,6 @@ object MainOffenceGenerator {
     )
 }
 
-
 object OffenceGenerator {
     val OFFENCE1 = uk.gov.justice.digital.hmpps.entity.Offence(
         id = IdGenerator.getAndIncrement(),

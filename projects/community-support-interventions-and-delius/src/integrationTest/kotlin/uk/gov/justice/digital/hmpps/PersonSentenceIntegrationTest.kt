@@ -34,10 +34,14 @@ internal class PersonSentenceIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andExpectJson(
                 OffenceAndSentenceDetail(
-                    offence = CodeAndDescription(offence.mainCategoryCode,
-                        offence.mainCategoryDescription),
-                    offenceSubCategory = CodeAndDescription(offence.subCategoryCode,
-                        offence.subCategoryDescription),
+                    offence = CodeAndDescription(
+                        offence.mainCategoryCode,
+                        offence.mainCategoryDescription
+                    ),
+                    offenceSubCategory = CodeAndDescription(
+                        offence.subCategoryCode,
+                        offence.subCategoryDescription
+                    ),
                     outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
                     sentenceEndDate = disposal.enteredNotionalEndDate!!
                 )
@@ -54,10 +58,14 @@ internal class PersonSentenceIntegrationTest @Autowired constructor(
             .andExpect { status { isOk() } }
             .andExpectJson(
                 OffenceAndSentenceDetail(
-                    offence = CodeAndDescription(offence.mainCategoryCode,
-                        offence.mainCategoryDescription),
-                    offenceSubCategory = CodeAndDescription(offence.subCategoryCode,
-                        offence.subCategoryDescription),
+                    offence = CodeAndDescription(
+                        offence.mainCategoryCode,
+                        offence.mainCategoryDescription
+                    ),
+                    offenceSubCategory = CodeAndDescription(
+                        offence.subCategoryCode,
+                        offence.subCategoryDescription
+                    ),
                     outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
                     sentenceEndDate = disposal.enteredNotionalEndDate!!
                 )
