@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import io.awspring.cloud.sqs.annotation.SqsListener
+import io.awspring.cloud.sqs.listener.Visibility
+import io.sentry.spring7.tracing.SentryTransaction
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
@@ -18,4 +21,10 @@ class MessageGroupingListener(
     taskScheduler: SimpleAsyncTaskScheduler,
     @Value("\${messaging.consumer.court-message-queue}") private val queueName: String,
     @Value("\${messaging.consumer.visibility.extensionInterval:15}") private val visibilityExtensionInterval: Long
-) : AwsNotificationListener(handler, objectMapper, taskScheduler, queueName, visibilityExtensionInterval)
+) : AwsNotificationListener(handler, objectMapper, taskScheduler, queueName, visibilityExtensionInterval) {
+    @SentryTransaction(operation = "messaging")
+    @SqsListener("\${messaging.consumer.court-message-queue}")
+    override fun receive(message: String, visibility: Visibility?) {
+        super.receive(message, visibility)
+    }
+}
