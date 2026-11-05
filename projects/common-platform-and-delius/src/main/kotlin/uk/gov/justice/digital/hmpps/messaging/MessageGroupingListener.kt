@@ -18,4 +18,4 @@ class MessageGroupingListener(
     taskScheduler: SimpleAsyncTaskScheduler,
     @Value("\${messaging.consumer.court-message-queue}") private val queueName: String,
     @Value("\${messaging.consumer.visibility.extensionInterval:15}") private val visibilityExtensionInterval: Long
-): AwsNotificationListener(handler, objectMapper, taskScheduler, queueName, visibilityExtensionInterval)
+) : AwsNotificationListener(handler, objectMapper, taskScheduler, queueName, visibilityExtensionInterval)
