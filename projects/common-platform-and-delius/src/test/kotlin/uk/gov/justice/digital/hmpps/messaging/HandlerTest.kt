@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
-internal class FIFOHandlerTest {
+internal class HandlerTest {
     @Mock
     lateinit var telemetryService: TelemetryService
 
@@ -53,7 +53,7 @@ internal class FIFOHandlerTest {
     lateinit var corePersonClient: CorePersonClient
 
     @InjectMocks
-    lateinit var handler: FIFOHandler
+    lateinit var handler: Handler
 
     @Test
     fun `inserts records when probation search match is not found`() {

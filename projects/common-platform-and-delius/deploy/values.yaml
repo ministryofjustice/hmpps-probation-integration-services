@@ -12,6 +12,7 @@ generic-service:
 
   env:
     OS-PLACES_API_URL: https://api.os.uk
+    SPRING_CLOUD_AWS_SQS_EXTENDED_CLEANUP_S3_PAYLOAD: false
 
   namespace_secrets:
     common:
@@ -35,6 +36,8 @@ generic-service:
       OS-PLACES_API_KEY: API_KEY
     common-platform-and-delius-s3-bucket:
       S3_BUCKET_NAME: bucket_name
+    cpr-large-court-cases-s3-bucket:
+      SPRING_CLOUD_AWS_SQS_EXTENDED_BUCKET: bucket_name
 
 generic-prometheus-alerts:
   targetApplication: common-platform-and-delius
