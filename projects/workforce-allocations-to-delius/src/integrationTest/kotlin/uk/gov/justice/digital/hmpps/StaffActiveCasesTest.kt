@@ -244,8 +244,8 @@ class StaffActiveCasesTest @Autowired constructor(
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.person2
-        val personInTeamB = PersonGenerator.person3
+        val personInTeamA = PersonGenerator.DEFAULT
+        val personInTeamB = PersonGenerator.NEW_PM
 
         persistCaseload(
             CaseloadGenerator.generate(
@@ -280,8 +280,8 @@ class StaffActiveCasesTest @Autowired constructor(
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.person2
-        val personInTeamB = PersonGenerator.person3
+        val personInTeamA = PersonGenerator.DEFAULT
+        val personInTeamB = PersonGenerator.NEW_PM
 
         persistCaseload(
             CaseloadGenerator.generate(
