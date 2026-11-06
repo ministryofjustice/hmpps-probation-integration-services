@@ -44,4 +44,4 @@ class Disability(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    )
+)

@@ -53,7 +53,7 @@ class PrisonManager(
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
 
-    ) : Manager {
+) : Manager {
     @Column
     var endDate: ZonedDateTime? = null
 
