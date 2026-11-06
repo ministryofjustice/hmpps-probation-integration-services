@@ -20,6 +20,7 @@ class MainOffence(
     @Column(name = "main_offence_id")
     val id: Long,
 
+    @Column(name = "event_id")
     val eventId: Long,
 
     @ManyToOne
@@ -50,10 +51,3 @@ class Offence(
     @Column(name = "sub_category_description")
     val subCategoryDescription: String,
 )
-
-interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
-    fun findByEventId(eventId: Long): List<MainOffence>
-
-    @EntityGraph(attributePaths = ["offence"])
-    fun findByEventIdIn(eventIds: Collection<Long>): List<MainOffence>
-}

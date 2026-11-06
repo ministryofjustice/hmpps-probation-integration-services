@@ -31,10 +31,6 @@ class Disposal(
     val enteredNotionalEndDate: LocalDate?,
 
     @ManyToOne
-    @JoinColumn(name = "offender_id", nullable = false)
-    val person: Person,
-
-    @ManyToOne
     @JoinColumn(name = "disposal_type_id", nullable = false)
     val disposalType: DisposalType,
 
@@ -60,10 +56,3 @@ class DisposalType(
     @Column(name = "description", nullable = false)
     val description: String
 )
-
-interface DisposalRepository : JpaRepository<Disposal, Long> {
-    fun findByEventId(eventId: Long): List<Disposal>
-
-    @EntityGraph(attributePaths = ["event", "disposalType"])
-    fun findByEventIdIn(eventIds: Collection<Long>): List<Disposal>
-}

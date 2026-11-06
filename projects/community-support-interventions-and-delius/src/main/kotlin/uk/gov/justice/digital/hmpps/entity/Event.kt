@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -22,6 +23,13 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @OneToMany(mappedBy = "event")
+    val disposals: List<Disposal> = emptyList(),
+
+    @OneToMany
+    @JoinColumn(name = "event_id", insertable = false, updatable = false)
+    val mainOffences: List<MainOffence> = emptyList(),
+
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)
     val active: Boolean,
@@ -33,11 +41,13 @@ class Event(
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
+
+    fun findByPersonIdAndDisposalsNotEmptyAndActiveTrueAndSoftDeletedFalse(personId: Long): List<Event>
+
     @Query(
         """
         SELECT DISTINCT e FROM Event e
-        JOIN Disposal d ON d.event.id = e.id
-        WHERE e.person.id = :personId AND d.active = true AND d.softDeleted = false
+        WHERE e.person.id = :personId
         """
     )
     fun findActiveSentencedEventsByPersonId(personId: Long): List<Event>

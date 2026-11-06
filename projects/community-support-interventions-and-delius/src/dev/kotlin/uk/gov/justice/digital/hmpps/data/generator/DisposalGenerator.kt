@@ -7,7 +7,6 @@ import java.time.LocalDate
 object DisposalGenerator {
     val DISPOSAL = Disposal(
         id = IdGenerator.getAndIncrement(),
-        person = PersonGenerator.PERSON1,
         event = EventGenerator.EVENT,
         disposalType = DisposalTypeGenerator.DISPOSAL_TYPE,
         enteredNotionalEndDate = LocalDate.now().plusYears(1),
@@ -18,7 +17,6 @@ object DisposalGenerator {
 
     val NOMS_DISPOSAL = Disposal(
         id = IdGenerator.getAndIncrement(),
-        person = PersonGenerator.PERSON2,
         event = EventGenerator.EVENT2,
         disposalType = DisposalTypeGenerator.DISPOSAL_TYPE,
         enteredNotionalEndDate = LocalDate.now().plusYears(1),
