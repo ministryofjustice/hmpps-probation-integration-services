@@ -123,7 +123,7 @@ class Person(
     )
     val lastUpdatedUser: User? = null,
 
-)
+    )
 
 interface PersonSummaryEntity {
     val id: Long

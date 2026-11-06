@@ -17,7 +17,7 @@ data class CourtReportMinimal(
     val reportManagers: List<ReportManager> = emptyList(),
     val deliveredCourtReportType: KeyValue? = null,
 
-)
+    )
 
 data class ReportManager(
     val staff: StaffHuman?,

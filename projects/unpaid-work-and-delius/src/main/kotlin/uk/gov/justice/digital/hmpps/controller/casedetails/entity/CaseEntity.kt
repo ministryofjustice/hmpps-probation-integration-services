@@ -94,4 +94,4 @@ class CaseEntity(
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null,
 
-)
+    )

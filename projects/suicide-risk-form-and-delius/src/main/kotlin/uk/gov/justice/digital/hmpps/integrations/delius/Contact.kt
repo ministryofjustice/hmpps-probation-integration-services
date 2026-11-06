@@ -62,7 +62,7 @@ class Contact(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
-)
+    )
 
 @Immutable
 @Entity

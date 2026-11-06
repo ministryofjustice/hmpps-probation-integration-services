@@ -447,7 +447,7 @@ object PersonGenerator {
             true,
             LocalDate.now().minusDays(1),
 
-        ),
+            ),
         PersonalCircumstance(
             IdGenerator.getAndIncrement(),
             OVERVIEW.id,

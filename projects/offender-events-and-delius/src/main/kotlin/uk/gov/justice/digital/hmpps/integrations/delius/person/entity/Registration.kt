@@ -50,7 +50,7 @@ class RegisterType(
     @Column(name = "code")
     val code: String,
 
-) {
+    ) {
     enum class Code(val value: String) {
         MAPPA("MAPP")
     }

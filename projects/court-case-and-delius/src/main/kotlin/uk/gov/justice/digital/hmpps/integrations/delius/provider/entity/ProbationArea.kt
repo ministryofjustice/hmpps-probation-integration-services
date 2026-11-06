@@ -157,7 +157,7 @@ class Borough(
     @OneToMany(mappedBy = "borough")
     val districts: List<District> = listOf(),
 
-)
+    )
 
 @Immutable
 @Entity
@@ -178,6 +178,6 @@ class Organisation(
     @Convert(converter = NumericBooleanConverter::class)
     val activeFlag: Boolean,
 
-)
+    )
 
 
