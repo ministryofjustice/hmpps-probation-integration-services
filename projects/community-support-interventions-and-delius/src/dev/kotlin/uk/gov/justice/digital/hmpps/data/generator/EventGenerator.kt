@@ -7,6 +7,7 @@ object EventIdGenerator {
     val EVENT_ID2 = IdGenerator.getAndIncrement()
     val EVENT_ID3 = IdGenerator.getAndIncrement()
 }
+
 object EventGenerator {
     val EVENT = Event(
         id = EventIdGenerator.EVENT_ID1,

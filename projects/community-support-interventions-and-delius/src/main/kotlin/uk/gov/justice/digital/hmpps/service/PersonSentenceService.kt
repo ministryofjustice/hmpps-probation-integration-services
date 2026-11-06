@@ -23,7 +23,7 @@ class PersonSentenceService(
         if (events.isEmpty()) return emptyList()
 
         return events.map { event ->
-            val mainOffence =  event.mainOffence.orNotFoundBy("Event", event.id)
+            val mainOffence = event.mainOffence.orNotFoundBy("Event", event.id)
             val disposal = event.disposal.orNotFoundBy("Event", event.id)
 
             OffenceAndSentenceDetail(
