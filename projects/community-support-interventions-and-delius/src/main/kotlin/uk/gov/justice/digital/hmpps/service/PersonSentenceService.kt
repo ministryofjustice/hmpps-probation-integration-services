@@ -42,7 +42,10 @@ class PersonSentenceService(
             OffenceAndSentenceDetail(
                 eventId = eventId,
                 offence = CodeAndDescription(offence.offence.mainCategoryCode, offence.offence.mainCategoryDescription),
-                offenceSubCategory = CodeAndDescription(offence.offence.subCategoryCode, offence.offence.subCategoryDescription),
+                offenceSubCategory = CodeAndDescription(
+                    offence.offence.subCategoryCode,
+                    offence.offence.subCategoryDescription
+                ),
                 outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
                 sentenceEndDate = sentenceEndDate
             )
