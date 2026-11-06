@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
@@ -24,6 +25,14 @@ class MainOffence(
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
+
+    @OneToOne
+    @JoinColumn(
+        name = "event_id",
+        insertable = false,
+        updatable = false
+    )
+    val event: Event? = null,
 
     @Column(columnDefinition = "number")
     @Convert(NumericBooleanConverter::class)

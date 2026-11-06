@@ -7,14 +7,14 @@ object MainOffenceGenerator {
         id = IdGenerator.getAndIncrement(),
         offence = OffenceGenerator.OFFENCE1,
         softDeleted = false,
-        eventId = EventGenerator.EVENT.id
+        eventId = EventIdGenerator.EVENT_ID1
     )
 
     val MAIN_OFFENCE2 = MainOffence(
         id = IdGenerator.getAndIncrement(),
         offence = OffenceGenerator.OFFENCE1,
         softDeleted = false,
-        eventId = EventGenerator.EVENT2.id
+        eventId = EventIdGenerator.EVENT_ID2
     )
 }
 

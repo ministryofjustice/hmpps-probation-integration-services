@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventIdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator

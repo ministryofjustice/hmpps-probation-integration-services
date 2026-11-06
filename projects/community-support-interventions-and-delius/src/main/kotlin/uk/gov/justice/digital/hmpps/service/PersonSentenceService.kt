@@ -18,7 +18,7 @@ class PersonSentenceService(
         } else {
             personRepository.findByNomsNumber(personIdentifier)?.id.orNotFoundBy("NOMS Number", personIdentifier)
         }
-        val events = eventRepository.findByPersonIdAndDisposalsNotEmptyAndActiveTrueAndSoftDeletedFalse(personId)
+        val events = eventRepository.findByPersonIdAndDisposalNotNullAndActiveTrueAndSoftDeletedFalse(personId)
 
         if (events.isEmpty()) return emptyList()
 

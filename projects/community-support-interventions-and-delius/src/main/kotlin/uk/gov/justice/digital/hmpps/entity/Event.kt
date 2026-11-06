@@ -10,7 +10,6 @@ import jakarta.persistence.OneToOne
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 
 @Entity
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
@@ -26,8 +25,7 @@ class Event(
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
-    @OneToOne
-    @JoinColumn(name = "event_id", insertable = false, updatable = false)
+    @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
@@ -41,14 +39,5 @@ class Event(
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
-
-    fun findByPersonIdAndDisposalsNotEmptyAndActiveTrueAndSoftDeletedFalse(personId: Long): List<Event>
-
-    @Query(
-        """
-        SELECT DISTINCT e FROM Event e
-        WHERE e.person.id = :personId
-        """
-    )
-    fun findActiveSentencedEventsByPersonId(personId: Long): List<Event>
+    fun findByPersonIdAndDisposalNotNullAndActiveTrueAndSoftDeletedFalse(personId: Long): List<Event>
 }
