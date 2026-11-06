@@ -42,13 +42,13 @@ object KeyDateCalculator {
      */
     fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? = with(disposal) {
         if (!type.determinateCustody || lengthInDays == null) return null
-
-        val sentenceExpiryDate = keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
         val conditionalReleaseDate =
-            keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
+            keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date ?: return null
+        val sentenceExpiryDate = keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date ?: return null
+
         val deduction = if (sdsPlus == true) lengthInDays / 3.0 else lengthInDays * 0.6
-        val calculated = sentenceExpiryDate?.minusDays(ceil(deduction).toLong())
-        calculated?.coerceAtLeast(conditionalReleaseDate?.plusDays(30) ?: calculated)
+        sentenceExpiryDate.minusDays(ceil(deduction).toLong())
+            .coerceAtLeast(conditionalReleaseDate.plusDays(30))
     }
 
     /**

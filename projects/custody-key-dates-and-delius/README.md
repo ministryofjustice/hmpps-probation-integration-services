@@ -55,6 +55,7 @@ existing Delius values will be updated on receiving an event trigger. The custod
   - sentence expiry date minus 60% of sentence length in days for SDS
   - sentence expiry date minus one-third of sentence length in days for serious standard determinate sentences (SDS+)
   - if conditional release date plus 30 days is later, use that date instead
+  - no date is calculated if conditional release date or sentence expiry date is missing
   - only applies to custodial SDS or SDS+ sentences
 
 Electronic Monitoring End Date and Final Third Start Date are derived for all active custodial standard determinate 
