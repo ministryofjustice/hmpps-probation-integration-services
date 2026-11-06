@@ -476,6 +476,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     }
 
     @Test
+    @Transactional
     fun `set adjustment external reference updates the URN when absent`() {
         val adjustment = UPWGenerator.generateUPWAdjustment(
             upwDetails = UPWGenerator.UPW_DETAILS_7,
