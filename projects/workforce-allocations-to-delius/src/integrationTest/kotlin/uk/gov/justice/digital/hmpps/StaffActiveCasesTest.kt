@@ -240,23 +240,12 @@ class StaffActiveCasesTest @Autowired constructor(
     @Test
     @Transactional
     fun `get response can filter by team code`() {
-        val staff = StaffGenerator.generateStaff(
-            code = "N02F001",
-            forename = "Filter",
-            surname = "Staff"
-        )
+        val staff = StaffGenerator.DEFAULT
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.generate("F200001")
-        val personInTeamB = PersonGenerator.generate("X234567")
-
-        transactionTemplate.executeWithoutResult {
-            entityManager.persist(staff)
-            entityManager.persist(personInTeamA)
-            entityManager.persist(personInTeamB)
-            entityManager.flush()
-        }
+        val personInTeamA = PersonGenerator.person2
+        val personInTeamB = PersonGenerator.person3
 
         persistCaseload(
             CaseloadGenerator.generate(
@@ -291,14 +280,8 @@ class StaffActiveCasesTest @Autowired constructor(
         val teamA = TeamGenerator.ALLOCATION_TEAM
         val teamB = TeamGenerator.DEFAULT
 
-        val personInTeamA = PersonGenerator.generate("F100001")
-        val personInTeamB = PersonGenerator.generate("X888888")
-
-        transactionTemplate.executeWithoutResult {
-            entityManager.persist(personInTeamA)
-            entityManager.persist(personInTeamB)
-            entityManager.flush()
-        }
+        val personInTeamA = PersonGenerator.person2
+        val personInTeamB = PersonGenerator.person3
 
         persistCaseload(
             CaseloadGenerator.generate(
