@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
@@ -125,10 +126,29 @@ class StaffActiveCasesTest @Autowired constructor(
 
     @Test
     fun `get response de duplicates duplicate caseload crns`() {
-        val staff = StaffGenerator.DEFAULT
+        val staff = StaffGenerator.generateStaff(
+            code = "N02T001",
+            forename = "Test",
+            surname = "Staff"
+        )
+        val person = PersonGenerator.generate("X777777")
+
+        transactionTemplate.executeWithoutResult {
+            entityManager.persist(staff)
+            entityManager.persist(person)
+            entityManager.flush()
+        }
+
         persistCaseload(
             CaseloadGenerator.generate(
-                person = personReference(PersonGenerator.DEFAULT.id),
+                person = personReference(person.id),
+                staff = staffReference(staff.id),
+                team = teamReference(TeamGenerator.DEFAULT.id)
+            )
+        )
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(person.id),
                 staff = staffReference(staff.id),
                 team = teamReference(TeamGenerator.DEFAULT.id)
             )
@@ -140,7 +160,7 @@ class StaffActiveCasesTest @Autowired constructor(
             .andExpect {
                 status { is2xxSuccessful() }
                 jsonPath("$.cases.length()") { value(1) }
-                jsonPath("$.cases[0].crn") { value(PersonGenerator.DEFAULT.crn) }
+                jsonPath("$.cases[0].crn") { value(person.crn) }
             }
     }
 
@@ -214,6 +234,79 @@ class StaffActiveCasesTest @Autowired constructor(
         }
             .andExpect {
                 status { isNotFound() }
+            }
+    }
+
+    @Test
+    @Transactional
+    fun `get response can filter by team code`() {
+        val staff = StaffGenerator.DEFAULT
+        val teamA = TeamGenerator.ALLOCATION_TEAM
+        val teamB = TeamGenerator.DEFAULT
+
+        val personInTeamA = PersonGenerator.DEFAULT
+        val personInTeamB = PersonGenerator.NEW_PM
+
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personInTeamA.id),
+                staff = staffReference(staff.id),
+                team = teamReference(teamA.id)
+            )
+        )
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personInTeamB.id),
+                staff = staffReference(staff.id),
+                team = teamReference(teamB.id)
+            )
+        )
+
+        mockMvc.get("/staff/${staff.code}/active-cases?teamCode=${teamA.code}") {
+            withToken()
+        }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.code") { value(staff.code) }
+                jsonPath("$.cases.length()") { value(1) }
+                jsonPath("$.cases[0].crn") { value(personInTeamA.crn) }
+            }
+    }
+
+    @Test
+    @Transactional
+    fun `post response can filter by team code`() {
+        val staff = StaffGenerator.DEFAULT
+        val teamA = TeamGenerator.ALLOCATION_TEAM
+        val teamB = TeamGenerator.DEFAULT
+
+        val personInTeamA = PersonGenerator.DEFAULT
+        val personInTeamB = PersonGenerator.NEW_PM
+
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personInTeamA.id),
+                staff = staffReference(staff.id),
+                team = teamReference(teamA.id)
+            )
+        )
+        persistCaseload(
+            CaseloadGenerator.generate(
+                person = personReference(personInTeamB.id),
+                staff = staffReference(staff.id),
+                team = teamReference(teamB.id)
+            )
+        )
+
+        mockMvc.post("/staff/${staff.code}/active-cases?teamCode=${teamA.code}") {
+            withToken()
+            json = listOf(personInTeamA.crn, personInTeamB.crn)
+        }
+            .andExpect {
+                status { is2xxSuccessful() }
+                jsonPath("$.code") { value(staff.code) }
+                jsonPath("$.cases.length()") { value(1) }
+                jsonPath("$.cases[0].crn") { value(personInTeamA.crn) }
             }
     }
 

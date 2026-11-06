@@ -50,9 +50,19 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     @Query(
         """
         select c from Caseload c 
+        where c.team.code = :teamCode
+        and c.roleCode = 'OM'
+        and c.trustProviderFlag = false
+    """
+    )
+    fun findAllByTeamCode(teamCode: String): List<Caseload>
+
+    @Query(
+        """
+        select c from Caseload c 
         where c.staff.code = :staffCode
         and c.roleCode = 'OM'
-        and  c.trustProviderFlag = false
+        and c.trustProviderFlag = false
     """
     )
     fun findAllByStaffCode(staffCode: String): List<Caseload>
@@ -66,4 +76,15 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
     """
     )
     fun findAllByStaffCodeIn(staffCodes: List<String>): List<Caseload>
+
+    @Query(
+        """
+    select c from Caseload c 
+    where c.staff.code = :staffCode
+    and c.roleCode = 'OM'
+    and c.trustProviderFlag = false
+    and (:teamCode is null or c.team.code = :teamCode)
+"""
+    )
+    fun findAllByStaffCodeAndTeamCode(staffCode: String, teamCode: String? = null): List<Caseload>
 }

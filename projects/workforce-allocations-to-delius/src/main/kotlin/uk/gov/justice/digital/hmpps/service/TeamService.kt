@@ -27,28 +27,33 @@ class TeamService(
 
     fun getActiveCases(teamCode: String): TeamActiveCasesResponse {
         val team = teamRepository.findByCode(teamCode) ?: throw NotFoundException("Team", "code", teamCode)
-        val staff = staffRepository.findActiveStaffInTeam(teamCode)
-        if (staff.isEmpty()) {
+
+        val caseloads = caseloadRepository.findAllByTeamCode(teamCode)
+        if (caseloads.isEmpty()) {
             return TeamActiveCasesResponse(team.code, team.description, emptyList())
         }
 
+        val staffCodes = caseloads.map { it.staff.code }.distinct()
+        val staff = staffRepository.findStaffWithUserByCodeIn(staffCodes)
+            .sortedBy { it.code }
+
         val emails = ldapService.findEmailsForStaffIn(staff)
-        val crnsByStaffCode =
-            caseloadRepository.findAllByStaffCodeIn(staff.map { it.code }).groupBy { it.staff.code }
-                .mapValues { (_, caseloads) -> caseloads.map { it.person.crn } }
+
+        val crnsByStaffCode = caseloads
+            .groupBy { it.staff.code }
+            .mapValues { (_, rows) -> rows.map { it.person.crn } }
 
         val casesByStaffCode = activeCaseService.getCasesByGroup(crnsByStaffCode)
 
-        val staffResponses =
-            staff.sortedBy { it.code }.map { activeStaff ->
-                ActiveCasesResponse(
-                    activeStaff.code,
-                    activeStaff.name(),
-                    activeStaff.grade(),
-                    emails[activeStaff.user?.username],
-                    casesByStaffCode[activeStaff.code].orEmpty()
-                )
-            }
+        val staffResponses = staff.map { activeStaff ->
+            ActiveCasesResponse(
+                activeStaff.code,
+                activeStaff.name(),
+                activeStaff.grade(),
+                emails[activeStaff.user?.username],
+                casesByStaffCode[activeStaff.code].orEmpty()
+            )
+        }
 
         return TeamActiveCasesResponse(team.code, team.description, staffResponses)
     }
