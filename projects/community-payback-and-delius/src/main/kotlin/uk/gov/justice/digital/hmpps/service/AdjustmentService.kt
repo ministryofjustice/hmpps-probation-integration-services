@@ -157,6 +157,9 @@ class AdjustmentService(
             throw ConflictException("Adjustment ${existingAdjustment.id} already has an external reference set")
         }
 
+        if (adjustmentRepository.findByExternalReference(urn) != null) {
+            throw ConflictException("Adjustment reference $reference is already in use")
+        }
         existingAdjustment.externalReference = urn
         adjustmentRepository.save(existingAdjustment)
         adjustmentRepository.flush()
