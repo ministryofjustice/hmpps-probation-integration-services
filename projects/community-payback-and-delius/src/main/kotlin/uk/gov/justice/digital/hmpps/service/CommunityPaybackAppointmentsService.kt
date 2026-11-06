@@ -342,6 +342,7 @@ class CommunityPaybackAppointmentsService(
             status = referenceDataRepository.getStatus(statusCode)
             statusDate = ZonedDateTime.now()
         })
+//        upwDetailsRepository.flush()
     }
 
     private fun UnpaidWorkAppointment.toAppointmentResponseCase(
