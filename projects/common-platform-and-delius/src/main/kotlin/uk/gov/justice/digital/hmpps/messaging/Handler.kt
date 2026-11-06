@@ -51,8 +51,8 @@ class Handler(
 
         defendants.forEach { defendant ->
             val matchedPersonStatus = corePersonClient.findMatchStatusByDefendantId(defendant.id)
-            val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
-                ("defendantId" to defendant.id)
+            var telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
+                mapOf("defendantId" to defendant.id)
 
             // Defendant is matched with existing record in core person service
             if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.MATCH) {
@@ -62,6 +62,8 @@ class Handler(
 
             val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
                 ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+
+            telemetryProperties = telemetryProperties + ("caseURN" to caseUrn)
 
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
@@ -80,17 +82,23 @@ class Handler(
                     mainOffence = mainOffence,
                     additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
-                    sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
+                    sittingDay = notification.message.hearing.hearingDays.minOf { it.sittingDay },
                     caseUrn = caseUrn.replace("[^A-Za-z0-9]".toRegex(), ""),
                     hearingId = notification.message.hearing.id,
                 )
 
-                if (personService.personWithDefendantIdExists(defendant.id)) return
+                if (insertRemandDTO.sittingDay > ZonedDateTime.now()) {
+                    telemetryService.trackEvent("FutureSittingDay", telemetryProperties)
+                    return@forEach
+                }
+
+                if (personService.personWithDefendantIdExists(defendant.id)) {
+                    telemetryService.trackEvent("PersonWithDefendantIdExists", telemetryProperties)
+                    return@forEach
+                }
 
                 if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
-                    telemetryService.trackEvent(
-                        "PossibleMatchCreationSkipped", telemetryProperties + ("caseURN" to caseUrn)
-                    )
+                    telemetryService.trackEvent("PossibleMatchCreationSkipped", telemetryProperties)
                     return@forEach
                 }
 

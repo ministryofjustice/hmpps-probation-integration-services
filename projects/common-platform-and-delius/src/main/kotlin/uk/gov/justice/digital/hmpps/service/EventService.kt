@@ -99,7 +99,7 @@ class EventService(
                     person = person,
                     startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
-                    alert = true,
+                    alert = false,
                     eventId = event.id!!,
                     type = courtAppearanceContactType,
                     probationAreaId = court.provider.id,
