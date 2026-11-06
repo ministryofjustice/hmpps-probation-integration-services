@@ -4,7 +4,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.KEY_DATE_TYPES
@@ -111,8 +110,7 @@ internal class KeyDateCalculatorTest {
 
     @ParameterizedTest
     @MethodSource("deliusEmedCases")
-    fun `calculate em end date from SED with rounded up deduction and CRD minimum`(
-        sentenceExpiryDate: LocalDate?,
+    fun `calculate em end date from CRD plus rounded down percentage of Delius sentence length`(
         conditionalReleaseDate: LocalDate?,
         sentenceLengthInDays: Long?,
         sdsPlus: Boolean?,
@@ -126,9 +124,6 @@ internal class KeyDateCalculatorTest {
             ),
             bookingRef = "ABC"
         ).also {
-            sentenceExpiryDate?.let { date ->
-                it.keyDates += KeyDate(it, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, date)
-            }
             conditionalReleaseDate?.let { date ->
                 it.keyDates += KeyDate(it, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, date)
             }
@@ -231,44 +226,15 @@ internal class KeyDateCalculatorTest {
         )
 
         @JvmStatic
-        fun deliusEmedCases(): List<Arguments> {
-            val sed = LocalDate.of(2026, 1, 1)
-            return listOf(
-                arguments(sed, null, 0L, false, sed),
-                arguments(sed, null, 1L, false, LocalDate.of(2025, 12, 31)),
-                arguments(sed, null, 2L, false, LocalDate.of(2025, 12, 30)),
-                arguments(sed, null, 5L, false, LocalDate.of(2025, 12, 29)),
-                arguments(sed, null, 10L, false, LocalDate.of(2025, 12, 26)),
-                arguments(sed, null, 11L, false, LocalDate.of(2025, 12, 25)),
-                arguments(sed, null, 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, null, 100L, false, LocalDate.of(2025, 11, 2)),
-                arguments(sed, null, 365L, false, LocalDate.of(2025, 5, 27)),
-                arguments(sed, null, 366L, false, LocalDate.of(2025, 5, 26)),
-                arguments(sed, null, 0L, true, sed),
-                arguments(sed, null, 1L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, null, 2L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, null, 3L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, null, 4L, true, LocalDate.of(2025, 12, 30)),
-                arguments(sed, null, 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, null, 100L, true, LocalDate.of(2025, 11, 28)),
-                arguments(sed, null, 365L, true, LocalDate.of(2025, 9, 1)),
-                arguments(sed, null, 366L, true, LocalDate.of(2025, 9, 1)),
-                arguments(sed, LocalDate.of(2025, 11, 1), 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, LocalDate.of(2025, 11, 2), 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, LocalDate.of(2025, 11, 3), 50L, false, LocalDate.of(2025, 12, 3)),
-                arguments(sed, LocalDate.of(2025, 11, 14), 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, LocalDate.of(2025, 11, 15), 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, LocalDate.of(2025, 11, 16), 50L, true, LocalDate.of(2025, 12, 16)),
-                arguments(sed, LocalDate.of(2025, 12, 31), 50L, false, LocalDate.of(2026, 1, 30)),
-                arguments(sed, LocalDate.of(2025, 12, 31), 50L, true, LocalDate.of(2026, 1, 30)),
-                arguments(sed, LocalDate.of(2025, 1, 1), 50L, null, LocalDate.of(2025, 12, 2)),
-                arguments(null, LocalDate.of(2025, 1, 1), 50L, false, null),
-                arguments(null, LocalDate.of(2025, 1, 1), 50L, true, null),
-                arguments(null, null, 50L, false, null),
-                arguments(sed, LocalDate.of(2025, 1, 1), null, false, null),
-                arguments(sed, LocalDate.of(2025, 1, 1), null, true, null)
-            )
-        }
+        fun deliusEmedCases() = emedCases() + listOf(
+            arguments(null, 366L, false, null),
+            arguments(LocalDate.of(2025, 1, 1), null, false, null),
+            arguments(LocalDate.of(2025, 1, 1), null, true, null),
+            arguments(LocalDate.of(2025, 1, 1), 366L, false, LocalDate.of(2025, 1, 26)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, true, LocalDate.of(2025, 3, 4)),
+            arguments(LocalDate.of(2025, 1, 1), 366L, null, LocalDate.of(2025, 1, 26)),
+            arguments(LocalDate.of(2027, 3, 12), 820L, false, LocalDate.of(2027, 5, 8))
+        )
 
         @JvmStatic
         fun deliusFinalThirdCases() = listOf(

@@ -159,7 +159,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(custody.disposal.sdsPlus, equalTo(true))
         assertThat(
             custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-08-24"))
+            equalTo(LocalDate.parse("2022-12-04"))
         )
         assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
 
@@ -289,7 +289,7 @@ internal class IntegrationTest @Autowired constructor(
         )
         assertThat(
             custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2024-02-16"))
+            equalTo(LocalDate.parse("2024-01-20"))
         )
         assertThat(
             custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)?.date,
@@ -339,7 +339,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
         assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2022-11-29")))
         assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
@@ -367,7 +367,7 @@ internal class IntegrationTest @Autowired constructor(
             EXP 27/11/2022
             HDE 28/10/2022
             PR1 05/10/2024
-            EMED 11/08/2025
+            EMED 29/11/2022
             FTHRD 24/08/2025
                 """.trimIndent()
             )
