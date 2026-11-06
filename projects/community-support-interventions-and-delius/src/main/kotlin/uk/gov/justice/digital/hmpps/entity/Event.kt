@@ -6,7 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
@@ -23,12 +23,12 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
-    @OneToMany(mappedBy = "event")
-    val disposals: List<Disposal> = emptyList(),
+    @OneToOne(mappedBy = "event")
+    val disposal: Disposal? = null,
 
-    @OneToMany
+    @OneToOne
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
-    val mainOffences: List<MainOffence> = emptyList(),
+    val mainOffence: MainOffence? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

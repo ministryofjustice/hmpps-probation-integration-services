@@ -6,11 +6,10 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
-import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Entity
@@ -20,7 +19,7 @@ class Disposal(
     @Column(name = "disposal_id")
     val id: Long,
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event,
 
