@@ -655,8 +655,6 @@ internal class CustodyDateUpdateServiceTest {
         featureFlagEnabled(true)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
-            CustodyDateType.SENTENCE_EXPIRY_DATE,
-            CustodyDateType.SUSPENSION_DATE_IF_RESET,
             CustodyDateType.ELECTRONIC_MONITORING_END_DATE,
         ).forEach { type ->
             whenever(
@@ -672,10 +670,7 @@ internal class CustodyDateUpdateServiceTest {
         )
         val custody = generateCustodialSentence(disposal = disposal, bookingRef = booking.bookingNo)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(
-            SentenceDetail(
-                conditionalReleaseDate = LocalDate.of(2024, 1, 1),
-                sentenceExpiryDate = LocalDate.of(2025, 1, 1)
-            )
+            SentenceDetail(conditionalReleaseDate = LocalDate.of(2024, 1, 1))
         )
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(
@@ -708,14 +703,14 @@ internal class CustodyDateUpdateServiceTest {
                 assertThat(saved.any { it.type.code == CustodyDateType.FINAL_THIRD_START_DATE.code }, equalTo(false))
                 assertThat(
                     saved.single { it.type.code == CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code }.date,
-                    equalTo(LocalDate.of(2024, 9, 1))
+                    equalTo(LocalDate.of(2024, 3, 3))
                 )
             }
         )
     }
 
     @Test
-    fun `Feature flag enabled uses disposal length and SED for EMED and final third`() {
+    fun `Feature flag enabled uses disposal length and CRD for EMED and SED for final third`() {
         featureFlagEnabled(true)
         listOf(
             CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE,
@@ -782,7 +777,7 @@ internal class CustodyDateUpdateServiceTest {
                 )
                 assertThat(
                     saved.single { it.type.code == CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code }.date,
-                    equalTo(LocalDate.of(2025, 11, 5))
+                    equalTo(LocalDate.of(2025, 2, 27))
                 )
             }
         )
