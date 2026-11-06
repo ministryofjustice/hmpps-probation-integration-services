@@ -8,8 +8,6 @@ object PersonGenerator {
     val DEFAULT = generate("X123456", "A1234YZ")
     val NEW_PM = generate("T123456", "T1234UV")
     val HISTORIC_PM = generate("T223456", "T3456UV")
-    val person2 = PersonGenerator.generate("F200001")
-    val person3 = PersonGenerator.generate("X234567")
     val CASE_VIEW = forCaseView("C123456")
     val EXCLUSION = generate("E123456", exclusionMessage = "There is an exclusion on this person")
     val RESTRICTION = generate("R123456", restrictionMessage = "There is a restriction on this person")
