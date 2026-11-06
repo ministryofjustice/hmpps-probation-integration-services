@@ -32,6 +32,7 @@ class DataLoader(dataManager: DataManager, private val ldapTemplate: LdapTemplat
         save(PersonGenerator.PERSON2)
         save(EventGenerator.EVENT)
         save(EventGenerator.EVENT2)
+        save(EventGenerator.EVENT3)
         save(DisposalTypeGenerator.DISPOSAL_TYPE)
         save(DisposalGenerator.DISPOSAL)
         save(DisposalGenerator.NOMS_DISPOSAL)

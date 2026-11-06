@@ -16,4 +16,11 @@ object EventGenerator {
         active = true,
         softDeleted = false
     )
+
+    val EVENT3 = Event(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.PERSON1,
+        active = true,
+        softDeleted = false
+    )
 }

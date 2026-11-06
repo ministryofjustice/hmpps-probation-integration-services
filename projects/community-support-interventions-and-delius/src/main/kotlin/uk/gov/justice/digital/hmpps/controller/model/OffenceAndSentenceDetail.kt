@@ -7,5 +7,5 @@ data class OffenceAndSentenceDetail(
     val offence: CodeAndDescription,
     val offenceSubCategory: CodeAndDescription,
     val outcome: CodeAndDescription,
-    val sentenceEndDate: LocalDate
+    val sentenceEndDate: LocalDate?
 )

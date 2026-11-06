@@ -23,10 +23,10 @@ class Disposal(
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event,
 
-    @Column(name = "notional_end_date", nullable = false)
+    @Column(name = "notional_end_date")
     val notionalEndDate: LocalDate?,
 
-    @Column(name = "entered_notional_end_date", nullable = false)
+    @Column(name = "entered_notional_end_date")
     val enteredNotionalEndDate: LocalDate?,
 
     @ManyToOne

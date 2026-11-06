@@ -23,7 +23,7 @@ class PersonSentenceService(
         } else {
             personRepository.findByNomsNumber(personIdentifier)?.id.orNotFoundBy("NOMS Number", personIdentifier)
         }
-        val eventIds = eventRepository.findByPersonId(personId).map { it.id }
+        val eventIds = eventRepository.findActiveSentencedEventsByPersonId(personId).map { it.id }
         val offences = eventIds.map {
             mainOffenceRepository.findByEventId(it).firstOrNull()
         }
@@ -37,7 +37,7 @@ class PersonSentenceService(
             val eventId = it
             val offence = offences.firstOrNull() { it?.eventId == eventId }.orNotFoundBy("Event", eventId)
             val disposal = disposals.firstOrNull() { it?.event?.id == eventId }.orNotFoundBy("Event", eventId)
-            val sentenceEndDate = sentenceEndDates.find { it.first == eventId }?.second.orNotFoundBy("Event", eventId)
+            val sentenceEndDate = sentenceEndDates.find { it.first == eventId }?.second
 
             OffenceAndSentenceDetail(
                 eventId = eventId,

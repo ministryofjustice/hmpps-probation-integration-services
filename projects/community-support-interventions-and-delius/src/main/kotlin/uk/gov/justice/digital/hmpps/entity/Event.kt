@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
@@ -32,5 +33,12 @@ class Event(
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
-    fun findByPersonId(personId: Long): List<Event>
+    @Query(
+        """
+        SELECT e FROM Event e
+        JOIN Disposal d ON d.event.id = e.id
+        WHERE e.person.id = :personId AND d.active = true AND d.softDeleted = false
+        """
+    )
+    fun findActiveSentencedEventsByPersonId(personId: Long): List<Event>
 }
