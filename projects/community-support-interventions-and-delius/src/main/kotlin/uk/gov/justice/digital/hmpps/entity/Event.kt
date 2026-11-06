@@ -35,7 +35,7 @@ class Event(
 interface EventRepository : JpaRepository<Event, Long> {
     @Query(
         """
-        SELECT e FROM Event e
+        SELECT DISTINCT e FROM Event e
         JOIN Disposal d ON d.event.id = e.id
         WHERE e.person.id = :personId AND d.active = true AND d.softDeleted = false
         """

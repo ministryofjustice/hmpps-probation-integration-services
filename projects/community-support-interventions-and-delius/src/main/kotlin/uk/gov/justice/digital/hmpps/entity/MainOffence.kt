@@ -9,8 +9,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import java.lang.classfile.attribute.SourceFileAttribute
 
 @Entity
 @Table(name = "main_offence")
@@ -53,4 +53,7 @@ class Offence(
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     fun findByEventId(eventId: Long): List<MainOffence>
+
+    @EntityGraph(attributePaths = ["offence"])
+    fun findByEventIdIn(eventIds: Collection<Long>): List<MainOffence>
 }

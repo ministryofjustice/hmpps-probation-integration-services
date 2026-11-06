@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.hibernate.validator.internal.constraintvalidators.bv.money.PositiveValidatorForMonetaryAmount
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.model.CodeAndDescription
 import uk.gov.justice.digital.hmpps.controller.model.OffenceAndSentenceDetail
@@ -24,33 +23,40 @@ class PersonSentenceService(
             personRepository.findByNomsNumber(personIdentifier)?.id.orNotFoundBy("NOMS Number", personIdentifier)
         }
         val eventIds = eventRepository.findActiveSentencedEventsByPersonId(personId).map { it.id }
-        val offences = eventIds.map {
-            mainOffenceRepository.findByEventId(it).firstOrNull()
-        }
-        val disposals = eventIds.map {
-            disposalRepository.findByEventId(it).firstOrNull()
-        }
 
-        val sentenceEndDates = disposals.map { Pair(it?.event?.id, it?.enteredNotionalEndDate ?: it?.notionalEndDate) }
+        if (eventIds.isEmpty()) return emptyList()
 
-        val dataToReturn = eventIds.map {
-            val eventId = it
-            val offence = offences.firstOrNull() { it?.eventId == eventId }.orNotFoundBy("Event", eventId)
-            val disposal = disposals.firstOrNull() { it?.event?.id == eventId }.orNotFoundBy("Event", eventId)
-            val sentenceEndDate = sentenceEndDates.find { it.first == eventId }?.second
+        val offencesByEventId = mainOffenceRepository.findByEventIdIn(eventIds)
+            .groupBy { it.eventId }
+            .mapValues { (_, offences) -> offences.single() }
+
+        val disposalsByEventId = disposalRepository.findByEventIdIn(eventIds)
+            .groupBy { it.event.id }
+            .mapValues { (_, disposals) -> disposals.single() }
+
+        return eventIds.map { eventId ->
+            val mainOffence = offencesByEventId[eventId]
+                .orNotFoundBy("Event", eventId)
+            val disposal = disposalsByEventId[eventId]
+                .orNotFoundBy("Event", eventId)
 
             OffenceAndSentenceDetail(
                 eventId = eventId,
-                offence = CodeAndDescription(offence.offence.mainCategoryCode, offence.offence.mainCategoryDescription),
-                offenceSubCategory = CodeAndDescription(
-                    offence.offence.subCategoryCode,
-                    offence.offence.subCategoryDescription
+                offence = CodeAndDescription(
+                    mainOffence.offence.mainCategoryCode,
+                    mainOffence.offence.mainCategoryDescription
                 ),
-                outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
-                sentenceEndDate = sentenceEndDate
+                offenceSubCategory = CodeAndDescription(
+                    mainOffence.offence.subCategoryCode,
+                    mainOffence.offence.subCategoryDescription
+                ),
+                outcome = CodeAndDescription(
+                    disposal.disposalType.code,
+                    disposal.disposalType.description
+                ),
+                sentenceEndDate = disposal.enteredNotionalEndDate
+                    ?: disposal.notionalEndDate
             )
-
         }
-        return dataToReturn
     }
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
@@ -62,4 +63,7 @@ class DisposalType(
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     fun findByEventId(eventId: Long): List<Disposal>
+
+    @EntityGraph(attributePaths = ["event", "disposalType"])
+    fun findByEventIdIn(eventIds: Collection<Long>): List<Disposal>
 }
