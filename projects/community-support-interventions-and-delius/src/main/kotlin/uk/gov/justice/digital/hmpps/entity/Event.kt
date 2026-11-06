@@ -39,5 +39,5 @@ class Event(
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
-    fun findByPersonIdAndDisposalNotNullAndActiveTrueAndSoftDeletedFalse(personId: Long): List<Event>
+    fun findByPersonIdAndDisposalNotNull(personId: Long): List<Event>
 }
