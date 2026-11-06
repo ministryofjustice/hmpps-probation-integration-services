@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.repository.StaffRepository
 class GetRegion(
     private val staffRepository: StaffRepository,
 
-    ) {
+) {
     fun withMembers(code: String): RegionWithMembers =
         staffRepository.findRegionMembers(code)
             .takeIf { it.isNotEmpty() }

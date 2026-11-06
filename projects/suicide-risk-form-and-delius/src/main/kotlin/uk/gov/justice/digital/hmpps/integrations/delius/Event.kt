@@ -29,7 +29,7 @@ class Event(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean,
 
-    )
+)
 
 interface EventRepository : JpaRepository<Event, Long> {
     fun findByPersonCrnAndNumber(crn: String, number: String): Event?

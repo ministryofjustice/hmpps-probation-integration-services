@@ -280,5 +280,5 @@ class ContactTypeOutcomeId(
     @Column(name = "contact_outcome_type_id")
     val contactOutcomeTypeId: Long,
 
-    ) : Serializable
+) : Serializable
 

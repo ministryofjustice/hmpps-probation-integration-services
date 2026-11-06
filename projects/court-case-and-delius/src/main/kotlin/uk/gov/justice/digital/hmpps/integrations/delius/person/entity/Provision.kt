@@ -46,7 +46,7 @@ class Provision(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    )
+)
 
 interface ProvisionRepository : JpaRepository<Provision, Long> {
     fun findByPersonId(personId: Long): List<Provision>
