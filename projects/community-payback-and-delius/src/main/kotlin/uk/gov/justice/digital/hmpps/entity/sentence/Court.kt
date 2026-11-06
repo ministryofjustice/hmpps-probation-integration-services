@@ -16,4 +16,4 @@ class Court(
     @Column(name = "court_name")
     val courtName: String,
 
-    )
+)
