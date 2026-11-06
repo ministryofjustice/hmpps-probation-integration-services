@@ -32,17 +32,18 @@ class MainOffence(
 )
 
 @Entity
-@Table(name = "offence")
+@Table(name = "r_offence")
 class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
 
-    @Column(name = "main_category_code")
+    @Column(name = "main_category_code", columnDefinition = "char(3)")
     val mainCategoryCode: String,
 
-    @Column(name = "sub_category_code")
+    @Column(name = "sub_category_code", columnDefinition = "char(2)")
     val subCategoryCode: String,
+
     @Column(name = "main_category_description")
     val mainCategoryDescription: String,
 

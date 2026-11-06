@@ -53,7 +53,7 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "disposal_type_code", nullable = false)
     val code: String,
 
     @Column(name = "description", nullable = false)

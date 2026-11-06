@@ -33,17 +33,15 @@ internal class PersonSentenceIntegrationTest @Autowired constructor(
         mockMvc.get("/case/$personIdentifier/offence-and-sentence") { withToken() }
             .andExpect { status { isOk() } }
             .andExpectJson(
-                OffenceAndSentenceDetail(
-                    offence = CodeAndDescription(
-                        offence.mainCategoryCode,
-                        offence.mainCategoryDescription
-                    ),
-                    offenceSubCategory = CodeAndDescription(
-                        offence.subCategoryCode,
-                        offence.subCategoryDescription
-                    ),
+                listOf(OffenceAndSentenceDetail(
+                    eventId = disposal.event.id,
+                    offence = CodeAndDescription(offence.mainCategoryCode,
+                        offence.mainCategoryDescription),
+                    offenceSubCategory = CodeAndDescription(offence.subCategoryCode,
+                        offence.subCategoryDescription),
                     outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
                     sentenceEndDate = disposal.enteredNotionalEndDate!!
+                )
                 )
             )
     }
@@ -57,17 +55,15 @@ internal class PersonSentenceIntegrationTest @Autowired constructor(
         mockMvc.get("/case/$personIdentifier/offence-and-sentence") { withToken() }
             .andExpect { status { isOk() } }
             .andExpectJson(
-                OffenceAndSentenceDetail(
-                    offence = CodeAndDescription(
-                        offence.mainCategoryCode,
-                        offence.mainCategoryDescription
-                    ),
-                    offenceSubCategory = CodeAndDescription(
-                        offence.subCategoryCode,
-                        offence.subCategoryDescription
-                    ),
+                listOf(OffenceAndSentenceDetail(
+                    eventId = disposal.event.id,
+                    offence = CodeAndDescription(offence.mainCategoryCode,
+                        offence.mainCategoryDescription),
+                    offenceSubCategory = CodeAndDescription(offence.subCategoryCode,
+                        offence.subCategoryDescription),
                     outcome = CodeAndDescription(disposal.disposalType.code, disposal.disposalType.description),
                     sentenceEndDate = disposal.enteredNotionalEndDate!!
+                )
                 )
             )
     }

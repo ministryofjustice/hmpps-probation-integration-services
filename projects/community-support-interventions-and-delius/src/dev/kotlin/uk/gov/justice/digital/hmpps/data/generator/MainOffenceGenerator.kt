@@ -21,9 +21,9 @@ object MainOffenceGenerator {
 object OffenceGenerator {
     val OFFENCE1 = uk.gov.justice.digital.hmpps.entity.Offence(
         id = IdGenerator.getAndIncrement(),
-        mainCategoryCode = "A",
+        mainCategoryCode = "AA1",
         mainCategoryDescription = "Assault",
-        subCategoryCode = "A1",
+        subCategoryCode = "AA",
         subCategoryDescription = "Assault with intent to cause serious harm"
     )
 }
