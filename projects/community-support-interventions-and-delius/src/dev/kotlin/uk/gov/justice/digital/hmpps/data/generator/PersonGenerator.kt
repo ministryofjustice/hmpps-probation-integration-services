@@ -12,6 +12,7 @@ object PersonGenerator {
     val PERSON2 = Person(
         id = IdGenerator.getAndIncrement(),
         crn = "X123457",
+        nomsNumber = "A1234AA",
         softDeleted = false,
     )
 }
