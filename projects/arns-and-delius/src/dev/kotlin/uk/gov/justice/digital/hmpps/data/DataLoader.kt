@@ -44,8 +44,6 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
     }
 
     private fun setupSupervisionPackageData() {
-        // SQLRestriction references this column, but it is not mapped in the generated dev/test schema.
-        jdbcTemplate.execute("ALTER TABLE supervision_package ADD soft_deleted NUMBER DEFAULT 0 NOT NULL")
         saveAll(SupervisionPackageGenerator.SINGLE_PACKAGE)
         saveAll(SupervisionPackageGenerator.UNCHANGED_TYPE)
         saveAll(SupervisionPackageGenerator.CHANGED_TYPE)

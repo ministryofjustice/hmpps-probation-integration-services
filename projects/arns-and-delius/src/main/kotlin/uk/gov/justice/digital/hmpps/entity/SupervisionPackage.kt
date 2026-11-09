@@ -1,13 +1,14 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.type.NumericBooleanConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.ZonedDateTime
 
@@ -34,8 +35,11 @@ class SupervisionPackage(
     val supervisionPackageStart: ZonedDateTime,
 
     @Column(name = "last_updated_datetime")
-    val supervisionPackageLastUpdated: ZonedDateTime
+    val supervisionPackageLastUpdated: ZonedDateTime,
 
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Convert(converter = NumericBooleanConverter::class)
+    val softDeleted: Boolean = false
 )
 
 interface SupervisionPackageRepository : JpaRepository<SupervisionPackage, Long> {
