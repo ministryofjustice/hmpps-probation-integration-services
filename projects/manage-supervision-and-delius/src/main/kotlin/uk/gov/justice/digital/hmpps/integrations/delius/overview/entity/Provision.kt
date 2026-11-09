@@ -47,7 +47,7 @@ class Provision(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    )
+)
 
 interface ProvisionRepository : JpaRepository<Provision, Long> {
     @EntityGraph(attributePaths = ["type", "lastUpdatedUser", "lastUpdatedUser.staff", "lastUpdatedUser.staff.provider"])

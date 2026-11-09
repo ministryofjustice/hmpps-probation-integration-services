@@ -55,7 +55,7 @@ class PersonalCircumstance(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    )
+)
 
 interface PersonCircumstanceRepository : JpaRepository<PersonalCircumstance, Long> {
 

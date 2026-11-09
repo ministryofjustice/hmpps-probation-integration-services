@@ -55,7 +55,7 @@ class PersonalCircumstance(
     @Convert(converter = NumericBooleanConverter::class)
     val softDeleted: Boolean = false,
 
-    ) {
+) {
     fun toPersonCircumstance(): PersonCircumstance {
         return PersonCircumstance(
             type = this.type.toCodeAndDescription(),
