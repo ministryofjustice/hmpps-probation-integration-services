@@ -9,5 +9,5 @@ object ProbationAreaGenerator {
         code: String,
         description: String = "description for $code",
 
-    ) = ProbationArea(IdGenerator.getAndIncrement(), code, description)
+        ) = ProbationArea(IdGenerator.getAndIncrement(), code, description)
 }

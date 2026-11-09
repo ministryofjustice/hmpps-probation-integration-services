@@ -48,7 +48,7 @@ class ContactLogService(
     private val telemetryService: TelemetryService,
     private val objectMapper: ObjectMapper,
 
-) : AuditableService(auditedInteractionService) {
+    ) : AuditableService(auditedInteractionService) {
     companion object {
         const val REVIEW_ENFORCEMENT_STATUS = "ARWS"
     }

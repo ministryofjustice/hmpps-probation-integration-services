@@ -41,6 +41,6 @@ class Team(
     @Column(name = "end_date")
     val endDate: LocalDate? = null,
 
-) {
+    ) {
     fun unallocatedStaffCode() = code + "U"
 }

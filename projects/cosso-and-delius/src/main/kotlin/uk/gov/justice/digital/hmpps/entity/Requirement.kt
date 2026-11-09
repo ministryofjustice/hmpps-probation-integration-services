@@ -48,7 +48,7 @@ class RequirementType(
     @JoinColumn(name = "length_2_units_id")
     val length2Units: ReferenceData? = null,
 
-)
+    )
 
 interface RequirementRepository : JpaRepository<RequirementEntity, Long> {
     fun findAllByDisposalIdIn(disposalIds: List<Long>): List<RequirementEntity>

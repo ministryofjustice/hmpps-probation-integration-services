@@ -89,7 +89,7 @@ class Event(
     @JoinColumn(name = "court_id")
     val court: Court?,
 
-)
+    )
 
 interface EventRepository : JpaRepository<Event, Long> {
 
@@ -208,7 +208,7 @@ class OrderManager(
     ) @OneToOne
     val trustProviderTeam: AllTeam? = null,
 
-)
+    )
 
 @Entity
 @Immutable

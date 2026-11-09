@@ -37,7 +37,7 @@ class Team(
     val startDate: LocalDate,
     val endDate: LocalDate?,
 
-)
+    )
 
 @Embeddable
 class TeamOfficeLinkId(
