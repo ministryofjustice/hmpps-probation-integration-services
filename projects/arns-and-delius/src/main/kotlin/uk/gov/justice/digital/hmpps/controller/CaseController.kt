@@ -15,4 +15,7 @@ class CaseController(
 ) {
     @GetMapping("/{crn}")
     fun getCaseDetail(@PathVariable crn: String) = caseDetailService.getCaseDetail(crn)
+
+    @GetMapping("/{crn}/supervision-package")
+    fun getSupervisionPackage(@PathVariable crn: String) = caseDetailService.getSupervisionPackage(crn)
 }

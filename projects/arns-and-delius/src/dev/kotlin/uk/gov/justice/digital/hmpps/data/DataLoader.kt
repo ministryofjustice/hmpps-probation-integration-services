@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.EXCLUDED_CASE
@@ -11,13 +12,14 @@ import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
 
 @Component
-class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
+class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplate) : BaseDataLoader(dataManager) {
     override fun systemUser() = UserGenerator.AUDIT_USER
 
     override fun setupData() {
         setupReferenceData()
         setupLimitedAccessData()
         setupCaseData()
+        setupSupervisionPackageData()
     }
 
     private fun setupReferenceData() {
@@ -39,5 +41,18 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     private fun setupCaseData() {
         save(PersonGenerator.NO_EVENTS_PERSON)
         save(PersonGenerator.generatePersonWithOffences())
+    }
+
+    private fun setupSupervisionPackageData() {
+        // SQLRestriction references this column, but it is not mapped in the generated dev/test schema.
+        jdbcTemplate.execute("ALTER TABLE supervision_package ADD soft_deleted NUMBER DEFAULT 0 NOT NULL")
+        saveAll(SupervisionPackageGenerator.SINGLE_PACKAGE)
+        saveAll(SupervisionPackageGenerator.UNCHANGED_TYPE)
+        saveAll(SupervisionPackageGenerator.CHANGED_TYPE)
+        saveAll(SupervisionPackageGenerator.UNCHANGED_AFTER_CHANGE)
+        saveAll(SupervisionPackageGenerator.RETURNED_TO_ORIGINAL_TYPE)
+        saveAll(SupervisionPackageGenerator.UNCHANGED_AFTER_RETURN)
+        saveAll(SupervisionPackageGenerator.MULTIPLE_DISPOSALS)
+        saveAll(SupervisionPackageGenerator.OTHER_PERSON_PACKAGES)
     }
 }
