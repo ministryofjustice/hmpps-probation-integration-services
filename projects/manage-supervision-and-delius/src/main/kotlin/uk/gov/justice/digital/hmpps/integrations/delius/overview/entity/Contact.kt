@@ -386,7 +386,7 @@ class ContactOutcome(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
 
-    )
+)
 
 @Immutable
 @Entity

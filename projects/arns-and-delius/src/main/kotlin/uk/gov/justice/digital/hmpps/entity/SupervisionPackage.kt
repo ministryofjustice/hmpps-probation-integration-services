@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "supervision_package")
 @SQLRestriction("soft_deleted = 0")
-class SupervisionPackage (
+class SupervisionPackage(
     @Id
     @Column(name = "supervision_package_id")
     val id: Long = 0,

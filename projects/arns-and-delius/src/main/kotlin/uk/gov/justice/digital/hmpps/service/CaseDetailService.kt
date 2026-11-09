@@ -39,6 +39,7 @@ class CaseDetailService(
         }
     }
 }
+
 private fun Person.toModel() = ArnsResponse(
     crn = crn,
     dateOfBirth = dateOfBirth,
