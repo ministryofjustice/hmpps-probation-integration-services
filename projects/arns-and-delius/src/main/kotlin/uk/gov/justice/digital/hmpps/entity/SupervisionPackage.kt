@@ -30,10 +30,10 @@ class SupervisionPackage(
     @Column(name = "supervision_package_type_id")
     val packageType: Long,
 
-    @Column("start_datetime")
+    @Column(name = "start_datetime")
     val supervisionPackageStart: ZonedDateTime,
 
-    @Column("last_updated_datetime")
+    @Column(name = "last_updated_datetime")
     val supervisionPackageLastUpdated: ZonedDateTime
 
 )

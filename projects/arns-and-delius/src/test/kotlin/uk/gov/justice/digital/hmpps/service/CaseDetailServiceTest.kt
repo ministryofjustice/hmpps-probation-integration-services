@@ -9,6 +9,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.entity.SupervisionPackageRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.ArnsResponse
 import uk.gov.justice.digital.hmpps.model.OffenceDetail
@@ -19,6 +20,9 @@ import java.time.LocalDate
 class CaseDetailServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var supervisionPackageRepository: SupervisionPackageRepository
 
     @InjectMocks
     lateinit var caseDetailService: CaseDetailService
