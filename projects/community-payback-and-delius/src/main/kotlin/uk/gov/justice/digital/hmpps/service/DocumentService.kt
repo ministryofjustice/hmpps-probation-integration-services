@@ -144,7 +144,7 @@ class DocumentService(
         audit["alfrescoDocumentId"] = document.alfrescoId
         audit["entityId"] = document.primaryKeyId
         audit["tableName"] = document.tableName
-        audit["externalReference"] = document.externalReference
+        document.externalReference?.let { audit["externalReference"] = it }
     }
 
     companion object {
