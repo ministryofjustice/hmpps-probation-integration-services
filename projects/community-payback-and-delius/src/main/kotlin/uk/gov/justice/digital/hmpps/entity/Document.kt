@@ -34,7 +34,7 @@ class Document(
     @Column(name = "table_name")
     val tableName: String,
 
-    val externalReference: String,
+    val externalReference: String? = null,
 
     @LastModifiedDate
     var lastSaved: ZonedDateTime? = ZonedDateTime.now(),
