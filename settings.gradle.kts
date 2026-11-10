@@ -89,7 +89,7 @@ dependencyResolutionManagement {
             library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.2.1")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.10")
             library("azure-identity", "com.azure:azure-identity:1.19.0")
-            library("flipt", "io.flipt:flipt-client-java:1.3.5")
+            library("flipt", "io.flipt:flipt-client-java:1.4.0")
             library("html2md", "com.vladsch.flexmark:flexmark-html2md-converter:0.64.8")
             library("microsoft-graph", "com.microsoft.graph:microsoft-graph:6.72.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
@@ -101,7 +101,7 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.62.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.63.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
@@ -114,7 +114,7 @@ dependencyResolutionManagement {
 
 plugins {
     id("com.gradle.develocity") version "4.6.1"
-    id("com.github.burrunan.s3-build-cache") version "1.9.10"
+    id("com.github.burrunan.s3-build-cache") version "1.9.11"
 }
 
 develocity {
