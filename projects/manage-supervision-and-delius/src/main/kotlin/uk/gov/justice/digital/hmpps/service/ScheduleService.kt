@@ -239,7 +239,8 @@ fun Contact.toActivity(noteId: Int? = null): Activity {
         externalReference = externalReference,
         alert = alert,
         sparks = sparks.sortedBy { it.code }.map { CodeAndDescription(it.code, it.description) },
-        editable = type.editable ?: false
+        editable = type.editable ?: false,
+        isSparksAllowed = type.sparksAllowed ?: false
     )
 }
 

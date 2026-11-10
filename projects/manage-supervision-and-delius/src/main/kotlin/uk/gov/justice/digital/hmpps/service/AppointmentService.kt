@@ -128,6 +128,6 @@ class AppointmentService(
         }.let(::OverdueOutcomeAppointments)
 }
 
-fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact, locationRequired == "Y")
+fun ContactTypeEntity.toAppointmentType() = AppointmentType(code, description, offenderContact, locationRequired == "Y", sparksAllowed ?: false)
 
 fun TeamEntity.toTeam() = Team(code = code, description = description)
