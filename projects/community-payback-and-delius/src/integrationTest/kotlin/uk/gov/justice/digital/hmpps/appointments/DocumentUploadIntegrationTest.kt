@@ -57,8 +57,8 @@ class DocumentUploadIntegrationTest @Autowired constructor(
         val document = documentRepository.findById(response.documentId).orElseThrow()
         assertThat(document.alfrescoId).isEqualTo("00000000-0000-0000-0000-000000000001")
         assertThat(document.name).isEqualTo("evidence.pdf")
-        assertThat(document.tableName).isEqualTo("CONTACT")
-        assertThat(document.primaryKeyId).isEqualTo(appointment.contact.id)
+        assertThat(document.tableName).isEqualTo("UPW_APPOINTMENT")
+        assertThat(document.primaryKeyId).isEqualTo(appointment.id)
         assertThat(document.person.id).isEqualTo(appointment.person.id)
         assertThat(document.createdByUserId).isNotNull
         assertThat(document.lastUpdatedUserId).isEqualTo(document.createdByUserId)
@@ -77,10 +77,10 @@ class DocumentUploadIntegrationTest @Autowired constructor(
                     aMultipart().withFileName("evidence.pdf").build()
                 )
                 .withRequestBodyPart(
-                    aMultipart().withName("entityType").withBody(equalTo("CONTACT")).build()
+                    aMultipart().withName("entityType").withBody(equalTo("UPWAPPOINTMENT")).build()
                 )
                 .withRequestBodyPart(
-                    aMultipart().withName("entityId").withBody(equalTo(appointment.contact.id.toString())).build()
+                    aMultipart().withName("entityId").withBody(equalTo(appointment.id.toString())).build()
                 )
         )
     }
