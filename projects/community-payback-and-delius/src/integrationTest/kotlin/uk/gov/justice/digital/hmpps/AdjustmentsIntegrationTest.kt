@@ -486,7 +486,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             reference = UUID.randomUUID(),
         )
         val saved = adjustmentRepository.save(adjustment)
-        saved.externalReference = null  // Clear the reference to test setting it via API
+        saved.externalReference = null
         adjustmentRepository.save(saved)
         adjustmentRepository.flush()
 

@@ -52,11 +52,7 @@ class AdjustmentService(
                 )
             )
             AdjustmentPostResponse(adjustment.id!!, adjustment.reference()!!)
-        }.also {
-            adjustmentRepository.flush()
-            upwDetails.values.map { unpaidWorkDetailsRepository.findById(it.id).orElse(it) }
-                .onEach { communityPaybackAppointmentsService.updateStatus(it) }
-        }
+        }.also { upwDetails.values.onEach { communityPaybackAppointmentsService.updateStatus(it) } }
     }
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
@@ -87,19 +83,13 @@ class AdjustmentService(
         existingAdjustment.adjustedByUserId = user.id
         existingAdjustment.reason = referenceDataRepository.getAdjustmentReason(adjustmentRequest.reason)
         adjustmentRepository.save(existingAdjustment)
-        adjustmentRepository.flush()
-        val refreshedDetails =
-            unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
-        communityPaybackAppointmentsService.updateStatus(refreshedDetails)
+        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
     }
 
     fun deleteAdjustment(reference: UUID) {
         val existingAdjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
         adjustmentRepository.delete(existingAdjustment)
-        adjustmentRepository.flush()
-        val refreshedDetails =
-            unpaidWorkDetailsRepository.findById(existingAdjustment.upwDetails.id).orElse(existingAdjustment.upwDetails)
-        communityPaybackAppointmentsService.updateStatus(refreshedDetails)
+        communityPaybackAppointmentsService.updateStatus(existingAdjustment.upwDetails)
     }
 
     fun getAdjustment(reference: UUID): Adjustment {
