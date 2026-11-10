@@ -138,7 +138,9 @@ internal class DocumentServiceTest {
 
     @Test
     fun `gets empty document list when appointment has no documents`() {
-        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT")).thenReturn(emptyList())
+        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT")).thenReturn(
+            emptyList()
+        )
 
         val result = documentService.getDocuments(appointment.id)
 
@@ -238,14 +240,24 @@ internal class DocumentServiceTest {
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
-        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("UPW_APPOINTMENT", appointmentId, documentId))
+        whenever(
+            documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot(
+                "UPW_APPOINTMENT",
+                appointmentId,
+                documentId
+            )
+        )
             .thenReturn(false)
 
         documentService.deleteDocumentById(appointmentId, documentId)
 
         verify(documentRepository).findById(documentId)
         verify(documentRepository).delete(document)
-        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("UPW_APPOINTMENT", appointmentId, documentId)
+        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot(
+            "UPW_APPOINTMENT",
+            appointmentId,
+            documentId
+        )
     }
 
     @Test
