@@ -64,7 +64,7 @@ data class Activity(
     val alert: Boolean? = null,
     val sparks: List<CodeAndDescription>? = null,
     val editable: Boolean,
-    val isSparksAllowed: Boolean?= null,
+    val isSparksAllowed: Boolean? = null,
 )
 
 data class Component(val id: Long, val description: String, val type: Type) {
