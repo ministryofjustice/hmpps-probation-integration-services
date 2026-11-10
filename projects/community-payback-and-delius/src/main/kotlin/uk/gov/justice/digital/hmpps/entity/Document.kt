@@ -81,5 +81,5 @@ class Document(
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
-    fun findAllByPrimaryKeyIdAndTableName(primaryKeyId: Long, tableName: String = "CONTACT"): List<Document>
+    fun findAllByPrimaryKeyIdAndTableName(primaryKeyId: Long, tableName: String = "UPW_APPOINTMENT"): List<Document>
 }

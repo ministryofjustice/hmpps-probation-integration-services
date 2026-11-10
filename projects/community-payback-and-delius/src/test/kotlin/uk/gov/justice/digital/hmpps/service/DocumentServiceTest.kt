@@ -72,8 +72,8 @@ internal class DocumentServiceTest {
         person = person,
         alfrescoId = alfrescoId,
         name = name,
-        primaryKeyId = 99L,
-        tableName = "CONTACT",
+        primaryKeyId = appointment.id,
+        tableName = "UPW_APPOINTMENT",
         externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
         workInProgress = "N",
         status = "Y",
@@ -84,7 +84,7 @@ internal class DocumentServiceTest {
     @BeforeEach
     fun setUp() {
         whenever(unpaidWorkAppointmentRepository.getUpwAppointmentById(appointment.id)).thenReturn(appointment)
-        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointment.id)).thenReturn(99L)
+        whenever(unpaidWorkAppointmentRepository.existsById(appointment.id)).thenReturn(true)
         whenever(entityManager.createNativeQuery(any())).thenReturn(query)
         whenever(query.setParameter(any<String>(), any())).thenReturn(query)
         whenever(documentRepository.save(any<Document>())).thenAnswer { it.arguments[0] as Document }
@@ -102,25 +102,30 @@ internal class DocumentServiceTest {
             assertThat(it.getFirst("fileName")?.body).isEqualTo(file.originalFilename)
             assertThat(it.getFirst("filedata")?.body).isEqualTo(file.bytes)
             assertThat(it.getFirst("CRN")?.body).isEqualTo(person.crn)
-            assertThat(it.getFirst("entityId")?.body).isEqualTo("99")
+            assertThat(it.getFirst("entityType")?.body).isEqualTo("UPWAPPOINTMENT")
+            assertThat(it.getFirst("entityId")?.body).isEqualTo(appointment.id.toString())
         })
         verify(documentRepository).save(check {
             assertThat(it.alfrescoId).isEqualTo("alfresco-id-1")
-            assertThat(it.primaryKeyId).isEqualTo(99L)
+            assertThat(it.primaryKeyId).isEqualTo(appointment.id)
+            assertThat(it.tableName).isEqualTo("UPW_APPOINTMENT")
             assertThat(it.id).isEqualTo(result.documentId)
         })
         verify(query).setParameter("documentLinked", "Y")
-        verify(query).setParameter("contactId", 99L)
+        verify(query).setParameter("appointmentId", appointment.id)
+        verify(entityManager).createNativeQuery(
+            "update upw_appointment set document_linked = :documentLinked where upw_appointment_id = :appointmentId"
+        )
     }
 
     @Test
     fun `gets documents for an appointment`() {
-        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")).thenReturn(
-            listOf(
-                document(id = 1L, name = "evidence.pdf"),
-                document(id = 2L, name = "certificate.docx")
-            )
+        val documents = listOf(
+            document(id = 1L, name = "evidence.pdf"),
+            document(id = 2L, name = "certificate.docx")
         )
+        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT"))
+            .thenReturn(documents)
 
         val result = documentService.getDocuments(appointment.id)
 
@@ -128,17 +133,24 @@ internal class DocumentServiceTest {
             DocumentUploadResponse(1L, "evidence.pdf"),
             DocumentUploadResponse(2L, "certificate.docx"),
         )
-        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")
+        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT")
     }
 
     @Test
     fun `gets empty document list when appointment has no documents`() {
-        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")).thenReturn(emptyList())
+        whenever(documentRepository.findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT")).thenReturn(emptyList())
 
         val result = documentService.getDocuments(appointment.id)
 
         assertThat(result.content).isEmpty()
-        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(99L, "CONTACT")
+        verify(documentRepository).findAllByPrimaryKeyIdAndTableName(appointment.id, "UPW_APPOINTMENT")
+    }
+
+    @Test
+    fun `throws when listing documents for an appointment that does not exist`() {
+        assertThrows<NotFoundException> { documentService.getDocuments(789L) }
+
+        verify(documentRepository, never()).findAllByPrimaryKeyIdAndTableName(any(), any())
     }
 
     @Test
@@ -178,7 +190,7 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    fun `deletes document, removes it from alfresco and unlinks contact when no documents remain`() {
+    fun `deletes document, removes it from alfresco and unlinks appointment when no documents remain`() {
         val document = document()
         whenever(
             documentRepository
@@ -190,10 +202,14 @@ internal class DocumentServiceTest {
         verify(alfrescoUploadClient).delete("alfresco-id-1")
         verify(documentRepository).delete(document)
         verify(query).setParameter("documentLinked", "N")
+        verify(query).setParameter("appointmentId", appointment.id)
+        verify(entityManager).createNativeQuery(
+            "update upw_appointment set document_linked = :documentLinked where upw_appointment_id = :appointmentId"
+        )
     }
 
     @Test
-    fun `deletes document even when alfresco copy is already missing, keeping contact linked`() {
+    fun `deletes document even when alfresco copy is already missing, keeping appointment linked`() {
         val document = document(alfrescoId = "missing-id")
         whenever(alfrescoUploadClient.delete("missing-id")).thenThrow(mock<HttpClientErrorException.NotFound>())
         whenever(
@@ -205,56 +221,53 @@ internal class DocumentServiceTest {
 
         verify(documentRepository).delete(document)
         verify(query).setParameter("documentLinked", "Y")
+        verify(query).setParameter("appointmentId", appointment.id)
     }
 
     @Test
     fun `deleteDocumentById deletes document when appointment id matches`() {
-        val appointmentId = 123L
+        val appointmentId = appointment.id
         val documentId = 456L
-        val contactId = 789L
 
         val document = mock<Document> {
             on { id } doReturn documentId
-            on { primaryKeyId } doReturn contactId
+            on { primaryKeyId } doReturn appointmentId
             on { alfrescoId } doReturn "alfresco-123"
-            on { tableName } doReturn "CONTACT"
+            on { tableName } doReturn "UPW_APPOINTMENT"
             on { externalReference } doReturn "urn:test"
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
-        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId))
-            .thenReturn(contactId)
-        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", contactId, documentId))
+        whenever(documentRepository.existsByTableNameAndPrimaryKeyIdAndIdNot("UPW_APPOINTMENT", appointmentId, documentId))
             .thenReturn(false)
 
         documentService.deleteDocumentById(appointmentId, documentId)
 
         verify(documentRepository).findById(documentId)
         verify(documentRepository).delete(document)
-        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("CONTACT", contactId, documentId)
+        verify(documentRepository).existsByTableNameAndPrimaryKeyIdAndIdNot("UPW_APPOINTMENT", appointmentId, documentId)
     }
 
     @Test
     fun `deleteDocumentById throws when document does not belong to appointment`() {
-        val appointmentId = 123L
+        val appointmentId = appointment.id
         val otherAppointmentId = 789L
-        val contactId = 999L
         val documentId = 456L
 
         val document = mock<Document> {
             on { id } doReturn documentId
             on { primaryKeyId } doReturn appointmentId
+            on { tableName } doReturn "UPW_APPOINTMENT"
         }
 
         whenever(documentRepository.findById(documentId)).thenReturn(Optional.of(document))
-        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(otherAppointmentId))
-            .thenReturn(contactId)
+        whenever(unpaidWorkAppointmentRepository.existsById(otherAppointmentId)).thenReturn(true)
 
         val exception = assertThrows<IllegalArgumentException> {
-            documentService.deleteDocumentById(otherAppointmentId, documentId)
+            documentService.deleteDocumentById(otherAppointmentId, document.id)
         }
 
-        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $contactId")
+        assertThat(exception).hasMessage("Document $documentId does not belong to appointment $otherAppointmentId")
         verify(documentRepository).findById(documentId)
         verify(documentRepository, never()).delete(any())
     }
@@ -262,8 +275,6 @@ internal class DocumentServiceTest {
     @Test
     fun `deleteDocumentById throws when document does not exist`() {
         whenever(documentRepository.findById(456L)).thenReturn(Optional.empty())
-        whenever(unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(123L))
-            .thenReturn(789L)
 
         val exception = assertThrows<NotFoundException> {
             documentService.deleteDocumentById(123L, 456L)
