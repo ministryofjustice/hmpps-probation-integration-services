@@ -39,10 +39,10 @@ class DocumentService(
 ) : AuditableService(auditedInteractionService) {
 
     fun getDocuments(appointmentId: Long): DocumentListResponse {
-        val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
-            ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
+        if (!unpaidWorkAppointmentRepository.existsById(appointmentId))
+            throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
         return DocumentListResponse(
-            content = documentRepository.findAllByPrimaryKeyIdAndTableName(contactId, "CONTACT").map {
+            content = documentRepository.findAllByPrimaryKeyIdAndTableName(appointmentId, "UPW_APPOINTMENT").map {
                 DocumentUploadResponse(it.id, it.name)
             }
         )
@@ -65,8 +65,8 @@ class DocumentService(
             person = appointment.person,
             alfrescoId = "",
             name = filename,
-            primaryKeyId = appointment.contact.id,
-            tableName = "CONTACT",
+            primaryKeyId = appointment.id,
+            tableName = "UPW_APPOINTMENT",
             externalReference = Document.communityPaybackUrn(UUID.randomUUID()),
             workInProgress = "N",
             status = "Y",
@@ -78,7 +78,7 @@ class DocumentService(
         populateAudit(document, it)
 
         val savedDocument = documentRepository.save(document)
-        updateContactDocumentLinked(appointment.contact.id, true)
+        updateDocumentLinked(appointment.id, true)
 
         DocumentUploadResponse(savedDocument.id, savedDocument.name)
     }
@@ -95,7 +95,7 @@ class DocumentService(
             document.primaryKeyId,
             document.id
         )
-        updateContactDocumentLinked(document.primaryKeyId, hasDocuments)
+        updateDocumentLinked(document.primaryKeyId, hasDocuments)
     }
 
     fun deleteDocumentById(appointmentId: Long, documentId: Long) {
@@ -103,10 +103,10 @@ class DocumentService(
         deleteDocument(document)
     }
 
-    private fun updateContactDocumentLinked(contactId: Long, hasDocuments: Boolean) {
-        entityManager.createNativeQuery("update contact set document_linked = :documentLinked where contact_id = :contactId")
+    private fun updateDocumentLinked(appointmentId: Long, hasDocuments: Boolean) {
+        entityManager.createNativeQuery("update upw_appointment set document_linked = :documentLinked where upw_appointment_id = :appointmentId")
             .setParameter("documentLinked", if (hasDocuments) "Y" else "N")
-            .setParameter("contactId", contactId)
+            .setParameter("appointmentId", appointmentId)
             .executeUpdate()
     }
 
@@ -117,12 +117,15 @@ class DocumentService(
         }
     }
 
-    private fun getDocument(appointmentId: Long, documentId: Long) =
-        documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId).also {
-            val contactId = unpaidWorkAppointmentRepository.getContactIdForUnpaidWorkAppointment(appointmentId)
-                ?: throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
-            require(it.primaryKeyId == contactId) { "Document $documentId does not belong to appointment $contactId" }
+    private fun getDocument(appointmentId: Long, documentId: Long): Document {
+        if (!unpaidWorkAppointmentRepository.existsById(appointmentId))
+            throw NotFoundException("UnpaidWorkAppointment", "id", appointmentId)
+        return documentRepository.findByIdOrNull(documentId).orNotFoundBy("id", documentId).also {
+            require(it.tableName == "UPW_APPOINTMENT" && it.primaryKeyId == appointmentId) {
+                "Document $documentId does not belong to appointment $appointmentId"
+            }
         }
+    }
 
     private fun Document.toMultipart(file: ByteArray, person: Person) =
         MultipartBodyBuilder().apply {
@@ -131,7 +134,7 @@ class DocumentService(
             part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(name)
             part("author", "Service,Community Payback", MediaType.TEXT_PLAIN)
             part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
-            part("entityType", "CONTACT", MediaType.TEXT_PLAIN)
+            part("entityType", "UPWAPPOINTMENT", MediaType.TEXT_PLAIN)
             part("entityId", primaryKeyId.toString(), MediaType.TEXT_PLAIN)
             part("locked", "true", MediaType.TEXT_PLAIN)
         }.build()
@@ -141,7 +144,7 @@ class DocumentService(
         audit["alfrescoDocumentId"] = document.alfrescoId
         audit["entityId"] = document.primaryKeyId
         audit["tableName"] = document.tableName
-        audit["externalReference"] = document.externalReference
+        document.externalReference?.let { audit["externalReference"] = it }
     }
 
     companion object {

@@ -34,7 +34,7 @@ class Document(
     @Column(name = "table_name")
     val tableName: String,
 
-    val externalReference: String,
+    val externalReference: String? = null,
 
     @LastModifiedDate
     var lastSaved: ZonedDateTime? = ZonedDateTime.now(),
@@ -81,5 +81,5 @@ class Document(
 interface DocumentRepository : JpaRepository<Document, Long> {
     fun existsByTableNameAndPrimaryKeyIdAndIdNot(tableName: String, primaryKeyId: Long, id: Long): Boolean
 
-    fun findAllByPrimaryKeyIdAndTableName(primaryKeyId: Long, tableName: String = "CONTACT"): List<Document>
+    fun findAllByPrimaryKeyIdAndTableName(primaryKeyId: Long, tableName: String = "UPW_APPOINTMENT"): List<Document>
 }

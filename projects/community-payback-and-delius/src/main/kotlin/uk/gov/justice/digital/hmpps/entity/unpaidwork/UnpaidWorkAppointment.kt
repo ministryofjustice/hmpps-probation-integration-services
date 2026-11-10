@@ -222,6 +222,10 @@ class UnpaidWorkAppointment(
     @Lob
     var notes: String?,
 
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "document_linked")
+    var documentLinked: Boolean? = false,
+
     @Version
     override var rowVersion: Long = 0,
 
@@ -544,9 +548,6 @@ interface UnpaidWorkAppointmentRepository : JpaRepository<UnpaidWorkAppointment,
         ),
         pageable
     )
-
-    @Query("select a.contact.id from UnpaidWorkAppointment a where a.id = :appointmentId")
-    fun getContactIdForUnpaidWorkAppointment(appointmentId: Long): Long?
 }
 
 fun UnpaidWorkAppointmentRepository.getAppointment(id: Long) =
