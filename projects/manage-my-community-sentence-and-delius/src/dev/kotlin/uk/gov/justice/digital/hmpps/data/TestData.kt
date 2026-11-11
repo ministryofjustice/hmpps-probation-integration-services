@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.entity.sentence.requirement.RequirementMainC
 import uk.gov.justice.digital.hmpps.entity.staff.CommunityManager
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.staff.Team
+import uk.gov.justice.digital.hmpps.entity.staff.User
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkProject
@@ -673,6 +674,14 @@ object TestData {
             user = LAO_USER,
             start = ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")),
             end = null, // active (no end date)
+            id = id()
+        )
+    }
+
+    object UserData {
+        val USER = User(
+            staffId = StaffData.STAFF.id,
+            username = "test.user",
             id = id()
         )
     }
