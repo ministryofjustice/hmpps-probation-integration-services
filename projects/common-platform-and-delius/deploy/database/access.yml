@@ -17,6 +17,7 @@ database:
       - additional_offence
     packages:
       - offender_support_api # for generating crn
+      - pkg_triggersupport # for optimisation table rebuild
     sequences:
       - additional_offence_seq
 
