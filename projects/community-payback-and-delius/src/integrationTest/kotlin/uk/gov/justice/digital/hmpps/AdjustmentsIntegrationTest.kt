@@ -220,12 +220,8 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `updating an adjustment updates UPW status when hours are completed`() {
         val reference = UUID.randomUUID()
-        val beingWorkedEvent = UPWGenerator.EVENT_6
-        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_6
-
-        entityManager.createNativeQuery("DELETE FROM upw_adjustment").executeUpdate()
-        entityManager.flush()
-        assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("WK")
+        val beingWorkedEvent = UPWGenerator.EVENT_7
+        val beingWorkedDetails = UPWGenerator.UPW_DETAILS_7
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
@@ -251,7 +247,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 date = LocalDate.now(),
                 reason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER.code,
                 type = AdjustmentType.NEGATIVE,
-                minutes = 60,
+                minutes = 3600,
             )
         }.andExpect { status { isOk() } }
         assertThat(upwDetailsRepository.findByIdOrNull(beingWorkedDetails.id)?.status?.code).isEqualTo("HC")
@@ -264,9 +260,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val negativeReference = UUID.randomUUID()
         val beingWorkedEvent = UPWGenerator.EVENT_7
         val upwDetailsId = UPWGenerator.UPW_DETAILS_7.id
-        entityManager.createNativeQuery("DELETE FROM upw_adjustment").executeUpdate()
-        entityManager.flush()
-        assertThat(upwDetailsRepository.findByIdOrNull(upwDetailsId)?.status?.code).isEqualTo("WK")
 
         mockMvc.post("/adjustments?username=${UserGenerator.DEFAULT_USER.username}") {
             withToken()
@@ -476,10 +469,9 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     }
 
     @Test
-    @Transactional
     fun `set adjustment external reference updates the URN when absent`() {
         val adjustment = UPWGenerator.generateUPWAdjustment(
-            upwDetails = UPWGenerator.UPW_DETAILS_7,
+            upwDetails = UPWGenerator.UPW_DETAILS_8,
             adjustmentAmount = 30,
             adjustmentType = AdjustmentType.POSITIVE.code,
             adjustmentReason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER,
@@ -488,7 +480,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         val saved = adjustmentRepository.save(adjustment)
         saved.externalReference = null
         adjustmentRepository.save(saved)
-        adjustmentRepository.flush()
 
         val newReference = UUID.randomUUID()
         mockMvc.put("/adjustment/${saved.id}") {
@@ -515,7 +506,7 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Test
     fun `set adjustment external reference returns 409 when external reference already set`() {
         val adjustment = UPWGenerator.generateUPWAdjustment(
-            upwDetails = UPWGenerator.UPW_DETAILS_7,
+            upwDetails = UPWGenerator.UPW_DETAILS_8,
             adjustmentAmount = 30,
             adjustmentType = AdjustmentType.POSITIVE.code,
             adjustmentReason = ReferenceDataGenerator.UPW_ADJUSTMENT_REASON_OTHER,

@@ -152,6 +152,5 @@ class AdjustmentService(
         }
         existingAdjustment.externalReference = urn
         adjustmentRepository.save(existingAdjustment)
-        adjustmentRepository.flush()
     }
 }
