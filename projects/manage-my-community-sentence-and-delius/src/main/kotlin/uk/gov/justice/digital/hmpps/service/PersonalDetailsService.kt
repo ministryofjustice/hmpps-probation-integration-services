@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.ldap.findPhoneByUsername
 import uk.gov.justice.digital.hmpps.model.Address.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.Manager
@@ -20,14 +20,19 @@ class PersonalDetailsService(
     private val personAddressRepository: PersonAddressRepository,
     private val personalContactRepository: PersonalContactRepository,
     private val ldapTemplate: LdapTemplate,
-    private val userRepository: UserRepository,
+    private val featureFlags: FeatureFlags
 ) {
     fun getName(crn: String) = personRepository.getNameByCrn(crn)
 
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getByCrn(crn)
-        val phoneNumber = userRepository.findByStaffId(person.manager.staff.id)?.username
-            ?.let { ldapTemplate.findPhoneByUsername(it) }
+        val phoneNumber =
+            if(featureFlags.enabled("manage_my_community_sentence.phone_number")) {
+                person.manager.staff.user?.username
+                    ?.let { ldapTemplate.findPhoneByUsername(it) }
+            } else {
+                null
+            }
         val mainAddress = personAddressRepository.findMainAddress(person.id)
         val emergencyContacts = personalContactRepository.findEmergencyContacts(person.id)
         return PersonalDetails(
@@ -43,7 +48,7 @@ class PersonalDetailsService(
             practitioner = Manager(
                 name = person.manager.staff.name(),
                 team = with(person.manager.team) { Team(telephone, officeLocations.map { it.toModel() }) },
-                phoneNumber = phoneNumber
+                telephoneNumber = phoneNumber
             )
         )
     }
