@@ -680,7 +680,7 @@ object TestData {
 
     object UserData {
         val USER = User(
-            staffId = StaffData.STAFF.id,
+            staff = StaffData.STAFF,
             username = "test.user",
             id = id()
         )
