@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
-@Table(name= "user_")
+@Table(name = "user_")
 class User(
     @Id
     @Column(name = "user_id")

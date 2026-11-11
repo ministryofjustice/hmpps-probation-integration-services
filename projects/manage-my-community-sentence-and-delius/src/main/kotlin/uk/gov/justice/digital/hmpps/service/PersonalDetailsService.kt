@@ -26,7 +26,8 @@ class PersonalDetailsService(
 
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getByCrn(crn)
-        val phoneNumber = ldapTemplate.findPhoneByUsername(userRepository.findByStaffId(person.manager.staff.id)?.username ?: "")
+        val phoneNumber =
+            ldapTemplate.findPhoneByUsername(userRepository.findByStaffId(person.manager.staff.id)?.username ?: "")
         val mainAddress = personAddressRepository.findMainAddress(person.id)
         val emergencyContacts = personalContactRepository.findEmergencyContacts(person.id)
         return PersonalDetails(
