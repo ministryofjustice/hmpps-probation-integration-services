@@ -122,7 +122,8 @@ object ContactGenerator {
         true,
         "Planned Doorstep Contact (NS)",
         offenderContact = true,
-        locationRequired = "Y"
+        locationRequired = "Y",
+        sparksAllowed = true
     )
     val EMAIL_POP_CT = generateContactType(
         "CMOB",
@@ -501,6 +502,7 @@ object ContactGenerator {
         eventContact: Boolean = false,
         editable: Boolean = true,
         locationRequired: String,
+        sparksAllowed: Boolean = false,
     ) = ContactType(
         IdGenerator.getAndIncrement(),
         code,
@@ -511,7 +513,8 @@ object ContactGenerator {
         offenderContact = offenderContact,
         eventContact = eventContact,
         locationRequired = locationRequired,
-        editable = editable
+        editable = editable,
+        sparksAllowed = sparksAllowed
     )
 
     private fun generateContactCategory(contactType: ContactType, contactCategory: ReferenceData) =
