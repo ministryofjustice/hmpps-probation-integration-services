@@ -37,6 +37,6 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun findIdByPersonCrnAndNumber(crn: String, number: String): Long?
 
     fun getIdByCrnAndNumber(crn: String, number: String): Long =
-        findIdByPersonCrnAndNumber(crn, number) ?: throw NotFoundException("Event number $number", "CRN", crn)
+        findIdByPersonCrnAndNumber(crn, number) ?: throw NotFoundException("Event", "event number", number)
 }
 
