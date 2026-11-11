@@ -120,7 +120,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
             status { isOk() }
             jsonPath("$.mainAddress") { doesNotExist() }
             jsonPath("$.emergencyContacts.length()") { value(0) }
-            jsonPath("$.practitioner.telephoneNumber") { isNotEmpty()}
+            jsonPath("$.practitioner.telephoneNumber") { isNotEmpty() }
             jsonPath("$.lastUpdatedAt") { isNotEmpty() }
         }
     }
