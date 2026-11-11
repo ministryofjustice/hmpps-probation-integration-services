@@ -195,7 +195,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
             .get("/wra-event-documents/UNKNOWN/${EventGenerator.DEFAULT_EVENT.number}") { withToken() }
             .andExpect {
                 status { isNotFound() }
-                jsonPath("$.message") { value("Event number 1 with CRN of UNKNOWN not found") }
+                jsonPath("$.message") { value("Person with CRN of UNKNOWN not found") }
             }
     }
 
@@ -206,7 +206,7 @@ internal class BasicDetailsIntegrationTest @Autowired constructor(
             .get("/wra-event-documents/${person.crn}/99") { withToken() }
             .andExpect {
                 status { isNotFound() }
-                jsonPath("$.message") { value("Event number 99 with CRN of A000001 not found") }
+                jsonPath("$.message") { value("Event with event number of 99 not found") }
             }
     }
 }

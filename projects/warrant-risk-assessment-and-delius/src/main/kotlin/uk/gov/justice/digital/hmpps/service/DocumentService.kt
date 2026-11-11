@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.EventRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.username
 import uk.gov.justice.digital.hmpps.messaging.wraId
@@ -64,6 +65,7 @@ class DocumentService(
     }
 
     fun getDocumentIds(crn: String, eventNumber: String): DocumentIds {
+        personRepository.findByCrn(crn).orNotFoundBy("CRN", crn)
         val eventId = eventRepository.getIdByCrnAndNumber(crn, eventNumber)
         val ids = documentRepository.findWraFormUrnsByEventId(eventId)
             .map { it.removePrefix(WRA_FORM_URN_PREFIX) }
