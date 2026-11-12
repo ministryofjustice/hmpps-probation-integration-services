@@ -27,7 +27,7 @@ class PersonalDetailsService(
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getByCrn(crn)
         val phoneNumber =
-            if (featureFlags.enabled("manage_my_community_sentence.phone_number")) {
+            if (featureFlags.enabled("manage_my_community_sentence-phone_number")) {
                 person.manager.staff.user?.username
                     ?.let { ldapTemplate.findPhoneByUsername(it) }
             } else {
