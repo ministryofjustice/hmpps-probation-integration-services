@@ -36,16 +36,19 @@ object KeyDateCalculator {
 
     /**
      * Calculate EMED using Delius data
-     * For SDS Sentences, EMED = CRD + 7% of sentence length in days.
-     * For SDS+ Sentences, EMED = CRD + 17% of sentence length in days.
+     * For SDS cases, calculate the EMED to be SED - (sentence length in days x 0.6) - takes away 60% of the sentence so takes us to the 40% point.
+     * For SDS+ cases, calculate the EMED to be SED - (sentence length in days /3) - takes away 1/3rd of the sentence so takes us to the 67% point.
+     * For all cases, if CRD + 30 days is a later date than the calculated date, set the EMED to be CRD + 30 days.
      */
-    fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? {
-        if (!disposal.type.determinateCustody || disposal.lengthInDays == null) return null
+    fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? = with(disposal) {
+        if (!type.determinateCustody || lengthInDays == null) return null
 
-        val factor = if (disposal.sdsPlus == true) 0.17 else 0.07
+        val sentenceExpiryDate = keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date
         val conditionalReleaseDate =
             keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date
-        return conditionalReleaseDate?.plusDays(floor(disposal.lengthInDays * factor).toLong())
+        val deduction = if (sdsPlus == true) lengthInDays / 3.0 else lengthInDays * 0.6
+        val calculated = sentenceExpiryDate?.minusDays(ceil(deduction).toLong())
+        calculated?.coerceAtLeast(conditionalReleaseDate?.plusDays(30) ?: calculated)
     }
 
     /**
