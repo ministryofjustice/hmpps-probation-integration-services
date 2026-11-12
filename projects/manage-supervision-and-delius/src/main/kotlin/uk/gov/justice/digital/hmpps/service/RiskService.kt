@@ -39,8 +39,11 @@ class RiskService(
     @Transactional
     fun getPersonRiskFlags(crn: String, typeCodes: List<String>?): PersonRiskFlags {
         val summary = personRepository.getSummary(crn)
-        val riskFlags = if(typeCodes.isNullOrEmpty()) { riskFlagRepository.findByPersonId(summary.id)
-        } else { riskFlagRepository.findByPersonIdAndTypeCodeIn(summary.id, typeCodes) }
+        val riskFlags = if (typeCodes.isNullOrEmpty()) {
+            riskFlagRepository.findByPersonId(summary.id)
+        } else {
+            riskFlagRepository.findByPersonIdAndTypeCodeIn(summary.id, typeCodes)
+        }
         val opd = nsiRepository.findByPersonIdAndTypeCode(summary.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
             .firstOrNull(Nsi::active)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(summary.id, PageRequest.of(0, 1))
