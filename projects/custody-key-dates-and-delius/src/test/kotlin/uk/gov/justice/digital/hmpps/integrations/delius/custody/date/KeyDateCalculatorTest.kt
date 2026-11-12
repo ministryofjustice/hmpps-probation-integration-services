@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.KEY_DATE_TYPES
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.generateKeyDateType
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCustodialSentence
@@ -18,6 +19,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.electronicMonitoringEndDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.finalThirdDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateCalculator.suspensionDateIfReset
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.Registration
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
 
@@ -134,6 +138,25 @@ internal class KeyDateCalculatorTest {
             }
         }.electronicMonitoringEndDate()
         assertThat(result, equalTo(expected))
+    }
+
+    @Test
+    fun `em end date is not calculated for a person with a progression model exclusion`() {
+        val registrations = mutableListOf<Registration>()
+        val person = Person(id(), "T000001", "T0001AA", progressionModelExclusionRegistrations = registrations)
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent(person), sdsPlus = false, lengthInDays = 50),
+            bookingRef = "ABC"
+        )
+        custody.keyDates += KeyDate(custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2026, 1, 1))
+        custody.keyDates += KeyDate(
+            custody, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, LocalDate.of(2025, 1, 1)
+        )
+
+        assertThat(custody.electronicMonitoringEndDate(), equalTo(LocalDate.of(2025, 12, 2)))
+
+        registrations += Registration(id(), person, RegisterType(id(), "PMEX"))
+        assertThat(custody.electronicMonitoringEndDate(), equalTo(null))
     }
 
     @ParameterizedTest

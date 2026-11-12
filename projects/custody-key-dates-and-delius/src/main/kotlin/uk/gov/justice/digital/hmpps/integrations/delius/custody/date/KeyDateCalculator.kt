@@ -39,9 +39,12 @@ object KeyDateCalculator {
      * For SDS cases, calculate the EMED to be SED - (sentence length in days x 0.6) - takes away 60% of the sentence so takes us to the 40% point.
      * For SDS+ cases, calculate the EMED to be SED - (sentence length in days /3) - takes away 1/3rd of the sentence so takes us to the 67% point.
      * For all cases, if CRD + 30 days is a later date than the calculated date, set the EMED to be CRD + 30 days.
+     *
+     * Only add or update the EMED for cases that are on a determinate custody sentence (L1+SC) and not excluded from the progression model (PMEX registration)
      */
     fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? = with(disposal) {
         if (!type.determinateCustody || lengthInDays == null) return null
+        if (event.person.progressionModelExclusionRegistrations.isNotEmpty()) return null
         val conditionalReleaseDate =
             keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date ?: return null
         val sentenceExpiryDate = keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date ?: return null
