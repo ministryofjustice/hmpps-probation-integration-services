@@ -37,9 +37,10 @@ class RiskService(
     }
 
     @Transactional
-    fun getPersonRiskFlags(crn: String): PersonRiskFlags {
+    fun getPersonRiskFlags(crn: String, typeCodes: List<String>?): PersonRiskFlags {
         val summary = personRepository.getSummary(crn)
-        val riskFlags = riskFlagRepository.findByPersonId(summary.id)
+        val riskFlags = if(typeCodes.isNullOrEmpty()) { riskFlagRepository.findByPersonId(summary.id)
+        } else { riskFlagRepository.findByPersonIdAndTypeCodeIn(summary.id, typeCodes) }
         val opd = nsiRepository.findByPersonIdAndTypeCode(summary.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
             .firstOrNull(Nsi::active)
         val mappa = riskFlagRepository.findActiveMappaRegistrationByOffenderId(summary.id, PageRequest.of(0, 1))
@@ -88,6 +89,7 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag.toRiskFlag(
     riskRemovalNoteId: Int? = null
 ) = RiskFlag(
     id = id,
+    code = type.code,
     description = type.description,
     level = RiskLevel.fromString(type.colour),
     levelCode = level?.code,

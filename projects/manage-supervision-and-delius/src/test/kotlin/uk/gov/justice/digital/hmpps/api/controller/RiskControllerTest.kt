@@ -49,8 +49,8 @@ internal class RiskControllerTest {
                 PersonGenerator.REGISTRATION_2.toRiskFlag()
             )
         )
-        whenever(riskService.getPersonRiskFlags(crn)).thenReturn(expectedResponse)
-        val res = controller.getPersonRiskFlags(crn)
+        whenever(riskService.getPersonRiskFlags(crn, emptyList())).thenReturn(expectedResponse)
+        val res = controller.getPersonRiskFlags(crn, emptyList())
         assertThat(res, equalTo(expectedResponse))
     }
 

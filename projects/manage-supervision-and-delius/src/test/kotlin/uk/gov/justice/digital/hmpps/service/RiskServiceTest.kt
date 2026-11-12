@@ -63,7 +63,7 @@ internal class RiskServiceTest {
         whenever(nsiRepository.findByPersonIdAndTypeCode(any(), any())).thenReturn(emptyList())
         whenever(riskFlagRepository.findActiveMappaRegistrationByOffenderId(any(), any())).thenReturn(Page.empty())
 
-        val res = service.getPersonRiskFlags(crn)
+        val res = service.getPersonRiskFlags(crn, emptyList())
         assertThat(
             res.personSummary, equalTo(PERSONAL_DETAILS.toSummary())
         )
@@ -94,7 +94,7 @@ internal class RiskServiceTest {
             )
         )
 
-        val res = service.getPersonRiskFlags(crn)
+        val res = service.getPersonRiskFlags(crn, emptyList())
         assertThat(res.mappa?.level, equalTo(MappaLevel.NOMINAL.communityValue))
         assertThat(res.mappa?.category, equalTo(MappaLevel.NOMINAL.communityValue))
     }
