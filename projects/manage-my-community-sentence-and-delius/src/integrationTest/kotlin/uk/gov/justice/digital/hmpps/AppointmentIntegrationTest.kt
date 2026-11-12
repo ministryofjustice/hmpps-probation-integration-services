@@ -169,6 +169,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                         {
                           "content": [
                             {
+                            "id": ${TestData.AppointmentData.PAST_ATTENDED.id},
                               "date": "2020-01-01",
                               "startTime": "15:00:00",
                               "endTime": "15:30:00",
@@ -197,6 +198,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             },
                             {
+                            "id": ${TestData.AppointmentData.PAST_NO_EVENT.id},
                               "date": "2020-01-01",
                               "startTime": "15:00:00",
                               "endTime": "15:30:00",
@@ -222,6 +224,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "lastUpdatedAt": "2024-01-01T00:00:00Z"
                             },
                             {
+                            "id": ${TestData.AppointmentData.PAST_UPW_CONTACT.id},
                               "date": "2020-01-01",
                               "startTime": "12:30:00",
                               "endTime": "13:15:00",
@@ -274,6 +277,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               }
                             },
                             {
+                            "id": ${TestData.AppointmentData.PAST_NOT_ATTENDED.id},
                               "date": "2020-01-01",
                               "startTime": "10:00:00",
                               "endTime": "10:45:00",
