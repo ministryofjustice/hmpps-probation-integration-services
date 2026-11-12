@@ -137,6 +137,7 @@ data class CreateContact(
         ReferralFinanceBenefitsDebt("C347"),
         SafeguardingEnquiriesResponseReceived("SFRR"),
         SafeguardingEnquiriesRequested("SFGC"),
-        UnplannedContactFromPersonOnProbation("COUP")
+        UnplannedContactFromPersonOnProbation("COUP"),
+        RequestForEarlyTermination("ETRP")
     }
 }
