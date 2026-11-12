@@ -350,6 +350,7 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                         {
                           "content": [
                             {
+                              "id": ${TestData.AppointmentData.FUTURE_NO_LOCATION.id},
                               "date": "2050-01-01",
                               "startTime": "12:00:00",
                               "endTime": "13:30:00",
