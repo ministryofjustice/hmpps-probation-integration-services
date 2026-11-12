@@ -6,6 +6,7 @@ import java.time.LocalDate
 
 data class RiskFlag(
     val id: Long,
+    val code: String,
     val description: String,
     val level: RiskLevel?,
     val levelCode: String?,
