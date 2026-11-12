@@ -8,6 +8,7 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 
 data class Appointment(
+    val id: Long,
     val date: LocalDate,
     val startTime: LocalTime,
     val endTime: LocalTime?,
@@ -24,6 +25,7 @@ data class Appointment(
 ) {
     companion object {
         fun Contact.toModel() = Appointment(
+            id = id,
             date = date,
             startTime = startTime,
             endTime = endTime,
