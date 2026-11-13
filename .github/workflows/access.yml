@@ -92,23 +92,11 @@ on:
       MODERNISATION_PLATFORM_AWS_ACCOUNT_ID:
         description: AWS account ID for Modernisation Platform
         required: true
-      AWS_ACCESS_KEY_ID:
-        description: AWS credentials for legacy Delius database access
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        description: AWS credentials for legacy Delius database access
-        required: true
-      AWS_ROLE_ARN:
-        description: AWS credentials for legacy Delius database access
-        required: true
   push:
     branches:
       - main
     paths:
       - 'projects/**/deploy/database/access.yml'
-
-env:
-  modernisation-platform-environments: '["test", "preprod"]'
 
 jobs:
   get-projects:
@@ -169,18 +157,8 @@ jobs:
         env:
           PROJECT: ${{ matrix.project }}
 
-      - name: Configure database access (Delius AWS)
-        if: steps.check_file.outputs.exists == 'true' && !contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
-        uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/database-access-old@main
-        with:
-          project: ${{ matrix.project }}
-          environment: ${{ matrix.environment }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-
       - name: Configure database access (MOJ Modernisation Platform)
-        if: steps.check_file.outputs.exists == 'true' && contains(fromJSON(env.modernisation-platform-environments), matrix.environment)
+        if: steps.check_file.outputs.exists == 'true'
         uses: ministryofjustice/hmpps-probation-integration-services/.github/actions/database-access-new@main
         with:
           project: ${{ matrix.project }}
