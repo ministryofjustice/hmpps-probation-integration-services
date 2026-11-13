@@ -13,6 +13,7 @@ DECLARE
               SELECT user_id FROM user_
               WHERE UPPER(distinguished_name) = UPPER('CommonPlatformAndDelius')
           )
+          AND o.defendant_id IS NOT NULL
           AND o.soft_deleted = 0
           AND e.soft_deleted = 0
           AND om.soft_deleted = 0
