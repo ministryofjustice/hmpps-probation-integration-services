@@ -13,5 +13,5 @@ class ProbationCaseResource(private val probationCaseService: ProbationCaseServi
     @PreAuthorize("hasRole('PROBATION_API__OASYS__CASE_DETAIL')")
     @GetMapping
     fun getCaseDetails(@PathVariable("crn") crn: String) =
-        probationCaseService.isStandaloneOrderOnlyCase(crn)
+        probationCaseService.getCaseDetails(crn)
 }

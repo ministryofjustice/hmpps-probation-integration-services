@@ -17,6 +17,18 @@ object SentenceGenerator {
         )
     val NON_STANDALONE_MAIN_CATEGORY =
         generateRequirementMainCategory(code = "X", description = "Non-standalone", restrictive = false)
+    val RAR_REQUIREMENT_MAIN_CATEGORY =
+        generateRequirementMainCategory(
+            code = RequirementMainCategory.RAR_RQMNT_MAIN_CATEGORY,
+            description = "Rehabilitative Activity Requirement",
+            restrictive = false
+        )
+    val PROBATION_REQUIREMENT_MAIN_CATEGORY =
+        generateRequirementMainCategory(
+            code = RequirementMainCategory.PROBATION_RQMNT_MAIN_CATEGORY,
+            description = "Probation Requirement",
+            restrictive = false
+        )
 
     val STANDALONE_EVENT = generateEvent(PersonGenerator.STANDALONE_ONLY_PERSON.asPerson())
     val STANDALONE_DISPOSAL = generateDisposal(STANDALONE_EVENT)
@@ -39,6 +51,23 @@ object SentenceGenerator {
 
     val EMPTY_REQUIREMENTS_EVENT = generateEvent(PersonGenerator.EMPTY_REQUIREMENTS_PERSON.asPerson())
     val EMPTY_REQUIREMENTS_DISPOSAL = generateDisposal(EMPTY_REQUIREMENTS_EVENT)
+
+    val RAR_REQUIREMENT_EVENT = generateEvent(PersonGenerator.RAR_REQUIREMENT_PERSON.asPerson())
+    val RAR_REQUIREMENT_DISPOSAL = generateDisposal(RAR_REQUIREMENT_EVENT)
+    val RAR_REQUIREMENT = generateRequirement(RAR_REQUIREMENT_DISPOSAL, RAR_REQUIREMENT_MAIN_CATEGORY)
+
+    val PROBATION_REQUIREMENT_EVENT = generateEvent(PersonGenerator.PROBATION_REQUIREMENT_PERSON.asPerson())
+    val PROBATION_REQUIREMENT_DISPOSAL = generateDisposal(PROBATION_REQUIREMENT_EVENT)
+    val PROBATION_REQUIREMENT =
+        generateRequirement(PROBATION_REQUIREMENT_DISPOSAL, PROBATION_REQUIREMENT_MAIN_CATEGORY)
+
+    val RAR_AND_PROBATION_REQUIREMENTS_EVENT =
+        generateEvent(PersonGenerator.RAR_AND_PROBATION_REQUIREMENTS_PERSON.asPerson())
+    val RAR_AND_PROBATION_REQUIREMENTS_DISPOSAL = generateDisposal(RAR_AND_PROBATION_REQUIREMENTS_EVENT)
+    val RAR_AND_PROBATION_RAR_REQUIREMENT =
+        generateRequirement(RAR_AND_PROBATION_REQUIREMENTS_DISPOSAL, RAR_REQUIREMENT_MAIN_CATEGORY)
+    val RAR_AND_PROBATION_PROBATION_REQUIREMENT =
+        generateRequirement(RAR_AND_PROBATION_REQUIREMENTS_DISPOSAL, PROBATION_REQUIREMENT_MAIN_CATEGORY)
 
     fun generateDisposal(
         event: Event,

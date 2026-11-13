@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.CaseDetails
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.PersonDetailRepository
 import uk.gov.justice.digital.hmpps.integration.delius.person.entity.getPersonDetail
+import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.Event
 import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integration.delius.sentence.entity.RequirementMainCategory
 
@@ -16,15 +17,16 @@ class ProbationCaseService(
     // A case is a standalone order only if all of a person's active events are standalone orders.
     // A standalone order is an event that has at least one requirement,
     // and all requirements are restrictive or unpaid work requirements.
-    fun isStandaloneOrderOnlyCase(crn: String): CaseDetails {
+    fun getCaseDetails(crn: String): CaseDetails {
         val person = personDetailRepository.getPersonDetail(crn)
-        val standaloneOrderOnly = isStandaloneOrderOnly(person.id)
-        return CaseDetails(standaloneOrderOnly = standaloneOrderOnly)
+        val events = eventRepository.findByPersonId(person.id)
+        return CaseDetails(
+            standaloneOrderOnly = isStandaloneOrderOnly(events),
+            hasProbationRequirement = hasProbationRequirement(events)
+        )
     }
 
-    private fun isStandaloneOrderOnly(personId: Long): Boolean {
-        val events = eventRepository.findByPersonId(personId)
-
+    private fun isStandaloneOrderOnly(events: List<Event>): Boolean {
         if (events.isEmpty()) {
             return false
         }
@@ -39,4 +41,12 @@ class ProbationCaseService(
             } ?: false
         }
     }
+
+    private fun hasProbationRequirement(events: List<Event>): Boolean =
+        events.any { event ->
+            event.disposal?.requirements?.any { requirement ->
+                requirement.mainCategory?.code == RequirementMainCategory.RAR_RQMNT_MAIN_CATEGORY ||
+                    requirement.mainCategory?.code == RequirementMainCategory.PROBATION_RQMNT_MAIN_CATEGORY
+            } == true
+        }
 }
