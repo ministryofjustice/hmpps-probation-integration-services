@@ -431,9 +431,23 @@ internal class IntegrationTest @Autowired constructor(
         verify(telemetryService, atLeastOnce()).trackEvent(
             "CPRRecordCreated",
             mapOf(
+                "matchStatus" to "NO_MATCH",
                 "hearingId" to "00000000-0000-0000-0000-000000000000",
+                "hearingDates" to "2024-01-01T12:00Z[Europe/London]",
+                "futureHearingDate" to "false",
                 "defendantId" to "f3b3bdb3-10c4-48fe-a412-9924f47294d5",
-                "CRN" to "A111111"
+                "caseURN" to "00AA000000",
+                "CRN" to "A111111",
+                "personId" to "13",
+                "personManagerId" to "10",
+                "orderManagerId" to "10",
+                "equalityId" to "10",
+                "addressId" to "9",
+                "eventId" to "10",
+                "eventNumber" to "1",
+                "mainOffenceId" to "10",
+                "courtAppearanceId" to "10",
+                "contactId" to "10"
             )
         )
     }

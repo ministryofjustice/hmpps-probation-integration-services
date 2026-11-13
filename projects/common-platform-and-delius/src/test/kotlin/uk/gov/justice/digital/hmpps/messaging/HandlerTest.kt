@@ -91,8 +91,6 @@ internal class HandlerTest {
     @Test
     fun `logs possible match with defendant court case and hearing details`() {
         corePersonMatchStatusPossibleMatch()
-        featureFlagIsEnabled(true)
-        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT)
 
         handler.handle(notification)
@@ -102,7 +100,6 @@ internal class HandlerTest {
             mapOf(
                 "matchStatus" to "POSSIBLE_MATCH",
                 "defendantId" to notification.message.hearing.prosecutionCases.first().defendants.first().id,
-                "caseURN" to notification.message.hearing.prosecutionCases.first().prosecutionCaseIdentifier.caseURN,
                 "hearingId" to notification.message.hearing.id,
                 "hearingDates" to notification.message.hearing.hearingDays.joinToString(", ") { it.sittingDay.toString() },
                 "futureHearingDate" to "false"

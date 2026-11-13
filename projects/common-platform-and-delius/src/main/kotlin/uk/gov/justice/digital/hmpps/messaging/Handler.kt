@@ -51,8 +51,8 @@ class Handler(
 
         defendants.forEach { defendant ->
             val matchedPersonStatus = corePersonClient.findMatchStatusByDefendantId(defendant.id)
-            var telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
-                mapOf("defendantId" to defendant.id)
+            val telemetryProperties =
+                (matchedPersonStatus.telemetryProperties + notification.telemetryProperties + mapOf("defendantId" to defendant.id)).toMutableMap()
 
             // Defendant is matched with existing record in core person service
             if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.MATCH) {
@@ -60,10 +60,15 @@ class Handler(
                 return@forEach
             }
 
+            if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
+                telemetryService.trackEvent("PossibleMatchCreationSkipped", telemetryProperties)
+                return@forEach
+            }
+
             val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
                 ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
 
-            telemetryProperties = telemetryProperties + ("caseURN" to caseUrn)
+            telemetryProperties += ("caseURN" to caseUrn)
 
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
@@ -97,68 +102,46 @@ class Handler(
                     return@forEach
                 }
 
-                if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
-                    telemetryService.trackEvent("PossibleMatchCreationSkipped", telemetryProperties)
-                    return@forEach
-                }
-
-                insertPersonAndEvent(insertRemandDTO)
+                insertPersonAndEvent(insertRemandDTO, telemetryProperties)
             } else {
                 telemetryService.trackEvent("SimulatedPersonCreated", telemetryProperties)
             }
         }
     }
 
-    private fun insertPersonAndEvent(insertRemandDTO: InsertRemandDTO) {
+    private fun insertPersonAndEvent(
+        insertRemandDTO: InsertRemandDTO,
+        telemetryProperties: MutableMap<String, String>
+    ) {
         val (personResult, eventResult) = remandService.insertPersonOnRemand(insertRemandDTO)
 
-        telemetryService.trackEvent(
-            "PersonCreated", mapOf(
-                "hearingId" to insertRemandDTO.hearingId,
-                "defendantId" to insertRemandDTO.defendant.id,
-                "CRN" to personResult.person.crn,
-                "personId" to personResult.person.id.toString(),
-                "personManagerId" to personResult.personManager.id.toString(),
-                "equalityId" to personResult.equality.id.toString(),
-                "addressId" to personResult.address?.id.toString(),
-            )
+        telemetryProperties += mapOf(
+            "CRN" to personResult.person.crn,
+            "personId" to personResult.person.id.toString(),
+            "personManagerId" to personResult.personManager.id.toString(),
+            "orderManagerId" to eventResult.orderManager.id.toString(),
+            "equalityId" to personResult.equality.id.toString(),
+            "addressId" to personResult.address?.id.toString(),
+            "eventId" to eventResult.event.id.toString(),
+            "eventNumber" to eventResult.event.number,
+            "mainOffenceId" to eventResult.mainOffence.id.toString(),
+            "courtAppearanceId" to eventResult.courtAppearance.id.toString(),
+            "contactId" to eventResult.contact.id.toString()
         )
 
-        telemetryService.trackEvent(
-            "EventCreated", mapOf(
-                "hearingId" to insertRemandDTO.hearingId,
-                "eventId" to eventResult.event.id.toString(),
-                "eventNumber" to eventResult.event.number,
-                "CRN" to eventResult.event.person.crn,
-                "personId" to eventResult.event.person.id.toString(),
-                "orderManagerId" to eventResult.orderManager.id.toString(),
-                "mainOffenceId" to eventResult.mainOffence.id.toString(),
-                "courtAppearanceId" to eventResult.courtAppearance.id.toString(),
-                "contactId" to eventResult.contact.id.toString()
-            )
-        )
+        telemetryService.trackEvent("PersonCreated", telemetryProperties)
+        telemetryService.trackEvent("EventCreated", telemetryProperties)
 
         retry(3, delay = Duration.ofSeconds(1)) {
             corePersonClient.createPersonRecord(insertRemandDTO.defendant.id, personResult.toCorePersonRequest())
         }.apply {
             if (statusCode.is2xxSuccessful) {
-                telemetryService.trackEvent(
-                    "CPRRecordCreated", mapOf(
-                        "hearingId" to insertRemandDTO.hearingId,
-                        "defendantId" to insertRemandDTO.defendant.id,
-                        "CRN" to personResult.person.crn
-                    )
-                )
+                telemetryService.trackEvent("CPRRecordCreated", telemetryProperties)
             } else {
                 Sentry.setExtra("defendantId", insertRemandDTO.defendant.id)
                 Sentry.setExtra("CRN", personResult.person.crn)
                 Sentry.captureException(RuntimeException("Failed to link core person record"))
-                telemetryService.trackEvent(
-                    "CPRCreateEndpointFailed", mapOf(
-                        "defendantId" to insertRemandDTO.defendant.id,
-                        "CRN" to personResult.person.crn
-                    )
-                )
+                telemetryService.trackEvent("CPRCreateEndpointFailed", telemetryProperties)
             }
         }
 
