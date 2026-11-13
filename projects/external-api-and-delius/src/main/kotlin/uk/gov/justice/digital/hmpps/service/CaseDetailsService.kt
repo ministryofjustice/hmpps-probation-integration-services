@@ -35,8 +35,10 @@ class CaseDetailsService(
     private val staffRepository: StaffRepository,
     private val licenceConditionRepository: LicenceConditionRepository
 ) {
-    fun getAddresses(crn: String): AddressWrapper {
-        val addresses = personAddressRepository.findAllByPersonCrn(crn)
+    fun getAddresses(crn: String, includePrevious: Boolean): AddressWrapper {
+
+        val addresses = if (includePrevious) personAddressRepository.findAllByPersonCrn(crn) else personAddressRepository.findAllCurrentByPersonCrn(crn)
+
         return AddressWrapper(ContactDetailAddresses(addresses.map { it.asCaseAddress() }))
     }
 

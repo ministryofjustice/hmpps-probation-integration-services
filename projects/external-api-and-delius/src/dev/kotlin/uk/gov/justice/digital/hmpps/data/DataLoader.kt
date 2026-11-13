@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DIS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_DISABILITY_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ETHNICITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_NATIONALITY
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_PREVIOUS_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_RELIGION
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator.INVALID_MAPPA_LEVEL
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.RELEASED_COURT_APPEARANCE
@@ -83,6 +84,14 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(DataGenerator.PERSON_MANAGER)
         save(DataGenerator.PERSON_MANAGER_2)
         save(PersonGenerator.generateAddress(PersonGenerator.DEFAULT))
+        save(
+            PersonGenerator.generateAddress(
+                PersonGenerator.DEFAULT,
+                status = RD_PREVIOUS_ADDRESS_STATUS,
+                startDate = LocalDate.now().minusDays(20),
+                endDate = LocalDate.now().minusDays(10)
+            )
+        )
         save(DataGenerator.OFFENCE)
         save(DataGenerator.COURT)
         save(DataGenerator.COURT_APPEARANCE_TYPE)

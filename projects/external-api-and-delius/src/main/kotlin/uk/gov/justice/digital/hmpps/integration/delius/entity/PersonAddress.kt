@@ -8,12 +8,13 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and end_date is null")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -48,5 +49,18 @@ class PersonAddress(
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
+
+    @Query(
+        """
+        select addr from PersonAddress addr where addr.person.crn = :crn and (addr.endDate is null)
+        """
+    )
+    fun findAllCurrentByPersonCrn(crn: String): List<PersonAddress>
+
+    @Query(
+        """
+        select addr from PersonAddress addr where addr.person.crn = :crn
+        """
+    )
     fun findAllByPersonCrn(crn: String): List<PersonAddress>
 }
