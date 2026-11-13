@@ -38,7 +38,7 @@ class CaseDetailsService(
     fun getAddresses(crn: String, includePrevious: Boolean): AddressWrapper {
 
         val addresses =
-            if (includePrevious) personAddressRepository.findAllByPersonCrn(crn) else personAddressRepository.findAllCurrentByPersonCrn(
+            if (includePrevious) personAddressRepository.findByPersonCrn(crn) else personAddressRepository.findByPersonCrnAndEndDateIsNull(
                 crn
             )
 

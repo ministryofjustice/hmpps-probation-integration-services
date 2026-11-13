@@ -55,12 +55,6 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         select addr from PersonAddress addr where addr.person.crn = :crn and (addr.endDate is null)
         """
     )
-    fun findAllCurrentByPersonCrn(crn: String): List<PersonAddress>
-
-    @Query(
-        """
-        select addr from PersonAddress addr where addr.person.crn = :crn
-        """
-    )
-    fun findAllByPersonCrn(crn: String): List<PersonAddress>
+    fun findByPersonCrnAndEndDateIsNull(crn: String): List<PersonAddress>
+    fun findByPersonCrn(crn: String): List<PersonAddress>
 }

@@ -26,11 +26,8 @@ class CaseDetailsController(
 
     @GetMapping(value = ["/case/{crn}/addresses"])
     fun addresses(
-        @Parameter(description = "Include Previous Addresses") @RequestParam(
-            required = false,
-            name = "includePrevious",
-            defaultValue = "false"
-        ) includePrevious: Boolean = false,
+        @Parameter(description = "Include Previous Addresses")
+        @RequestParam(defaultValue = "false") includePrevious: Boolean = false,
         @PathVariable crn: String
     ) = caseDetailsService.getAddresses(crn, includePrevious)
 
