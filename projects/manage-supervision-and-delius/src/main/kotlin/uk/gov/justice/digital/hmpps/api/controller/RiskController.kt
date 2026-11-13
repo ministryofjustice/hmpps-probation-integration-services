@@ -14,7 +14,8 @@ class RiskController(private val riskService: RiskService) {
 
     @GetMapping
     @Operation(summary = "Gets all risk flags for an offender’ ")
-    fun getPersonRiskFlags(@PathVariable crn: String) = riskService.getPersonRiskFlags(crn)
+    fun getPersonRiskFlags(@PathVariable crn: String, @RequestParam(required = false) typeCodes: List<String>?) =
+        riskService.getPersonRiskFlags(crn, typeCodes)
 
     @GetMapping("/{riskFlagId}")
     @Operation(summary = "Gets an individual risk flag for an offender’ ")
