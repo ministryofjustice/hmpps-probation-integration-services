@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
 import java.time.LocalDate
@@ -134,5 +136,21 @@ class AdjustmentService(
 
     companion object {
         const val REFERENCE_PREFIX = "urn:uk:gov:hmpps:community-payback:adjustment:"
+    }
+
+    fun setAdjustmentReference(id: Long, reference: UUID) {
+        val existingAdjustment = adjustmentRepository.findFirstById(id)
+            ?: throw NotFoundException("Adjustment", "id", id)
+
+        val urn = "$REFERENCE_PREFIX$reference"
+        if (existingAdjustment.externalReference != null) {
+            throw ConflictException("Adjustment ${existingAdjustment.id} already has an external reference set")
+        }
+
+        if (adjustmentRepository.findByExternalReference(urn) != null) {
+            throw ConflictException("Adjustment reference $reference is already in use")
+        }
+        existingAdjustment.externalReference = urn
+        adjustmentRepository.save(existingAdjustment)
     }
 }
