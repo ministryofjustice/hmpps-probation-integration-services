@@ -26,8 +26,13 @@ class CaseDetailsController(
 
     @GetMapping(value = ["/case/{crn}/addresses"])
     fun addresses(
-        @Parameter(description = "Include Previous Addresses") @RequestParam(required = false, name = "includePrevious", defaultValue = "false") includePrevious: Boolean = false,
-        @PathVariable crn: String) = caseDetailsService.getAddresses(crn, includePrevious)
+        @Parameter(description = "") @RequestParam(
+            required = false,
+            name = "includePrevious",
+            defaultValue = "false"
+        ) includePrevious: Boolean = false,
+        @PathVariable crn: String
+    ) = caseDetailsService.getAddresses(crn, includePrevious)
 
     @PreAuthorize("hasAnyRole('PROBATION_API__HMPPS_API__CASE_DETAIL','PROBATION_API__EPF__CASE_DETAIL')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])
