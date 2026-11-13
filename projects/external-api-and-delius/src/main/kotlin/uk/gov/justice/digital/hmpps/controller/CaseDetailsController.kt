@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.prepost.PreAuthorize
@@ -24,7 +25,11 @@ class CaseDetailsController(
     fun supervisions(@PathVariable("crn") crn: String) = caseDetailsService.getSupervisions(crn)
 
     @GetMapping(value = ["/case/{crn}/addresses"])
-    fun addresses(@PathVariable crn: String) = caseDetailsService.getAddresses(crn)
+    fun addresses(
+        @Parameter(description = "Include Previous Addresses")
+        @RequestParam(defaultValue = "false") includePrevious: Boolean = false,
+        @PathVariable crn: String
+    ) = caseDetailsService.getAddresses(crn, includePrevious)
 
     @PreAuthorize("hasAnyRole('PROBATION_API__HMPPS_API__CASE_DETAIL','PROBATION_API__EPF__CASE_DETAIL')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])

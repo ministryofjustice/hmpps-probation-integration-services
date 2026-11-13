@@ -13,7 +13,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@SQLRestriction("soft_deleted = 0 and end_date is null")
+@SQLRestriction("soft_deleted = 0")
 class PersonAddress(
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -48,5 +48,6 @@ class PersonAddress(
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
-    fun findAllByPersonCrn(crn: String): List<PersonAddress>
+    fun findByPersonCrnAndEndDateIsNull(crn: String): List<PersonAddress>
+    fun findByPersonCrn(crn: String): List<PersonAddress>
 }

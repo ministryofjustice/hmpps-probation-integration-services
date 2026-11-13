@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ADD
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_ETHNICITY
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_FEMALE
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_MALE
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.RD_PREVIOUS_ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.model.ProbationReferenceData
 import uk.gov.justice.digital.hmpps.model.RefData
 import uk.gov.justice.digital.hmpps.service.PhoneTypes
@@ -44,6 +45,7 @@ internal class ReferenceDataIntegrationTest : BaseIntegrationTest() {
             response.probationReferenceData["ADDRESS_TYPE"],
             listOf(
                 RefData(RD_ADDRESS_STATUS.code, RD_ADDRESS_STATUS.description),
+                RefData(RD_PREVIOUS_ADDRESS_STATUS.code, RD_PREVIOUS_ADDRESS_STATUS.description),
             )
         )
     }
