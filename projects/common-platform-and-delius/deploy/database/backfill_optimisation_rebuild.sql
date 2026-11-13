@@ -9,6 +9,10 @@ DECLARE
         JOIN event e ON e.offender_id = o.offender_id
         JOIN order_manager om ON om.event_id = e.event_id
         WHERE o.created_datetime >= TRUNC(TO_DATE('01-NOV-2026', 'DD-MON-YYYY'))
+          AND o.created_by_user_id IN (
+              SELECT user_id FROM user_
+              WHERE UPPER(distinguished_name) = UPPER('CommonPlatformAndDelius')
+          )
           AND o.soft_deleted = 0
           AND e.soft_deleted = 0
           AND om.soft_deleted = 0
