@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -49,12 +48,6 @@ class PersonAddress(
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
-
-    @Query(
-        """
-        select addr from PersonAddress addr where addr.person.crn = :crn and (addr.endDate is null)
-        """
-    )
     fun findByPersonCrnAndEndDateIsNull(crn: String): List<PersonAddress>
     fun findByPersonCrn(crn: String): List<PersonAddress>
 }
