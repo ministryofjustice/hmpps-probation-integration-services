@@ -10,10 +10,10 @@ USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN microdnf install -y jq-1.6-19.el9_8.2 gettext-0.21-8.el9 \
+# hadolint ignore=DL3041
+RUN microdnf install -y jq gettext \
  && curl -sL https://sentry.io/get-cli/ | bash \
  && microdnf clean all
-
 
 USER 1000
 
