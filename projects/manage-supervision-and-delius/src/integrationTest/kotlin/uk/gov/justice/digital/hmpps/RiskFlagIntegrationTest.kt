@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEREGISTRATIO
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MAPPA_LEVEL
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.OVERVIEW
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_2
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_1
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_2
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_3
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTRATION_REVIEW_2
@@ -38,6 +39,7 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
         assertThat(res.opd?.eligible, equalTo(true))
         assertThat(res.riskFlags.size, equalTo(3))
         assertThat(res.riskFlags[0].level, equalTo(RiskLevel.HIGH))
+        assertThat(res.riskFlags[0].code, equalTo(REGISTRATION_2.type.code))
         assertThat(res.riskFlags[0].description, equalTo(REGISTRATION_2.type.description))
         assertThat(res.riskFlags[0].mostRecentReviewDate, equalTo(REGISTRATION_REVIEW_2.date))
         assertThat(res.riskFlags[0].levelCode, equalTo(null))
@@ -126,5 +128,47 @@ class RiskFlagIntegrationTest : IntegrationTestBase() {
         val person = OVERVIEW
         mockMvc.get("/risk-flags/${person.crn}/9999999") { withToken() }
             .andExpect { status { isNotFound() } }
+    }
+
+    @Test
+    fun `risk flags are filtered by a single type code`() {
+        val res = mockMvc.get("/risk-flags/${OVERVIEW.crn}") {
+            withToken()
+            param("typeCodes", REGISTRATION_2.type.code)
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonRiskFlags>()
+
+        assertThat(res.riskFlags.map { it.id }, equalTo(listOf(REGISTRATION_2.id)))
+        assertThat(res.removedRiskFlags.map { it.id }, equalTo(listOf(REGISTRATION_3.id)))
+    }
+
+    @Test
+    fun `risk flags are filtered by multiple type codes`() {
+        val res = mockMvc.get("/risk-flags/${OVERVIEW.crn}") {
+            withToken()
+            param("typeCodes", REGISTRATION_1.type.code, REGISTRATION_2.type.code)
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonRiskFlags>()
+
+        assertThat(
+            res.riskFlags.map { it.id },
+            equalTo(listOf(REGISTRATION_2.id, REGISTRATION_1.id))
+        )
+        assertThat(res.removedRiskFlags.map { it.id }, equalTo(listOf(REGISTRATION_3.id)))
+    }
+
+    @Test
+    fun `no risk flags are returned for an unknown type code`() {
+        val res = mockMvc.get("/risk-flags/${OVERVIEW.crn}") {
+            withToken()
+            param("typeCodes", "UNKNOWN")
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PersonRiskFlags>()
+
+        assertThat(res.riskFlags.size, equalTo(0))
+        assertThat(res.removedRiskFlags.size, equalTo(0))
     }
 }

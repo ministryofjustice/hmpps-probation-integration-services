@@ -1,4 +1,4 @@
-FROM amazon/aws-cli:2.38.6
+FROM amazon/aws-cli:2.39.6
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

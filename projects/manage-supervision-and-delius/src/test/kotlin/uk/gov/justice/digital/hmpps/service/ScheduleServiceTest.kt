@@ -142,6 +142,20 @@ internal class ScheduleServiceTest {
         assertThat(contact.toActivity().deliusManaged, equalTo(true))
     }
 
+    @Test
+    fun `activity isSparksAllowed reflects contact type flag`() {
+        assertThat(appointmentContact("ZZZZ", sparksAllowed = true).toActivity().isSparksAllowed, equalTo(true))
+        assertThat(appointmentContact("ZZZZ", sparksAllowed = false).toActivity().isSparksAllowed, equalTo(false))
+        assertThat(appointmentContact("ZZZZ", sparksAllowed = null).toActivity().isSparksAllowed, equalTo(false))
+    }
+
+    @Test
+    fun `appointment type isSparksAllowed reflects contact type flag`() {
+        assertThat(contactType("ZZZZ", sparksAllowed = true).toAppointmentType().isSparksAllowed, equalTo(true))
+        assertThat(contactType("ZZZZ", sparksAllowed = false).toAppointmentType().isSparksAllowed, equalTo(false))
+        assertThat(contactType("ZZZZ", sparksAllowed = null).toAppointmentType().isSparksAllowed, equalTo(false))
+    }
+
     private fun summaryEntity() = Summary(
         id = 1,
         forename = "Joe",
@@ -167,10 +181,11 @@ internal class ScheduleServiceTest {
         code: String,
         complied: Boolean? = true,
         requirement: Requirement? = null,
+        sparksAllowed: Boolean? = false,
     ) = Contact(
         id = 1,
         person = person(),
-        type = contactType(code),
+        type = contactType(code, sparksAllowed),
         date = LocalDate.of(2024, 6, 24),
         startTime = ZonedDateTime.of(2024, 6, 24, 9, 0, 0, 0, EuropeLondon),
         complied = complied,
@@ -218,13 +233,14 @@ internal class ScheduleServiceTest {
         surname = "Bloggs",
     )
 
-    private fun contactType(code: String) = ContactType(
+    private fun contactType(code: String, sparksAllowed: Boolean? = false) = ContactType(
         id = 1,
         code = code,
         attendanceContact = true,
         description = "Type $code",
         locationRequired = "N",
         editable = true,
+        sparksAllowed = sparksAllowed,
     )
 
     private fun requirement(mainCategoryCode: String) = Requirement(

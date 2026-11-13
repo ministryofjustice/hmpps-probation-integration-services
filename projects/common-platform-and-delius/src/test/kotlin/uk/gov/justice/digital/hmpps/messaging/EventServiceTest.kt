@@ -162,6 +162,7 @@ internal class EventServiceTest {
         assertThat(result.mainOffence.person.id, equalTo(person.id))
         assertNotNull(result.courtAppearance)
         assertNotNull(result.contact)
+        assertThat(result.contact.alert, equalTo(false))
         assertThat(result.orderManager.event.id, equalTo(event.id))
     }
 }

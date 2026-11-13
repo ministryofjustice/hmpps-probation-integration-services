@@ -41,6 +41,12 @@ fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) =
     }
 
 @WithSpan
+fun LdapTemplate.findPhoneByUsername(@SpanAttribute username: String) =
+    retry(3, listOf(CommunicationException::class)) {
+        findAttributeByUsername(username, "telephoneNumber")
+    }
+
+@WithSpan
 fun LdapTemplate.findEmailByUsernames(usernames: List<String>) = findAttributeByUsernames(usernames, "mail")
 
 @WithSpan

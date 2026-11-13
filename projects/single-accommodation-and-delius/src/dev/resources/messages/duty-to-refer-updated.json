@@ -4,6 +4,9 @@
   "description": "A duty to refer has been updated",
   "detailUrl": "http://localhost:{dev.wiremock.port}/event-details/duty-to-refers/bb201dac-a8af-4ee0-a39f-0c62839e28f0",
   "occurredAt": "2026-01-16T10:30:00Z",
+  "additionalInformation": {
+    "messageId": "945937be-320c-4452-b380-727caa14826b"
+  },
   "personReference": {
     "identifiers": [
       {

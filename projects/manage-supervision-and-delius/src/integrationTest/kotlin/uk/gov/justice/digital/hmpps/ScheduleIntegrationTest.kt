@@ -127,6 +127,7 @@ class ScheduleIntegrationTest : IntegrationTestBase() {
         assertThat(res.appointment.location?.postcode, equalTo("H34 7TH"))
         assertThat(res.appointment.description, equalTo(expectedAppointment.description))
         assertThat(res.appointment.alert, equalTo(false))
+        assertThat(res.appointment.isSparksAllowed, equalTo(true))
         assertThat(
             res.appointment.sparks,
             equalTo(

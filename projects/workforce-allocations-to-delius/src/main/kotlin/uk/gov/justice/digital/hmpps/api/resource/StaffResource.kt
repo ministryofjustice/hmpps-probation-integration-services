@@ -41,13 +41,15 @@ class StaffResource(private val service: StaffService) {
     @PostMapping("{code}/active-cases")
     fun activeCases(
         @PathVariable code: String,
+        @RequestParam(required = false) teamCode: String? = null,
         @RequestBody crns: List<String>
-    ) = service.getActiveCases(code, crns)
+    ) = service.getActiveCases(code, crns, teamCode)
 
     @GetMapping("{code}/active-cases")
     fun getActiveCases(
-        @PathVariable code: String
-    ) = service.getActiveCases(code)
+        @PathVariable code: String,
+        @RequestParam(required = false) teamCode: String? = null
+    ) = service.getActiveCases(code, teamCode)
 
     @Operation(
         summary = """Team, LAU, PDU and Provider hierarchy associated with a staff code""",

@@ -84,6 +84,11 @@ interface RiskFlagRepository : JpaRepository<RiskFlag, Long> {
     fun findByPersonId(personId: Long): List<RiskFlag>
     fun findByPersonIdAndId(personId: Long, id: Long): RiskFlag?
 
+    fun findByPersonIdAndTypeCodeIn(
+        personId: Long,
+        typeCodes: List<String>
+    ): List<uk.gov.justice.digital.hmpps.integrations.delius.risk.RiskFlag>
+
     @Query(
         """
         select r from RiskFlag r

@@ -138,6 +138,7 @@ class AppointmentIntegrationTest : IntegrationTestBase() {
 
         val expected = AppointmentTypeResponse(types)
         assertEquals(expected, response)
+        assertEquals(listOf("CODC"), response.appointmentTypes.filter { it.isSparksAllowed }.map { it.code })
     }
 
     @Test

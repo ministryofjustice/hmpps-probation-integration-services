@@ -83,7 +83,7 @@ class CheckInService(
         contactRepository.save(domainEvent.checkInContact("Check in status: Scheduled")).also { audit(it) }
     }
 
-    fun checkInUpdateNotes(domainEvent: HmppsDomainEvent, notes: String) = audit(UPDATE_CONTACT) { audit ->
+    fun checkInUpdateNotes(domainEvent: HmppsDomainEvent) = audit(UPDATE_CONTACT) { audit ->
         checkCrnExists(domainEvent.crn)
         val detail = requireNotNull(domainEvent.getDetail())
         val externalReferences = Contact.checkInExternalReferencePrefixes.map { it + detail.checkinUuid }
@@ -91,7 +91,6 @@ class CheckInService(
         require(domainEvent matches contact) { "Case details mismatch" }
         contact.notes = listOfNotNull(
             contact.notes,
-            notes,
             detail.notes
         ).joinToString(System.lineSeparator())
         contact.isSensitive = detail.sensitive || contact.isSensitive == true
@@ -136,7 +135,7 @@ class CheckInService(
         startTime = checkInDateTime ?: domainEvent.occurredAt
         description = domainEvent.description()
         notes = listOfNotNull(
-            domainEvent.checkInUrl?.let { "Review the online check in using the manage probation check ins service: $it" },
+            notes,
             detail.notes
         ).joinToString(System.lineSeparator())
         isSensitive = detail.sensitive || isSensitive == true

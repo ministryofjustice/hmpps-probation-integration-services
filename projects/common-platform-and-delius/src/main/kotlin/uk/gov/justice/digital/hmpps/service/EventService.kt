@@ -47,7 +47,8 @@ class EventService(
                     person = person,
                     number = eventRepository.getNextEventNumber(person.id!!),
                     referralDate = sittingDay.toLocalDate(), // TODO: Identify event's referral date
-                    courtCaseUrn = caseUrn
+                    courtCaseUrn = caseUrn,
+                    notes = "This case record was initially created using information from HMCTS Common Platform. Please check and update Offence information"
                 )
             )
 
@@ -98,7 +99,7 @@ class EventService(
                     person = person,
                     startTime = sittingDay.with(LocalDate.of(1970, 1, 1)),
                     endTime = null,
-                    alert = true,
+                    alert = false,
                     eventId = event.id!!,
                     type = courtAppearanceContactType,
                     probationAreaId = court.provider.id,

@@ -32,14 +32,21 @@ class Handler(
             else -> error("Unexpected event type ${event.eventType}")
         }
         val details = detailService.getDetail<DutyToRefer>(event)
-        val contact = contactService.createContact(details, event.occurredAt, typeCode)
+        val messageId = requireNotNull(event.additionalInformation["messageId"] as String?) { "Missing messageId" }
+        val contact = contactService.createContact(
+            crn = details.crn,
+            typeCode = typeCode,
+            occurredAt = event.occurredAt,
+            notes = "For more details, click here: ${details.viewUrl}",
+            externalReference = "urn:uk:gov:hmpps:find-and-manage-accommodation:duty-to-refer:$messageId",
+        )
         telemetryService.trackEvent(
             "DutyToReferContactCreated",
             mapOf(
                 "crn" to details.crn,
+                "messageId" to messageId,
                 "contactId" to contact.id.toString(),
                 "contactType" to contact.type.code,
-                "externalReference" to contact.externalReference,
             )
         )
     }

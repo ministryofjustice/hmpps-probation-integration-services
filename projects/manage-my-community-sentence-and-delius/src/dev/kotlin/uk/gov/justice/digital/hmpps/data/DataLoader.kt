@@ -118,6 +118,7 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             TestData.SentenceData.LAO_DISPOSAL,
             TestData.LaoData.LAO_USER,
             TestData.LaoData.RESTRICTION,
+            TestData.UserData.USER,
         )
     }
 }

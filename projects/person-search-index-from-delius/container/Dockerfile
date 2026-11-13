@@ -4,16 +4,16 @@ COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name "*.yml" -exec sh -c 'for f; do yq -o=json "$f" > "${f%.yml}.json"; done' sh {} +
 
 
-FROM elastic/logstash:9.5.5
+FROM elastic/logstash:9.5.6
 
 USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN microdnf install -y jq-1.6-19.el9_8.2 gettext-0.21-8.el9 \
+# hadolint ignore=DL3041
+RUN microdnf install -y jq gettext \
  && curl -sL https://sentry.io/get-cli/ | bash \
  && microdnf clean all
-
 
 USER 1000
 

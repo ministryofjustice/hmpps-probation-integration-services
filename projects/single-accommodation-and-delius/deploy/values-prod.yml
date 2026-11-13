@@ -8,6 +8,7 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
     MESSAGING_CONSUMER_DETAIL_URLS: https://single-accommodation-service-api.hmpps.service.justice.gov.uk
+    MESSAGING_CONSUMER_ENABLED: "false" # TODO enable when duty to refer changes have been tested/approved
 
 generic-prometheus-alerts:
   sqsOldestAlertQueueNames:

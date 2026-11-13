@@ -3,14 +3,14 @@
     {
       "request": {
         "method": "GET",
-        "urlPathPattern": "/e-supervision-api/checkin-submitted/93d51990-3b72-4a7b-97cb-92759b04eaeb"
+        "urlPathPattern": "/e-supervision-api/checkin-submitted/9f1a7b91-2d83-4a27-b0dc-0b9276b8c541"
       },
       "response": {
         "headers": {
           "Content-Type": "application/json"
         },
         "status": 200,
-        "body": "{\"checkinUuid\": \"93d51990-3b72-4a7b-97cb-92759b04eaeb\", \"notes\": \"Some notes about the expired check-in\", \"sensitive\": false}"
+        "body": "{\"checkinUuid\": \"9f1a7b91-2d83-4a27-b0dc-0b9276b8c541\", \"notes\": \"Some notes about the check-in\", \"sensitive\": false}"
       }
     },
     {
@@ -219,6 +219,32 @@
         },
         "status": 200,
         "body": "{\"checkinUuid\": \"d7d5e6f7-28d6-5e65-9fd3-a8b49c50d61e\", \"notes\": \"Check-in with datetime\", \"sensitive\": false, \"dateTime\": \"2025-12-25T14:30:00Z\"}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-submitted/a2db1d4a-9e7f-4a4d-861d-9e7b5f9fb4cc"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"a2db1d4a-9e7f-4a4d-861d-9e7b5f9fb4cc\", \"notes\": \"Some notes about the expired check-in\", \"sensitive\": false}"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/e-supervision-api/checkin-submitted/93d51990-3b72-4a7b-97cb-92759b04eaeb"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": "{\"checkinUuid\": \"93d51990-3b72-4a7b-97cb-92759b04eaeb\", \"notes\": \"Some notes about the expired check-in\", \"sensitive\": false}"
       }
     }
   ]

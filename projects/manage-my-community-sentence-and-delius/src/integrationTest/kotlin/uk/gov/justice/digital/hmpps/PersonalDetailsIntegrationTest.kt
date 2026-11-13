@@ -89,6 +89,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
                               "forename": "Test",
                               "surname": "Staff"
                             },
+                            "telephoneNumber": "07000000000",
                             "team": {
                               "telephoneNumber": "01000000001",
                               "officeAddresses": [
@@ -119,7 +120,7 @@ internal class PersonalDetailsIntegrationTest @Autowired constructor(private val
             status { isOk() }
             jsonPath("$.mainAddress") { doesNotExist() }
             jsonPath("$.emergencyContacts.length()") { value(0) }
-            jsonPath("$.practitioner.telephoneNumber") { doesNotExist() }
+            jsonPath("$.practitioner.telephoneNumber") { isNotEmpty() }
             jsonPath("$.lastUpdatedAt") { isNotEmpty() }
         }
     }

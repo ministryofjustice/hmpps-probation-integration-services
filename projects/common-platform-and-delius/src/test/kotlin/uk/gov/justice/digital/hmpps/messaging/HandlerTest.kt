@@ -25,9 +25,10 @@ import uk.gov.justice.digital.hmpps.service.RemandService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
-internal class FIFOHandlerTest {
+internal class HandlerTest {
     @Mock
     lateinit var telemetryService: TelemetryService
 
@@ -53,7 +54,7 @@ internal class FIFOHandlerTest {
     lateinit var corePersonClient: CorePersonClient
 
     @InjectMocks
-    lateinit var handler: FIFOHandler
+    lateinit var handler: Handler
 
     @Test
     fun `inserts records when probation search match is not found`() {
@@ -150,6 +151,22 @@ internal class FIFOHandlerTest {
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("SimulatedPersonCreated"), anyMap(), anyMap())
         verify(remandService, never()).insertPersonOnRemand(any())
+    }
+
+    @Test
+    fun `logs FutureSittingDay and skips creation for future sitting days`() {
+        corePersonHasNoCrn()
+        featureFlagIsEnabled(true)
+        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
+        val hearing = MessageGenerator.COMMON_PLATFORM_EVENT.hearing
+        val hearingDay = hearing.hearingDays.first().copy(sittingDay = ZonedDateTime.now().plusDays(1))
+        val notification = Notification(message = CommonPlatformHearing(hearing.copy(hearingDays = listOf(hearingDay))))
+
+        handler.handle(notification)
+
+        verify(telemetryService).notificationReceived(notification)
+        verify(telemetryService).trackEvent(eq("FutureSittingDay"), anyMap(), anyMap())
+        verifyNoInteractions(remandService, notifier)
     }
 
     @Test

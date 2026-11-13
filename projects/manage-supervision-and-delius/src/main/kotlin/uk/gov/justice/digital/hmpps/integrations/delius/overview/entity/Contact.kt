@@ -301,6 +301,10 @@ class ContactType(
     @Column(name = "contact_location_flag", columnDefinition = "char(1)")
     val locationRequired: String,
 
+    @Column(name = "sparks_allowed")
+    @Convert(converter = YesNoConverter::class)
+    val sparksAllowed: Boolean? = false,
+
     @Convert(converter = YesNoConverter::class)
     val editable: Boolean?,
 )

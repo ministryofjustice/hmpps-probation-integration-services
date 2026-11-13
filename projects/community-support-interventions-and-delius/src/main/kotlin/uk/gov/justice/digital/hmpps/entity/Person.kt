@@ -22,6 +22,9 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(columnDefinition = "char(7)")
+    val nomsNumber: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "language_id")
     val language: ReferenceData? = null,
@@ -33,4 +36,5 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
+    fun findByNomsNumber(nomsNumber: String): Person?
 }

@@ -5,6 +5,7 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Channel
 import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import io.sentry.Sentry
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.dto.InsertPersonResult
@@ -25,9 +26,10 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.YEARS
 
+@Primary
 @Component
 @Channel("common-platform-and-delius-fifo-queue")
-class FIFOHandler(
+class Handler(
     override val converter: NotificationConverter<CommonPlatformHearing>,
     private val telemetryService: TelemetryService,
     private val personService: PersonService,
@@ -49,8 +51,8 @@ class FIFOHandler(
 
         defendants.forEach { defendant ->
             val matchedPersonStatus = corePersonClient.findMatchStatusByDefendantId(defendant.id)
-            val telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
-                ("defendantId" to defendant.id)
+            var telemetryProperties = matchedPersonStatus.telemetryProperties + notification.telemetryProperties +
+                mapOf("defendantId" to defendant.id)
 
             // Defendant is matched with existing record in core person service
             if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.MATCH) {
@@ -60,6 +62,8 @@ class FIFOHandler(
 
             val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
                 ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
+
+            telemetryProperties = telemetryProperties + ("caseURN" to caseUrn)
 
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
@@ -78,17 +82,23 @@ class FIFOHandler(
                     mainOffence = mainOffence,
                     additionalOffences = remandedOffences.filter { it.offenceCode != mainOffence.offenceCode },
                     courtCode = notification.message.hearing.courtCentre.code,
-                    sittingDay = notification.message.hearing.hearingDays.first().sittingDay,
+                    sittingDay = notification.message.hearing.hearingDays.minOf { it.sittingDay },
                     caseUrn = caseUrn.replace("[^A-Za-z0-9]".toRegex(), ""),
                     hearingId = notification.message.hearing.id,
                 )
 
-                if (personService.personWithDefendantIdExists(defendant.id)) return
+                if (insertRemandDTO.sittingDay > ZonedDateTime.now()) {
+                    telemetryService.trackEvent("FutureSittingDay", telemetryProperties)
+                    return@forEach
+                }
+
+                if (personService.personWithDefendantIdExists(defendant.id)) {
+                    telemetryService.trackEvent("PersonWithDefendantIdExists", telemetryProperties)
+                    return@forEach
+                }
 
                 if (matchedPersonStatus.matchStatus == CorePersonRecordMatchStatus.POSSIBLE_MATCH) {
-                    telemetryService.trackEvent(
-                        "PossibleMatchCreationSkipped", telemetryProperties + ("caseURN" to caseUrn)
-                    )
+                    telemetryService.trackEvent("PossibleMatchCreationSkipped", telemetryProperties)
                     return@forEach
                 }
 
