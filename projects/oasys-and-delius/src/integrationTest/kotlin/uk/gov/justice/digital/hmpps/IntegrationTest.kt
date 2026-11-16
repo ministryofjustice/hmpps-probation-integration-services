@@ -72,6 +72,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
     }
 
     @Test
@@ -80,6 +81,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(true) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
     }
 
     @Test
@@ -88,6 +90,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
     }
 
     @Test
@@ -96,6 +99,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
     }
 
     @Test
@@ -104,6 +108,7 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
     }
 
     @Test
@@ -112,5 +117,30 @@ internal class IntegrationTest @Autowired constructor(
         mockMvc.get("/probation-cases/${person.crn}") { withToken() }
             .andExpect { status { is2xxSuccessful() } }
             .andExpect { jsonPath("$.standaloneOrderOnly") { value(false) } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(false) } }
+    }
+
+    @Test
+    fun `returns hasProbationRequirement true when case has a RAR requirement`() {
+        val person = PersonGenerator.RAR_REQUIREMENT_PERSON
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(true) } }
+    }
+
+    @Test
+    fun `returns hasProbationRequirement true when case has a probation requirement`() {
+        val person = PersonGenerator.PROBATION_REQUIREMENT_PERSON
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(true) } }
+    }
+
+    @Test
+    fun `returns hasProbationRequirement true when case has both a RAR and probation requirement`() {
+        val person = PersonGenerator.RAR_AND_PROBATION_REQUIREMENTS_PERSON
+        mockMvc.get("/probation-cases/${person.crn}") { withToken() }
+            .andExpect { status { is2xxSuccessful() } }
+            .andExpect { jsonPath("$.hasProbationRequirement") { value(true) } }
     }
 }

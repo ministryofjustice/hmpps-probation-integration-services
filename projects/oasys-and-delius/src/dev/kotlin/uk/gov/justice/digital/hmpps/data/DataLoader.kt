@@ -7,6 +7,9 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.EMPTY_REQUIRE
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.MIXED_ORDERS_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.NO_DISPOSAL_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.NO_EVENTS_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PROBATION_REQUIREMENT_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RAR_AND_PROBATION_REQUIREMENTS_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.RAR_REQUIREMENT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.REGISTERED_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.STANDALONE_ONLY_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.UPW_ONLY_PERSON
@@ -68,7 +71,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             NO_EVENTS_PERSON,
             MIXED_ORDERS_PERSON,
             NO_DISPOSAL_PERSON,
-            EMPTY_REQUIREMENTS_PERSON
+            EMPTY_REQUIREMENTS_PERSON,
+            RAR_REQUIREMENT_PERSON,
+            PROBATION_REQUIREMENT_PERSON,
+            RAR_AND_PROBATION_REQUIREMENTS_PERSON
         )
         save(PersonGenerator.DETAIL_ADDRESS)
     }
@@ -93,7 +99,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         saveAll(
             SentenceGenerator.RESTRICTIVE_MAIN_CATEGORY,
             SentenceGenerator.UPW_MAIN_CATEGORY,
-            SentenceGenerator.NON_STANDALONE_MAIN_CATEGORY
+            SentenceGenerator.NON_STANDALONE_MAIN_CATEGORY,
+            SentenceGenerator.RAR_REQUIREMENT_MAIN_CATEGORY,
+            SentenceGenerator.PROBATION_REQUIREMENT_MAIN_CATEGORY
         )
 
         saveAll(
@@ -111,7 +119,17 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
             SentenceGenerator.MIXED_REQUIREMENT_NON_STANDALONE,
             SentenceGenerator.NO_DISPOSAL_EVENT,
             SentenceGenerator.EMPTY_REQUIREMENTS_EVENT,
-            SentenceGenerator.EMPTY_REQUIREMENTS_DISPOSAL
+            SentenceGenerator.EMPTY_REQUIREMENTS_DISPOSAL,
+            SentenceGenerator.RAR_REQUIREMENT_EVENT,
+            SentenceGenerator.RAR_REQUIREMENT_DISPOSAL,
+            SentenceGenerator.RAR_REQUIREMENT,
+            SentenceGenerator.PROBATION_REQUIREMENT_EVENT,
+            SentenceGenerator.PROBATION_REQUIREMENT_DISPOSAL,
+            SentenceGenerator.PROBATION_REQUIREMENT,
+            SentenceGenerator.RAR_AND_PROBATION_REQUIREMENTS_EVENT,
+            SentenceGenerator.RAR_AND_PROBATION_REQUIREMENTS_DISPOSAL,
+            SentenceGenerator.RAR_AND_PROBATION_RAR_REQUIREMENT,
+            SentenceGenerator.RAR_AND_PROBATION_PROBATION_REQUIREMENT
         )
     }
 }

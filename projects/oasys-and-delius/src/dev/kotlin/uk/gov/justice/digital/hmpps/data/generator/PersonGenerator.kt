@@ -21,6 +21,12 @@ object PersonGenerator {
         generate("N123456", firstName = "NoDisposal", surname = "NoDisposal", dob = LocalDate.now().minusYears(29))
     val EMPTY_REQUIREMENTS_PERSON =
         generate("E123456", firstName = "Empty", surname = "Empty", dob = LocalDate.now().minusYears(33))
+    val RAR_REQUIREMENT_PERSON =
+        generate("F123456", firstName = "Rar", surname = "Requirement", dob = LocalDate.now().minusYears(32))
+    val PROBATION_REQUIREMENT_PERSON =
+        generate("J123456", firstName = "Probation", surname = "Requirement", dob = LocalDate.now().minusYears(32))
+    val RAR_AND_PROBATION_REQUIREMENTS_PERSON =
+        generate("B123456", firstName = "Both", surname = "Requirements", dob = LocalDate.now().minusYears(32))
 
     val GENDER = ReferenceDataGenerator.generate("GEN", "Gender")
     val ETHNICITY = ReferenceDataGenerator.generate("ETH", "Ethnicity")
