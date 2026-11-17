@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.exception.InvalidRequestException
@@ -14,6 +18,7 @@ import uk.gov.justice.digital.hmpps.api.model.contact.UpdateContactOutcome
 import uk.gov.justice.digital.hmpps.api.model.contact.UpdateEnforcementActions
 import uk.gov.justice.digital.hmpps.aspect.WithDeliusUser
 import uk.gov.justice.digital.hmpps.service.ContactLogService
+import uk.gov.justice.digital.hmpps.service.DocumentTemplateService
 import uk.gov.justice.digital.hmpps.service.UserService
 
 @RestController
@@ -22,7 +27,8 @@ import uk.gov.justice.digital.hmpps.service.UserService
 @PreAuthorize("hasRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL')")
 class ContactController(
     private val contactLogService: ContactLogService,
-    private val userService: UserService
+    private val userService: UserService,
+    private val documentTemplateService: DocumentTemplateService
 ) {
 
     @PostMapping("/{crn}")
@@ -89,4 +95,27 @@ class ContactController(
         @PathVariable contactId: Long,
         @RequestBody request: UpdateEnforcementActions,
     ) = contactLogService.updateEnforcementContactOutcome(contactId, request)
+
+    @GetMapping("/types/{typeCode}/templates")
+    fun getDocumentTemplatesByContactTypeCode(
+        @PathVariable typeCode: String
+    ) = documentTemplateService.getDocumentTemplatesByContactTypeCode(typeCode)
+
+    @GetMapping("/types/{typeCode}/templates/{name}/download")
+    fun downloadDocumentTemplate(
+        @PathVariable typeCode: String,
+        @PathVariable name: String
+    ): ResponseEntity<ByteArray> {
+        val template = documentTemplateService.downloadDocumentTemplate(typeCode, name)
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .header(
+                HttpHeaders.CONTENT_DISPOSITION,
+                ContentDisposition.attachment()
+                    .filename(template.fileName)
+                    .build()
+                    .toString()
+            )
+            .body(template.fileContent)
+    }
 }
