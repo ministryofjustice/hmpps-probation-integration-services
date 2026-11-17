@@ -14,14 +14,14 @@ import java.time.LocalDateTime
 @Table(name = "document_template")
 class DocumentTemplate(
     @Id
-    @Column(name="document_template_id")
+    @Column(name = "document_template_id")
     val id: Long = 0,
-    @Column(name="template_name")
+    @Column(name = "template_name")
     val name: String,
-    @Column(name="date_created_date")
+    @Column(name = "date_created_date")
     val dateCreated: LocalDate,
     @Lob
-    @Column(name="template")
+    @Column(name = "template")
     val template: ByteArray,
 )
 
@@ -31,7 +31,7 @@ interface DocumentTemplateProjection {
     val dateCreated: LocalDateTime
 }
 
-interface DocumentTemplateRepository: JpaRepository<DocumentTemplate, Long> {
+interface DocumentTemplateRepository : JpaRepository<DocumentTemplate, Long> {
 
     @Query(
         nativeQuery = true,

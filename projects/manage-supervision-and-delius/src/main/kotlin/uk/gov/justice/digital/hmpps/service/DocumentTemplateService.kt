@@ -7,9 +7,9 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotF
 import uk.gov.justice.digital.hmpps.integrations.delius.documentTemplates.DocumentTemplateRepository
 
 @Service
-class DocumentTemplateService (
+class DocumentTemplateService(
     private val documentTemplateRepository: DocumentTemplateRepository
-){
+) {
     fun getDocumentTemplatesByContactTypeCode(code: String) =
         documentTemplateRepository.findAllByContactTypeCode(code).map {
             DocumentTemplateMetadata(it.id, it.name, it.dateCreated.toLocalDate())
