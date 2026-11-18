@@ -148,15 +148,47 @@ internal class KeyDateCalculatorTest {
             disposal = generateDisposal(generateEvent(person), sdsPlus = false, lengthInDays = 50),
             bookingRef = "ABC"
         )
-        custody.keyDates += KeyDate(custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2026, 1, 1))
+        custody.keyDates += KeyDate(custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2028, 1, 1))
         custody.keyDates += KeyDate(
-            custody, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, LocalDate.of(2025, 1, 1)
+            custody, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, LocalDate.of(2027, 1, 1)
         )
 
-        assertThat(custody.electronicMonitoringEndDate(), equalTo(LocalDate.of(2025, 12, 2)))
+        assertThat(custody.electronicMonitoringEndDate(), equalTo(LocalDate.of(2027, 12, 2)))
 
         registrations += Registration(id(), person, RegisterType(id(), "PMEX"))
         assertThat(custody.electronicMonitoringEndDate(), equalTo(null))
+    }
+
+    @Test
+    fun `em end date is not calculated when CRD is before 1 October 2026`() {
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent(), sdsPlus = false, lengthInDays = 30),
+            bookingRef = "ABC"
+        )
+        custody.keyDates += KeyDate(
+            custody, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, LocalDate.of(2026, 9, 30)
+        )
+        custody.keyDates += KeyDate(
+            custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2026, 12, 18)
+        )
+
+        assertThat(custody.electronicMonitoringEndDate(), equalTo(null))
+    }
+
+    @Test
+    fun `EMED is calculated when CRD and SED are on or after the cut off date`() {
+        val custody = generateCustodialSentence(
+            disposal = generateDisposal(generateEvent(), sdsPlus = false, lengthInDays = 30),
+            bookingRef = "ABC"
+        )
+        custody.keyDates += KeyDate(
+            custody, KEY_DATE_TYPES[AUTOMATIC_CONDITIONAL_RELEASE_DATE.code]!!, LocalDate.of(2026, 10, 1)
+        )
+        custody.keyDates += KeyDate(
+            custody, KEY_DATE_TYPES[SENTENCE_EXPIRY_DATE.code]!!, LocalDate.of(2026, 10, 18)
+        )
+
+        assertThat(custody.electronicMonitoringEndDate(), equalTo(LocalDate.of(2026, 10, 31)))
     }
 
     @ParameterizedTest
@@ -255,45 +287,45 @@ internal class KeyDateCalculatorTest {
 
         @JvmStatic
         fun deliusEmedCases(): List<Arguments> {
-            val sed = LocalDate.of(2026, 1, 1)
-            val crd = LocalDate.of(2025, 1, 1)
+            val sed = LocalDate.of(2028, 1, 1)
+            val crd = LocalDate.of(2027, 1, 1)
             return listOf(
                 arguments(sed, crd, 0L, false, sed),
-                arguments(sed, crd, 1L, false, LocalDate.of(2025, 12, 31)),
-                arguments(sed, crd, 2L, false, LocalDate.of(2025, 12, 30)),
-                arguments(sed, crd, 5L, false, LocalDate.of(2025, 12, 29)),
-                arguments(sed, crd, 10L, false, LocalDate.of(2025, 12, 26)),
-                arguments(sed, crd, 11L, false, LocalDate.of(2025, 12, 25)),
-                arguments(sed, crd, 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, crd, 100L, false, LocalDate.of(2025, 11, 2)),
-                arguments(sed, crd, 365L, false, LocalDate.of(2025, 5, 27)),
-                arguments(sed, crd, 366L, false, LocalDate.of(2025, 5, 26)),
+                arguments(sed, crd, 1L, false, LocalDate.of(2027, 12, 31)),
+                arguments(sed, crd, 2L, false, LocalDate.of(2027, 12, 30)),
+                arguments(sed, crd, 5L, false, LocalDate.of(2027, 12, 29)),
+                arguments(sed, crd, 10L, false, LocalDate.of(2027, 12, 26)),
+                arguments(sed, crd, 11L, false, LocalDate.of(2027, 12, 25)),
+                arguments(sed, crd, 50L, false, LocalDate.of(2027, 12, 2)),
+                arguments(sed, crd, 100L, false, LocalDate.of(2027, 11, 2)),
+                arguments(sed, crd, 365L, false, LocalDate.of(2027, 5, 27)),
+                arguments(sed, crd, 366L, false, LocalDate.of(2027, 5, 26)),
                 arguments(sed, crd, 0L, true, sed),
-                arguments(sed, crd, 1L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, crd, 2L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, crd, 3L, true, LocalDate.of(2025, 12, 31)),
-                arguments(sed, crd, 4L, true, LocalDate.of(2025, 12, 30)),
-                arguments(sed, crd, 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, crd, 100L, true, LocalDate.of(2025, 11, 28)),
-                arguments(sed, crd, 365L, true, LocalDate.of(2025, 9, 1)),
-                arguments(sed, crd, 366L, true, LocalDate.of(2025, 9, 1)),
-                arguments(sed, LocalDate.of(2025, 11, 1), 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, LocalDate.of(2025, 11, 2), 50L, false, LocalDate.of(2025, 12, 2)),
-                arguments(sed, LocalDate.of(2025, 11, 3), 50L, false, LocalDate.of(2025, 12, 3)),
-                arguments(sed, LocalDate.of(2025, 11, 14), 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, LocalDate.of(2025, 11, 15), 50L, true, LocalDate.of(2025, 12, 15)),
-                arguments(sed, LocalDate.of(2025, 11, 16), 50L, true, LocalDate.of(2025, 12, 16)),
-                arguments(sed, LocalDate.of(2025, 12, 31), 50L, false, LocalDate.of(2026, 1, 30)),
-                arguments(sed, LocalDate.of(2025, 12, 31), 50L, true, LocalDate.of(2026, 1, 30)),
-                arguments(sed, LocalDate.of(2025, 1, 1), 50L, null, LocalDate.of(2025, 12, 2)),
+                arguments(sed, crd, 1L, true, LocalDate.of(2027, 12, 31)),
+                arguments(sed, crd, 2L, true, LocalDate.of(2027, 12, 31)),
+                arguments(sed, crd, 3L, true, LocalDate.of(2027, 12, 31)),
+                arguments(sed, crd, 4L, true, LocalDate.of(2027, 12, 30)),
+                arguments(sed, crd, 50L, true, LocalDate.of(2027, 12, 15)),
+                arguments(sed, crd, 100L, true, LocalDate.of(2027, 11, 28)),
+                arguments(sed, crd, 365L, true, LocalDate.of(2027, 9, 1)),
+                arguments(sed, crd, 366L, true, LocalDate.of(2027, 9, 1)),
+                arguments(sed, LocalDate.of(2027, 11, 1), 50L, false, LocalDate.of(2027, 12, 2)),
+                arguments(sed, LocalDate.of(2027, 11, 2), 50L, false, LocalDate.of(2027, 12, 2)),
+                arguments(sed, LocalDate.of(2027, 11, 3), 50L, false, LocalDate.of(2027, 12, 3)),
+                arguments(sed, LocalDate.of(2027, 11, 14), 50L, true, LocalDate.of(2027, 12, 15)),
+                arguments(sed, LocalDate.of(2027, 11, 15), 50L, true, LocalDate.of(2027, 12, 15)),
+                arguments(sed, LocalDate.of(2027, 11, 16), 50L, true, LocalDate.of(2027, 12, 16)),
+                arguments(sed, LocalDate.of(2027, 12, 31), 50L, false, LocalDate.of(2028, 1, 30)),
+                arguments(sed, LocalDate.of(2027, 12, 31), 50L, true, LocalDate.of(2028, 1, 30)),
+                arguments(sed, crd, 50L, null, LocalDate.of(2027, 12, 2)),
                 arguments(sed, null, 50L, false, null),
                 arguments(sed, null, 50L, true, null),
                 arguments(sed, null, 50L, null, null),
-                arguments(null, LocalDate.of(2025, 1, 1), 50L, false, null),
-                arguments(null, LocalDate.of(2025, 1, 1), 50L, true, null),
+                arguments(null, crd, 50L, false, null),
+                arguments(null, crd, 50L, true, null),
                 arguments(null, null, 50L, false, null),
-                arguments(sed, LocalDate.of(2025, 1, 1), null, false, null),
-                arguments(sed, LocalDate.of(2025, 1, 1), null, true, null)
+                arguments(sed, crd, null, false, null),
+                arguments(sed, crd, null, true, null)
             )
         }
 

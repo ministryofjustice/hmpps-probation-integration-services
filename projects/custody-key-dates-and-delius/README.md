@@ -58,6 +58,7 @@ existing Delius values will be updated on receiving an event trigger. The custod
   - only applies to custodial SDS or SDS+ sentences
   - no date is calculated if conditional release date or sentence expiry date is missing
   - no date is calculated for people with an active Progression Model Exclusion (PMEX) registration
+  - no date is calculated if CRD or the calculated EMED is before the cut off date (1st October 2026)
 
 Electronic Monitoring End Date and Final Third Start Date are derived for all active custodial standard determinate 
 sentences using Delius sentence information and the latest key dates. Other key dates still require an active prison 

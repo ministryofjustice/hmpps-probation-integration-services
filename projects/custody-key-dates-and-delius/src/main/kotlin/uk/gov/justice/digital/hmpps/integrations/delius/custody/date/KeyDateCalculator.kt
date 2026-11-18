@@ -12,6 +12,8 @@ import kotlin.math.floor
 
 @Component
 object KeyDateCalculator {
+    private val emedCutoffDate = LocalDate.of(2026, 10, 1)
+
     /**
      * EMED Calculation
      * For SDS Sentences, EMED = CRD + 7% of sentence length in days.
@@ -41,17 +43,20 @@ object KeyDateCalculator {
      * For all cases, if CRD + 30 days is a later date than the calculated date, set the EMED to be CRD + 30 days.
      *
      * Only add or update the EMED for cases that are on a determinate custody sentence (L1+SC) and not excluded from the progression model (PMEX registration)
+     * Both CRD and the calculated EMED must be on or after 1 October 2026
      */
     fun Custody.electronicMonitoringEndDate(keyDates: List<KeyDate> = this.keyDates): LocalDate? = with(disposal) {
         if (!type.determinateCustody || lengthInDays == null) return null
         if (event.person.progressionModelExclusionRegistrations.isNotEmpty()) return null
         val conditionalReleaseDate =
             keyDates.firstOrNull { it.type.code == AUTOMATIC_CONDITIONAL_RELEASE_DATE.code }?.date ?: return null
+        if (conditionalReleaseDate < emedCutoffDate) return null
         val sentenceExpiryDate = keyDates.firstOrNull { it.type.code == SENTENCE_EXPIRY_DATE.code }?.date ?: return null
 
         val deduction = if (sdsPlus == true) lengthInDays / 3.0 else lengthInDays * 0.6
         sentenceExpiryDate.minusDays(ceil(deduction).toLong())
             .coerceAtLeast(conditionalReleaseDate.plusDays(30))
+            .takeIf { it >= emedCutoffDate }
     }
 
     /**

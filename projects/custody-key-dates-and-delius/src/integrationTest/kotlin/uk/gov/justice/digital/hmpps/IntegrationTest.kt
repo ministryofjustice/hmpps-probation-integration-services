@@ -50,7 +50,7 @@ internal class IntegrationTest @Autowired constructor(
     @MockitoBean
     lateinit var telemetryService: TelemetryService
 
-    private val sedDate = "2025-09-10"
+    private val sedDate = "2029-09-10"
 
     @BeforeEach
     fun clearTopic() {
@@ -159,7 +159,7 @@ internal class IntegrationTest @Autowired constructor(
         assertThat(custody.disposal.sdsPlus, equalTo(true))
         assertThat(
             custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2025-08-24"))
+            equalTo(LocalDate.parse("2029-08-24"))
         )
         assertThat(custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code), equalTo(null))
 
@@ -281,19 +281,19 @@ internal class IntegrationTest @Autowired constructor(
         val custody = custodyRepository.findCustodyById(custodyId)
         assertThat(
             custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)?.date,
-            equalTo(LocalDate.parse("2024-01-17"))
+            equalTo(LocalDate.parse("2027-01-17"))
         )
         assertThat(
             custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)?.date,
-            equalTo(LocalDate.parse("2024-01-16"))
+            equalTo(LocalDate.parse("2027-01-16"))
         )
         assertThat(
             custody.keyDate(CustodyDateType.ELECTRONIC_MONITORING_END_DATE.code)?.date,
-            equalTo(LocalDate.parse("2024-02-16"))
+            equalTo(LocalDate.parse("2027-02-16"))
         )
         assertThat(
             custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)?.date,
-            equalTo(LocalDate.parse("2023-12-30"))
+            equalTo(LocalDate.parse("2026-12-30"))
         )
     }
 
@@ -334,13 +334,13 @@ internal class IntegrationTest @Autowired constructor(
         val fthrd = custody.keyDate(CustodyDateType.FINAL_THIRD_START_DATE.code)
 
         assertThat(sed?.date, equalTo(LocalDate.parse(sedDate)))
-        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
-        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
-        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
-        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
-        assertThat(pr1?.date, equalTo(LocalDate.parse("2024-10-05")))
-        assertThat(emed?.date, equalTo(LocalDate.parse("2025-08-11")))
-        assertThat(fthrd?.date, equalTo(LocalDate.parse("2025-08-24")))
+        assertThat(crd?.date, equalTo(LocalDate.parse("2026-11-26")))
+        assertThat(led?.date, equalTo(LocalDate.parse("2029-09-11")))
+        assertThat(erd?.date, equalTo(LocalDate.parse("2026-11-27")))
+        assertThat(hde?.date, equalTo(LocalDate.parse("2026-10-28")))
+        assertThat(pr1?.date, equalTo(LocalDate.parse("2028-10-05")))
+        assertThat(emed?.date, equalTo(LocalDate.parse("2029-08-11")))
+        assertThat(fthrd?.date, equalTo(LocalDate.parse("2029-08-24")))
 
         assertThat(led?.softDeleted, equalTo(false))
     }
@@ -361,14 +361,14 @@ internal class IntegrationTest @Autowired constructor(
             contact.notes,
             equalTo(
                 """
-            LED 11/09/2025
-            ACR 26/11/2022
-            SED 10/09/2025
-            EXP 27/11/2022
-            HDE 28/10/2022
-            PR1 05/10/2024
-            EMED 11/08/2025
-            FTHRD 24/08/2025
+            LED 11/09/2029
+            ACR 26/11/2026
+            SED 10/09/2029
+            EXP 27/11/2026
+            HDE 28/10/2026
+            PR1 05/10/2028
+            EMED 11/08/2029
+            FTHRD 24/08/2029
                 """.trimIndent()
             )
         )
