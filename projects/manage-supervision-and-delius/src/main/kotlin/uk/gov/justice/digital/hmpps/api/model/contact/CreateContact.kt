@@ -122,6 +122,7 @@ data class CreateContact(
         DisclosureResponseCompletion("DAD2"),
         IOMReferral("ERFI"),
         IPPReviewPanel("IRP1"),
+        IPPProgressionPanel("IRP2"),
         ManagementOversight("MO1"),
         ManagementOversightHVRA("MO8"),
         MAPPALevel1Review("C281"),

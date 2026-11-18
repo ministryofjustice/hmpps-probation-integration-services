@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.model.AdjustmentType
 import uk.gov.justice.digital.hmpps.model.CreateAdjustmentRequest
 import uk.gov.justice.digital.hmpps.model.UpdateAdjustmentRequest
+import uk.gov.justice.digital.hmpps.model.UpdateAdjustmentExternalReferenceRequest
 import uk.gov.justice.digital.hmpps.service.AdjustmentService
 import uk.gov.justice.digital.hmpps.utils.Extensions.mapSorts
 import java.time.LocalDate
@@ -40,6 +41,12 @@ class AdjustmentsController(
         @RequestParam username: String,
         @RequestBody adjustmentRequest: UpdateAdjustmentRequest
     ) = adjustmentService.updateAdjustment(reference, adjustmentRequest, username)
+
+    @PutMapping("/adjustment/{id:[0-9]+}")
+    fun setAdjustmentReference(
+        @PathVariable id: Long,
+        @RequestBody adjustmentRequest: UpdateAdjustmentExternalReferenceRequest
+    ) = adjustmentService.setAdjustmentReference(id, adjustmentRequest.reference)
 
     @DeleteMapping("/adjustments/{reference:[0-9a-fA-F-]{36}}")
     fun deleteAdjustments(

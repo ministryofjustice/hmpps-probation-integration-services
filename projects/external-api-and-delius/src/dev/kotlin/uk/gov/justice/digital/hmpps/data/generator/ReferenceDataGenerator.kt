@@ -20,4 +20,6 @@ object ReferenceDataGenerator {
     val RD_DISABILITY_CONDITION = generateReferenceData("DISC", description = "DISABILITY CONDITION")
     val RD_ADDRESS_STATUS =
         generateReferenceData("ADST", description = "ADDRESS STATUS", dataset = DATASET_TYPE_ADDRESS_STATUS)
+    val RD_PREVIOUS_ADDRESS_STATUS =
+        generateReferenceData("PRADST", description = "PREVIOUS ADDRESS STATUS", dataset = DATASET_TYPE_ADDRESS_STATUS)
 }

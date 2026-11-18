@@ -154,6 +154,14 @@ object UPWGenerator {
         court = null,
     )
 
+    val EVENT_8 = generateEvent(
+        eventNumber = "8",
+        person = PersonGenerator.DEFAULT_PERSON,
+        disposal = null,
+        referralDate = LocalDate.now().minusDays(1),
+        convictionDate = null,
+        court = null,
+    )
     val EVENT_ADJUSTMENT = generateEvent(
         eventNumber = "1",
         person = PersonGenerator.ADJUSTMENT_PERSON,
@@ -270,6 +278,12 @@ object UPWGenerator {
         date = LocalDate.of(2026, 1, 5),
         event = EVENT_7,
     )
+    val DISPOSAL_8 = generateDisposal(
+        length = 12,
+        disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
+        date = LocalDate.of(2026, 1, 5),
+        event = EVENT_8,
+    )
     val DISPOSAL_ADJUSTMENT = generateDisposal(
         length = 12,
         disposalType = ReferenceDataGenerator.DEFAULT_DISPOSAL_TYPE,
@@ -286,6 +300,7 @@ object UPWGenerator {
     val UPW_DETAILS_5 = generateUpwDetails(disposal = DISPOSAL_5, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
     val UPW_DETAILS_6 = generateUpwDetails(disposal = DISPOSAL_6, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
     val UPW_DETAILS_7 = generateUpwDetails(disposal = DISPOSAL_7, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
+    val UPW_DETAILS_8 = generateUpwDetails(disposal = DISPOSAL_8, status = ReferenceDataGenerator.UPW_STATUS_WORKING)
 
     val DEFAULT_UPW_ALLOCATION = generateUpwAllocation(
         details = UPW_DETAILS_1,

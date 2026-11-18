@@ -101,6 +101,8 @@ class RequirementMainCategory(
 
 ) {
     companion object {
+        const val RAR_RQMNT_MAIN_CATEGORY = "F"
+        const val PROBATION_RQMNT_MAIN_CATEGORY = "J"
         const val UPW_RQMNT_MAIN_CATEGORY = "W"
     }
 }

@@ -21,3 +21,7 @@ data class UpdateAdjustmentRequest(
     val reason: String,
     val minutes: Int
 )
+
+data class UpdateAdjustmentExternalReferenceRequest(
+    val reference: UUID
+)

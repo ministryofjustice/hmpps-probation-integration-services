@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.dto.InsertRemandDTO
 import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.hmpps.dto.InsertRemandResult
 class RemandService(
     private val personService: PersonService,
     private val eventService: EventService,
+    private val optimisationTables: OptimisationTables,
 ) {
     @Transactional
     fun insertPersonOnRemand(insertRemandDTO: InsertRemandDTO): InsertRemandResult {
@@ -26,6 +28,8 @@ class RemandService(
             caseUrn = insertRemandDTO.caseUrn,
             hearingId = insertRemandDTO.hearingId,
         )
+
+        optimisationTables.rebuild(insertPersonResult.person.id!!)
 
         return InsertRemandResult(insertPersonResult, insertEventResult)
     }
