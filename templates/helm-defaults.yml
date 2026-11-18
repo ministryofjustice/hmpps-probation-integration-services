@@ -28,7 +28,7 @@ generic-service:
 
   env:
     AWS_REGION: eu-west-2
-    JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -Xmx512m -XX:+UseG1GC XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=50.0 -XX:-UseBASE64Intrinsics"
+    JDK_JAVA_OPTIONS: "-javaagent:/agent/agent.jar -Xmx512m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=50.0 -XX:-UseBASE64Intrinsics"
     SENTRY_TRACES_SAMPLE_RATE: '0.05'
     SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: 10
     SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: 1
