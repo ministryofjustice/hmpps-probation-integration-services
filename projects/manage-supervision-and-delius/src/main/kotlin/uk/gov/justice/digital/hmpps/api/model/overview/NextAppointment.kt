@@ -5,5 +5,5 @@ import java.time.ZonedDateTime
 data class Appointment(
     val id: Long,
     val date: ZonedDateTime,
-    val description: String
+    val description: String?
 )
