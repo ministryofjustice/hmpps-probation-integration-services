@@ -248,7 +248,7 @@ class CommunityPaybackAppointmentsService(
                 ).requireDateAfterSentenceDate()
             }
             .also(createUnpaidWorkAppointmentRepository::saveAll)
-            .also { upwDetails.values.onEach { updateStatus(it) } }
+            .also { upwDetails.values.onEach { updateStatus(it, allowOverCompletion = true) } }
             .map { CreatedAppointment(id = it.id!!, reference = it.reference!!) }
     }
 
@@ -307,11 +307,11 @@ class CommunityPaybackAppointmentsService(
             notes = appointment.notes
             pickUpTime = request.pickUp?.time
             pickUpLocation = request.pickUp?.location?.code?.let { code -> officeLocationRepository.getByCode(code) }
-            updateStatus(details)
+            updateStatus(details, true)
         }.requireDateAfterSentenceDate()
     }
 
-    fun updateStatus(details: UnpaidWorkDetails) {
+    fun updateStatus(details: UnpaidWorkDetails, allowOverCompletion: Boolean = false) {
         val upwMinutesDtos = unpaidWorkAppointmentRepository
             .getUpwRequiredAndCompletedMinutes(listOf(details.id))
         val progress = RequirementProgress(
@@ -321,7 +321,8 @@ class CommunityPaybackAppointmentsService(
         )
         val remainingMinutes = progress.requiredMinutes + progress.adjustments - progress.completedMinutes
 
-        require(remainingMinutes >= 0) {
+        require(remainingMinutes >= 0 || allowOverCompletion) {
+
             "Adjustment/Appointment would result in negative remaining unpaid work minutes. ($remainingMinutes)"
         }
 
@@ -405,7 +406,7 @@ class CommunityPaybackAppointmentsService(
             ?.let { appointment ->
                 appointmentService.delete("$REFERENCE_PREFIX$reference")
                 unpaidWorkAppointmentRepository.deleteById(appointment.id)
-                updateStatus(appointment.details)
+                updateStatus(appointment.details, allowOverCompletion = true)
             } ?: throw NotFoundException("Appointment with reference $reference not found")
     }
 
