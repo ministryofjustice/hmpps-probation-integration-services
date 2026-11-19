@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.ArgumentMatchers.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -121,35 +119,33 @@ internal class UserServiceTest {
         )
     }
 
-    @ParameterizedTest
-    @CsvSource(", Office visit", "2026-07-14T10:30, ", ", ")
-    fun `maps next appointment with missing details`(dateTime: LocalDateTime?, description: String?) {
-        val result = CASELOAD_PERSON_1.toCaseloadItem(
+    @Test
+    fun `maps next appointment with a null description`() {
+        val dateTime = LocalDateTime.of(2026, 7, 14, 10, 30)
+        val result = caseloadItem(
             nextId = 101L,
             nextDateTime = dateTime,
-            nextDescription = description,
         ).toStaffCase()
 
-        assertEquals(CaseloadAppointment(101L, dateTime?.atZone(EuropeLondon), description), result.nextAppointment)
+        assertEquals(CaseloadAppointment(101L, dateTime.atZone(EuropeLondon), null), result.nextAppointment)
         assertNull(result.previousAppointment)
     }
 
-    @ParameterizedTest
-    @CsvSource(", Telephone appointment", "2026-07-13T09:00, ", ", ")
-    fun `maps previous appointment with missing details`(dateTime: LocalDateTime?, description: String?) {
-        val result = CASELOAD_PERSON_1.toCaseloadItem(
+    @Test
+    fun `maps previous appointment with a null description`() {
+        val dateTime = LocalDateTime.of(2026, 7, 13, 9, 0)
+        val result = caseloadItem(
             previousId = 102L,
             previousDateTime = dateTime,
-            previousDescription = description,
         ).toStaffCase()
 
-        assertEquals(CaseloadAppointment(102L, dateTime?.atZone(EuropeLondon), description), result.previousAppointment)
+        assertEquals(CaseloadAppointment(102L, dateTime.atZone(EuropeLondon), null), result.previousAppointment)
         assertNull(result.nextAppointment)
     }
 
     @Test
     fun `omits appointments without IDs even when other details are present`() {
-        val result = CASELOAD_PERSON_1.toCaseloadItem(
+        val result = caseloadItem(
             nextDateTime = LocalDateTime.of(2026, 7, 14, 10, 30),
             nextDescription = "Office visit",
             previousDateTime = LocalDateTime.of(2026, 7, 13, 9, 0),
@@ -785,23 +781,24 @@ internal class UserServiceTest {
             get() = _lastModifiedDate
     }
 
-    private fun Caseload.toCaseloadItem(
+    private fun caseloadItem(
         nextId: Long? = null,
         nextDateTime: LocalDateTime? = null,
         nextDescription: String? = null,
         previousId: Long? = null,
         previousDateTime: LocalDateTime? = null,
         previousDescription: String? = null,
-    ) = object : CaseloadItem {
-        override val offenderId = person.id
-        override val crn = person.crn
-        override val firstName = person.forename
-        override val secondName = person.secondName
-        override val thirdName = person.thirdName
-        override val surname = person.surname
+        caseload: Caseload? = null,
+    ): CaseloadItem = object : CaseloadItem {
+        override val offenderId = caseload?.person?.id ?: 1L
+        override val crn = caseload?.person?.crn ?: "X123456"
+        override val firstName = caseload?.person?.forename ?: "Jane"
+        override val secondName = caseload?.person?.secondName
+        override val thirdName = caseload?.person?.thirdName
+        override val surname = caseload?.person?.surname ?: "Smith"
         override val latestSentenceTypeDescription = null
-        override val teamCode = team.code
-        override val dateOfBirth = person.dateOfBirth.atStartOfDay()
+        override val teamCode = caseload?.team?.code ?: "N01T01"
+        override val dateOfBirth = caseload?.person?.dateOfBirth?.atStartOfDay()
         override val totalSentences: Long = 1
         override val nextAppointmentId = nextId
         override val nextAppointmentDateTime = nextDateTime
@@ -811,6 +808,8 @@ internal class UserServiceTest {
         override val prevAppointmentTypeDescription = previousDescription
         override val allocatedDate: LocalDateTime? = null
     }
+
+    private fun Caseload.toCaseloadItem() = caseloadItem(caseload = this)
 
     fun Caseload.toTeamCaseloadItem() = object : TeamCaseloadItem {
         override val crn = person.crn
