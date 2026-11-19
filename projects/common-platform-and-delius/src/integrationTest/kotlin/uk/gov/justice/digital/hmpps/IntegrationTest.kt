@@ -446,6 +446,8 @@ internal class IntegrationTest @Autowired constructor(
                 "eventId" to "10",
                 "eventNumber" to "1",
                 "mainOffenceId" to "10",
+                "mainOffenceDate" to LocalDate.now().toString(),
+                "mainOffenceCount" to "1",
                 "courtAppearanceId" to "10",
                 "contactId" to "10"
             )
