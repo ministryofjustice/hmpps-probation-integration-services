@@ -9,6 +9,8 @@ import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.RESTRI
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.UNLIMITED_ACCESS
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
+import uk.gov.justice.digital.hmpps.entity.AdditionalSentence
+import java.time.LocalDate
 
 @Component
 class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
@@ -38,6 +40,16 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
 
     private fun setupCaseData() {
         save(PersonGenerator.NO_EVENTS_PERSON)
-        save(PersonGenerator.generatePersonWithOffences())
+        val personWithOffences = PersonGenerator.PERSON_WITH_OFFENCES
+        save(personWithOffences)
+        save(
+            AdditionalSentence(
+                id = IdGenerator.getAndIncrement(),
+                event = personWithOffences.events.first(),
+                person = personWithOffences,
+                startDate = LocalDate.of(2026, 3, 10),
+                endDate = LocalDate.of(2026, 9, 10),
+            )
+        )
     }
 }

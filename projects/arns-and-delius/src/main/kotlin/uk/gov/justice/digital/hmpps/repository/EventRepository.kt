@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.entity.Event
 
 interface EventRepository: JpaRepository<Event, Long> {
-    fun findAllByPerson_CrnAndActiveFlagEqualsTrue(crn: String): List<Event>
+    fun findAllByPerson_CrnAndActiveFlagTrue(crn: String): List<Event>
 }
