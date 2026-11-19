@@ -23,7 +23,7 @@ class CaseDetailService(
 
     fun getAdditionalSentences(crn: String): AdditionalSentences {
         val events = eventRepository.findAllByPerson_CrnAndActiveFlagTrue(crn)
-        .map { it.id }
+            .map { it.id }
         val additionalSentences = additionalSentenceRepository.findAllByEvent_IdIn(events)
         return AdditionalSentences(
             additionalSentences = additionalSentences.map { it.toResponse() }

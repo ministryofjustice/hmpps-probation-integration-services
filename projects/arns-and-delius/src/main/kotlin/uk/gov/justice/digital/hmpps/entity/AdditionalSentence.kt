@@ -39,7 +39,6 @@ class AdditionalSentence(
     val softDeleted: Boolean = false,
 )
 
-
 fun AdditionalSentence.toResponse() = AdditionalSentenceDates(
     eventId = event.id,
     startDate = startDate,
