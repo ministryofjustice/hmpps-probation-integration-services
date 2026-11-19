@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.check
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -16,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import uk.gov.justice.digital.hmpps.service.EventService
 import uk.gov.justice.digital.hmpps.service.PersonService
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -80,7 +83,9 @@ internal class EventServiceTest {
         val detailedOffence = DetailedOffenceGenerator.DEFAULT
         val offence = OffenceGenerator.DEFAULT
         val mainOffence = MainOffenceGenerator.generate(event = event, person = person, offence = offence)
-        val hearingOffence = HearingOffenceGenerator.generate()
+        val hearingOffence = HearingOffenceGenerator.generate().copy(startDate = LocalDate.of(2023, 12, 1), count = 2)
+        val additionalOffence = hearingOffence.copy(startDate = LocalDate.of(2023, 11, 1), count = 3)
+        val offenceWithoutDetails = hearingOffence.copy(startDate = null, count = null)
         val hearing = HearingGenerator.generate()
         val court = CourtGenerator.UNKNOWN_COURT_N07_PROVIDER
         val sittingDay = ZonedDateTime.now()
@@ -145,7 +150,10 @@ internal class EventServiceTest {
         val result = eventService.insertEvent(
             person = person,
             mainOffence = hearingOffence.withHomeOfficeCode("00100"),
-            additionalOffences = listOf(),
+            additionalOffences = listOf(
+                additionalOffence.withHomeOfficeCode("00100"),
+                offenceWithoutDetails.withHomeOfficeCode("00100")
+            ),
             courtCode = court.ouCode,
             sittingDay = sittingDay,
             caseUrn = caseUrn,
@@ -153,7 +161,16 @@ internal class EventServiceTest {
         )
 
         verify(eventRepository).save(any<Event>())
-        verify(mainOffenceRepository).save(any<MainOffence>())
+        verify(mainOffenceRepository).save(check<MainOffence> {
+            assertThat(it.date, equalTo(LocalDate.of(2023, 12, 1)))
+            assertThat(it.count, equalTo(2))
+        })
+        verify(additionalOffenceRepository).saveAll(check<List<AdditionalOffence>> {
+            assertThat(
+                it.map { offence -> offence.date to offence.count },
+                containsInAnyOrder(LocalDate.of(2023, 11, 1) to 3, LocalDate.now() to 1)
+            )
+        })
         verify(orderManagerRepository).save(any<OrderManager>())
         verify(contactRepository).save(any<Contact>())
         verify(courtAppearanceRepository).save(any<CourtAppearance>())

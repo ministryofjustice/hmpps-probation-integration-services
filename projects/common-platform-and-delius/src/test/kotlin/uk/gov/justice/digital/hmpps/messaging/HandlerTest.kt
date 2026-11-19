@@ -154,7 +154,8 @@ internal class HandlerTest {
     fun `logs FutureSittingDay and skips creation for future sitting days`() {
         corePersonHasNoCrn()
         featureFlagIsEnabled(true)
-        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
+        whenever(offenceService.findMainOffence(any()))
+            .thenReturn(OffenceAndPlea("AA00000", homeOfficeOffenceCode = "12345"))
         val hearing = MessageGenerator.COMMON_PLATFORM_EVENT.hearing
         val hearingDay = hearing.hearingDays.first().copy(sittingDay = ZonedDateTime.now().plusDays(1))
         val notification = Notification(message = CommonPlatformHearing(hearing.copy(hearingDays = listOf(hearingDay))))
@@ -208,7 +209,8 @@ internal class HandlerTest {
     }
 
     private fun personOnRemandIsSuccessfullyCreated() {
-        whenever(offenceService.findMainOffence(any())).thenReturn(OffenceAndPlea("AA00000", "12345", null))
+        whenever(offenceService.findMainOffence(any()))
+            .thenReturn(OffenceAndPlea("AA00000", homeOfficeOffenceCode = "12345"))
 
         whenever(remandService.insertPersonOnRemand(any())).thenReturn(
             InsertRemandResult(
