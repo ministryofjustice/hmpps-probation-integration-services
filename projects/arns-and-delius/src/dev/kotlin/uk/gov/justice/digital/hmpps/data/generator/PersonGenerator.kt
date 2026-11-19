@@ -70,6 +70,7 @@ object PersonGenerator {
                     mainOffence = mainOffenceTwo,
                     disposal = disposalTwo,
                     convictionDate = eventTwo.convictionDate,
+                    activeFlag = false,
                 ),
             ),
         )

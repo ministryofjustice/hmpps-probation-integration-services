@@ -42,14 +42,30 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(PersonGenerator.NO_EVENTS_PERSON)
         val personWithOffences = PersonGenerator.PERSON_WITH_OFFENCES
         save(personWithOffences)
-        save(
+        val (activeEvent, inactiveEvent) = personWithOffences.events
+        saveAll(
             AdditionalSentence(
                 id = IdGenerator.getAndIncrement(),
-                event = personWithOffences.events.first(),
+                event = activeEvent,
                 person = personWithOffences,
                 startDate = LocalDate.of(2026, 3, 10),
                 endDate = LocalDate.of(2026, 9, 10),
-            )
+            ),
+            AdditionalSentence(
+                id = IdGenerator.getAndIncrement(),
+                event = inactiveEvent,
+                person = personWithOffences,
+                startDate = LocalDate.of(2026, 4, 20),
+                endDate = LocalDate.of(2026, 10, 20),
+            ),
+            AdditionalSentence(
+                id = IdGenerator.getAndIncrement(),
+                event = activeEvent,
+                person = personWithOffences,
+                startDate = LocalDate.of(2026, 3, 15),
+                endDate = LocalDate.of(2026, 9, 15),
+                softDeleted = true,
+            ),
         )
     }
 }

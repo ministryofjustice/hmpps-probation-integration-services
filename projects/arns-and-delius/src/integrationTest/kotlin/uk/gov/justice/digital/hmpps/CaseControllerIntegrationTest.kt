@@ -72,7 +72,7 @@ internal class CaseControllerIntegrationTest @Autowired constructor(private val 
     }
 
     @Test
-    fun `gets additional sentences for CRN`() {
+    fun `returns only non-deleted additional sentences on active events for CRN`() {
         mockMvc.get("/case/${DEFAULT_PERSON.crn}/additional-sentences") {
             withToken()
         }.andExpect {
