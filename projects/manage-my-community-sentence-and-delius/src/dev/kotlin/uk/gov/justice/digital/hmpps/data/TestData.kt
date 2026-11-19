@@ -8,8 +8,8 @@ import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.RAR_REQUIREMENT_
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.RAR_REQUIREMENT_SUBCATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.REQUIREMENT_SUBCATEGORY
-import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REGULAR_REQUIREMENT_SUBCATEGORY
+import uk.gov.justice.digital.hmpps.data.TestData.ReferenceData.UPW_REQUIREMENT_CATEGORY
 import uk.gov.justice.digital.hmpps.data.TestData.RequirementData.RAR_REQUIREMENT
 import uk.gov.justice.digital.hmpps.data.TestData.SentenceData.DISPOSAL
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
@@ -571,6 +571,7 @@ object TestData {
     object AppointmentData {
         val FUTURE_APPOINTMENT = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(9, 0), LocalTime.of(9, 30),
+            licenceCondition = LicenceConditionData.LICENCE_CONDITION,
         )
         val FUTURE_NO_LOCATION = generate(
             LocalDate.of(2050, 1, 1), LocalTime.of(12, 0), LocalTime.of(13, 30),
@@ -588,6 +589,7 @@ object TestData {
         val PAST_NOT_ATTENDED = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(10, 0), LocalTime.of(10, 45),
             attended = false, complied = false,
+            licenceCondition = LicenceConditionData.LICENCE_CONDITION,
         )
         val PAST_UPW_CONTACT = generate(
             LocalDate.of(2020, 1, 1), LocalTime.of(12, 30), LocalTime.of(13, 15),
@@ -635,6 +637,7 @@ object TestData {
             type: ContactType = ReferenceData.APPOINTMENT_CONTACT_TYPE,
             location: OfficeLocation? = TeamData.OFFICE,
             eventId: Long? = SentenceData.EVENT.id,
+            licenceCondition: LicenceCondition? = null,
             personId: Long = PersonData.DEFAULT.id,
             attended: Boolean? = null,
             complied: Boolean? = null,
@@ -644,6 +647,7 @@ object TestData {
             id = id(),
             personId = personId,
             eventId = eventId,
+            licenceCondition = licenceCondition,
             date = date,
             startTime = startTime,
             endTime = endTime,

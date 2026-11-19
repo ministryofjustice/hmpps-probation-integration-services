@@ -6,6 +6,7 @@ import org.hibernate.type.NumericBooleanConverter
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.LastModifiedDate
 import uk.gov.justice.digital.hmpps.entity.address.OfficeLocation
+import uk.gov.justice.digital.hmpps.entity.sentence.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointment
 import java.time.LocalDate
@@ -22,6 +23,9 @@ class Contact(
     val personId: Long,
     @Column(name = "event_id")
     val eventId: Long?,
+    @ManyToOne
+    @JoinColumn(name = "lic_condition_id")
+    val licenceCondition: LicenceCondition? = null,
     @Column(name = "contact_date")
     val date: LocalDate,
     @Column(name = "contact_start_time")

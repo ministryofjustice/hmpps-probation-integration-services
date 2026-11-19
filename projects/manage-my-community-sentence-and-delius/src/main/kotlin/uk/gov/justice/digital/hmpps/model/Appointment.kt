@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
 import uk.gov.justice.digital.hmpps.entity.appointment.Contact
+import uk.gov.justice.digital.hmpps.model.CodeDescription.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.OfficeAddress.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.UpwResponse.Companion.toModel
 import java.time.LocalDate
@@ -21,7 +22,8 @@ data class Appointment(
     val outcome: String?,
     val nationalStandards: Boolean,
     val lastUpdatedAt: ZonedDateTime,
-    val unpaidWork: UpwResponse?
+    val unpaidWork: UpwResponse?,
+    val licenceCondition: LicenceCondition?
 ) {
     companion object {
         fun Contact.toModel() = Appointment(
@@ -38,7 +40,10 @@ data class Appointment(
             outcome = outcome?.description,
             nationalStandards = type.nationalStandards,
             lastUpdatedAt = lastUpdatedDatetime,
-            unpaidWork = unpaidWorkAppointment?.toModel()
+            unpaidWork = unpaidWorkAppointment?.toModel(),
+            licenceCondition = licenceCondition?.let {
+                LicenceCondition(it.id, it.mainCategory.toModel(), it.subCategory?.toModel())
+            }
         )
     }
 }
