@@ -33,6 +33,8 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -420,5 +422,65 @@ class UpdateAppointmentIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<ErrorResponse>().also {
                 assertThat(it.message).isEqualTo("UnpaidWorkProject with code of INVALID not found")
             }
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "WK, 1",
+        "HC, 1"
+    )
+    @Transactional
+    fun `appointment update allows over-completion`(
+        initialStatus: String,
+        excessMinutes: Long
+    ) {
+        val original = unpaidWorkAppointmentRepository
+            .getAppointment(UPWGenerator.UPW_APPOINTMENT_TO_UPDATE[5].id)
+
+        upwDetailsRepository.save(original.details.apply {
+            status = referenceDataRepository.getStatus(initialStatus)
+        })
+
+        val progress = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(listOf(original.details.id))
+            .single()
+
+        val remainingMinutes = progress.requiredMinutes +
+            progress.positiveAdjustments -
+            progress.negativeAdjustments -
+            progress.completedMinutes
+
+        val creditedMinutes = (original.minutesCredited ?: 0L) +
+            remainingMinutes + excessMinutes
+        val startTime = LocalTime.of(9, 0)
+
+        val request = TestData.updateAppointment(original.id).copy(
+            version = UUID(original.rowVersion, original.contact.rowVersion),
+            startTime = startTime,
+            endTime = startTime.plusMinutes(creditedMinutes),
+            penaltyMinutes = 0,
+            minutesCredited = creditedMinutes
+        )
+
+        mockMvc.put("/projects/$PROJECT/appointments/${original.id}") {
+            withToken()
+            json = request
+        }.andExpect { status { isOk() } }
+
+        val updated = unpaidWorkAppointmentRepository.getAppointment(original.id)
+        assertThat(updated.minutesCredited).isEqualTo(creditedMinutes)
+        assertThat(updated.endTime).isEqualTo(request.endTime)
+        assertThat(updated.details.status?.code).isEqualTo("HC")
+
+        val updatedProgress = unpaidWorkAppointmentRepository
+            .getUpwRequiredAndCompletedMinutes(listOf(original.details.id))
+            .single()
+
+        val updatedRemainingMinutes = updatedProgress.requiredMinutes +
+            updatedProgress.positiveAdjustments -
+            updatedProgress.negativeAdjustments -
+            updatedProgress.completedMinutes
+
+        assertThat(updatedRemainingMinutes).isEqualTo(-excessMinutes)
     }
 }
