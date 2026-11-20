@@ -484,10 +484,14 @@ fun CaseloadItem.toStaffCase(caseAccess: CaseAccess? = null) = if (caseAccess.is
         ),
         crn = crn,
         nextAppointment = nextAppointmentId?.let { id ->
-            Appointment(id, nextAppointmentDateTime!!.atZone(EuropeLondon), nextAppointmentTypeDescription)
+            nextAppointmentDateTime?.let { dateTime ->
+                Appointment(id, dateTime.atZone(EuropeLondon), nextAppointmentTypeDescription)
+            }
         },
         previousAppointment = prevAppointmentId?.let { id ->
-            Appointment(id, prevAppointmentDateTime!!.atZone(EuropeLondon), prevAppointmentTypeDescription)
+            prevAppointmentDateTime?.let { dateTime ->
+                Appointment(id, dateTime.atZone(EuropeLondon), prevAppointmentTypeDescription)
+            }
         },
         dob = dateOfBirth?.toLocalDate(),
         latestSentence = latestSentenceTypeDescription,
