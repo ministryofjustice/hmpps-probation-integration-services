@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.compliance.breachCountFo
 import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.CourtDocumentDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.DocumentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.LengthUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.*
 import java.time.Duration
 import java.time.LocalDate
@@ -289,15 +288,14 @@ fun formatNote(notes: String?, truncateNote: Boolean): List<NoteDetail> {
 }
 
 fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
-    val length = length?.let {
-        when (lengthUnit?.code) {
-            LengthUnit.YEARS.code -> it / 12
-            else -> it
-        }
+    val duration = if (entryLength != null && lengthUnit != null) {
+        " ($entryLength ${lengthUnit.description})"
+    } else {
+        ""
     }
 
     return MinimalOrder(
-        description = type.description + (lengthUnit?.let { " (${length} ${it.description})" } ?: ""),
+        description = type.description + duration,
         sentenceType = sentenceType,
         startDate = date,
         endDate = expectedEndDate(),

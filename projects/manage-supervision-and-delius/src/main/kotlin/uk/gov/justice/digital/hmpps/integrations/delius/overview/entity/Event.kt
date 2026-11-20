@@ -124,6 +124,9 @@ class Disposal(
     @Column(name = "length")
     val length: Long?,
 
+    @Column(name = "entry_length")
+    val entryLength: Long?,
+
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,

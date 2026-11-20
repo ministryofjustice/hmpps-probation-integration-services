@@ -113,6 +113,7 @@ object MonthsFilterGenerator {
         personId = PERSON.id,
         date = LocalDate.now().minusDays(7),
         length = 12,
+        entryLength = null,
         type = DISPOSAL_TYPE,
         terminationReason = null,
         lengthUnit = null,
@@ -129,6 +130,7 @@ object MonthsFilterGenerator {
         personId = PERSON.id,
         date = LocalDate.now().minusMonths(14),
         length = 12,
+        entryLength = null,
         type = DISPOSAL_TYPE,
         terminationReason = null,
         lengthUnit = null,
@@ -178,4 +180,3 @@ object MonthsFilterGenerator {
         lastUpdated = ZonedDateTime.now().minusMonths(10).truncatedTo(ChronoUnit.SECONDS)
     )
 }
-
