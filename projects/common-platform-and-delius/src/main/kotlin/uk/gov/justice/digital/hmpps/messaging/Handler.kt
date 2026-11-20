@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.client.*
 import uk.gov.justice.digital.hmpps.integrations.client.Address
 import uk.gov.justice.digital.hmpps.integrations.client.ContactDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.service.OffenceService
@@ -51,7 +52,7 @@ class Handler(
 
         defendants.forEach { defendant ->
             val matchedPersonStatus = corePersonClient.findMatchStatusByDefendantId(defendant.id)
-            val telemetryProperties =
+            val telemetryProperties: MutableMap<String, String?> =
                 (matchedPersonStatus.telemetryProperties + notification.telemetryProperties + mapOf("defendantId" to defendant.id)).toMutableMap()
 
             // Defendant is matched with existing record in core person service
@@ -67,13 +68,21 @@ class Handler(
 
             val caseUrn = notification.message.hearing.prosecutionCases.find { it.defendants.contains(defendant) }
                 ?.prosecutionCaseIdentifier?.caseURN ?: return@forEach
-
             telemetryProperties += ("caseURN" to caseUrn)
 
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
+            telemetryProperties += ("dateOfBirth" to dateOfBirth?.toString())
             if (dateOfBirth == null || YEARS.between(dateOfBirth, LocalDate.now()) <= 10) {
                 telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
+                return@forEach
+            }
+
+            // Gender validation - NDelius/OASys can only handle M/F
+            val gender = defendant.personDefendant.personDetails.gender
+            telemetryProperties += ("gender" to gender)
+            if (gender == null || ReferenceData.GenderCode.entries.none { it.commonPlatformValue == gender }) {
+                telemetryService.trackEvent("InvalidGender", telemetryProperties)
                 return@forEach
             }
 
@@ -111,7 +120,7 @@ class Handler(
 
     private fun insertPersonAndEvent(
         insertRemandDTO: InsertRemandDTO,
-        telemetryProperties: MutableMap<String, String>
+        telemetryProperties: MutableMap<String, String?>
     ) {
         val (personResult, eventResult) = remandService.insertPersonOnRemand(insertRemandDTO)
 

@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
-import tools.jackson.dataformat.csv.CsvMapper
-import tools.jackson.dataformat.csv.CsvSchema
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
+import tools.jackson.dataformat.csv.CsvMapper
+import tools.jackson.dataformat.csv.CsvSchema
 import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.integrations.client.ManageOffencesClient
 import uk.gov.justice.digital.hmpps.integrations.client.OffencePriority
@@ -29,7 +29,7 @@ class OffenceService(
 
     fun getRemandOffences(
         hearingOffences: List<HearingOffence>,
-        telemetryProperties: Map<String, String>
+        telemetryProperties: Map<String, String?>
     ) = hearingOffences
         .filter { it.judicialResults?.any { r -> r.label == "Remanded in custody" } == true }
         .mapNotNull { offence ->
