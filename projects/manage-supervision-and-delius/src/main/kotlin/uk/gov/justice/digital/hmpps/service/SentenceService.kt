@@ -299,5 +299,6 @@ fun Disposal.toMinimalOrder(sentenceType: SentenceType): MinimalOrder {
         sentenceType = sentenceType,
         startDate = date,
         endDate = expectedEndDate(),
-        pss = type.pssRequirement)
+        pss = type.pssRequirement
+    )
 }
