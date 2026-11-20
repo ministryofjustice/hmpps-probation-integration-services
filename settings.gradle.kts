@@ -86,7 +86,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("asyncapi", "org.openfolder:kotlin-asyncapi-spring-web:3.2.4")
-            library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.2.1")
+            library("aws", "io.awspring.cloud:spring-cloud-aws-dependencies:4.2.2")
             library("azure-app-insights", "com.microsoft.azure:applicationinsights-web:3.7.10")
             library("azure-identity", "com.azure:azure-identity:1.19.0")
             library("flipt", "io.flipt:flipt-client-java:1.4.0")
@@ -95,13 +95,13 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:6.4.0")
             library("notify", "uk.gov.service.notify:notifications-java-client:6.2.1-RELEASE")
-            library("opensearch", "org.opensearch.client:opensearch-java:3.10.0")
+            library("opensearch", "org.opensearch.client:opensearch-java:3.11.0")
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
             library(
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.63.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.64.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
