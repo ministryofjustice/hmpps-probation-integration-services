@@ -142,7 +142,7 @@ class EventService(
         date = startDate ?: LocalDate.now(),
         offence = offenceRepository.findOffence(homeOfficeOffenceCode),
         detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
-        count = count ?: 1
+        count = count?.takeIf { it > 0 } ?: 1
     )
 
     private fun OffenceAndPlea.asMainOffence(event: Event) = MainOffence(
@@ -152,6 +152,6 @@ class EventService(
         person = event.person,
         offence = offenceRepository.findOffence(homeOfficeOffenceCode),
         detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
-        count = count ?: 1,
+        count = count?.takeIf { it > 0 } ?: 1,
     )
 }
