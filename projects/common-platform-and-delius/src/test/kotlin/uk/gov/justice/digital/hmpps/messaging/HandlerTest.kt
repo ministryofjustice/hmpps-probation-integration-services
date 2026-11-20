@@ -115,27 +115,46 @@ internal class HandlerTest {
         val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NO_REMAND)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
-        verify(remandService, never()).insertPersonOnRemand(any())
+        verifyNoInteractions(remandService)
     }
 
     @Test
     fun `When a defendant is missing dob then records are not inserted`() {
-        corePersonHasNoCrn(dob = null)
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
+        corePersonHasNoCrn()
+        val notification = MessageGenerator.COMMON_PLATFORM_EVENT.withPersonDetails {
+            copy(dateOfBirth = null)
+        }
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("InvalidDateOfBirth"), anyMap(), anyMap())
-        verify(remandService, never()).insertPersonOnRemand(any())
+        verifyNoInteractions(remandService)
     }
 
     @Test
     fun `When a defendant has a dob indicating they are less than 10 years old then records are not inserted`() {
-        corePersonHasNoCrn(dob = LocalDate.now().minusYears(9))
-        val notification = Notification(message = MessageGenerator.COMMON_PLATFORM_EVENT_NULL_FIELDS)
+        corePersonHasNoCrn()
+        val notification = MessageGenerator.COMMON_PLATFORM_EVENT.withPersonDetails {
+            copy(dateOfBirth = LocalDate.now().minusYears(9))
+        }
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
         verify(telemetryService).trackEvent(eq("InvalidDateOfBirth"), anyMap(), anyMap())
-        verify(remandService, never()).insertPersonOnRemand(any())
+        verifyNoInteractions(remandService)
+    }
+
+    @Test
+    fun `logs invalid gender and skips record creation when gender is missing or unsupported`() {
+        corePersonHasNoCrn()
+        val notification = MessageGenerator.COMMON_PLATFORM_EVENT.withPersonDetails {
+            copy(gender = "NOT_KNOWN")
+        }
+        handler.handle(notification)
+        verify(telemetryService).trackEvent(
+            eq("InvalidGender"),
+            argThat { containsKey("gender") && this["gender"] == "NOT_KNOWN" },
+            anyMap()
+        )
+        verifyNoInteractions(remandService)
     }
 
     @Test
@@ -229,7 +248,7 @@ internal class HandlerTest {
         )
     }
 
-    private fun corePersonHasNoCrn(dob: LocalDate? = LocalDate.now().minusYears(21)) {
+    private fun corePersonHasNoCrn() {
         val personMatchStatus = CorePersonRecordStatusResponse(
             matchStatus = CorePersonRecordMatchStatus.NO_MATCH
         )
@@ -248,5 +267,19 @@ internal class HandlerTest {
             matchStatus = CorePersonRecordMatchStatus.POSSIBLE_MATCH
         )
         whenever(corePersonClient.findMatchStatusByDefendantId(any())).thenReturn(personMatchStatus)
+    }
+
+    private fun CommonPlatformHearing.withPersonDetails(applyUpdates: PersonDetails.() -> PersonDetails): Notification<CommonPlatformHearing> {
+        val prosecutionCase = hearing.prosecutionCases.first()
+        val defendant = prosecutionCase.defendants.first()
+        val person = requireNotNull(defendant.personDefendant)
+        val updatedDefendant =
+            defendant.copy(personDefendant = person.copy(personDetails = person.personDetails.applyUpdates()))
+        val updatedCase = prosecutionCase.copy(defendants = listOf(updatedDefendant))
+        return Notification(
+            message = CommonPlatformHearing(
+                hearing = hearing.copy(prosecutionCases = listOf(updatedCase))
+            )
+        )
     }
 }

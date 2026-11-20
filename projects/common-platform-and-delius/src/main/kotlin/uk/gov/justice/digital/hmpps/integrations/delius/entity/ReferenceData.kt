@@ -28,9 +28,6 @@ class ReferenceData(
     enum class GenderCode(val commonPlatformValue: String, val deliusValue: String) {
         MALE("MALE", "M"),
         FEMALE("FEMALE", "F"),
-        OTHER("OTHER", "O"),
-        NOT_KNOWN("NOT_KNOWN", "N"),
-        NOT_SPECIFIED("NOT_SPECIFIED", "N")
     }
 
     enum class StandardRefDataCode(val code: String) {
