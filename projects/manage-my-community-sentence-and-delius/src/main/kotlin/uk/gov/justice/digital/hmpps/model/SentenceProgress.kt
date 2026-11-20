@@ -43,6 +43,7 @@ data class SentenceProgress(
     )
 
     data class LicenceCondition(
+        val id: Long,
         @Deprecated("Use mainCategory", replaceWith = ReplaceWith("mainCategory.description"))
         val type: String,
         @Deprecated("Use subCategory", replaceWith = ReplaceWith("subCategory.description"))

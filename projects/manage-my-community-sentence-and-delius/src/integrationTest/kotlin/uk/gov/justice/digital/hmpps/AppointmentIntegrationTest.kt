@@ -72,7 +72,18 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                                 "telephoneNumber": "01219991234"
                               },
                               "nationalStandards": false,
-                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z",
+                              "licenceCondition": {
+                                "id": ${TestData.LicenceConditionData.LICENCE_CONDITION.id},
+                                "mainCategory": {
+                                  "code": "ALC",
+                                  "description": "Alcohol Monitoring (Electronic Monitoring)"
+                                },
+                                "subCategory": {
+                                  "code": "ALC",
+                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this."
+                                }
+                              }
                             },
                             {
                               "id": ${TestData.AppointmentData.FUTURE_NO_LOCATION.id},
@@ -302,7 +313,18 @@ internal class AppointmentIntegrationTest @Autowired constructor(private val moc
                               "attended": false,
                               "complied": false,
                               "nationalStandards": false,
-                              "lastUpdatedAt": "2024-01-01T00:00:00Z"
+                              "lastUpdatedAt": "2024-01-01T00:00:00Z",
+                              "licenceCondition": {
+                                "id": ${TestData.LicenceConditionData.LICENCE_CONDITION.id},
+                                "mainCategory": {
+                                  "code": "ALC",
+                                  "description": "Alcohol Monitoring (Electronic Monitoring)"
+                                },
+                                "subCategory": {
+                                  "code": "ALC",
+                                  "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this."
+                                }
+                              }
                             }
                           ],
                           "page": {

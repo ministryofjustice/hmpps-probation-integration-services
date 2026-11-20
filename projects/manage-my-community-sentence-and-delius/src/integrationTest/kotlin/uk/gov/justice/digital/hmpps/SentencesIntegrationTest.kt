@@ -9,6 +9,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import uk.gov.justice.digital.hmpps.data.TestData.LicenceConditionData
 import uk.gov.justice.digital.hmpps.data.TestData.PersonData
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
@@ -102,6 +103,7 @@ internal class SentencesIntegrationTest @Autowired constructor(private val mockM
                               ],
                               "licenceConditions": [
                                 {
+                                  "id": ${LicenceConditionData.LICENCE_CONDITION.id},
                                   "type": "Alcohol Monitoring (Electronic Monitoring)",
                                   "description": "You must not drink any alcohol until [END DATE]. You will need to wear an electronic tag all the time so we can check this.",
                                   "mainCategory": {

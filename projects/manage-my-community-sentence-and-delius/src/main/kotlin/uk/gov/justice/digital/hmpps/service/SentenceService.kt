@@ -11,13 +11,13 @@ import uk.gov.justice.digital.hmpps.model.CodeDescription.Companion.toModel
 import uk.gov.justice.digital.hmpps.model.DurationUnit
 import uk.gov.justice.digital.hmpps.model.SentenceProgress
 import uk.gov.justice.digital.hmpps.model.SentenceProgress.LicenceCondition
-import uk.gov.justice.digital.hmpps.model.SentenceProgress.Requirement as ModelRequirement
 import uk.gov.justice.digital.hmpps.model.SentenceProgress.Sentence
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import uk.gov.justice.digital.hmpps.repository.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.service.UPWSubTypes.Companion.upwSubType
+import uk.gov.justice.digital.hmpps.model.SentenceProgress.Requirement as ModelRequirement
 
 @Service
 class SentenceService(
@@ -66,6 +66,7 @@ class SentenceService(
                         },
                     licenceConditions = disposal.licenceConditions.map { licenceCondition ->
                         LicenceCondition(
+                            id = licenceCondition.id,
                             type = licenceCondition.mainCategory.description,
                             description = licenceCondition.subCategory?.description,
                             mainCategory = licenceCondition.mainCategory.toModel(),
