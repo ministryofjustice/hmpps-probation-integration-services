@@ -27,23 +27,23 @@ from ( with filtered_caseload as ( select caseload.*
             next_appointment as ( select *
                                   from ( select c.offender_id,
                                                 c.contact_id,
-                                                (c.contact_date +
-                                                 (c.contact_start_time - trunc(c.contact_start_time)))                                                                   as date_time,
+                                                (trunc(c.contact_date) +
+                                                 nvl(c.contact_start_time - trunc(c.contact_start_time), 0))                                                             as date_time,
                                                 ct.code                                                                                                                  as type_code,
                                                 ct.description                                                                                                           as type_description,
-                                                row_number() over ( partition by c.offender_id order by c.contact_date asc, c.contact_start_time asc, c.contact_id asc ) as rn
+                                                row_number() over ( partition by c.offender_id order by trunc(c.contact_date) asc, nvl(c.contact_start_time - trunc(c.contact_start_time), 0) asc, c.contact_id asc ) as rn
                                          from contact c
                                          join r_contact_type ct on ct.contact_type_id = c.contact_type_id
                                          join filtered_caseload fc on fc.offender_id = c.offender_id
                                             where c.soft_deleted = 0
                                               and c.contact_outcome_type_id is null
                                               and ct.attendance_contact = 'Y'
-                                              and c.contact_date <= trunc(sysdate) + 1825
+                                              and trunc(c.contact_date) <= trunc(sysdate) + 1825
                                               and (
-                                                    c.contact_date > trunc(sysdate)
+                                                    trunc(c.contact_date) > trunc(sysdate)
                                                  or (
-                                                      c.contact_date = trunc(sysdate)
-                                                      and (c.contact_start_time - trunc(c.contact_start_time))
+                                                      trunc(c.contact_date) = trunc(sysdate)
+                                                      and nvl(c.contact_start_time - trunc(c.contact_start_time), 0)
                                                           > (sysdate - trunc(sysdate))
                                                     )
                                                   )
@@ -52,22 +52,22 @@ from ( with filtered_caseload as ( select caseload.*
             prev_appointment as ( select *
                                   from ( select c.offender_id,
                                                 c.contact_id,
-                                                (c.contact_date +
-                                                 (c.contact_start_time - trunc(c.contact_start_time)))                                                                      as date_time,
+                                                (trunc(c.contact_date) +
+                                                 nvl(c.contact_start_time - trunc(c.contact_start_time), 0))                                                                as date_time,
                                                 ct.code                                                                                                                     as type_code,
                                                 ct.description                                                                                                              as type_description,
-                                                row_number() over ( partition by c.offender_id order by c.contact_date desc, c.contact_start_time desc, c.contact_id desc ) as rn
+                                                row_number() over ( partition by c.offender_id order by trunc(c.contact_date) desc, nvl(c.contact_start_time - trunc(c.contact_start_time), 0) desc, c.contact_id desc ) as rn
                                          from contact c
                                          join r_contact_type ct on ct.contact_type_id = c.contact_type_id
                                          join filtered_caseload fc on fc.offender_id = c.offender_id
                                          where c.soft_deleted = 0
                                            and ct.attendance_contact = 'Y'
-                                           and c.contact_date >= trunc(sysdate) - 1825
+                                           and trunc(c.contact_date) >= trunc(sysdate) - 1825
                                             and (
-                                                  c.contact_date < trunc(sysdate)
+                                                  trunc(c.contact_date) < trunc(sysdate)
                                                or (
-                                                    c.contact_date = trunc(sysdate)
-                                                    and (c.contact_start_time - trunc(c.contact_start_time))
+                                                    trunc(c.contact_date) = trunc(sysdate)
+                                                    and nvl(c.contact_start_time - trunc(c.contact_start_time), 0)
                                                         < (sysdate - trunc(sysdate))
                                                   )
                                                 )
@@ -128,50 +128,48 @@ order by null
                                                lower(person.first_name || ' ' || person.surname) like '%' || :nameOrCrn || '%' or
                                                lower(person.surname || ' ' || person.first_name) like '%' || :nameOrCrn || '%' or
                                                lower(person.surname || ', ' || person.first_name) like '%' || :nameOrCrn || '%') ),
-                 appointments as ( select contact.contact_id                                               as contact_id,
-                                          contact.contact_date                                             as contact_date,
-                                          contact.offender_id                                              as offender_id,
-                                          contact.staff_id                                                 as staff_id,
-                                          r_contact_type.code                                              as type_code,
-                                          r_contact_type.description                                       as type_description,
-                                          trunc(contact.contact_date) +
-                                          (contact.contact_start_time - trunc(contact.contact_start_time)) as appointment_datetime
-                                   from contact
-                                   join r_contact_type on contact.contact_type_id = r_contact_type.contact_type_id and
-                                                          r_contact_type.attendance_contact = 'Y'
-                                   join filtered_caseload on filtered_caseload.offender_id = contact.offender_id and
-                                                             filtered_caseload.staff_employee_id = contact.staff_id
-                                   where contact_date is not null
-                                     and staff_id = :staffId
-                                     and contact_start_time is not null
-                                     and contact_date between sysdate - 1825 and sysdate + 1825
-                                     and soft_deleted = 0 ),
-                 future_appointments as ( select min(appointments.contact_id)           as contact_id,
-                                                 min(appointments.appointment_datetime) as appointment_datetime,
-                                                 offender_id,
-                                                 staff_id,
-                                                 type_code,
-                                                 type_description
-                                          from appointments
-                                          where contact_date between sysdate - 1 and sysdate + 1825
-                                          group by offender_id, staff_id, type_code, type_description )
+                 next_appointment as ( select *
+                                       from ( select c.offender_id,
+                                                     ct.code as type_code,
+                                                     row_number() over (
+                                                         partition by c.offender_id
+                                                         order by trunc(c.contact_date) asc,
+                                                                  nvl(c.contact_start_time - trunc(c.contact_start_time), 0) asc,
+                                                                  c.contact_id asc
+                                                     ) as rn
+                                              from contact c
+                                              join r_contact_type ct on ct.contact_type_id = c.contact_type_id
+                                              join filtered_caseload fc on fc.offender_id = c.offender_id
+                                              where c.soft_deleted = 0
+                                                and c.contact_outcome_type_id is null
+                                                and ct.attendance_contact = 'Y'
+                                                and trunc(c.contact_date) <= trunc(sysdate) + 1825
+                                                and (
+                                                    trunc(c.contact_date) > trunc(sysdate)
+                                                    or (
+                                                        trunc(c.contact_date) = trunc(sysdate)
+                                                        and nvl(c.contact_start_time - trunc(c.contact_start_time), 0)
+                                                            > (sysdate - trunc(sysdate))
+                                                    )
+                                                ) )
+                                       where rn = 1 ),
+                 all_sentences as ( select e.offender_id, cast(e.event_number as int) as event_number, d.disposal_id
+                                    from filtered_caseload fc
+                                    join event e on e.offender_id = fc.offender_id and e.active_flag = 1 and e.soft_deleted = 0
+                                    join disposal d on d.event_id = e.event_id and d.active_flag = 1 and d.soft_deleted = 0 ),
+                 sentence_counts as ( select offender_id, max(event_number) as max_event_number
+                                      from all_sentences
+                                      group by offender_id ),
+                 sentence_stats as ( select sc.offender_id, sb.disposal_id as latest_disposal_id
+                                     from sentence_counts sc
+                                     join all_sentences sb on sb.offender_id = sc.offender_id and sb.event_number = sc.max_event_number )
             select count(*)
             from filtered_caseload
-            left join ( select future_appointments.*,
-                               row_number() over (partition by offender_id order by appointment_datetime) as row_num
-                        from future_appointments
-                        where appointment_datetime > sysdate ) next_appointment
-                      on next_appointment.offender_id = filtered_caseload.offender_id and next_appointment.row_num = 1
-            join ( select offender_id, disposal_id as latest_disposal_id
-                   from ( select event.offender_id,
-                                 disposal.disposal_id,
-                                 row_number() over (partition by event.offender_id order by event.event_number desc) as row_num
-                          from event
-                          join disposal
-                               on disposal.event_id = event.event_id and disposal.active_flag = 1 and disposal.soft_deleted = 0
-                          where event.soft_deleted = 0
-                            and event.active_flag = 1 ) sentences
-                   where sentences.row_num = 1 ) sentence_stats on sentence_stats.offender_id = filtered_caseload.offender_id
+            join team on team.team_id = filtered_caseload.trust_provider_team_id
+            join offender person on person.offender_id = filtered_caseload.offender_id
+            left join offender_manager om on om.offender_id = filtered_caseload.offender_id and om.allocation_staff_id = filtered_caseload.staff_employee_id and om.end_date is null and om.soft_deleted = 0 and om.active_flag = 1
+            left join next_appointment on next_appointment.offender_id = filtered_caseload.offender_id
+            left join sentence_stats on sentence_stats.offender_id = filtered_caseload.offender_id
             left join disposal on disposal.disposal_id = sentence_stats.latest_disposal_id
             left join r_disposal_type on r_disposal_type.disposal_type_id = disposal.disposal_type_id
             where (:nextContactCode is null or next_appointment.type_code = :nextContactCode)
@@ -220,14 +218,14 @@ order by null
                    from ( select ct.code,
                                  ct.description,
                                  c.offender_id,
-                                 trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time)) as date_time
+                                 trunc(c.contact_date) + nvl(c.contact_start_time - trunc(c.contact_start_time), 0) as date_time
                           from caseload cl
                           join contact c on c.offender_id = cl.offender_id and c.staff_id = cl.staff_employee_id and
-                                            c.contact_start_time is not null and c.soft_deleted = 0
+                                            c.soft_deleted = 0
                           join r_contact_type ct on ct.contact_type_id = c.contact_type_id and ct.attendance_contact = 'Y'
                           where cl.role_code = 'OM'
                             and cl.staff_employee_id = :id
-                            and trunc(c.contact_date) + (c.contact_start_time - trunc(c.contact_start_time)) > sysdate ) )
+                            and trunc(c.contact_date) + nvl(c.contact_start_time - trunc(c.contact_start_time), 0) > sysdate ) )
             where row_num = 1
             order by description
         """, nativeQuery = true

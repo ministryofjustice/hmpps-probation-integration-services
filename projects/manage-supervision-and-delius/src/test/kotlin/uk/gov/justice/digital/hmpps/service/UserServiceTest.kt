@@ -157,23 +157,23 @@ internal class UserServiceTest {
     }
 
     @Test
-    fun `omits next appointment when timestamp is null`() {
-        val result = caseloadItem(
-            nextId = 101L,
-            nextDescription = "Office visit",
-        ).toStaffCase()
-
-        assertNull(result.nextAppointment)
+    fun `requires a timestamp for a next appointment`() {
+        assertThrows<NullPointerException> {
+            caseloadItem(
+                nextId = 101L,
+                nextDescription = "Office visit",
+            ).toStaffCase()
+        }
     }
 
     @Test
-    fun `omits previous appointment when timestamp is null`() {
-        val result = caseloadItem(
-            previousId = 102L,
-            previousDescription = "Telephone appointment",
-        ).toStaffCase()
-
-        assertNull(result.previousAppointment)
+    fun `requires a timestamp for a previous appointment`() {
+        assertThrows<NullPointerException> {
+            caseloadItem(
+                previousId = 102L,
+                previousDescription = "Telephone appointment",
+            ).toStaffCase()
+        }
     }
 
     @Test
