@@ -8,6 +8,7 @@ import java.time.LocalDate
 object PersonGenerator {
     val DEFAULT_PERSON = generate()
     val NO_EVENTS_PERSON = generate(crn = "B123456")
+    val PERSON_WITH_OFFENCES = generatePersonWithOffences()
 
     fun generate(
         crn: String = "A123456",
@@ -69,6 +70,7 @@ object PersonGenerator {
                     mainOffence = mainOffenceTwo,
                     disposal = disposalTwo,
                     convictionDate = eventTwo.convictionDate,
+                    activeFlag = false,
                 ),
             ),
         )
