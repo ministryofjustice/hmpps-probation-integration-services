@@ -157,6 +157,26 @@ internal class UserServiceTest {
     }
 
     @Test
+    fun `requires a timestamp for a next appointment`() {
+        assertThrows<NullPointerException> {
+            caseloadItem(
+                nextId = 101L,
+                nextDescription = "Office visit",
+            ).toStaffCase()
+        }
+    }
+
+    @Test
+    fun `requires a timestamp for a previous appointment`() {
+        assertThrows<NullPointerException> {
+            caseloadItem(
+                previousId = 102L,
+                previousDescription = "Telephone appointment",
+            ).toStaffCase()
+        }
+    }
+
+    @Test
     fun `calls get user teams function`() {
         val username = "username"
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
