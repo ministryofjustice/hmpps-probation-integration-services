@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.dto.OffenceAndPlea
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Service
@@ -140,19 +139,19 @@ class EventService(
 
     private fun OffenceAndPlea.asAdditionalOffence(event: Event) = AdditionalOffence(
         event = event,
-        date = LocalDateTime.now(),
+        date = startDate ?: LocalDate.now(),
         offence = offenceRepository.findOffence(homeOfficeOffenceCode),
         detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
-        offenceCount = 1
+        count = count ?: 1
     )
 
     private fun OffenceAndPlea.asMainOffence(event: Event) = MainOffence(
         id = null,
-        date = LocalDate.now(), // TODO: From the offence -> Wording free text field
+        date = startDate ?: LocalDate.now(),
         event = event,
         person = event.person,
         offence = offenceRepository.findOffence(homeOfficeOffenceCode),
         detailedOffence = detailedOffenceRepository.findByCode(offenceCode),
-        count = 1, // TODO: Need to identify how offence count is used, in most cases appears to be 1
+        count = count ?: 1,
     )
 }

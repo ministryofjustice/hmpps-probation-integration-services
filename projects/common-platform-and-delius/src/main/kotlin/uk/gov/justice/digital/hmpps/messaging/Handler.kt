@@ -125,6 +125,8 @@ class Handler(
             "eventId" to eventResult.event.id.toString(),
             "eventNumber" to eventResult.event.number,
             "mainOffenceId" to eventResult.mainOffence.id.toString(),
+            "mainOffenceDate" to eventResult.mainOffence.date.toString(),
+            "mainOffenceCount" to eventResult.mainOffence.count.toString(),
             "courtAppearanceId" to eventResult.courtAppearance.id.toString(),
             "contactId" to eventResult.contact.id.toString()
         )

@@ -55,6 +55,8 @@ data class HearingOffence(
     val offenceDefinitionId: String? = null,
     val offenceCode: String? = null,
     val offenceTitle: String,
+    val startDate: LocalDate? = null,
+    val count: Int? = null,
     val wording: String,
     val offenceLegislation: String,
     val listingNumber: Int? = null,
@@ -65,7 +67,9 @@ data class HearingOffence(
     fun withHomeOfficeCode(homeOfficeCode: String) = OffenceAndPlea(
         offenceCode = offenceCode!!,
         homeOfficeOffenceCode = homeOfficeCode,
-        plea = plea
+        plea = plea,
+        startDate = startDate,
+        count = count,
     )
 }
 
