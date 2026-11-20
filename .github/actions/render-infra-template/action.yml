@@ -44,13 +44,6 @@ runs:
         repository: ministryofjustice/cloud-platform-environments
         token: ${{ steps.app-token.outputs.token }}
 
-    - name: Add Pingdom check
-      shell: bash # language=bash
-      if: inputs.environment == 'prod'
-      run: sed -i '/add new projects here/i \    "'$project_name'",' 'namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
-      env:
-        project_name: ${{ inputs.project_name }}
-
     - name: Render certificate templates (non-prod)
       shell: bash # language=bash
       if: inputs.environment != 'prod'
