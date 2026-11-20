@@ -72,17 +72,17 @@ class Handler(
 
             // Under 10-year-old validation
             val dateOfBirth = defendant.personDefendant?.personDetails?.dateOfBirth
-            telemetryProperties += ("dateOfBirth" to dateOfBirth?.toString())
             if (dateOfBirth == null || YEARS.between(dateOfBirth, LocalDate.now()) <= 10) {
-                telemetryService.trackEvent("InvalidDateOfBirth", telemetryProperties)
+                telemetryService.trackEvent(
+                    "InvalidDateOfBirth", telemetryProperties + ("dateOfBirth" to dateOfBirth?.toString())
+                )
                 return@forEach
             }
 
             // Gender validation - NDelius/OASys can only handle M/F
             val gender = defendant.personDefendant.personDetails.gender
-            telemetryProperties += ("gender" to gender)
             if (gender == null || ReferenceData.GenderCode.entries.none { it.commonPlatformValue == gender }) {
-                telemetryService.trackEvent("InvalidGender", telemetryProperties)
+                telemetryService.trackEvent("InvalidGender", telemetryProperties + ("gender" to gender))
                 return@forEach
             }
 
