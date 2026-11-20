@@ -157,6 +157,26 @@ internal class UserServiceTest {
     }
 
     @Test
+    fun `omits next appointment when timestamp is null`() {
+        val result = caseloadItem(
+            nextId = 101L,
+            nextDescription = "Office visit",
+        ).toStaffCase()
+
+        assertNull(result.nextAppointment)
+    }
+
+    @Test
+    fun `omits previous appointment when timestamp is null`() {
+        val result = caseloadItem(
+            previousId = 102L,
+            previousDescription = "Telephone appointment",
+        ).toStaffCase()
+
+        assertNull(result.previousAppointment)
+    }
+
+    @Test
     fun `calls get user teams function`() {
         val username = "username"
         whenever(userRepository.findByUsername(username)).thenReturn(USER)
