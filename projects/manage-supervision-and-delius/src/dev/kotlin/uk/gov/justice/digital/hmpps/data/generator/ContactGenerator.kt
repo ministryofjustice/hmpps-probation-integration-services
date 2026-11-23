@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.overview.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.personalDetails.entity.ContactDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ContactTypeRequirementTypeId
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.user.entity.Provider
@@ -89,8 +90,16 @@ object ContactGenerator {
 
     val COMMUNICATION_CATEGORY_RD = ReferenceData(IdGenerator.getAndIncrement(), "LT", "Communication")
 
-    val SPARK_1 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK1", "Spark One")
-    val SPARK_2 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK2", "Spark Two")
+    val SPARKS_DATASET = Dataset(IdGenerator.getAndIncrement(), "SPARKS")
+    val SPARK_1 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK1", "Spark One", SPARKS_DATASET.id)
+    val SPARK_2 = ReferenceData(IdGenerator.getAndIncrement(), "SPARK2", "Spark Two", SPARKS_DATASET.id)
+    val NON_SELECTABLE_SPARK = ReferenceData(
+        IdGenerator.getAndIncrement(),
+        "SPARK3",
+        "Non-selectable spark",
+        SPARKS_DATASET.id,
+        selectable = false,
+    )
 
     val BREACH_CONTACT_TYPE = generateContactType("BRE02", false, "Breach Contact Type", locationRequired = "B")
     val BREACH_ENFORCEMENT_ACTION = generateEnforcementAction("BRE02", "Breach Enforcement Action", BREACH_CONTACT_TYPE)

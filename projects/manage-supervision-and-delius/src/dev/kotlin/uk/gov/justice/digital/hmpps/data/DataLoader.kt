@@ -132,6 +132,8 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
         save(CourtReportGenerator.DEFAULT_TYPE)
         save(CourtReportGenerator.COURT_REPORT)
 
+        save(ContactGenerator.SPARKS_DATASET)
+
         saveAll(
             OffenderManagerGenerator.BOROUGH,
             OffenderManagerGenerator.DISTRICT,
@@ -200,6 +202,7 @@ class DataLoader(dataManager: DataManager, private val jdbcTemplate: JdbcTemplat
             ContactGenerator.COMMUNICATION_CATEGORY_RD,
             ContactGenerator.SPARK_1,
             ContactGenerator.SPARK_2,
+            ContactGenerator.NON_SELECTABLE_SPARK,
             ContactGenerator.BREACH_CONTACT_TYPE,
             ContactGenerator.BREACH_ENFORCEMENT_ACTION,
             ContactGenerator.APPT_CT_1,
