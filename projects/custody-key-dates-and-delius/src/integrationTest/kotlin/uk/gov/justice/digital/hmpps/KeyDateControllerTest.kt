@@ -13,8 +13,8 @@ import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -57,7 +57,7 @@ internal class KeyDateControllerTest @Autowired constructor(
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("KeyDatesDryRun"),
             org.mockito.kotlin.check {
-                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], Matchers.equalTo("2025-09-10"))
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], Matchers.equalTo("2029-09-10"))
             },
             anyMap()
         )
@@ -86,7 +86,7 @@ internal class KeyDateControllerTest @Autowired constructor(
         verify(telemetryService, timeout(5000)).trackEvent(
             eq("KeyDatesUpdated"),
             org.mockito.kotlin.check {
-                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], Matchers.equalTo("2024-01-16"))
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], Matchers.equalTo("2027-01-16"))
             },
             anyMap()
         )
@@ -107,7 +107,7 @@ internal class KeyDateControllerTest @Autowired constructor(
         verify(telemetryService, timeout(5000).atLeast(1)).trackEvent(
             eq("KeyDatesUpdated"),
             org.mockito.kotlin.check {
-                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
+                assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2029-09-10"))
             },
             anyMap()
         )
@@ -116,7 +116,7 @@ internal class KeyDateControllerTest @Autowired constructor(
             custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES_BY_CRN.id, "48340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
         val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
-        assertThat(sed?.date, Matchers.equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(sed?.date, Matchers.equalTo(LocalDate.parse("2029-09-10")))
     }
 
     private fun verifyUpdatedKeyDates(custody: Custody) {
@@ -126,11 +126,11 @@ internal class KeyDateControllerTest @Autowired constructor(
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
 
-        assertThat(sed?.date, Matchers.equalTo(LocalDate.parse("2024-01-16")))
-        assertThat(crd?.date, Matchers.equalTo(LocalDate.parse("2024-01-17")))
-        assertThat(led?.date, Matchers.equalTo(LocalDate.parse("2024-01-18")))
-        assertThat(erd?.date, Matchers.equalTo(LocalDate.parse("2024-01-19")))
-        assertThat(hde?.date, Matchers.equalTo(LocalDate.parse("2024-01-20")))
+        assertThat(sed?.date, Matchers.equalTo(LocalDate.parse("2027-01-16")))
+        assertThat(crd?.date, Matchers.equalTo(LocalDate.parse("2027-01-17")))
+        assertThat(led?.date, Matchers.equalTo(LocalDate.parse("2027-01-18")))
+        assertThat(erd?.date, Matchers.equalTo(LocalDate.parse("2027-01-19")))
+        assertThat(hde?.date, Matchers.equalTo(LocalDate.parse("2027-01-20")))
     }
 
     private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
