@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 @Entity
@@ -160,13 +159,14 @@ class AdditionalOffence(
     val offence: Offence,
 
     @Column(name = "offence_date")
-    val date: LocalDateTime?,
+    val date: LocalDate?,
 
     @ManyToOne
     @JoinColumn(name = "detailed_offence_id")
     val detailedOffence: DetailedOffence?,
 
-    val offenceCount: Long? = null,
+    @Column(name = "offence_count")
+    val count: Int,
 
     @Column(columnDefinition = "number")
     @Convert(converter = NumericBooleanConverter::class)

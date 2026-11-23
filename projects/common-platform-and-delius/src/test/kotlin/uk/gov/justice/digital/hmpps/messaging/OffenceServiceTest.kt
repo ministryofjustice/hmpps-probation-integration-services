@@ -58,8 +58,8 @@ internal class OffenceServiceTest {
 
         val result = offenceService.findMainOffence(
             listOf(
-                OffenceAndPlea("TN42001", "00100", null),
-                OffenceAndPlea("ZZ00120", "00101", null),
+                OffenceAndPlea("TN42001", homeOfficeOffenceCode = "00100"),
+                OffenceAndPlea("ZZ00120", homeOfficeOffenceCode = "00101"),
             )
         )
 

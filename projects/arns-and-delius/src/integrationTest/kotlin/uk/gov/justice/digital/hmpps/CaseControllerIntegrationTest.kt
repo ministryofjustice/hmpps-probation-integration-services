@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.DEFAULT_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.NO_EVENTS_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.PERSON_WITH_OFFENCES
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -18,6 +19,12 @@ internal class CaseControllerIntegrationTest @Autowired constructor(private val 
     @Test
     fun `returns unauthorized when no token is supplied`() {
         mockMvc.get("/arns/${DEFAULT_PERSON.crn}")
+            .andExpect { status { isUnauthorized() } }
+    }
+
+    @Test
+    fun `returns unauthorized for additional sentences when no token is supplied`() {
+        mockMvc.get("/case/${DEFAULT_PERSON.crn}/additional-sentences")
             .andExpect { status { isUnauthorized() } }
     }
 
@@ -61,6 +68,30 @@ internal class CaseControllerIntegrationTest @Autowired constructor(private val 
         }.andExpect {
             status { isNotFound() }
             jsonPath("$.message") { value("Person with crn of Z123456 not found") }
+        }
+    }
+
+    @Test
+    fun `returns only non-deleted additional sentences on active events for CRN`() {
+        mockMvc.get("/case/${DEFAULT_PERSON.crn}/additional-sentences") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.additionalSentences.length()") { value(1) }
+            jsonPath("$.additionalSentences[0].eventId") { value(PERSON_WITH_OFFENCES.events.first().id) }
+            jsonPath("$.additionalSentences[0].startDate") { value("2026-03-10") }
+            jsonPath("$.additionalSentences[0].endDate") { value("2026-09-10") }
+        }
+    }
+
+    @Test
+    fun `returns empty additional sentences for a person with no events`() {
+        mockMvc.get("/case/${NO_EVENTS_PERSON.crn}/additional-sentences") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.additionalSentences") { isArray() }
+            jsonPath("$.additionalSentences.length()") { value(0) }
         }
     }
 }

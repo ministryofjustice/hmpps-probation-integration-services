@@ -586,6 +586,7 @@ object PersonGenerator {
         event.personId,
         date,
         length,
+        length,
         type,
         terminationReason,
         lengthUnit,
@@ -737,4 +738,3 @@ object PersonGenerator {
         surname = surname
     )
 }
-

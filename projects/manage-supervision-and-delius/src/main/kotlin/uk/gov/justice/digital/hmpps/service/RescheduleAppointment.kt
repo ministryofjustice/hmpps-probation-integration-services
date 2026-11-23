@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.appointment.RescheduleAppointmentR
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.*
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
@@ -53,8 +54,8 @@ class RescheduleAppointment(
 
         appointment.apply {
             date = request.date
-            startTime = ZonedDateTime.of(date, request.startTime, EuropeLondon)
-            endTime = ZonedDateTime.of(date, request.endTime, EuropeLondon)
+            startTime = ZonedDateTime.of(LocalDate.EPOCH, request.startTime, EuropeLondon)
+            endTime = ZonedDateTime.of(LocalDate.EPOCH, request.endTime, EuropeLondon)
             appendNotes(listOfNotNull(locationNotes, request.notes))
             newStaff?.also { staff = it }
             newTeam?.also { team = it }

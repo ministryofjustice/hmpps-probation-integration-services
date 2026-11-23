@@ -283,6 +283,31 @@ class RescheduleAppointmentIntegrationTest : IntegrationTestBase() {
         )
     }
 
+    @Test
+    fun `rescheduled appointment stores epoch dates in start and end times`() {
+        val person = PersonGenerator.RESCHEDULED_PERSON_1
+        val start = futureDateTime(5)
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(person, start, start.plusMinutes(30))
+        )
+        val request = rescheduleRequest(
+            date = LocalDate.now().plusDays(2),
+            startTime = LocalTime.of(13, 15),
+            endTime = LocalTime.of(14, 45)
+        )
+
+        mockMvc.put("/appointments/${original.id}/reschedule") {
+            withUserToken(PI_USER.username)
+            json = request
+        }.andExpect { status { isOk() } }
+
+        val appointment = appointmentRepository.getAppointment(original.id!!)
+        assertThat(appointment.startTime?.toLocalDate()).isEqualTo(LocalDate.EPOCH)
+        assertThat(appointment.endTime?.toLocalDate()).isEqualTo(LocalDate.EPOCH)
+        assertThat(appointment.startTime?.toLocalTime()).isEqualTo(request.startTime)
+        assertThat(appointment.endTime?.toLocalTime()).isEqualTo(request.endTime)
+    }
+
     private fun rescheduleRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.of(9, 0),

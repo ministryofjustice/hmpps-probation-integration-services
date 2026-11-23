@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.ArnsResponse
 import uk.gov.justice.digital.hmpps.model.OffenceDetail
+import uk.gov.justice.digital.hmpps.repository.AdditionalSentenceRepository
+import uk.gov.justice.digital.hmpps.repository.EventRepository
 import uk.gov.justice.digital.hmpps.repository.PersonRepository
 import java.time.LocalDate
 
@@ -19,6 +21,12 @@ import java.time.LocalDate
 class CaseDetailServiceTest {
     @Mock
     lateinit var personRepository: PersonRepository
+
+    @Mock
+    lateinit var additionalSentenceRepository: AdditionalSentenceRepository
+
+    @Mock
+    lateinit var eventRepository: EventRepository
 
     @InjectMocks
     lateinit var caseDetailService: CaseDetailService
