@@ -26,6 +26,7 @@ import java.time.LocalDate
 import java.util.*
 import jakarta.persistence.EntityManager
 import org.springframework.transaction.annotation.Transactional
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class GetAppointmentIntegrationTest @Autowired constructor(
