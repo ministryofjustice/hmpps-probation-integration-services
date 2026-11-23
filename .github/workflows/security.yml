@@ -61,6 +61,18 @@ jobs:
           CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.SNYK_CLIENT_SECRET }}
 
+      - name: Remove invalid Snyk SARIF severity scores
+        # language=bash
+        run: |
+          # Snyk can stringify a missing CVSS score as "undefined" or "null".
+          jq -e '
+            (.runs[].tool.driver.rules[]?.properties | objects | select(has("security-severity")) | .["security-severity"]) |= (
+              (tonumber? | select(. >= 0 and . <= 10) | tostring)
+              // ("Omitting invalid Snyk security-severity: \(@json)\n" | stderr | empty)
+            )
+          ' snyk-results.sarif > snyk-results.sarif.tmp
+          mv snyk-results.sarif.tmp snyk-results.sarif
+
       - name: Consolidate Snyk SARIF runs
         # language=bash
         run: |
