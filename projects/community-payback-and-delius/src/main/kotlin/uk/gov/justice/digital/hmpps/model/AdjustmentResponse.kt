@@ -13,7 +13,8 @@ data class Adjustment(
     val type: AdjustmentType,
     val date: LocalDate,
     val reason: CodeName,
-    val minutes: Int
+    val minutes: Int,
+    val lastUpdatedBy: String?
 )
 
 data class AdjustmentPostResponse(

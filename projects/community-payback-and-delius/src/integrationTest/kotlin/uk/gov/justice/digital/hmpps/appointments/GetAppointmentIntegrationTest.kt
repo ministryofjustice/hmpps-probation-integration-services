@@ -24,13 +24,15 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.*
-
+import jakarta.persistence.EntityManager
+import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 class GetAppointmentIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactRepository: ContactRepository,
+    private val entityManager: EntityManager
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_1.code
@@ -278,4 +280,59 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
         assertThat(response.content.map { it.externalReference }.distinct()).containsOnly(externalReference)
     }
+
+    @Test
+    @Transactional
+    fun `appointment retrieval returns the unpaid work appointment last updated username`() {
+        val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
+        val updatedBy = UserGenerator.AUDIT_USER
+        val otherUser = UserGenerator.DEFAULT_USER
+
+        entityManager.createNativeQuery(
+            "update upw_appointment set last_updated_user_id = :userId where upw_appointment_id = :id"
+        ).setParameter("userId", updatedBy.id)
+            .setParameter("id", appointment.id)
+            .executeUpdate()
+
+        entityManager.createNativeQuery(
+            "update contact set last_updated_user_id = :userId where contact_id = :id"
+        ).setParameter("userId", otherUser.id)
+            .setParameter("id", appointment.contact.id)
+            .executeUpdate()
+        entityManager.clear()
+
+        mockMvc.get("/projects/$PROJECT/appointments/${appointment.id}?username=${otherUser.username}") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.lastUpdatedBy") { value(updatedBy.username) } }
+        }
+
+        mockMvc.get("/appointments?username=${otherUser.username}&appointmentIds=${appointment.id}") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.content[0].lastUpdatedBy") { value(updatedBy.username) } }
+        }
+
+        mockMvc.get("/projects/$PROJECT/appointments?date=${appointment.date}&username=${otherUser.username}") {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.appointmentSummaries[0].lastUpdatedBy") { value(updatedBy.username) } }
+        }
+
+        val schedule = mockMvc.get(
+            "/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.EVENT_1.number}/appointments/schedule"
+        ) {
+            withToken()
+        }.andExpect {
+            status { isOk() }
+        }.andReturn().response.contentAsJson<ScheduleResponse>()
+
+        val scheduled = schedule.appointments.single { it.id == appointment.id }
+        assertThat(scheduled.lastUpdatedBy).isEqualTo(updatedBy.username)
+    }
 }
+
+

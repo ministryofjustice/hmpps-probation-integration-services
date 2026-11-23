@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.entity.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.entity.staff.TeamRepository
+import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
+import uk.gov.justice.digital.hmpps.entity.staff.usernamesById
 import uk.gov.justice.digital.hmpps.entity.staff.toSupervisor
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.*
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkDetails
@@ -43,6 +45,7 @@ class CommunityPaybackAppointmentsService(
     private val upwDetailsRepository: UpwDetailsRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val teamRepository: TeamRepository,
+    private val userRepository: UserRepository,
 ) {
     fun getAppointment(projectCode: String, appointmentId: Long, username: String): AppointmentResponse {
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
@@ -94,7 +97,9 @@ class CommunityPaybackAppointmentsService(
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
             sensitive = appointment.contact.sensitive,
-            alertActive = appointment.contact.alertActive
+            alertActive = appointment.contact.alertActive,
+            lastUpdatedBy = userRepository
+                .usernamesById(listOf(appointment.lastUpdatedUserId))[appointment.lastUpdatedUserId],
         )
     }
 
@@ -115,6 +120,7 @@ class CommunityPaybackAppointmentsService(
             crn, eventNumber, fromDate, toDate, projectCodes, projectTypeCodes, outcomeCodes,
             appointmentIds, references?.map { "$REFERENCE_PREFIX$it" }, pageable
         )
+        val updatedBy = userRepository.usernamesById(appointments.map { it.lastUpdatedUserId }.toList())
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
         val crns = appointments.map { it.person.crn }.distinct()
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
@@ -144,6 +150,7 @@ class CommunityPaybackAppointmentsService(
                 requirementProgress = checkNotNull(minutes[it.details.id]),
                 outcome = outcome?.toCodeDescription(),
                 notes = it.contact.notes,
+                lastUpdatedBy = updatedBy[it.lastUpdatedUserId],
                 externalReference = it.contact.externalReference?.removePrefix(REFERENCE_PREFIX),
             )
         })
@@ -153,6 +160,7 @@ class CommunityPaybackAppointmentsService(
         val project = unpaidWorkProjectRepository.getByCode(projectCode)
         val appointments =
             unpaidWorkAppointmentRepository.findByDateAndProjectCodeAndDetailsSoftDeletedFalse(date, project.code)
+        val updatedBy = userRepository.usernamesById(appointments.map { it.lastUpdatedUserId })
         val upwDetailsIds = appointments.map { it.details.id }.distinct()
         val minutes = unpaidWorkAppointmentRepository.getUpwRequiredAndCompletedMinutes(upwDetailsIds)
             .associateBy { it.id }.mapValues { (_, v) -> v.toModel() }
@@ -164,6 +172,7 @@ class CommunityPaybackAppointmentsService(
                 id = it.id,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.outcome?.toCodeDescription(),
+                lastUpdatedBy = updatedBy[it.lastUpdatedUserId],
                 requirementProgress = checkNotNull(minutes[it.details.id])
             )
         }

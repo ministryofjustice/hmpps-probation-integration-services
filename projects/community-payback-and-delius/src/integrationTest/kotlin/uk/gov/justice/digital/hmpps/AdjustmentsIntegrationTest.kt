@@ -522,4 +522,45 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             jsonPath("$.message") { containsString("already has an external reference set") }
         }
     }
+
+    @Test
+    @Transactional
+    fun `adjustment retrieval returns the last updated username`() {
+        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val updatedBy = UserGenerator.AUDIT_USER
+        val adjustedBy = UserGenerator.DEFAULT_USER
+        val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
+
+        entityManager.createNativeQuery(
+            """
+            update upw_adjustment
+            set last_updated_user_id = :updatedBy, adjusted_by_user_id = :adjustedBy
+            where upw_adjustment_id = :id
+            """
+        ).setParameter("updatedBy", updatedBy.id)
+            .setParameter("adjustedBy", adjustedBy.id)
+            .setParameter("id", adjustment.id)
+            .executeUpdate()
+        entityManager.clear()
+
+        mockMvc.get("/adjustments/$reference") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.lastUpdatedBy") { value(updatedBy.username) }
+            }
+
+        mockMvc.get("/adjustments?crn=$crn&eventNumber=$eventNumber") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.adjustments[0].lastUpdatedBy") { value(updatedBy.username) }
+            }
+
+        mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.content[0].lastUpdatedBy") { value(updatedBy.username) }
+            }
+    }
 }
