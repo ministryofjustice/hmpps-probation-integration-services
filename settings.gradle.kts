@@ -99,9 +99,9 @@ dependencyResolutionManagement {
             library("opensearch-starter", "org.opensearch.client:spring-data-opensearch-starter:3.1.4")
             library(
                 "opentelemetry-annotations",
-                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1"
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.34.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.64.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.65.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
