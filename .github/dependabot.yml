@@ -6,7 +6,7 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     cooldown:
       default-days: 3
       exclude:
@@ -24,7 +24,7 @@ updates:
       - "/"
       - "/.github/actions/*/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     cooldown:
       default-days: 3
       exclude:
@@ -40,15 +40,15 @@ updates:
   - package-ecosystem: "terraform"
     directory: "/templates"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "docker"
     directories:
       - "/projects/*/container"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   - package-ecosystem: "docker-compose"
     directory: "/doc/tech-docs"
     schedule:
-      interval: "weekly"
+      interval: "daily"
