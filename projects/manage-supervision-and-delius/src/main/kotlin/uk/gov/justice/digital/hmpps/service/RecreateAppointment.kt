@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentO
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.SentenceAppointmentRepository
 import uk.gov.justice.digital.hmpps.messaging.EventType
 import uk.gov.justice.digital.hmpps.messaging.Notifier
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
@@ -101,8 +102,8 @@ class RecreateAppointment(
             team = team,
             location = location,
             date = request.date,
-            startTime = ZonedDateTime.of(request.date, request.startTime, EuropeLondon),
-            endTime = ZonedDateTime.of(request.date, request.endTime, EuropeLondon),
+            startTime = ZonedDateTime.of(LocalDate.EPOCH, request.startTime, EuropeLondon),
+            endTime = ZonedDateTime.of(LocalDate.EPOCH, request.endTime, EuropeLondon),
             provider = team.provider,
             outcome = outcome,
             complied = outcome?.acceptable,

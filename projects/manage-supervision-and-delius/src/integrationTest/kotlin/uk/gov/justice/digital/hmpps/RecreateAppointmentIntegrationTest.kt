@@ -522,6 +522,36 @@ class RecreateAppointmentIntegrationTest : IntegrationTestBase() {
         assertThat(newAppointment.attended).isEqualTo(ATTENDED_COMPLIED.outcomeAttendance)
     }
 
+    @Test
+    fun `recreated appointment stores epoch dates in start and end times`() {
+        val person = PersonGenerator.RECREATE_APPT_PERSON_1
+        val original = sentenceAppointmentRepository.save(
+            AppointmentGenerator.generateAppointment(
+                person,
+                ZonedDateTime.now().plusDays(5),
+                ZonedDateTime.now().plusDays(5).plusMinutes(30)
+            )
+        )
+        val request = recreateRequest(
+            date = LocalDate.now().plusDays(2),
+            startTime = LocalTime.of(13, 15),
+            endTime = LocalTime.of(14, 45)
+        )
+
+        val recreated = mockMvc.put("/appointments/${original.id}/recreate") {
+            withToken()
+            json = request
+        }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<RecreatedAppointment>()
+
+        val appointment = appointmentRepository.getAppointment(recreated.id)
+        assertThat(appointment.startTime?.toLocalDate()).isEqualTo(LocalDate.EPOCH)
+        assertThat(appointment.endTime?.toLocalDate()).isEqualTo(LocalDate.EPOCH)
+        assertThat(appointment.startTime?.toLocalTime()).isEqualTo(request.startTime)
+        assertThat(appointment.endTime?.toLocalTime()).isEqualTo(request.endTime)
+    }
+
     private fun recreateRequest(
         date: LocalDate = LocalDate.now().plusDays(1),
         startTime: LocalTime = LocalTime.of(9, 0),
