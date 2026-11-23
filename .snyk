@@ -61,4 +61,9 @@ ignore:
         reason: No parsing of untrusted JSON.
         expires: 2026-12-01T00:00:00.000Z
         created: 2026-10-08T00:00:00.000Z
+  SNYK-JAVA-ORGGLASSFISHJAXB-20883142:
+    - '*':
+        reason: Not using JAXB.
+        expires: 2027-02-23T00:00:00.000Z
+        created: 2026-11-23T00:00:00.000Z
 patch: {}
