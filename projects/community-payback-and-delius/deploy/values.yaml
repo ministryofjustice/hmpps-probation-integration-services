@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: community-payback-and-delius
   serviceAccountName: community-payback-and-delius
 

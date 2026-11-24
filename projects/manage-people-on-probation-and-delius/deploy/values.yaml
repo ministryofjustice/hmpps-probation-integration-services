@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: manage-people-on-probation-and-delius
 
   image:

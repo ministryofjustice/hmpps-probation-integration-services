@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.actuate.info.InfoContributor
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.info.BuildProperties
 import org.springframework.boot.info.GitProperties
@@ -17,13 +18,18 @@ import java.util.*
 class BuildInfoConfig {
     @Bean
     @ConditionalOnProperty("build.info")
-    fun buildProperties(@Value("\${build.info:#{null}}") info: String?) =
+    fun buildProperties(@Value($$"${build.info:#{null}}") info: String?) =
         info?.let { BuildProperties(loadFrom(it, "build.")) }
 
     @Bean
     @ConditionalOnProperty("git.info")
-    fun gitProperties(@Value("\${git.info:#{null}}") info: String?) =
+    fun gitProperties(@Value($$"${git.info:#{null}}") info: String?) =
         info?.let { GitProperties(loadFrom(it, "git.")) }
+
+    @Bean
+    @ConditionalOnProperty("product.id")
+    fun productIdInfoContributor(@Value($$"${product.id:#{null}}") productId: String?) =
+        productId?.let { InfoContributor { it.withDetail("productId", productId) } }
 
     private fun loadFrom(base64Properties: String, prefix: String) = Properties()
         .apply { load(String(Base64.getDecoder().decode(base64Properties)).reader()) }

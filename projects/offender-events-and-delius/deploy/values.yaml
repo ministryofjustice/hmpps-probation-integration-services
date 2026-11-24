@@ -1,5 +1,4 @@
 generic-service:
-  productId: HMPPS518
   nameOverride: offender-events-and-delius
   serviceAccountName: offender-events-and-delius
   replicaCount: 1
