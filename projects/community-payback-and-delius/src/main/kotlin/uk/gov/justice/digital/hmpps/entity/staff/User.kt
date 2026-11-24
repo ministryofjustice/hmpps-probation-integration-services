@@ -23,6 +23,11 @@ class User(
     val staff: Staff? = null
 )
 
+interface UserIdUsername {
+    val id: Long
+    val username: String
+}
+
 interface UserRepository : JpaRepository<User, Long> {
     @Query(
         """
@@ -34,6 +39,15 @@ interface UserRepository : JpaRepository<User, Long> {
         """
     )
     fun findByUsername(username: String): User?
+
+    @Query(
+        """
+        select u.id as id, u.username as username 
+        from User u 
+        where u.id in :ids
+        """
+    )
+    fun findIdUsernamesByIdIn(ids: Collection<Long>): List<UserIdUsername>
 }
 
 fun UserRepository.getByUsername(username: String) = findByUsername(username).orNotFoundBy("username", username)
@@ -43,7 +57,7 @@ private val logger = LoggerFactory.getLogger(UserRepository::class.java)
 fun UserRepository.usernamesById(ids: Collection<Long>): Map<Long, String> {
     val distinctIds = ids.toSet()
     val users = distinctIds.chunked(900)
-        .flatMap { findAllById(it) }
+        .flatMap { findIdUsernamesByIdIn(it) }
         .associate { it.id to it.username }
 
     val missingIds = distinctIds - users.keys
