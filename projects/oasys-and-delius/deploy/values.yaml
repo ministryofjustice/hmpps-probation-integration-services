@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: oasys-and-delius
 
   image:

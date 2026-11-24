@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: suicide-risk-form-and-delius
   serviceAccountName: suicide-risk-form-and-delius
 

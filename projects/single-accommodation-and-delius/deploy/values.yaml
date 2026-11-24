@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: single-accommodation-and-delius
   serviceAccountName: single-accommodation-and-delius
 

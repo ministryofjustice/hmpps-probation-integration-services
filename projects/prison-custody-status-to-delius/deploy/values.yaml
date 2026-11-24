@@ -1,5 +1,4 @@
 generic-service:
-  productId: HMPPS518
   nameOverride: prison-custody-status-to-delius
   serviceAccountName: prison-custody-status-to-delius
 

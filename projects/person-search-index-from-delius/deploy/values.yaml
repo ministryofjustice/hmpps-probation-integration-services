@@ -1,5 +1,4 @@
 generic-service:
-  productId: HMPPS518
   nameOverride: person-search-index-from-delius
   serviceAccountName: person-search-index-from-delius
   resources:

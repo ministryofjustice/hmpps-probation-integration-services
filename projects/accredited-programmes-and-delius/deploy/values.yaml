@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: accredited-programmes-and-delius
   serviceAccountName: accredited-programmes-and-delius
 

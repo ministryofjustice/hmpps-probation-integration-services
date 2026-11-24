@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: prison-identifier-and-delius
   serviceAccountName: prison-identifier-and-delius
   image:

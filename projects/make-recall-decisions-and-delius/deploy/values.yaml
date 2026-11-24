@@ -1,5 +1,4 @@
 generic-service:
-  productId: HMPPS518
   nameOverride: make-recall-decisions-and-delius
   serviceAccountName: make-recall-decisions-and-delius
 

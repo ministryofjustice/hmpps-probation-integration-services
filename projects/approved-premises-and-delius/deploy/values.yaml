@@ -1,5 +1,4 @@
 generic-service:
-  productId: HMPPS518
   nameOverride: approved-premises-and-delius
   serviceAccountName: approved-premises-and-delius
 
