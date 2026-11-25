@@ -44,4 +44,5 @@ class ContactAlert(
 interface ContactAlertRepository : JpaRepository<ContactAlert, Long> {
     fun deleteByContactIdIn(contactId: Collection<Long>)
     fun findByContactId(contactId: Long): MutableList<ContactAlert>
+    fun deleteByContactId(contactId: Long)
 }
