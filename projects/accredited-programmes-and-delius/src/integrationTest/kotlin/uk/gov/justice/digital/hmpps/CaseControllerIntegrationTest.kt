@@ -271,6 +271,8 @@ internal class CaseControllerIntegrationTest(
                 jsonPath("manager.team.description") { value("Test Team") }
                 jsonPath("manager.probationDeliveryUnit.code") { value("PDU1") }
                 jsonPath("manager.probationDeliveryUnit.description") { value("Test PDU") }
+                jsonPath("manager.region.code") { value("PA1") }
+                jsonPath("manager.region.description") { value("Test Provider") }
                 jsonPath("manager.officeLocations", hasSize<Any>(1))
                 jsonPath("manager.officeLocations[0].code") { value("OFFICE1") }
                 jsonPath("manager.officeLocations[0].description") { value("Test Office Location") }
@@ -318,6 +320,8 @@ internal class CaseControllerIntegrationTest(
                         TestData.REQUIREMENTS[3].id.toInt(),
                     )
                 )
+                jsonPath("content[0].manager.region.code") { value("PA1") }
+                jsonPath("content[0].manager.region.description") { value("Test Provider") }
             }
     }
 
@@ -343,6 +347,8 @@ internal class CaseControllerIntegrationTest(
                 jsonPath("manager.team.description") { value("Test Team") }
                 jsonPath("manager.probationDeliveryUnit.code") { value("PDU1") }
                 jsonPath("manager.probationDeliveryUnit.description") { value("Test PDU") }
+                jsonPath("manager.region.code") { value("PA1") }
+                jsonPath("manager.region.description") { value("Test Provider") }
                 jsonPath("manager.officeLocations", hasSize<Any>(1))
                 jsonPath("manager.officeLocations[0].code") { value("OFFICE1") }
                 jsonPath("manager.officeLocations[0].description") { value("Test Office Location") }
@@ -392,6 +398,8 @@ internal class CaseControllerIntegrationTest(
                         TestData.LICENCE_CONDITIONS[2].id.toInt(),
                     )
                 )
+                jsonPath("content[0].manager.region.code") { value("PA1") }
+                jsonPath("content[0].manager.region.description") { value("Test Provider") }
             }
     }
 

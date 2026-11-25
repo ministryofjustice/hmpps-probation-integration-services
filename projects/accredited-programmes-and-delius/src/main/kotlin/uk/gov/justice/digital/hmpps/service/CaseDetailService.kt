@@ -125,6 +125,7 @@ class CaseDetailService(
                 staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                 team = manager.team.toCodedValue(),
                 probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                region = manager.team.provider.toCodedValue(),
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
             ),
             probationDeliveryUnits = manager.team.pduOfficeLocations(),
@@ -143,6 +144,7 @@ class CaseDetailService(
                 staff = manager.staff.toProbationPractitioner { ldapTemplate.findEmailByUsername(it.username) },
                 team = manager.team.toCodedValue(),
                 probationDeliveryUnit = manager.team.localAdminUnit.probationDeliveryUnit.toCodedValue(),
+                region = manager.team.provider.toCodedValue(),
                 officeLocations = manager.team.officeLocations.map { it.toCodedValue() }
             ),
             probationDeliveryUnits = manager.team.pduOfficeLocations(),

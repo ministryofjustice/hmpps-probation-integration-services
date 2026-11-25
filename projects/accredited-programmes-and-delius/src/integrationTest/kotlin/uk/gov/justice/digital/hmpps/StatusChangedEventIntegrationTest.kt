@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.TestData
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -38,6 +39,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
     fun `breach status contact created`() {
         val eventName = "status-changed-breach"
         val event = prepMessage(eventName, wireMockServer.port())
+        val existingIds = matchingContacts(StatusInfo.Status.BREACH).map { it.id }.toSet()
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
@@ -47,12 +49,10 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.BREACH.contactTypeCode
-        }
-        assertThat(contact).isNotNull
-        assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
+        val newContacts = matchingContacts(StatusInfo.Status.BREACH).filterNot { it.id in existingIds }
+        assertThat(newContacts).hasSize(1)
+        val contact = newContacts.single()
+        assertThat(contact.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
         assertThat(contact.notes).isEqualTo("Some notes about the breach of the LC")
         assertThat(contact.externalReference).isNotNull
     }
@@ -61,6 +61,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
     fun `on programme status contact created`() {
         val eventName = "status-changed-on-programme"
         val event = prepMessage(eventName, wireMockServer.port())
+        val existingIds = matchingContacts(StatusInfo.Status.ON_PROGRAMME).map { it.id }.toSet()
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
@@ -70,12 +71,10 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
-        }
-        assertThat(contact).isNotNull
-        assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
+        val newContacts = matchingContacts(StatusInfo.Status.ON_PROGRAMME).filterNot { it.id in existingIds }
+        assertThat(newContacts).hasSize(1)
+        val contact = newContacts.single()
+        assertThat(contact.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
         assertThat(contact.description).isEqualTo("Some description")
         assertThat(contact.notes).isEqualTo("Some notes about the being on the programme")
         assertThat(contact.externalReference).isNotNull
@@ -128,6 +127,11 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessage("CRN and component do not match")
     }
+
+    private fun matchingContacts(status: StatusInfo.Status): List<Contact> =
+        contactRepository.findAll().filter {
+            it.person.id == TestData.PERSON.id && it.type.code == status.contactTypeCode
+        }
 
     private fun assertMissingComponentIgnoredAndTracked(eventName: String, status: StatusInfo.Status) {
         reset(telemetryService)
