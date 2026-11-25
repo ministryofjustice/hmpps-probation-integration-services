@@ -39,12 +39,12 @@ class UserAlertService(
     @Transactional
     fun clearAlerts(toClear: ClearAlerts) {
         val username = requireNotNull(UserContext.get()?.username) { "username required in token" }
-        contactAlertRepository.deleteByContactIdIn(toClear.alertIds)
         contactRepository.findAllById(toClear.alertIds).takeIf { it.isNotEmpty() }?.let { alerts ->
             val comConfirmations = personRepository.userIsCom(username, alerts.map { it.person.crn }.toSet())
                 .associate { it.crn to it.userIsCom }
             alerts.forEach {
                 if (comConfirmations[it.person.crn] == true && it.alert == true) {
+                    contactAlertRepository.deleteByContactId(it.id)
                     it.alert = false
                     it.appendNotes("Alert cleared from the Manage people on probation service")
                 }

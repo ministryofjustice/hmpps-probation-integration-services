@@ -246,7 +246,7 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `no contact updated if user is not case manager`() {
+    fun `does not clear alert or delete contact alert if user is not case manager`() {
         val user = STAFF_USER_2
         val person = PersonGenerator.OVERVIEW
 
@@ -259,15 +259,16 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
                 description = "Description of first alert"
             )
         )
+        val contactAlert = contactAlertRepository.save(generateContactAlert(contact))
 
         mockMvc.put("/alerts") {
             withUserToken(user.username)
-            json = ClearAlerts(listOf(IdGenerator.getAndIncrement()))
+            json = ClearAlerts(listOf(contact.id))
         }
             .andExpect { status { isOk() } }
 
-        assertThat(contact.alert).isTrue
-        contactRepository.save(contact.apply { alert = false })
+        assertThat(contactRepository.findById(contact.id).get().alert).isTrue
+        assertThat(contactAlertRepository.findByContactId(contact.id).map { it.id }).containsExactly(contactAlert.id)
     }
 
     @Test
