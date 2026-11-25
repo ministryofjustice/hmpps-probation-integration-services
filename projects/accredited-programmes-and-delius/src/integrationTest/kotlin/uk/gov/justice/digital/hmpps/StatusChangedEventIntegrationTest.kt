@@ -47,14 +47,12 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.BREACH.contactTypeCode
-        }
+        val contact = contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
         assertThat(contact).isNotNull
-        assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
+        assertThat(contact!!.person.id).isEqualTo(TestData.PERSON.id)
+        assertThat(contact.type.code).isEqualTo(StatusInfo.Status.BREACH.contactTypeCode)
+        assertThat(contact.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
         assertThat(contact.notes).isEqualTo("Some notes about the breach of the LC")
-        assertThat(contact.externalReference).isNotNull
     }
 
     @Test
@@ -70,15 +68,13 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
-        }
+        val contact = contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
         assertThat(contact).isNotNull
-        assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
+        assertThat(contact!!.person.id).isEqualTo(TestData.PERSON.id)
+        assertThat(contact.type.code).isEqualTo(StatusInfo.Status.ON_PROGRAMME.contactTypeCode)
+        assertThat(contact.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
         assertThat(contact.description).isEqualTo("Some description")
         assertThat(contact.notes).isEqualTo("Some notes about the being on the programme")
-        assertThat(contact.externalReference).isNotNull
     }
 
     @Test
