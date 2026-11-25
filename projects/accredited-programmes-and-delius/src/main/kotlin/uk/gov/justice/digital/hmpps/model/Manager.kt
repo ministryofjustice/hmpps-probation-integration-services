@@ -4,5 +4,6 @@ data class Manager(
     val staff: ProbationPractitioner,
     val team: CodedValue,
     val probationDeliveryUnit: CodedValue,
+    val region: CodedValue,
     val officeLocations: List<CodedValue>,
 )
