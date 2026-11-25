@@ -161,6 +161,16 @@ class ContactOutcome(
         const val MANUAL_STOP = "ESPMP"
         const val NO_ACTIVE_EVENTS = "ESPNA"
         const val IN_RESET = "ESPRS"
+        const val NO_SUPERVISION_PACKAGE = "ESPSP"
+        const val RECALLED = "ESPRC"
+        const val TIER_MISSING = "ESPME"
+        const val INELIGIBLE_TIER = "ESPIT"
+        const val FINAL_THIRD = "ESPFT"
+        const val NO_PRACTITIONER_ALLOCATED = "ESPNP"
+        const val DEVICE_RESTRICTION = "ESPDI"
+        const val YOUTH_SENTENCE = "ESPYS"
+        const val EARLY_ENGAGEMENT = "ESPEE"
+        const val ACCREDITED_PROGRAMME = "ESPAP"
     }
 }
 
