@@ -149,19 +149,22 @@ val HmppsDomainEvent.eventNumber get() = additionalInformation["eventNumber"]?.t
 val HmppsDomainEvent.setupId get() = additionalInformation["setupId"]?.toString()
 val HmppsDomainEvent.outcomeCode
     get() = requireNotNull(additionalInformation["outcomeCode"]).toString().also {
-        require(it in listOf(SETUP_REMOVED,
-            MANUAL_STOP,
-            NO_ACTIVE_EVENTS,
-            IN_RESET,
-            NO_SUPERVISION_PACKAGE,
-            RECALLED,
-            TIER_MISSING,
-            INELIGIBLE_TIER,
-            FINAL_THIRD,
-            NO_PRACTITIONER_ALLOCATED,
-            DEVICE_RESTRICTION,
-            YOUTH_SENTENCE,
-            EARLY_ENGAGEMENT,
-            ACCREDITED_PROGRAMME
-            )) { "Unexpected outcome code: $it" }
+        require(
+            it in listOf(
+                SETUP_REMOVED,
+                MANUAL_STOP,
+                NO_ACTIVE_EVENTS,
+                IN_RESET,
+                NO_SUPERVISION_PACKAGE,
+                RECALLED,
+                TIER_MISSING,
+                INELIGIBLE_TIER,
+                FINAL_THIRD,
+                NO_PRACTITIONER_ALLOCATED,
+                DEVICE_RESTRICTION,
+                YOUTH_SENTENCE,
+                EARLY_ENGAGEMENT,
+                ACCREDITED_PROGRAMME
+            )
+        ) { "Unexpected outcome code: $it" }
     }
