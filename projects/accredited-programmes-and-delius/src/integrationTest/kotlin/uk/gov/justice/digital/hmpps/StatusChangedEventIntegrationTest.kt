@@ -47,7 +47,8 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
+        val contact =
+            contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
         assertThat(contact).isNotNull
         assertThat(contact!!.person.id).isEqualTo(TestData.PERSON.id)
         assertThat(contact.type.code).isEqualTo(StatusInfo.Status.BREACH.contactTypeCode)
@@ -68,7 +69,8 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
+        val contact =
+            contactRepository.findByExternalReference("urn:uk:gov:hmpps:accredited-programmes-service:${event.id}")
         assertThat(contact).isNotNull
         assertThat(contact!!.person.id).isEqualTo(TestData.PERSON.id)
         assertThat(contact.type.code).isEqualTo(StatusInfo.Status.ON_PROGRAMME.contactTypeCode)
