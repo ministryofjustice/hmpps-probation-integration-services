@@ -269,6 +269,9 @@ class AlertContactIntegrationTest : IntegrationTestBase() {
 
         assertThat(contactRepository.findById(contact.id).get().alert).isTrue
         assertThat(contactAlertRepository.findByContactId(contact.id).map { it.id }).containsExactly(contactAlert.id)
+
+        contactAlertRepository.delete(contactAlert)
+        contactRepository.save(contact.apply { alert = false })
     }
 
     @Test
