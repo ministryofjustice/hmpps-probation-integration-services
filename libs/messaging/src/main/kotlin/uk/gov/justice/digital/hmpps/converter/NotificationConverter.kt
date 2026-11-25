@@ -15,8 +15,7 @@ abstract class NotificationConverter<T : Any>(
         val stringMessage = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
         Notification(
             message = objectMapper.readValue(stringMessage.message, getMessageType().java),
-            attributes = stringMessage.attributes,
-            id = stringMessage.id
+            attributes = stringMessage.attributes
         )
     } catch (e: JacksonException) {
         onMappingError(e)

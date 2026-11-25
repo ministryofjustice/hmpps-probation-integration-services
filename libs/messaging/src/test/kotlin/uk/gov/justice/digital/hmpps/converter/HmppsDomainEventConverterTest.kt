@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.time.ZonedDateTime
-import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
 class HmppsDomainEventConverterTest {
@@ -34,9 +33,7 @@ class HmppsDomainEventConverterTest {
                 }
             """.trimIndent()
 
-        val notification = converter.fromMessage(message)!!
-        assertThat(notification.id, equalTo(UUID.fromString("20d491ef-1213-4c50-92a7-96977ee66abd")))
-        val event: HmppsDomainEvent = notification.message
+        val event: HmppsDomainEvent = converter.fromMessage(message)!!.message
         assertThat(event.eventType, equalTo("message.event.type"))
         assertThat(event.version, equalTo(1))
         assertThat(event.description, equalTo("A description for the event"))
@@ -48,7 +45,7 @@ class HmppsDomainEventConverterTest {
         assertThat(event.personReference.findCrn(), equalTo("X123456"))
         assertThat(event.additionalInformation["specialId"], equalTo("6aafe304-861f-4479-8380-fec5f90f6d17"))
 
-        val attributes: MessageAttributes = notification.attributes
+        val attributes: MessageAttributes = converter.fromMessage(message)!!.attributes
         assertThat(attributes["eventType"]!!.value, equalTo("attribute.event.type"))
     }
 
@@ -68,7 +65,6 @@ class HmppsDomainEventConverterTest {
         )
 
         val message = converter.toMessage(hmppsEvent)
-        assertThat(converter.fromMessage(message)!!.id, equalTo(hmppsEvent.id))
 
         assertThat(
             message,
