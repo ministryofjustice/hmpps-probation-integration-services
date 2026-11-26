@@ -27,6 +27,19 @@ class StaffControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
     }
 
     @Test
+    fun `returns active staff when an expired staff member shares the code`() {
+        val staff = TestData.STAFF_WITH_SHARED_CODE
+
+        mockMvc.get("/staff/${staff.code}") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("forename") { value(staff.forename) }
+                jsonPath("surname") { value(staff.surname) }
+                jsonPath("middleNames") { value(staff.middleName) }
+            }
+    }
+
+    @Test
     fun `returns 404 not found for unknown staff code`() {
         mockMvc.get("/staff/ZZZZZZZ") { withToken() }
             .andExpect { status { isNotFound() } }
