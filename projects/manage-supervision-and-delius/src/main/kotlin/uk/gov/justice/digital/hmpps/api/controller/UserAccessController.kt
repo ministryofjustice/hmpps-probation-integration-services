@@ -19,6 +19,7 @@ class UserAccessController(
         userAccessService.caseAccessFor(username, crn)
 
     @PostMapping("/user/{username}/access")
+    @PreAuthorize("hasAnyRole('PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL', 'ROLE_PROBATION_API__PROBATION_SUPERVISION_REMINDERS__CASE_DETAIL')")
     fun checkUserAccess(
         @PathVariable username: String,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns")

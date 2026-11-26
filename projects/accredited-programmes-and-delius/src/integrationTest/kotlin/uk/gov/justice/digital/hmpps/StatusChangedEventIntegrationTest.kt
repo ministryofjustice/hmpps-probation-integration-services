@@ -42,6 +42,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
     fun `breach status contact created`() {
         val eventName = "status-changed-breach"
         val event = prepMessage(eventName, wireMockServer.port())
+        val existingIds = matchingContacts(StatusInfo.Status.BREACH).map { it.id }.toSet()
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
@@ -62,6 +63,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
     fun `on programme status contact created`() {
         val eventName = "status-changed-on-programme"
         val event = prepMessage(eventName, wireMockServer.port())
+        val existingIds = matchingContacts(StatusInfo.Status.ON_PROGRAMME).map { it.id }.toSet()
 
         channelManager.getChannel(queueName).publishAndWait(
             event.copy(
