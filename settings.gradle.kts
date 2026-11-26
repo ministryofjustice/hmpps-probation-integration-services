@@ -101,7 +101,7 @@ dependencyResolutionManagement {
                 "opentelemetry-annotations",
                 "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.34.0"
             )
-            library("sentry", "io.sentry:sentry-spring-boot-4:8.65.0")
+            library("sentry", "io.sentry:sentry-spring-boot-4:8.65.1")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1")
             library("wiremock", "org.wiremock:wiremock-standalone:3.13.2")
 
