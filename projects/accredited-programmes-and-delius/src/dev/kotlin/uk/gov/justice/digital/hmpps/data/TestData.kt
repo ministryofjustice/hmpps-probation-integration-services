@@ -59,6 +59,14 @@ object TestData {
     val AP_STAFF_INACTIVE =
         StaffGenerator.generate("N07AP98", teams = listOf(AP_TEAM), endDate = LocalDate.now().minusDays(1))
     val AP_STAFF_INACTIVE_TEAM = StaffGenerator.generate("N07AP99", teams = listOf(AP_TEAM_INACTIVE))
+    val STAFF_WITH_SHARED_CODE = Staff(
+        id = id(), code = "SHARED1", forename = "Active", middleName = "Current", surname = "Staff",
+        teams = listOf(), endDate = null
+    )
+    val EXPIRED_STAFF_WITH_SHARED_CODE = Staff(
+        id = id(), code = STAFF_WITH_SHARED_CODE.code, forename = "Expired", middleName = "Previous", surname = "Staff",
+        teams = listOf(), endDate = LocalDate.now().minusDays(1)
+    )
     val OFFICE_LOCATION = OfficeLocation(id(), "OFFICE1", "Test Office Location", null, LAU)
     val TEAM = Team(id(), "TEAM01", "Test Team", LAU, listOf(OFFICE_LOCATION), PROVIDER, null)
     val TEAM_2 = Team(id(), "TEAM02", "A Second Team", LAU_2, listOf(), PROVIDER, null)

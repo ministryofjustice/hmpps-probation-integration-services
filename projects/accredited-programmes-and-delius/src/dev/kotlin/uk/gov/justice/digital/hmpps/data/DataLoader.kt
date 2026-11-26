@@ -51,6 +51,8 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.AP_STAFF_FUTURE)
         save(TestData.AP_STAFF_INACTIVE)
         save(TestData.AP_STAFF_INACTIVE_TEAM)
+        save(TestData.STAFF_WITH_SHARED_CODE)
+        save(TestData.EXPIRED_STAFF_WITH_SHARED_CODE)
         save(TestData.PERSON)
         save(TestData.CA_PERSON)
         save(TestData.TERMINATION_PERSON)
