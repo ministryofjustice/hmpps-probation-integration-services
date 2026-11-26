@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.CodeDescription
 import uk.gov.justice.digital.hmpps.model.RequirementProgress
 import uk.gov.justice.digital.hmpps.model.Session
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.utils.Extensions.allOfNotNull
 import uk.gov.justice.digital.hmpps.utils.Extensions.filter
 import uk.gov.justice.digital.hmpps.utils.Extensions.optionalFilter
@@ -168,6 +169,10 @@ class UnpaidWorkAppointment(
     @JoinColumn(name = "upw_allocation_id")
     val allocation: UnpaidWorkAllocation?,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_updated_user_id", insertable = false, updatable = false)
+    var lastUpdatedByUser: AuditUser? = null,
+
     @Column(name = "pick_up_time")
     var pickUpTime: LocalTime?,
 
@@ -239,6 +244,7 @@ class UnpaidWorkAppointment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(name = "partition_area_id")

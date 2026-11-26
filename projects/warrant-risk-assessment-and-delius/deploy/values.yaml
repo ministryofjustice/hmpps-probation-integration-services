@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: warrant-risk-assessment-and-delius
   serviceAccountName: warrant-risk-assessment-and-delius
 

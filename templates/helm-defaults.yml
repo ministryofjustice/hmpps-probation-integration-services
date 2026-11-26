@@ -1,6 +1,7 @@
 ---
 # Values here are the same across all projects and all environments
 generic-service:
+  productId: HMPPS518 # https://developer-portal.hmpps.service.justice.gov.uk/products/probation-integrations
   replicaCount: 2
   resources:
     requests:

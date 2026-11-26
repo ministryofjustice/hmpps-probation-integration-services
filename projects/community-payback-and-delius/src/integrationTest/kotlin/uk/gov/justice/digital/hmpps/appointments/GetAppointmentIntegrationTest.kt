@@ -24,8 +24,8 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.*
-import jakarta.persistence.EntityManager
-import org.springframework.transaction.annotation.Transactional
+import jakarta.transaction.Transactional
+import org.springframework.jdbc.core.JdbcTemplate
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,7 +33,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactRepository: ContactRepository,
-    private val entityManager: EntityManager
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_1.code
@@ -284,56 +284,49 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
     @Test
     @Transactional
-    fun `appointment retrieval returns the unpaid work appointment last updated username`() {
+    fun `appointment retrieval returns last updated username`() {
         val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
-        val updatedBy = UserGenerator.AUDIT_USER
-        val otherUser = UserGenerator.DEFAULT_USER
+        val updater = UserGenerator.AUDIT_USER
 
-        entityManager.createNativeQuery(
-            "update upw_appointment set last_updated_user_id = :userId where upw_appointment_id = :id"
-        ).setParameter("userId", updatedBy.id)
-            .setParameter("id", appointment.id)
-            .executeUpdate()
+        assertThat(
+            jdbcTemplate.update(
+                "update upw_appointment set last_updated_user_id = ? where upw_appointment_id = ?",
+                updater.id,
+                appointment.id
+            )
+        ).isEqualTo(1)
 
-        entityManager.createNativeQuery(
-            "update contact set last_updated_user_id = :userId where contact_id = :id"
-        ).setParameter("userId", otherUser.id)
-            .setParameter("id", appointment.contact.id)
-            .executeUpdate()
-        entityManager.clear()
+        val detail = mockMvc
+            .get("/projects/$PROJECT/appointments/${appointment.id}?username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AppointmentResponse>()
 
-        mockMvc.get("/projects/$PROJECT/appointments/${appointment.id}?username=${otherUser.username}") {
-            withToken()
-        }.andExpect {
-            status { isOk() }
-            content { jsonPath("$.lastUpdatedBy") { value(updatedBy.username) } }
-        }
+        assertThat(detail.lastUpdatedBy).isEqualTo(updater.username)
 
-        mockMvc.get("/appointments?username=${otherUser.username}&appointmentIds=${appointment.id}") {
-            withToken()
-        }.andExpect {
-            status { isOk() }
-            content { jsonPath("$.content[0].lastUpdatedBy") { value(updatedBy.username) } }
-        }
+        val list = mockMvc
+            .get("/appointments?username=DefaultUser&appointmentIds=${appointment.id}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
-        mockMvc.get("/projects/$PROJECT/appointments?date=${appointment.date}&username=${otherUser.username}") {
-            withToken()
-        }.andExpect {
-            status { isOk() }
-            content { jsonPath("$.appointmentSummaries[0].lastUpdatedBy") { value(updatedBy.username) } }
-        }
+        assertThat(list.content.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
 
-        val schedule = mockMvc.get(
-            "/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.EVENT_1.number}/appointments/schedule"
-        ) {
-            withToken()
-        }.andExpect {
-            status { isOk() }
-        }.andReturn().response.contentAsJson<ScheduleResponse>()
+        val session = mockMvc
+            .get("/projects/$PROJECT/appointments?date=${appointment.date}&username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SessionResponse>()
 
-        val scheduled = schedule.appointments.single { it.id == appointment.id }
-        assertThat(scheduled.lastUpdatedBy).isEqualTo(updatedBy.username)
+        assertThat(session.appointmentSummaries.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
+
+        val schedule = mockMvc
+            .get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.EVENT_1.number}/appointments/schedule") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ScheduleResponse>()
+
+        assertThat(schedule.appointments.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
     }
 }
-
-

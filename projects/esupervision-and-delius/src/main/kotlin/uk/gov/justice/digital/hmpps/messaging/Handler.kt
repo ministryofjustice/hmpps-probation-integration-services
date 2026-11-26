@@ -5,10 +5,20 @@ import com.asyncapi.kotlinasyncapi.annotation.channel.Message
 import com.asyncapi.kotlinasyncapi.annotation.channel.Publish
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.ACCREDITED_PROGRAMME
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.DEVICE_RESTRICTION
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.EARLY_ENGAGEMENT
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.FINAL_THIRD
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.INELIGIBLE_TIER
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.IN_RESET
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.MANUAL_STOP
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.NO_ACTIVE_EVENTS
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.NO_PRACTITIONER_ALLOCATED
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.NO_SUPERVISION_PACKAGE
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.RECALLED
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.SETUP_REMOVED
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.TIER_MISSING
+import uk.gov.justice.digital.hmpps.entity.ContactOutcome.Companion.YOUTH_SENTENCE
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -139,5 +149,22 @@ val HmppsDomainEvent.eventNumber get() = additionalInformation["eventNumber"]?.t
 val HmppsDomainEvent.setupId get() = additionalInformation["setupId"]?.toString()
 val HmppsDomainEvent.outcomeCode
     get() = requireNotNull(additionalInformation["outcomeCode"]).toString().also {
-        require(it in listOf(SETUP_REMOVED, MANUAL_STOP, NO_ACTIVE_EVENTS, IN_RESET)) { "Unexpected outcome code: $it" }
+        require(
+            it in listOf(
+                SETUP_REMOVED,
+                MANUAL_STOP,
+                NO_ACTIVE_EVENTS,
+                IN_RESET,
+                NO_SUPERVISION_PACKAGE,
+                RECALLED,
+                TIER_MISSING,
+                INELIGIBLE_TIER,
+                FINAL_THIRD,
+                NO_PRACTITIONER_ALLOCATED,
+                DEVICE_RESTRICTION,
+                YOUTH_SENTENCE,
+                EARLY_ENGAGEMENT,
+                ACCREDITED_PROGRAMME
+            )
+        ) { "Unexpected outcome code: $it" }
     }

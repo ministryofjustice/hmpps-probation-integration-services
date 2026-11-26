@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: breach-notice-and-delius
   serviceAccountName: breach-notice-and-delius
 

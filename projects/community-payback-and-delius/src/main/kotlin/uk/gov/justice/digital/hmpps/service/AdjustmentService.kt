@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.entity.getAdjustmentReason
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
 import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
-import uk.gov.justice.digital.hmpps.entity.staff.usernamesById
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustment
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAdjustmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
@@ -58,10 +57,17 @@ class AdjustmentService(
 
     fun getAdjustments(crn: String, eventNumber: Int): AdjustmentResponse {
         val adjustments = adjustmentRepository.findByCrnAndEventNumber(crn, eventNumber.toString())
-        val updatedBy = userRepository.usernamesById(adjustments.map { it.lastUpdatedUserId })
 
         return AdjustmentResponse(adjustments.map {
-            it.toAdjustment(updatedBy[it.lastUpdatedUserId])
+            Adjustment(
+                id = it.id!!,
+                reference = it.reference(),
+                date = it.date,
+                type = AdjustmentType.valueOf(it.type),
+                minutes = it.amount,
+                reason = CodeName(name = it.reason.description, code = it.reason.code),
+                lastUpdatedBy = it.lastUpdatedByUser?.username,
+            )
         })
     }
 
@@ -89,9 +95,15 @@ class AdjustmentService(
 
     fun getAdjustment(reference: UUID): Adjustment {
         val adjustment = adjustmentRepository.findByReference(reference).orNotFoundBy("reference", reference)
-        val updatedBy = userRepository.usernamesById(listOf(adjustment.lastUpdatedUserId))
-
-        return adjustment.toAdjustment(updatedBy[adjustment.lastUpdatedUserId])
+        return Adjustment(
+            id = checkNotNull(adjustment.id),
+            reference = adjustment.reference(),
+            type = AdjustmentType.valueOf(adjustment.type),
+            date = adjustment.date,
+            reason = CodeName(name = adjustment.reason.description, code = adjustment.reason.code),
+            minutes = adjustment.amount,
+            lastUpdatedBy = adjustment.lastUpdatedByUser?.username,
+        )
     }
 
     fun searchAdjustments(
@@ -101,21 +113,26 @@ class AdjustmentService(
         type: AdjustmentType?,
         reason: String?,
         pageable: Pageable
-    ): PagedModel<Adjustment> {
-        val adjustments = adjustmentRepository.searchAdjustments(
+    ): PagedModel<Adjustment> = PagedModel(
+        adjustmentRepository.searchAdjustments(
             crn = crn,
             eventNumber = eventNumber?.toString(),
             date = date,
             type = type?.code,
             reason = reason,
             pageable = pageable
-        )
-        val updatedBy = userRepository.usernamesById(adjustments.map { it.lastUpdatedUserId }.toList())
-
-        return PagedModel(adjustments.map {
-            it.toAdjustment(updatedBy[it.lastUpdatedUserId])
-        })
-    }
+        ).map {
+            Adjustment(
+                id = it.id!!,
+                reference = it.reference(),
+                date = it.date,
+                type = AdjustmentType.valueOf(it.type),
+                minutes = it.amount,
+                reason = CodeName(name = it.reason.description, code = it.reason.code),
+                lastUpdatedBy = it.lastUpdatedByUser?.username,
+            )
+        }
+    )
 
     fun UnpaidWorkAdjustment.reference() =
         externalReference?.removePrefix(REFERENCE_PREFIX)?.let { UUID.fromString(it) }
@@ -139,14 +156,4 @@ class AdjustmentService(
         existingAdjustment.externalReference = urn
         adjustmentRepository.save(existingAdjustment)
     }
-
-    private fun UnpaidWorkAdjustment.toAdjustment(lastUpdatedBy: String?) = Adjustment(
-        id = checkNotNull(id),
-        reference = reference(),
-        type = AdjustmentType.valueOf(type),
-        date = date,
-        reason = CodeName(name = reason.description, code = reason.code),
-        minutes = amount,
-        lastUpdatedBy = lastUpdatedBy
-    )
 }

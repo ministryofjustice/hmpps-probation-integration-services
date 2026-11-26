@@ -17,7 +17,7 @@ data class AppointmentsResponse(
     val outcome: CodeDescription?,
     val notes: String?,
     val externalReference: String?,
-    val lastUpdatedBy: String?
+    val lastUpdatedBy: String?,
 )
 
 data class ProjectSummary(

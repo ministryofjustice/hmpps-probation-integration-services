@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: common-platform-and-delius
   serviceAccountName: common-platform-and-delius
 

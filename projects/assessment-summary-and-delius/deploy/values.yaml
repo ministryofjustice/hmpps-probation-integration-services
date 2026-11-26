@@ -1,6 +1,5 @@
 # Common values
 generic-service:
-  productId: HMPPS518
   nameOverride: assessment-summary-and-delius
   serviceAccountName: assessment-summary-and-delius
 

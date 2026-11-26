@@ -74,7 +74,7 @@ fun UnpaidWorkProjectAvailability.toProjectAvailabilityDetails() = ProjectAvaila
     endTime = endTime
 )
 
-fun UnpaidWorkAppointment.toAppointmentScheduleResponse(lastUpdatedBy: String?) = AppointmentScheduleResponse(
+fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleResponse(
     id = id,
     version = UUID(rowVersion, contact.rowVersion),
     project = CodeName(project.name, project.code),
@@ -84,5 +84,5 @@ fun UnpaidWorkAppointment.toAppointmentScheduleResponse(lastUpdatedBy: String?) 
     outcome = contact.outcome?.toCodeDescription(),
     minutesCredited = minutesCredited ?: 0,
     allocationId = allocation?.id,
-    lastUpdatedBy = lastUpdatedBy
+    lastUpdatedBy = lastUpdatedByUser?.username,
 )

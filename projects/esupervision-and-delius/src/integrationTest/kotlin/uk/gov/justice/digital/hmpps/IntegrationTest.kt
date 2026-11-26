@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.entity.ContactOutcome
+import uk.gov.justice.digital.hmpps.entity.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.entity.ContactType
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -50,6 +51,7 @@ internal class IntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val channelManager: HmppsChannelManager,
     private val contactRepository: ContactRepository,
+    private val contactOutcomeRepository: ContactOutcomeRepository,
     private val checkInService: CheckInService,
     private val wireMockServer: WireMockServer,
     private val handler: Handler,
@@ -649,6 +651,62 @@ internal class IntegrationTest @Autowired constructor(
                 "setupId" to "c3d4e5f6-a7b8-9012-cdef-123456789012",
             )
         )
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = [
+            "ESPSP",
+            "ESPRC",
+            "ESPME",
+            "ESPIT",
+            "ESPFT",
+            "ESPNP",
+            "ESPDI",
+            "ESPYS",
+            "ESPEE",
+            "ESPAP",
+        ]
+    )
+    fun `esupervision setup removed with new outcome code`(outcomeCode: String) {
+        val setupId = "f1234567-89ab-cdef-0123-456789abcdef"
+        val originalContact = contactRepository.findAll().single {
+            it.externalReference == "urn:uk:gov:hmpps:esupervision:setup:$setupId"
+        }
+        originalContact.outcome = contactOutcomeRepository.getByCode(ContactOutcome.SETUP_COMPLETED)
+        contactRepository.save(originalContact)
+
+        val message = MessageGenerator.SETUP_REMOVED_A000001.copy(
+            additionalInformation = MessageGenerator.SETUP_REMOVED_A000001.additionalInformation +
+                mapOf("setupId" to setupId, "outcomeCode" to outcomeCode)
+        )
+        val notification = prepMessage(message)
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val updatedContact = contactRepository.findAll().single { it.id == originalContact.id }
+        assertThat(updatedContact.outcome?.code).isEqualTo(outcomeCode)
+        verify(telemetryService).trackEvent(
+            "CheckInSetupRemoved",
+            mapOf(
+                "eventType" to "esupervision.setup.removed",
+                "crn" to PersonGenerator.DEFAULT_PERSON.crn,
+                "eventNumber" to EventGenerator.EVENT_2.number,
+                "checkInUrl" to null,
+                "setupId" to setupId,
+            )
+        )
+    }
+
+    @Test
+    fun `esupervision setup removed with unknown outcome code is rejected`() {
+        val message = MessageGenerator.SETUP_REMOVED_A000001.copy(
+            additionalInformation = MessageGenerator.SETUP_REMOVED_A000001.additionalInformation +
+                mapOf("setupId" to "f1234567-89ab-cdef-0123-456789abcdef", "outcomeCode" to "UNKNOWN")
+        )
+
+        assertThatThrownBy { handler.handle(prepMessage(message)) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Unexpected outcome code: UNKNOWN")
     }
 
     @Test
