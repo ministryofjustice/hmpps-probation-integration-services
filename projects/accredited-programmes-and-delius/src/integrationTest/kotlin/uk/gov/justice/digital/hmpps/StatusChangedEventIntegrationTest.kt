@@ -6,6 +6,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -14,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import uk.gov.justice.digital.hmpps.data.TestData
+import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.integration.EntityType
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -30,7 +34,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
     private val channelManager: HmppsChannelManager,
     private val wireMockServer: WireMockServer,
     private val contactRepository: ContactRepository,
-    private val statusChangeService: StatusChangeService,
+    @MockitoSpyBean private val statusChangeService: StatusChangeService,
     @MockitoSpyBean private val telemetryService: TelemetryService,
 ) {
 
@@ -47,10 +51,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.BREACH.contactTypeCode
-        }
+        val contact = contactFor(StatusInfo.Status.BREACH)
         assertThat(contact).isNotNull
         assertThat(contact!!.licenceCondition?.id).isEqualTo(TestData.LICENCE_CONDITIONS.first().id)
         assertThat(contact.notes).isEqualTo("Some notes about the breach of the LC")
@@ -70,10 +71,7 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
             )
         )
 
-        val contact = contactRepository.findAll().lastOrNull {
-            it.person.id == TestData.PERSON.id &&
-                it.type.code == StatusInfo.Status.ON_PROGRAMME.contactTypeCode
-        }
+        val contact = contactFor(StatusInfo.Status.ON_PROGRAMME)
         assertThat(contact).isNotNull
         assertThat(contact!!.requirement?.id).isEqualTo(TestData.REQUIREMENTS.first().id)
         assertThat(contact.description).isEqualTo("Some description")
@@ -127,6 +125,17 @@ class StatusChangedEventIntegrationTest @Autowired constructor(
                 ),
             )
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessage("CRN and component do not match")
+    }
+
+    private fun contactFor(status: StatusInfo.Status): Contact? {
+        // The notification converter assigns a new ID when it deserializes the published event.
+        val messageId = argumentCaptor<UUID>()
+        verify(statusChangeService).statusChanged(messageId.capture(), eq(TestData.PERSON.crn), any(), any())
+        return contactRepository.findAll().firstOrNull {
+            it.person.id == TestData.PERSON.id &&
+                it.type.code == status.contactTypeCode &&
+                it.externalReference == "urn:uk:gov:hmpps:accredited-programmes-service:${messageId.firstValue}"
+        }
     }
 
     private fun assertMissingComponentIgnoredAndTracked(eventName: String, status: StatusInfo.Status) {
