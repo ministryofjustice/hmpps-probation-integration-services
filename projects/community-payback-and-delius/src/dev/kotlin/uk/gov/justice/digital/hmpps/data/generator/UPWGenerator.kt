@@ -512,6 +512,22 @@ object UPWGenerator {
         )
     }
 
+    val UPW_APPOINTMENT_WITHOUT_UPDATED_USER = generateUpwAppointment(
+        startTime = LocalTime.of(9, 0),
+        endTime = LocalTime.of(17, 0),
+        date = LocalDate.of(2100, 1, 1),
+        project = UPW_PROJECT_1,
+        details = UPW_DETAILS_1,
+        allocation = DEFAULT_UPW_ALLOCATION,
+        contact = DEFAULT_CONTACT,
+        pickupLocation = DEFAULT_OFFICE_LOCATION,
+        pickupTime = LocalTime.of(9, 0),
+        penaltyTime = null,
+        person = PersonGenerator.DEFAULT_PERSON,
+        staff = StaffGenerator.DEFAULT_STAFF,
+        team = TeamGenerator.DEFAULT_UPW_TEAM,
+    )
+
     val OVERDUE_APPOINTMENT = generateUpwAppointment(
         startTime = LocalTime.of(9, 0),
         endTime = LocalTime.of(17, 0),

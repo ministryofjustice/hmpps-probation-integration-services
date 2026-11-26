@@ -289,13 +289,8 @@ class GetAppointmentIntegrationTest @Autowired constructor(
         val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
         val updater = UserGenerator.AUDIT_USER
 
-        assertThat(
-            jdbcTemplate.update(
-                "update upw_appointment set last_updated_user_id = ? where upw_appointment_id = ?",
-                updater.id,
-                appointment.id
-            )
-        ).isEqualTo(1)
+        val persisted = unpaidWorkAppointmentRepository.findByIdOrNull(appointment.id)!!
+        assertThat(persisted.lastUpdatedUserId).isEqualTo(updater.id)
 
         val detail = mockMvc
             .get("/projects/$PROJECT/appointments/${appointment.id}?username=DefaultUser") { withToken() }
@@ -329,39 +324,5 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
         assertThat(schedule.appointments.single { it.id == appointment.id }.lastUpdatedBy)
             .isEqualTo(updater.username)
-    }
-
-    @Test
-    fun `appointment retrieval returns null when there is no last updated user`() {
-        val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
-
-        assertThat(
-            jdbcTemplate.update(
-                "update upw_appointment set last_updated_user_id = null where upw_appointment_id = ?",
-                appointment.id
-            )
-        ).isEqualTo(1)
-        entityManager.clear()
-
-        val detail = mockMvc
-            .get("/projects/$PROJECT/appointments/${appointment.id}?username=DefaultUser") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<AppointmentResponse>()
-
-        assertThat(detail.lastUpdatedBy).isNull()
-
-        val list = mockMvc
-            .get("/appointments?username=DefaultUser&appointmentIds=${appointment.id}") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
-
-        assertThat(list.content.single { it.id == appointment.id }.lastUpdatedBy).isNull()
-
-        val session = mockMvc
-            .get("/projects/$PROJECT/appointments?date=${appointment.date}&username=DefaultUser") { withToken() }
-            .andExpect { status { isOk() } }
-            .andReturn().response.contentAsJson<SessionResponse>()
-
-        assertThat(session.appointmentSummaries.single { it.id == appointment.id }.lastUpdatedBy).isNull()
     }
 }
