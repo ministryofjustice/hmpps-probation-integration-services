@@ -4,6 +4,10 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import uk.gov.justice.digital.hmpps.api.model.user.StaffCaseload
@@ -93,5 +97,38 @@ internal class LaoCaseloadIntegrationTest : IntegrationTestBase() {
             json = emptyList<String>()
         }
             .andExpect { status { isBadRequest() } }
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = [
+            "ROLE_PROBATION_API__MANAGE_A_SUPERVISION__CASE_DETAIL",
+            "ROLE_PROBATION_API__PROBATION_SUPERVISION_REMINDERS__CASE_DETAIL"
+        ]
+    )
+    fun `bulk access check is allowed for each permitted role`(role: String) {
+        mockMvc.post("/user/${LIMITED_ACCESS_USER.username}/access") {
+            with(jwt().authorities(SimpleGrantedAuthority(role)))
+            json = listOf(PERSONAL_DETAILS.crn)
+        }.andExpect { status { isOk() } }
+    }
+
+    @Test
+    fun `bulk access check is forbidden for an unrelated role`() {
+        mockMvc.post("/user/${LIMITED_ACCESS_USER.username}/access") {
+            with(jwt().authorities(SimpleGrantedAuthority("ROLE_UNRELATED")))
+            json = listOf(PERSONAL_DETAILS.crn)
+        }.andExpect { status { isForbidden() } }
+    }
+
+    @Test
+    fun `reminders role cannot use the other user access endpoints`() {
+        val reminders = jwt().authorities(
+            SimpleGrantedAuthority("ROLE_PROBATION_API__PROBATION_SUPERVISION_REMINDERS__CASE_DETAIL")
+        )
+        mockMvc.get("/user/${LIMITED_ACCESS_USER.username}/access/${PERSONAL_DETAILS.crn}") { with(reminders) }
+            .andExpect { status { isForbidden() } }
+        mockMvc.get("/user/${LIMITED_ACCESS_USER.username}") { with(reminders) }
+            .andExpect { status { isForbidden() } }
     }
 }
