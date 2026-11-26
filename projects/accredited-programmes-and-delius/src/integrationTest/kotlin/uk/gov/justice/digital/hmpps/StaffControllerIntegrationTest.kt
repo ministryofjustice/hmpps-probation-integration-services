@@ -33,6 +33,12 @@ class StaffControllerIntegrationTest(@Autowired private val mockMvc: MockMvc) {
     }
 
     @Test
+    fun `returns 404 not found for inactive staff`() {
+        mockMvc.get("/staff/${TestData.AP_STAFF_INACTIVE.code}") { withToken() }
+            .andExpect { status { isNotFound() } }
+    }
+
+    @Test
     fun `unauthorized status returned when no token provided`() {
         mockMvc.get("/staff/${TestData.AP_STAFF.code}")
             .andExpect { status { isUnauthorized() } }

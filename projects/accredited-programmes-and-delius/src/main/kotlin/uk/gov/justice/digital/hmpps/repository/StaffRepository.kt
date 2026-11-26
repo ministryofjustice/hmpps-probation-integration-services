@@ -11,6 +11,13 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findAllByCodeIn(code: Set<String>): List<Staff>
 
     @EntityGraph(attributePaths = ["user"])
+    @Query(
+        """
+            select s from Staff s
+            where s.code = :code
+            and (s.endDate is null or s.endDate > current_date)
+        """
+    )
     fun findByCode(code: String): Staff?
 
     @Query(
