@@ -77,7 +77,7 @@ class UnpaidWorkAdjustment(
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastUpdatedUserId: Long = 0,
+    var lastUpdatedUserId: Long? = null,
 
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,

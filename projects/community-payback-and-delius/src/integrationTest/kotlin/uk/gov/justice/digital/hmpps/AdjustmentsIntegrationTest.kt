@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,6 +28,12 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
+import org.springframework.data.web.PagedModel.PageMetadata
+
+private data class PagedAdjustments(
+    val content: List<Adjustment>,
+    val page: PageMetadata
+)
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -562,5 +569,42 @@ class AdjustmentsIntegrationTest @Autowired constructor(
                 status { isOk() }
                 jsonPath("$.content[0].lastUpdatedBy") { value(updatedBy.username) }
             }
+    }
+
+    @Test
+    @Transactional
+    fun `adjustment retrieval returns null when there is no last updated user`() {
+        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
+
+        entityManager.createNativeQuery(
+            """
+        update upw_adjustment
+        set last_updated_user_id = null
+        where upw_adjustment_id = :id
+        """
+        ).setParameter("id", adjustment.id)
+            .executeUpdate()
+        entityManager.clear()
+
+        mockMvc.get("/adjustments/$reference") { withToken() }
+            .andExpect {
+                status { isOk() }
+                jsonPath("$.lastUpdatedBy") { doesNotExist() }
+            }
+
+        val adjustments = mockMvc.get("/adjustments?crn=$crn&eventNumber=$eventNumber") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AdjustmentResponse>()
+
+        assertThat(adjustments.adjustments.single { it.id == adjustment.id }.lastUpdatedBy).isNull()
+
+        val search = mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PagedAdjustments>()
+
+        assertThat(search.content.single { it.id == adjustment.id }.lastUpdatedBy).isNull()
     }
 }

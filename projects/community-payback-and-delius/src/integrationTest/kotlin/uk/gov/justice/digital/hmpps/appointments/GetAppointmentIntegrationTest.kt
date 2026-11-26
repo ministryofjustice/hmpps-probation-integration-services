@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.appointments
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +35,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactRepository: ContactRepository,
     private val jdbcTemplate: JdbcTemplate,
+    private val entityManager: EntityManager,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_1.code
@@ -283,7 +285,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     }
 
     @Test
-    @Transactional
     fun `appointment retrieval returns last updated username`() {
         val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
         val updater = UserGenerator.AUDIT_USER
@@ -328,5 +329,39 @@ class GetAppointmentIntegrationTest @Autowired constructor(
 
         assertThat(schedule.appointments.single { it.id == appointment.id }.lastUpdatedBy)
             .isEqualTo(updater.username)
+    }
+
+    @Test
+    fun `appointment retrieval returns null when there is no last updated user`() {
+        val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
+
+        assertThat(
+            jdbcTemplate.update(
+                "update upw_appointment set last_updated_user_id = null where upw_appointment_id = ?",
+                appointment.id
+            )
+        ).isEqualTo(1)
+        entityManager.clear()
+
+        val detail = mockMvc
+            .get("/projects/$PROJECT/appointments/${appointment.id}?username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(detail.lastUpdatedBy).isNull()
+
+        val list = mockMvc
+            .get("/appointments?username=DefaultUser&appointmentIds=${appointment.id}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(list.content.single { it.id == appointment.id }.lastUpdatedBy).isNull()
+
+        val session = mockMvc
+            .get("/projects/$PROJECT/appointments?date=${appointment.date}&username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SessionResponse>()
+
+        assertThat(session.appointmentSummaries.single { it.id == appointment.id }.lastUpdatedBy).isNull()
     }
 }
