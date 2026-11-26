@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.entity.staff
 
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
-import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
@@ -23,11 +22,6 @@ class User(
     val staff: Staff? = null
 )
 
-interface UserIdUsername {
-    val id: Long
-    val username: String
-}
-
 interface UserRepository : JpaRepository<User, Long> {
     @Query(
         """
@@ -39,31 +33,6 @@ interface UserRepository : JpaRepository<User, Long> {
         """
     )
     fun findByUsername(username: String): User?
-
-    @Query(
-        """
-        select u.id as id, u.username as username 
-        from User u 
-        where u.id in :ids
-        """
-    )
-    fun findIdUsernamesByIdIn(ids: Collection<Long>): List<UserIdUsername>
 }
 
 fun UserRepository.getByUsername(username: String) = findByUsername(username).orNotFoundBy("username", username)
-
-private val logger = LoggerFactory.getLogger(UserRepository::class.java)
-
-fun UserRepository.usernamesById(ids: Collection<Long>): Map<Long, String> {
-    val distinctIds = ids.toSet()
-    val users = distinctIds.chunked(900)
-        .flatMap { findIdUsernamesByIdIn(it) }
-        .associate { it.id to it.username }
-
-    val missingIds = distinctIds - users.keys
-    if (missingIds.isNotEmpty()) {
-        logger.warn("Could not resolve last updated usernames for user IDs: {}", missingIds)
-    }
-
-    return users
-}

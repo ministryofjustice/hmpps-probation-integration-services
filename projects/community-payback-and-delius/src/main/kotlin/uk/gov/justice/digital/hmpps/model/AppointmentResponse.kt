@@ -33,8 +33,7 @@ data class AppointmentResponse(
     val updatedAt: ZonedDateTime,
     val lastUpdatedBy: String?,
     val sensitive: Boolean?,
-    val alertActive: Boolean?,
-    val lastUpdatedBy: String?
+    val alertActive: Boolean?
 )
 
 data class AppointmentResponseEnforcementAction(

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.person.PersonRepository
 import uk.gov.justice.digital.hmpps.entity.person.getByCrn
 import uk.gov.justice.digital.hmpps.entity.sentence.EventRepository
-import uk.gov.justice.digital.hmpps.entity.staff.UserRepository
-import uk.gov.justice.digital.hmpps.entity.staff.usernamesById
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UnpaidWorkAppointmentRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwAllocationRepository
 import uk.gov.justice.digital.hmpps.entity.unpaidwork.UpwDetailsRepository
@@ -20,7 +18,6 @@ class CaseScheduleService(
     private val eventRepository: EventRepository,
     private val upwDetailsRepository: UpwDetailsRepository,
     private val upwAllocationRepository: UpwAllocationRepository,
-    private val userRepository: UserRepository,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository
 ) {
     fun getSchedule(crn: String, eventNumber: String): ScheduleResponse {
@@ -41,11 +38,8 @@ class CaseScheduleService(
 
         val allocations = upwAllocationRepository.findByEventId(event.id)
             .map { it.toAllocationResponse() }
-        val appointmentEntities = unpaidWorkAppointmentRepository.findByEventId(event.id)
-        val updatedBy = userRepository.usernamesById(appointmentEntities.map { it.lastUpdatedUserId })
-        val appointments = appointmentEntities.map {
-            it.toAppointmentScheduleResponse(updatedBy[it.lastUpdatedUserId])
-        }
+        val appointments = unpaidWorkAppointmentRepository.findByEventId(event.id)
+            .map { it.toAppointmentScheduleResponse() }
 
         return ScheduleResponse(
             requirementProgress = requirementProgress,

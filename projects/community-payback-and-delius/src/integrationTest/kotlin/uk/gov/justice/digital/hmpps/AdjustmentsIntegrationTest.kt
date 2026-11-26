@@ -521,66 +521,6 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             status { isConflict() }
             jsonPath("$.message") { containsString("already has an external reference set") }
         }
-
-        @Test
-        @Transactional
-        fun `adjustment retrieval returns last updated user rather than adjusted by user`() {
-            val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
-            val updater = UserGenerator.AUDIT_USER
-            val adjustedBy = UserGenerator.DEFAULT_USER
-            val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
-            val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
-            val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
-
-            assertThat(updater.id).isNotEqualTo(adjustedBy.id)
-
-            assertThat(
-                entityManager.createNativeQuery(
-                    """
-            update upw_adjustment
-            set last_updated_user_id = :updaterId,
-                adjusted_by_user_id = :adjustedById
-            where upw_adjustment_id = :id
-            """.trimIndent()
-                )
-                    .setParameter("updaterId", updater.id)
-                    .setParameter("adjustedById", adjustedBy.id)
-                    .setParameter("id", adjustment.id)
-                    .executeUpdate()
-            ).isEqualTo(1)
-
-            entityManager.clear()
-
-            val detail = mockMvc.get("/adjustments/$reference") { withToken() }
-                .andExpect { status { isOk() } }
-                .andReturn().response.contentAsJson<Adjustment>()
-
-            assertThat(detail.lastUpdatedBy).isEqualTo(updater.username)
-
-            val list = mockMvc.get("/adjustments") {
-                withToken()
-                param("crn", crn)
-                param("eventNumber", eventNumber)
-            }.andExpect { status { isOk() } }
-                .andReturn().response.contentAsJson<AdjustmentResponse>()
-
-            assertThat(list.adjustments.single { it.id == adjustment.id }.lastUpdatedBy)
-                .isEqualTo(updater.username)
-
-            mockMvc.get("/adjustments/search") {
-                withToken()
-                param("crn", crn)
-                param("eventNumber", eventNumber)
-                param("date", adjustment.date.toString())
-                param("type", AdjustmentType.NEGATIVE.name)
-                param("reason", adjustment.reason.code)
-            }.andExpect {
-                status { isOk() }
-                jsonPath("$.content[?(@.id == ${adjustment.id})].lastUpdatedBy") {
-                    value(org.hamcrest.Matchers.contains(updater.username))
-                }
-            }
-        }
     }
 
     @Test
