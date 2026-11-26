@@ -93,8 +93,9 @@ class CommunityPaybackAppointmentsService(
             behaviour = appointment.behaviour?.let { Behaviour.of(it.code) },
             notes = appointment.contact.notes,
             updatedAt = appointment.lastUpdatedDatetime,
+            lastUpdatedBy = appointment.lastUpdatedByUser?.username,
+            alertActive = appointment.contact.alertActive,
             sensitive = appointment.contact.sensitive,
-            alertActive = appointment.contact.alertActive
         )
     }
 
@@ -145,6 +146,7 @@ class CommunityPaybackAppointmentsService(
                 outcome = outcome?.toCodeDescription(),
                 notes = it.contact.notes,
                 externalReference = it.contact.externalReference?.removePrefix(REFERENCE_PREFIX),
+                lastUpdatedBy = it.lastUpdatedByUser?.username,
             )
         })
     }
@@ -164,7 +166,8 @@ class CommunityPaybackAppointmentsService(
                 id = it.id,
                 case = it.toAppointmentResponseCase(limitedAccess),
                 outcome = it.contact.outcome?.toCodeDescription(),
-                requirementProgress = checkNotNull(minutes[it.details.id])
+                requirementProgress = checkNotNull(minutes[it.details.id]),
+                lastUpdatedBy = it.lastUpdatedByUser?.username
             )
         }
 

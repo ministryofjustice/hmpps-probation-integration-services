@@ -136,6 +136,7 @@ class CreateUnpaidWorkAppointment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(name = "partition_area_id")

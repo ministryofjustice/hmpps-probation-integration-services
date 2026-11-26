@@ -45,7 +45,8 @@ data class AppointmentScheduleResponse(
     val endTime: LocalTime,
     val outcome: CodeDescription?,
     val minutesCredited: Long,
-    val allocationId: Long?
+    val allocationId: Long?,
+    val lastUpdatedBy: String?
 )
 
 fun UnpaidWorkAllocation.toAllocationResponse() = AllocationResponse(
@@ -82,5 +83,6 @@ fun UnpaidWorkAppointment.toAppointmentScheduleResponse() = AppointmentScheduleR
     endTime = endTime,
     outcome = contact.outcome?.toCodeDescription(),
     minutesCredited = minutesCredited ?: 0,
-    allocationId = allocation?.id
+    allocationId = allocation?.id,
+    lastUpdatedBy = lastUpdatedByUser?.username,
 )

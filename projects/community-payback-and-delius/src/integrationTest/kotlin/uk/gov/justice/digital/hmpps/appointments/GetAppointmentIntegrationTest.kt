@@ -24,6 +24,8 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.*
+import jakarta.transaction.Transactional
+import org.springframework.jdbc.core.JdbcTemplate
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,6 +33,7 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactRepository: ContactRepository,
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_1.code
@@ -277,5 +280,53 @@ class GetAppointmentIntegrationTest @Autowired constructor(
             .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
 
         assertThat(response.content.map { it.externalReference }.distinct()).containsOnly(externalReference)
+    }
+
+    @Test
+    @Transactional
+    fun `appointment retrieval returns last updated username`() {
+        val appointment = UPWGenerator.DEFAULT_UPW_APPOINTMENT
+        val updater = UserGenerator.AUDIT_USER
+
+        assertThat(
+            jdbcTemplate.update(
+                "update upw_appointment set last_updated_user_id = ? where upw_appointment_id = ?",
+                updater.id,
+                appointment.id
+            )
+        ).isEqualTo(1)
+
+        val detail = mockMvc
+            .get("/projects/$PROJECT/appointments/${appointment.id}?username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AppointmentResponse>()
+
+        assertThat(detail.lastUpdatedBy).isEqualTo(updater.username)
+
+        val list = mockMvc
+            .get("/appointments?username=DefaultUser&appointmentIds=${appointment.id}") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PagedModel<AppointmentsResponse>>()
+
+        assertThat(list.content.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
+
+        val session = mockMvc
+            .get("/projects/$PROJECT/appointments?date=${appointment.date}&username=DefaultUser") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<SessionResponse>()
+
+        assertThat(session.appointmentSummaries.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
+
+        val schedule = mockMvc
+            .get("/case/${PersonGenerator.DEFAULT_PERSON.crn}/event/${UPWGenerator.EVENT_1.number}/appointments/schedule") {
+                withToken()
+            }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<ScheduleResponse>()
+
+        assertThat(schedule.appointments.single { it.id == appointment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
     }
 }

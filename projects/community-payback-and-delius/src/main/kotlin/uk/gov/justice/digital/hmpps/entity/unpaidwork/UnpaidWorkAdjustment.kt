@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Versioned
 import uk.gov.justice.digital.hmpps.jpa.GeneratedId
 import uk.gov.justice.digital.hmpps.service.AdjustmentService.Companion.REFERENCE_PREFIX
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -37,6 +38,10 @@ class UnpaidWorkAdjustment(
     @ManyToOne
     @JoinColumn(name = "upw_details_id")
     val upwDetails: UnpaidWorkDetails,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_updated_user_id", insertable = false, updatable = false)
+    var lastUpdatedByUser: AuditUser? = null,
 
     @Column(name = "adjustment_amount")
     var amount: Int,
@@ -71,6 +76,7 @@ class UnpaidWorkAdjustment(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
+    @Column(name = "last_updated_user_id")
     var lastUpdatedUserId: Long = 0,
 
     @Column(name = "partition_area_id")
