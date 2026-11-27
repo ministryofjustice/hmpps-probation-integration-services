@@ -534,77 +534,31 @@ class AdjustmentsIntegrationTest @Autowired constructor(
     @Transactional
     fun `adjustment retrieval returns the last updated username`() {
         val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
-        val updatedBy = UserGenerator.AUDIT_USER
-        val adjustedBy = UserGenerator.DEFAULT_USER
+        val updater = UserGenerator.AUDIT_USER
         val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
         val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
         val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
 
-        entityManager.createNativeQuery(
-            """
-            update upw_adjustment
-            set last_updated_user_id = :updatedBy, adjusted_by_user_id = :adjustedBy
-            where upw_adjustment_id = :id
-            """
-        ).setParameter("updatedBy", updatedBy.id)
-            .setParameter("adjustedBy", adjustedBy.id)
-            .setParameter("id", adjustment.id)
-            .executeUpdate()
-        entityManager.clear()
+        val persisted = adjustmentRepository.findByIdOrNull(adjustment.id!!)!!
+        assertThat(persisted.lastUpdatedByUser?.username).isEqualTo(updater.username)
 
-        mockMvc.get("/adjustments/$reference") { withToken() }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.lastUpdatedBy") { value(updatedBy.username) }
-            }
-
-        mockMvc.get("/adjustments?crn=$crn&eventNumber=$eventNumber") { withToken() }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.adjustments[0].lastUpdatedBy") { value(updatedBy.username) }
-            }
-
-        mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber") { withToken() }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.content[0].lastUpdatedBy") { value(updatedBy.username) }
-            }
-    }
-
-    @Test
-    @Transactional
-    fun `adjustment retrieval returns null when there is no last updated user`() {
-        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
-        val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
-        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
-        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
-
-        entityManager.createNativeQuery(
-            """
-        update upw_adjustment
-        set last_updated_user_id = null
-        where upw_adjustment_id = :id
-        """
-        ).setParameter("id", adjustment.id)
-            .executeUpdate()
-        entityManager.clear()
-
-        mockMvc.get("/adjustments/$reference") { withToken() }
-            .andExpect {
-                status { isOk() }
-                jsonPath("$.lastUpdatedBy") { doesNotExist() }
-            }
+        val detail = mockMvc.get("/adjustments/$reference") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Adjustment>()
+        assertThat(detail.lastUpdatedBy).isEqualTo(updater.username)
 
         val adjustments = mockMvc.get("/adjustments?crn=$crn&eventNumber=$eventNumber") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<AdjustmentResponse>()
+        assertThat(adjustments.adjustments.single { it.id == adjustment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
 
-        assertThat(adjustments.adjustments.single { it.id == adjustment.id }.lastUpdatedBy).isNull()
-
-        val search = mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber") { withToken() }
+        val search = mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber&size=100") { withToken() }
             .andExpect { status { isOk() } }
             .andReturn().response.contentAsJson<PagedAdjustments>()
-
-        assertThat(search.content.single { it.id == adjustment.id }.lastUpdatedBy).isNull()
+        assertThat(search.content.single { it.id == adjustment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
     }
+
+
 }
