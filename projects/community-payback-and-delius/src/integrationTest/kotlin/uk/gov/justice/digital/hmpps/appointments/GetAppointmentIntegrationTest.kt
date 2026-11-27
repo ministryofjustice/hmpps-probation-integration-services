@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.appointments
 
-import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,8 +24,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.util.*
-import jakarta.transaction.Transactional
-import org.springframework.jdbc.core.JdbcTemplate
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,8 +31,6 @@ class GetAppointmentIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val unpaidWorkAppointmentRepository: UnpaidWorkAppointmentRepository,
     private val contactRepository: ContactRepository,
-    private val jdbcTemplate: JdbcTemplate,
-    private val entityManager: EntityManager,
 ) {
     companion object {
         val PROJECT = UPW_PROJECT_1.code
