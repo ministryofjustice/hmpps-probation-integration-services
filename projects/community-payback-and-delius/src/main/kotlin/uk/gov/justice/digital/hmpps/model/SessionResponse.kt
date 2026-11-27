@@ -9,5 +9,6 @@ data class SessionResponseAppointmentSummary(
     val id: Long,
     val case: Case,
     val outcome: CodeDescription?,
-    val requirementProgress: RequirementProgress
+    val requirementProgress: RequirementProgress,
+    val lastUpdatedBy: String?
 )

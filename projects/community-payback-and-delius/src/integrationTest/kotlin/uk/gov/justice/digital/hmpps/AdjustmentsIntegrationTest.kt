@@ -27,6 +27,12 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS
 import java.util.*
+import org.springframework.data.web.PagedModel.PageMetadata
+
+private data class PagedAdjustments(
+    val content: List<Adjustment>,
+    val page: PageMetadata
+)
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -521,5 +527,35 @@ class AdjustmentsIntegrationTest @Autowired constructor(
             status { isConflict() }
             jsonPath("$.message") { containsString("already has an external reference set") }
         }
+    }
+
+    @Test
+    @Transactional
+    fun `adjustment retrieval returns the last updated username`() {
+        val adjustment = UPWGenerator.ADJUSTMENT_NEGATIVE_FOR_ADJUSTMENT_PERSON
+        val updater = UserGenerator.AUDIT_USER
+        val reference = adjustment.externalReference!!.removePrefix(REFERENCE_PREFIX)
+        val crn = PersonGenerator.ADJUSTMENT_PERSON.crn
+        val eventNumber = UPWGenerator.EVENT_ADJUSTMENT.number
+
+        val persisted = adjustmentRepository.findByIdOrNull(adjustment.id!!)!!
+        assertThat(persisted.lastUpdatedByUser?.username).isEqualTo(updater.username)
+
+        val detail = mockMvc.get("/adjustments/$reference") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<Adjustment>()
+        assertThat(detail.lastUpdatedBy).isEqualTo(updater.username)
+
+        val adjustments = mockMvc.get("/adjustments?crn=$crn&eventNumber=$eventNumber") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<AdjustmentResponse>()
+        assertThat(adjustments.adjustments.single { it.id == adjustment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
+
+        val search = mockMvc.get("/adjustments/search?crn=$crn&eventNumber=$eventNumber&size=100") { withToken() }
+            .andExpect { status { isOk() } }
+            .andReturn().response.contentAsJson<PagedAdjustments>()
+        assertThat(search.content.single { it.id == adjustment.id }.lastUpdatedBy)
+            .isEqualTo(updater.username)
     }
 }

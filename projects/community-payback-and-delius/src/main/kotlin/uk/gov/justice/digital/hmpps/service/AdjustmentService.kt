@@ -66,6 +66,7 @@ class AdjustmentService(
                 type = AdjustmentType.valueOf(it.type),
                 minutes = it.amount,
                 reason = CodeName(name = it.reason.description, code = it.reason.code),
+                lastUpdatedBy = it.lastUpdatedByUser?.username,
             )
         })
     }
@@ -101,6 +102,7 @@ class AdjustmentService(
             date = adjustment.date,
             reason = CodeName(name = adjustment.reason.description, code = adjustment.reason.code),
             minutes = adjustment.amount,
+            lastUpdatedBy = adjustment.lastUpdatedByUser?.username,
         )
     }
 
@@ -127,6 +129,7 @@ class AdjustmentService(
                 type = AdjustmentType.valueOf(it.type),
                 minutes = it.amount,
                 reason = CodeName(name = it.reason.description, code = it.reason.code),
+                lastUpdatedBy = it.lastUpdatedByUser?.username,
             )
         }
     )
