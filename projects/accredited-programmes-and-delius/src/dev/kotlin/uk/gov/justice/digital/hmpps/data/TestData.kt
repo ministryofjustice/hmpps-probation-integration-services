@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.contact
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator.withOutcome
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator.document
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.Dataset
@@ -122,6 +123,15 @@ object TestData {
     val TWO_THIRDS_CONTACT =
         CUSTODIAL_EVENT.contact(TWO_THIRDS_CONTACT_TYPE, LocalDate.of(2067, 1, 1), STAFF, TEAM, PROVIDER)
     val OTHER_CONTACT = CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2000, 1, 1), STAFF, TEAM, PROVIDER)
+    val CONTACT_TO_HARD_DELETE =
+        CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2001, 1, 1), STAFF, TEAM, PROVIDER, id = id())
+    val CONTACT_TO_HARD_DELETE_DOCUMENTS = listOf(
+        CONTACT_TO_HARD_DELETE.document(),
+        CONTACT_TO_HARD_DELETE.document(),
+    )
+    val CONTACT_TO_PRESERVE =
+        CUSTODIAL_EVENT.contact(OTHER_CONTACT_TYPE, LocalDate.of(2002, 1, 1), STAFF, TEAM, PROVIDER, id = id())
+    val CONTACT_TO_PRESERVE_DOCUMENT = CONTACT_TO_PRESERVE.document()
 
     val COMPONENT_TERMINATED_CONTACT_TYPE =
         ContactType(id(), ContactType.COMPONENT_TERMINATED, "Component terminated", false)

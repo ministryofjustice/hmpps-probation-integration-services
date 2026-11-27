@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.appointments.audit.BusinessInteractionCode as AppointmentBusinessInteractionCode
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.loader.BaseDataLoader
 import uk.gov.justice.digital.hmpps.data.manager.DataManager
@@ -13,8 +14,9 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
     override fun systemUser() = TestData.AUDIT_USER
 
     override fun setupData() {
-        save(BusinessInteraction(id(), BusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()))
-        save(BusinessInteraction(id(), BusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), AppointmentBusinessInteractionCode.ADD_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), AppointmentBusinessInteractionCode.UPDATE_CONTACT.code, ZonedDateTime.now()))
+        save(BusinessInteraction(id(), BusinessInteractionCode.DELETE_CONTACT.code, ZonedDateTime.now()))
         save(TestData.DATASET)
         save(TestData.DOMAIN_EVENT_DATASET)
         saveAll(TestData.DATASETS.values)
@@ -124,6 +126,10 @@ class DataLoader(dataManager: DataManager) : BaseDataLoader(dataManager) {
         save(TestData.REGISTRATION)
         save(TestData.TWO_THIRDS_CONTACT)
         save(TestData.OTHER_CONTACT)
+        save(TestData.CONTACT_TO_HARD_DELETE)
+        saveAll(TestData.CONTACT_TO_HARD_DELETE_DOCUMENTS)
+        save(TestData.CONTACT_TO_PRESERVE)
+        save(TestData.CONTACT_TO_PRESERVE_DOCUMENT)
         save(TestData.TERMINATION_CONTACT)
         save(TestData.LEGACY_APPOINTMENT)
         saveAll(TestData.APPOINTMENTS)

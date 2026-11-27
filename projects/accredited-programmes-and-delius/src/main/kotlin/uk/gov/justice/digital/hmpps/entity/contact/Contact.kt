@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.entity.PersonCrn
+import uk.gov.justice.digital.hmpps.entity.document.Document
 import uk.gov.justice.digital.hmpps.entity.sentence.Event
 import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
 import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
@@ -124,6 +125,10 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
     val createdByUser: User? = null,
+
+    @OneToMany(cascade = [CascadeType.REMOVE])
+    @JoinColumn(name = "primary_key_id", insertable = true, updatable = true)
+    val contactDocuments: MutableList<Document>? = null,
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
