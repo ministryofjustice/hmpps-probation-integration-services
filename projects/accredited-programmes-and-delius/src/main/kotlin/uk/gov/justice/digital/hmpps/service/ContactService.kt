@@ -11,11 +11,11 @@ import uk.gov.justice.digital.hmpps.integration.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
 
 @Service
-class ContactService (
+class ContactService(
     private val contactRepository: ContactRepository,
     private val auditedInteractionService: AuditedInteractionService,
     private val alfrescoUploadClient: AlfrescoUploadClient,
-) : AuditableService(auditedInteractionService){
+) : AuditableService(auditedInteractionService) {
 
     fun hardDeleteContact(contactId: Long) {
         val contact = contactRepository.findByIdOrNull(contactId).orNotFoundBy("Contact ID", contactId)

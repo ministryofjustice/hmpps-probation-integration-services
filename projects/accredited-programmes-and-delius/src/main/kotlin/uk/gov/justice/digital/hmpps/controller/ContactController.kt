@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.ContactService
 
 @RestController
-@RequestMapping( "contacts")
-class ContactController (
+@RequestMapping("contacts")
+class ContactController(
     private val contactService: ContactService
 ) {
     @PreAuthorize("hasRole('PROBATION_API__ACCREDITED_PROGRAMMES__CASE_ADMIN')")
-    @Operation(summary ="Hard delete contact by contactId")
+    @Operation(summary = "Hard delete contact by contactId")
     @DeleteMapping("/delete/{id}")
     fun deleteContactById(@PathVariable id: Long) = contactService.hardDeleteContact(id)
 }

@@ -9,12 +9,12 @@ import org.hibernate.annotations.SQLRestriction
 @Entity
 @Table(name = "document")
 @SQLRestriction("table_name = 'CONTACT'")
-class Document (
+class Document(
     @Id
     @Column(name = "document_id")
     val id: Long = 0,
 
-    @Column(name ="primary_key_id")
+    @Column(name = "primary_key_id")
     val primaryKeyId: Long? = null,
 
     @Column(name = "table_name")
