@@ -25,8 +25,9 @@ object ContactGenerator {
         provider: Provider,
         startTime: ZonedDateTime? = null,
         endTime: ZonedDateTime? = null,
+        id: Long = 0,
     ) = Contact(
-        id = 0,
+        id = id,
         person = person.toCrn(),
         event = this,
         date = date,

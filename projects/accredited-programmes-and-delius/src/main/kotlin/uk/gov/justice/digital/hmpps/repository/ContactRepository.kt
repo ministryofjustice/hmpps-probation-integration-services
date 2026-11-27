@@ -98,6 +98,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     fun findByRequirementIdAndTypeCode(id: Long, typeCode: String): Contact?
     fun findByLicenceConditionIdAndTypeCode(id: Long, typeCode: String): Contact?
+
 }
 
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
