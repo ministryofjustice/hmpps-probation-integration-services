@@ -559,6 +559,4 @@ class AdjustmentsIntegrationTest @Autowired constructor(
         assertThat(search.content.single { it.id == adjustment.id }.lastUpdatedBy)
             .isEqualTo(updater.username)
     }
-
-
 }
