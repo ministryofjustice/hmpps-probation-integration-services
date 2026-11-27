@@ -17,8 +17,9 @@ object RequirementGenerator {
         terminationDate: ZonedDateTime? = null,
         pendingTransfer: Boolean = false,
         active: Boolean = true,
+        id: Long = id(),
     ) = Requirement(
-        id = id(),
+        id = id,
         mainCategory = mainCategory,
         subCategory = subCategory,
         disposal = disposal,

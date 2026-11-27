@@ -7,18 +7,11 @@ import uk.gov.justice.digital.hmpps.appointments.model.CreateAppointment
 import uk.gov.justice.digital.hmpps.appointments.model.ReferencedEntities
 import uk.gov.justice.digital.hmpps.appointments.model.UpdateAppointment.*
 import uk.gov.justice.digital.hmpps.appointments.service.AppointmentService
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.datetime.toDeliusDate
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
-import uk.gov.justice.digital.hmpps.entity.contact.ContactType
-import uk.gov.justice.digital.hmpps.entity.sentence.component.LicenceCondition
-import uk.gov.justice.digital.hmpps.entity.sentence.component.Requirement
-import uk.gov.justice.digital.hmpps.entity.sentence.component.SentenceComponent
-import uk.gov.justice.digital.hmpps.entity.staff.Staff
-import uk.gov.justice.digital.hmpps.entity.staff.Team
-import uk.gov.justice.digital.hmpps.exception.NotFoundException.Companion.orNotFoundBy
 import uk.gov.justice.digital.hmpps.model.*
-import uk.gov.justice.digital.hmpps.repository.*
+import uk.gov.justice.digital.hmpps.repository.ContactRepository
+import uk.gov.justice.digital.hmpps.repository.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.repository.RequirementRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Transactional
@@ -26,9 +19,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class AccreditedProgrammesAppointmentService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
-    private val teamRepository: TeamRepository,
-    private val staffRepository: StaffRepository,
-    private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val appointmentService: AppointmentService,
     private val telemetryService: TelemetryService,
@@ -52,7 +42,7 @@ class AccreditedProgrammesAppointmentService(
             val requirements = requirementRepository.getAllByIdIn(mapNotNull { it.requirementId })
             val licenceConditions = licenceConditionRepository.getAllByIdIn(mapNotNull { it.licenceConditionId })
 
-            val createdAppointments = appointmentService.bulkCreate(map { request ->
+            appointmentService.bulkCreate(map { request ->
                 val component = requireNotNull(
                     requirements[request.requirementId] ?: licenceConditions[request.licenceConditionId]
                 ) { "Either requirementId or licenceConditionId must be provided" }
@@ -81,21 +71,6 @@ class AccreditedProgrammesAppointmentService(
                     allowMissingOutcomeInThePast = true,
                 )
             }).onEach { telemetryService.trackEvent("AppointmentCreated", it.telemetry()) }
-
-            val teams = teamRepository.getAllByCodeIn(map { it.team.code })
-            val staff = staffRepository.getAllByCodeIn(map { it.staff.code })
-            val commencedContactType = contactTypeRepository.getByCode(ContactType.ORDER_COMPONENT_COMMENCED)
-            val commencementContacts = createdAppointments.mapNotNull {
-                if (it.typeCode == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING.code) {
-                    val component = requirements[it.relatedTo.requirementId]
-                        ?: licenceConditions[it.relatedTo.licenceConditionId]
-                    val team = teams[it.teamCode].orNotFoundBy("code", it.teamCode)
-                    val staff = staff[it.staffCode].orNotFoundBy("code", it.staffCode)
-                    component?.commenceComponent(it, team, staff, commencedContactType)
-                } else null
-            }
-            contactRepository.saveAll(commencementContacts)
-                .onEach { telemetryService.trackEvent("ComponentCommenced", it.telemetry()) }
         }
     }
 
@@ -141,34 +116,6 @@ class AccreditedProgrammesAppointmentService(
         sensitive = sensitive
     )
 
-    private fun SentenceComponent.commenceComponent(
-        appointment: Appointment,
-        team: Team,
-        staff: Staff,
-        contactType: ContactType
-    ): Contact? {
-        val shouldCreateCommencedContact = this.commencementDate == null
-        this.commencementDate = appointment.date.atStartOfDay(EuropeLondon)
-        this.notes = listOfNotNull(
-            this.notes,
-            "Actual Start Date set to ${appointment.date.toDeliusDate()} following notification from the Accredited Programmes – Intervention Service"
-        ).joinToString(System.lineSeparator() + System.lineSeparator())
-
-        return if (shouldCreateCommencedContact) {
-            Contact(
-                person = disposal.event.person.asPersonCrn(),
-                event = disposal.event,
-                requirement = this as? Requirement,
-                licenceCondition = this as? LicenceCondition,
-                date = appointment.date,
-                provider = team.provider,
-                team = team,
-                staff = staff,
-                type = contactType,
-            )
-        } else null
-    }
-
     private fun Appointment.telemetry() = mapOf(
         "crn" to relatedTo.crn,
         "type" to if (relatedTo.requirementId == null) "LicenceCondition" else "Requirement",
@@ -178,14 +125,6 @@ class AccreditedProgrammesAppointmentService(
         "outcomeCode" to outcomeCode,
     )
 
-    private fun Contact.telemetry() = mapOf(
-        "crn" to person.crn,
-        "type" to if (requirement == null) "LicenceCondition" else "Requirement",
-        "contactId" to id.toString(),
-        "componentId" to (requirement?.id ?: licenceCondition?.id).toString(),
-        "typeCode" to type.code,
-        "outcomeCode" to outcome?.code,
-    )
 }
 
 inline fun <reified T> Map<String, T>.reportMissing(codes: Set<String>) = also {

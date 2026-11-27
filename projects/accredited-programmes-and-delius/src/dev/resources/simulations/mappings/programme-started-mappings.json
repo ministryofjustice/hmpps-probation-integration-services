@@ -1,0 +1,49 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/referral/00000000-0000-0000-0000-000000000001/start-data"
+      },
+      "response": {
+        "headers": { "Content-Type": "application/json" },
+        "status": 200,
+        "jsonBody": {
+          "licReqId": "900001",
+          "licReqStartedAt": "2025-04-01T15:30:00.000Z",
+          "sourcedFromEntityType": "REQUIREMENT"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/referral/00000000-0000-0000-0000-000000000004/start-data"
+      },
+      "response": {
+        "headers": { "Content-Type": "application/json" },
+        "status": 200,
+        "jsonBody": {
+          "licReqId": "900004",
+          "licReqStartedAt": "2025-04-01T09:30:00.000Z",
+          "sourcedFromEntityType": "LICENCE_CONDITION"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/referral/00000000-0000-0000-0000-000000000002/start-data"
+      },
+      "response": {
+        "headers": { "Content-Type": "application/json" },
+        "status": 200,
+        "jsonBody": {
+          "licReqId": "900002",
+          "licReqStartedAt": "2025-04-01T15:30:00.000Z",
+          "sourcedFromEntityType": "REQUIREMENT"
+        }
+      }
+    }
+  ]
+}

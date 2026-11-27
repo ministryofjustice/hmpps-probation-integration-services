@@ -15,8 +15,9 @@ object LicenceConditionGenerator {
         subCategory: ReferenceData? = null,
         startDate: ZonedDateTime = ZonedDateTime.of(2025, 1, 1, 12, 0, 0, 0, EuropeLondon),
         active: Boolean = true,
+        id: Long = id(),
     ) = LicenceCondition(
-        id = id(),
+        id = id,
         mainCategory = mainCategory,
         subCategory = subCategory,
         disposal = disposal,

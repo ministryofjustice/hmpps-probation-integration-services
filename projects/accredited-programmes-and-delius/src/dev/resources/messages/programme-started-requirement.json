@@ -1,0 +1,12 @@
+{
+  "Type": "Notification",
+  "MessageId": "c0a3b6ea-c242-4e29-b106-99a9c311fa0a",
+  "Message": "{\"eventType\":\"accredited-programmes-community.programme.started\",\"version\":1,\"description\":\"Programme started\",\"detailUrl\":\"http://localhost:{dev.wiremock.port}/referral/00000000-0000-0000-0000-000000000001/start-data\",\"occurredAt\":\"2025-04-04T12:00:00.000Z\",\"additionalInformation\":{},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"Z900001\"}]}}",
+  "Timestamp": "2025-04-04T12:00:00.000Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "accredited-programmes-community.programme.started"
+    }
+  }
+}

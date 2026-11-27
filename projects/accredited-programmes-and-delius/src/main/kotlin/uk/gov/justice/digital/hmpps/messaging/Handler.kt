@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.detail.DomainEventDetailService
 import uk.gov.justice.digital.hmpps.integration.ReferralCompletion
+import uk.gov.justice.digital.hmpps.integration.ReferralStart
 import uk.gov.justice.digital.hmpps.integration.StatusInfo
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.ComponentCommencementService
 import uk.gov.justice.digital.hmpps.service.ComponentTerminationService
 import uk.gov.justice.digital.hmpps.service.StatusChangeService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryMessagingExtensions.notificationReceived
@@ -22,9 +24,10 @@ class Handler(
     private val detailService: DomainEventDetailService,
     private val statusChangeService: StatusChangeService,
     private val componentTerminationService: ComponentTerminationService,
+    private val componentCommencementService: ComponentCommencementService,
     private val telemetryService: TelemetryService
 ) : NotificationHandler<HmppsDomainEvent> {
-    @Publish(messages = [Message(title = REFERRAL_STATUS_CHANGED), Message(title = REFERRAL_COMPLETE)])
+    @Publish(messages = [Message(title = REFERRAL_STATUS_CHANGED), Message(title = REFERRAL_COMPLETE), Message(title = REFERRAL_STARTED)])
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val domainEvent = notification.message
@@ -50,6 +53,11 @@ class Handler(
                 telemetryService.trackEvent(result.name.toString(), result.data)
             }
 
+            REFERRAL_STARTED -> detailService.getDetail<ReferralStart>(domainEvent.detailUrl).also { detail ->
+                val result = componentCommencementService.commence(crn, detail)
+                telemetryService.trackEvent(result.name.toString(), result.data)
+            }
+
             else -> error("Unexpected event type ${notification.eventType}")
         }
     }
@@ -57,5 +65,6 @@ class Handler(
     companion object {
         const val REFERRAL_STATUS_CHANGED = "accredited-programmes-community.referral.status-updated"
         const val REFERRAL_COMPLETE = "accredited-programmes-community.programme.complete"
+        const val REFERRAL_STARTED = "accredited-programmes-community.programme.started"
     }
 }

@@ -15,7 +15,7 @@ The Accredited Programmes service needs to:
 
 This service acts as the integration layer between the Accredited Programmes service and Delius, providing
 synchronous APIs for probation case information and appointment management along with asynchronous consumption of domain
-events for status changes.
+events for status changes and programme commencement.
 
 ### Context Map
 
@@ -34,6 +34,19 @@ events for status changes.
 | Status change  | `accredited-programmes-community.referral.status-updated` |
 
 Example [messages](./src/dev/resources/messages) are in the development source tree.
+
+### Programme Commencement
+
+- The integration service consumes a domain event that commences the requirement or licence condition when the programme
+  has started.
+- The event is published the first time a pre-group one-to-one is marked as "Attended - Complied". It is not published for
+  "Attended - failed to comply" or "Did not attend".
+- The service follows the event's detail URL (`GET /referral/{referralId}/start-data`) and uses `licReqStartedAt` as the
+  Actual Start Date: the date the meeting occurred, not the date attendance was recorded
+
+| Business Event    | HMPPS Domain Event                                  |
+|-------------------|-----------------------------------------------------|
+| Programme started | `accredited-programmes-community.programme.started` |
 
 ### Appointments
 

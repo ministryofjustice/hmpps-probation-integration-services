@@ -27,7 +27,6 @@ import uk.gov.justice.digital.hmpps.data.TestData.LICENCE_CONDITIONS
 import uk.gov.justice.digital.hmpps.data.TestData.REQUIREMENTS
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator.id
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.toCrn
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.model.*
 import uk.gov.justice.digital.hmpps.repository.ContactRepository
@@ -319,16 +318,6 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             assertThat(notes).isEqualTo("Some notes about the appointment and type")
             assertThat(this.type.code).isEqualTo(type.code)
         }
-
-        if (type == CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING) {
-            val requirement = requirementRepository.findByIdOrNull(REQUIREMENTS[2].id)
-            assertThat(requirement!!.commencementDate).isEqualTo(
-                LocalDate.now().minusDays(7).atStartOfDay(EuropeLondon)
-            )
-
-            val ecomContact = contactRepository.findByRequirementIdAndTypeCode(REQUIREMENTS[2].id, "ECOM")
-            assertThat(ecomContact).isNotNull
-        }
     }
 
     @Test
@@ -350,6 +339,27 @@ internal class AppointmentControllerIntegrationTest @Autowired constructor(
             assertThat(date).isEqualTo(LocalDate.now().minusDays(7))
             assertThat(outcome).isNull()
         }
+    }
+
+    @Test
+    fun `pre-group appointment with attended outcome does not commence requirement`() {
+        val requirementId = REQUIREMENTS[2].id
+        val beforeDate = requirementRepository.findByIdOrNull(requirementId)!!.commencementDate
+        val request = createAppointment().copy(
+            reference = UUID.randomUUID(),
+            requirementId = requirementId,
+            type = CreateAppointmentRequest.Type.PRE_GROUP_ONE_TO_ONE_MEETING,
+            outcome = RequestCode("ATTC"),
+        )
+
+        mockMvc.post("/appointments") {
+            withToken()
+            json = request.asList()
+        }.andExpect { status { isCreated() } }
+
+        val requirement = requirementRepository.findByIdOrNull(requirementId)!!
+        assertThat(requirement.commencementDate).isEqualTo(beforeDate)
+        assertThat(contactRepository.findByRequirementIdAndTypeCode(requirementId, "ECOM")).isNull()
     }
 
     @Test
